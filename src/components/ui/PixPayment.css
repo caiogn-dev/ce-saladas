@@ -1,0 +1,210 @@
+/* PIX Payment Component Styles */
+
+.pix-payment {
+  background-color: var(--color-white);
+  border-radius: var(--radius-xl);
+  padding: var(--space-xl);
+  box-shadow: var(--shadow-md);
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.pix-payment--expired {
+  opacity: 0.7;
+}
+
+/* Header */
+.pix-payment__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-lg);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--color-gray-100);
+}
+
+.pix-payment__logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  color: #32BCAD;
+  font-weight: 600;
+  font-size: 1.125rem;
+}
+
+.pix-payment__logo svg {
+  width: 28px;
+  height: 28px;
+}
+
+.pix-payment__amount {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-marsala);
+}
+
+/* QR Code */
+.pix-payment__qr {
+  text-align: center;
+  margin-bottom: var(--space-lg);
+}
+
+.pix-payment__qr-container {
+  position: relative;
+  display: inline-block;
+  padding: var(--space-md);
+  background-color: var(--color-white);
+  border: 2px solid var(--color-gray-200);
+  border-radius: var(--radius-lg);
+}
+
+.pix-payment__qr-image {
+  width: 200px;
+  height: 200px;
+  display: block;
+}
+
+.pix-payment__qr-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: var(--radius-lg);
+}
+
+.pix-payment__qr-overlay span {
+  background-color: var(--color-error);
+  color: white;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.pix-payment__qr-hint {
+  margin-top: var(--space-sm);
+  font-size: 0.875rem;
+  color: var(--color-gray-500);
+}
+
+/* Divider */
+.pix-payment__divider {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin: var(--space-lg) 0;
+}
+
+.pix-payment__divider::before,
+.pix-payment__divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background-color: var(--color-gray-200);
+}
+
+.pix-payment__divider span {
+  font-size: 0.75rem;
+  color: var(--color-gray-500);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Code */
+.pix-payment__code {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.pix-payment__code-box {
+  background-color: var(--color-gray-50);
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  overflow: hidden;
+}
+
+.pix-payment__code-text {
+  display: block;
+  font-family: 'Courier New', monospace;
+  font-size: 0.75rem;
+  color: var(--color-gray-700);
+  word-break: break-all;
+  line-height: 1.5;
+}
+
+/* Timer */
+.pix-payment__timer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  margin-top: var(--space-lg);
+  padding: var(--space-sm) var(--space-md);
+  background-color: #fef3c7;
+  border-radius: var(--radius-md);
+  color: #92400e;
+  font-size: 0.875rem;
+}
+
+.pix-payment__timer svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.pix-payment__timer strong {
+  font-weight: 600;
+}
+
+/* Instructions */
+.pix-payment__instructions {
+  margin-top: var(--space-xl);
+  padding-top: var(--space-lg);
+  border-top: 1px solid var(--color-gray-100);
+}
+
+.pix-payment__instructions h4 {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-gray-700);
+  margin: 0 0 var(--space-sm);
+}
+
+.pix-payment__instructions ol {
+  margin: 0;
+  padding-left: var(--space-lg);
+  color: var(--color-gray-600);
+  font-size: 0.875rem;
+  line-height: 1.8;
+}
+
+.pix-payment__instructions li {
+  padding-left: var(--space-xs);
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .pix-payment {
+    padding: var(--space-lg);
+    border-radius: var(--radius-lg);
+  }
+
+  .pix-payment__header {
+    flex-direction: column;
+    gap: var(--space-sm);
+    text-align: center;
+  }
+
+  .pix-payment__qr-image {
+    width: 180px;
+    height: 180px;
+  }
+
+  .pix-payment__amount {
+    font-size: 1.25rem;
+  }
+}

@@ -1,0 +1,8 @@
+# robots.txt for pastita.com.br
+# Allow all user agents and point to sitemap
+
+User-agent: *
+Allow: /
+
+Sitemap: https://pastita.com.br/sitemap.xml
+Host: pastita.com.br

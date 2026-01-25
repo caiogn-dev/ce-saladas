@@ -1,0 +1,149 @@
+/* CheckoutProgress - Modern step indicator */
+
+.container {
+  position: relative;
+  padding: 1rem 0 2rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Progress bar */
+.progressBar {
+  position: absolute;
+  top: calc(1rem + 18px);
+  left: 10%;
+  right: 10%;
+  height: 4px;
+  background: #e2e8f0;
+  border-radius: 2px;
+  z-index: 0;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, #6366f1, #8b5cf6);
+  border-radius: 2px;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Steps container */
+.steps {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  z-index: 1;
+}
+
+/* Individual step */
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+
+/* Step indicator circle */
+.stepIndicator {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: white;
+  border: 3px solid #e2e8f0;
+  color: #94a3b8;
+}
+
+/* Step label */
+.stepLabel {
+  margin-top: 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #94a3b8;
+  text-align: center;
+  transition: color 0.3s ease;
+}
+
+/* Pending state */
+.pending .stepIndicator {
+  background: white;
+  border-color: #e2e8f0;
+  color: #94a3b8;
+}
+
+.pending .stepLabel {
+  color: #94a3b8;
+}
+
+/* Active state */
+.active .stepIndicator {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  border-color: #6366f1;
+  color: white;
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+  transform: scale(1.1);
+  animation: pulse 2s infinite;
+}
+
+.active .stepLabel {
+  color: #6366f1;
+  font-weight: 600;
+}
+
+/* Completed state */
+.completed .stepIndicator {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  border-color: #22c55e;
+  color: white;
+}
+
+.completed .stepLabel {
+  color: #22c55e;
+}
+
+/* Check icon */
+.checkIcon {
+  width: 20px;
+  height: 20px;
+  stroke-width: 3;
+}
+
+/* Step number */
+.stepNumber {
+  font-size: 0.875rem;
+}
+
+/* Pulse animation */
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+  }
+  50% {
+    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.6);
+  }
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .stepIndicator {
+    width: 32px;
+    height: 32px;
+    font-size: 0.75rem;
+  }
+
+  .stepLabel {
+    font-size: 0.65rem;
+  }
+
+  .progressBar {
+    top: calc(1rem + 14px);
+  }
+
+  .checkIcon {
+    width: 16px;
+    height: 16px;
+  }
+}

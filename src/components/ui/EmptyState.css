@@ -1,0 +1,98 @@
+/* Empty State Component Styles */
+
+.ui-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--space-2xl);
+}
+
+/* Sizes */
+.ui-empty-state--sm {
+  padding: var(--space-lg);
+}
+
+.ui-empty-state--sm .ui-empty-state__icon svg {
+  width: 48px;
+  height: 48px;
+}
+
+.ui-empty-state--sm .ui-empty-state__title {
+  font-size: 1rem;
+}
+
+.ui-empty-state--sm .ui-empty-state__description {
+  font-size: 0.875rem;
+}
+
+.ui-empty-state--md .ui-empty-state__icon svg {
+  width: 64px;
+  height: 64px;
+}
+
+.ui-empty-state--lg {
+  padding: var(--space-3xl);
+}
+
+.ui-empty-state--lg .ui-empty-state__icon svg {
+  width: 80px;
+  height: 80px;
+}
+
+.ui-empty-state--lg .ui-empty-state__title {
+  font-size: 1.5rem;
+}
+
+/* Icon */
+.ui-empty-state__icon {
+  margin-bottom: var(--space-lg);
+  color: var(--color-gray-300);
+}
+
+.ui-empty-state__icon svg {
+  stroke-width: 1.5;
+}
+
+/* Title */
+.ui-empty-state__title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-gray-700);
+  margin: 0 0 var(--space-sm);
+}
+
+/* Description */
+.ui-empty-state__description {
+  font-size: 1rem;
+  color: var(--color-gray-500);
+  margin: 0 0 var(--space-lg);
+  max-width: 400px;
+  line-height: 1.6;
+}
+
+/* Action */
+.ui-empty-state__action {
+  margin-top: var(--space-sm);
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .ui-empty-state {
+    padding: var(--space-xl);
+  }
+
+  .ui-empty-state__icon svg {
+    width: 56px;
+    height: 56px;
+  }
+
+  .ui-empty-state__title {
+    font-size: 1.125rem;
+  }
+
+  .ui-empty-state__description {
+    font-size: 0.875rem;
+  }
+}

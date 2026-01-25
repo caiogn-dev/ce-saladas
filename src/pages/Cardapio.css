@@ -1,0 +1,202 @@
+/* ===== Cardápio Page Styles ===== */
+
+.cardapio-page {
+  background-color: var(--color-cream);
+  min-height: 100vh;
+  padding-bottom: 80px;
+}
+
+/* ===== Header ===== */
+.cardapio-header {
+  text-align: center;
+  padding: 60px 20px 40px;
+  position: relative;
+}
+
+.cardapio-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.cardapio-subtitle {
+  color: var(--color-gold);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 0.85rem;
+  display: inline-block;
+  position: relative;
+}
+
+.cardapio-title {
+  font-size: clamp(2rem, 5vw, 3rem);
+  color: var(--color-marsala);
+  margin: 12px 0;
+  font-weight: 700;
+}
+
+.cardapio-divider {
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-gold), var(--color-gold-light));
+  margin: 0 auto;
+  border-radius: 2px;
+}
+
+/* ===== Filters ===== */
+.cardapio-filters {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  margin-bottom: var(--space-xl);
+}
+
+.cardapio-search {
+  max-width: 500px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.cardapio-category-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.category-chip {
+  padding: 10px 20px;
+  border-radius: var(--radius-full);
+  border: 1.5px solid var(--color-marsala);
+  background-color: var(--color-white);
+  color: var(--color-marsala);
+  font-weight: 600;
+  font-size: 0.875rem;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  white-space: nowrap;
+}
+
+.category-chip:hover {
+  background-color: rgba(114, 47, 55, 0.06);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(114, 47, 55, 0.1);
+}
+
+.category-chip.active {
+  background-color: var(--color-marsala);
+  color: var(--color-white);
+  border-color: var(--color-marsala);
+  box-shadow: 0 6px 20px rgba(114, 47, 55, 0.25);
+  transform: translateY(-1px);
+}
+
+.category-chip.favorites-chip {
+  border-color: var(--color-error);
+  color: var(--color-error);
+}
+
+.category-chip.favorites-chip:hover {
+  background-color: rgba(239, 68, 68, 0.06);
+}
+
+.category-chip.favorites-chip.active {
+  background-color: var(--color-error);
+  color: var(--color-white);
+  border-color: var(--color-error);
+}
+
+/* ===== Products Grid ===== */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--space-xl);
+  padding: 0 0 var(--space-2xl);
+}
+
+/* ===== Loading State ===== */
+.cardapio-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+  gap: var(--space-md);
+}
+
+.cardapio-loading .spinner {
+  width: 44px;
+  height: 44px;
+  border: 3px solid rgba(114, 47, 55, 0.1);
+  border-top-color: var(--color-marsala);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.cardapio-loading p {
+  color: var(--color-gray-500);
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+/* ===== Empty State ===== */
+.cardapio-empty {
+  text-align: center;
+  padding: 80px 20px;
+}
+
+.cardapio-empty p {
+  color: var(--color-gray-500);
+  margin-bottom: 20px;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .cardapio-header {
+    padding: 40px 20px 30px;
+  }
+
+  .cardapio-filters {
+    gap: var(--space-md);
+  }
+
+  .products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: var(--space-lg);
+  }
+
+  .category-chip {
+    padding: 8px 16px;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .products-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+  }
+
+  .cardapio-category-buttons {
+    gap: 8px;
+  }
+
+  .category-chip {
+    padding: 8px 14px;
+    font-size: 0.75rem;
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

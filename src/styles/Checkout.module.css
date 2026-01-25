@@ -1,0 +1,1102 @@
+/* Checkout Page Styles - Modular CSS */
+
+/* ============================================
+   Page Layout
+   ============================================ */
+.checkoutPage {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #fdf6f0 0%, #fff5eb 100%);
+  padding: 2rem 1rem;
+}
+
+.checkoutContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.checkoutHeader {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.checkoutHeader h1 {
+  font-size: 2rem;
+  color: #A2215A;
+  margin: 0.5rem 0;
+}
+
+.checkoutHeader p {
+  color: #666;
+  margin: 0;
+}
+
+.backLink {
+  display: inline-block;
+  color: #A2215A;
+  text-decoration: none;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.backLink:hover {
+  text-decoration: underline;
+}
+
+.checkoutContent {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 2rem;
+  align-items: start;
+}
+
+.checkoutMain {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.checkoutSidebar {
+  position: sticky;
+  top: 2rem;
+}
+
+/* ============================================
+   Sections
+   ============================================ */
+.section {
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #eee;
+}
+
+.section:last-of-type {
+  border-bottom: none;
+  margin-bottom: 1rem;
+}
+
+.sectionTitle {
+  font-size: 1.1rem;
+  color: #333;
+  margin: 0 0 1rem 0;
+  font-weight: 600;
+}
+
+/* ============================================
+   Form Elements
+   ============================================ */
+.formGroup {
+  margin-bottom: 1rem;
+}
+
+.formRow {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.label {
+  display: block;
+  font-size: 0.85rem;
+  color: #555;
+  margin-bottom: 0.4rem;
+  font-weight: 500;
+}
+
+.input,
+.select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.2s;
+  background: white;
+}
+
+.input:focus,
+.select:focus {
+  outline: none;
+  border-color: #A2215A;
+  border-style: solid;
+  box-shadow: 0 0 0 3px rgba(114, 47, 55, 0.1);
+}
+
+.inputError {
+  border-color: #dc2626;
+}
+
+.errorText {
+  display: block;
+  color: #dc2626;
+  font-size: 0.8rem;
+  margin-top: 0.3rem;
+}
+
+.inputWrapper {
+  position: relative;
+}
+
+.inputSpinner {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* ============================================
+   Shipping Method Selector
+   ============================================ */
+.shippingMethodSelector {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.methodOption {
+  display: flex;
+  align-items: flex-start;
+  padding: 1rem;
+  border: 2px solid #e5e5e5;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.methodOption:hover {
+  border-color: #A2215A;
+  background: #fdf6f0;
+}
+
+.methodOption input {
+  margin-right: 1rem;
+  margin-top: 0.25rem;
+  accent-color: #A2215A;
+}
+
+.methodOption input:checked + .methodContent {
+  color: #A2215A;
+}
+
+.methodContent {
+  flex: 1;
+}
+
+.methodHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+}
+
+.methodIcon {
+  font-size: 1.2rem;
+}
+
+.methodDetails {
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 0.25rem;
+}
+
+.methodPrice {
+  font-weight: 600;
+  color: #A2215A;
+}
+
+.methodZone,
+.methodDays,
+.methodHint {
+  color: #888;
+}
+
+.loadingText {
+  color: #888;
+  font-style: italic;
+}
+
+/* ============================================
+   Payment Method Selector
+   ============================================ */
+.paymentMethodSelector {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.paymentOption {
+  display: flex;
+  align-items: flex-start;
+  padding: 1rem;
+  border: 2px solid #e5e5e5;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.paymentOption:hover {
+  border-color: #A2215A;
+  background: #fdf6f0;
+}
+
+.paymentOption input {
+  margin-right: 1rem;
+  margin-top: 0.25rem;
+  accent-color: #A2215A;
+}
+
+.paymentContent {
+  flex: 1;
+}
+
+.paymentHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+}
+
+.paymentIcon {
+  font-size: 1.2rem;
+}
+
+.paymentDescription {
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 0.25rem;
+}
+
+.cardPaymentContainer {
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  background: #f9f9f9;
+  border-radius: 12px;
+}
+
+/* ============================================
+   Customer Form
+   ============================================ */
+.customerForm,
+.customerFormMinimal {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.savedCustomerInfo {
+  background: #f0fdf4;
+  border: 1px solid #86efac;
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+.savedInfoHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #16a34a;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.checkIcon {
+  font-size: 1.2rem;
+}
+
+.savedInfoDetails p {
+  margin: 0.25rem 0;
+  color: #333;
+}
+
+.savedFieldHint {
+  font-size: 0.8rem;
+  color: #16a34a;
+  margin-top: 0.25rem;
+}
+
+/* ============================================
+   Address Form
+   ============================================ */
+.addressForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.mapButtonContainer {
+  margin-bottom: 1rem;
+}
+
+.selectOnMapButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  background: white;
+  border: 2px dashed #A2215A;
+  border-radius: 8px;
+  color: #A2215A;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.selectOnMapButton:hover {
+  background: #fdf6f0;
+  border-style: solid;
+}
+
+/* ============================================
+   GPS Loading State
+   ============================================ */
+.gpsLoading {
+  text-align: center;
+  padding: 3rem 2rem;
+  background: #f9f9f9;
+  border-radius: 12px;
+}
+
+.gpsLoadingSpinner {
+  margin-bottom: 1rem;
+}
+
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid #e5e5e5;
+  border-top-color: #A2215A;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.gpsLoadingText {
+  font-size: 1.1rem;
+  color: #333;
+  margin: 0 0 0.5rem 0;
+}
+
+.gpsLoadingHint {
+  font-size: 0.9rem;
+  color: #666;
+  margin: 0 0 1.5rem 0;
+}
+
+.skipGpsButton {
+  padding: 0.5rem 1rem;
+  background: transparent;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  color: #666;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.skipGpsButton:hover {
+  background: #f5f5f5;
+}
+
+.gpsError {
+  text-align: center;
+  padding: 2rem;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 12px;
+}
+
+.gpsErrorIcon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.gpsErrorMessage {
+  color: #dc2626;
+  margin: 0 0 1.5rem 0;
+}
+
+.gpsErrorActions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.retryButton,
+.manualEntryButton {
+  padding: 0.75rem 1.25rem;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.retryButton {
+  background: #A2215A;
+  color: white;
+  border: none;
+}
+
+.retryButton:hover {
+  background: #5a252c;
+}
+
+.manualEntryButton {
+  background: white;
+  color: #333;
+  border: 1px solid #ccc;
+}
+
+.manualEntryButton:hover {
+  background: #f5f5f5;
+}
+
+/* ============================================
+   Address Confirmation
+   ============================================ */
+.addressConfirmation {
+  background: #f9f9f9;
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.confirmationHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.confirmationHeader h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #333;
+}
+
+.locationIcon {
+  font-size: 1.5rem;
+}
+
+.detectedAddressCard {
+  background: white;
+  border-radius: 10px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.addressMain {
+  margin-bottom: 1rem;
+}
+
+.streetAddress {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 0.25rem 0;
+}
+
+.neighborhood {
+  color: #666;
+  margin: 0 0 0.25rem 0;
+}
+
+.cityState {
+  color: #888;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.deliveryDetails {
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+}
+
+.routeInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  color: #666;
+}
+
+.routeIcon {
+  font-size: 1rem;
+}
+
+.routeDuration {
+  color: #888;
+}
+
+.feeInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.feeLabel {
+  color: #666;
+}
+
+.feeValue {
+  font-weight: 600;
+  color: #A2215A;
+}
+
+.freeDelivery {
+  color: #16a34a;
+}
+
+.zoneName {
+  color: #888;
+  font-size: 0.85rem;
+}
+
+.numberQuestion {
+  margin-bottom: 1rem;
+}
+
+.questionLabel {
+  font-weight: 600;
+  color: #333;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.questionHint {
+  color: #666;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.confirmationActions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.confirmButton,
+.editButton,
+.manualButton {
+  padding: 0.875rem 1.25rem;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.confirmButton {
+  background: #A2215A;
+  color: white;
+  border: none;
+}
+
+.confirmButton:hover {
+  background: #5a252c;
+}
+
+.editButton {
+  background: white;
+  color: #333;
+  border: 1px solid #ccc;
+}
+
+.editButton:hover {
+  background: #f5f5f5;
+}
+
+.manualButton {
+  background: transparent;
+  color: #666;
+  border: 1px dashed #ccc;
+}
+
+.manualButton:hover {
+  background: #f9f9f9;
+  border-color: #999;
+}
+
+/* ============================================
+   Delivery Map
+   ============================================ */
+.deliveryMapContainer {
+  position: relative;
+  margin-top: 1rem;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.mapWrapper {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.mapLoading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  background: #f5f5f5;
+  color: #666;
+}
+
+.mapInfoOverlay {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  right: 1rem;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.routeSummary {
+  display: flex;
+  justify-content: space-around;
+  gap: 1rem;
+}
+
+.routeMetric {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.metricIcon {
+  font-size: 1.25rem;
+  margin-bottom: 0.25rem;
+}
+
+.metricValue {
+  font-weight: 700;
+  color: #A2215A;
+  font-size: 1.1rem;
+}
+
+.metricLabel {
+  font-size: 0.75rem;
+  color: #888;
+}
+
+.zoneInfo {
+  text-align: center;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #eee;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+/* ============================================
+   Coupon Input
+   ============================================ */
+.couponInput {
+  margin-bottom: 1rem;
+}
+
+.couponInputWrapper {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.couponInputWrapper .input {
+  flex: 1;
+}
+
+.applyCouponButton {
+  padding: 0.75rem 1.25rem;
+  background: #A2215A;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.applyCouponButton:hover:not(:disabled) {
+  background: #5a252c;
+}
+
+.applyCouponButton:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.appliedCoupon {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  background: #f0fdf4;
+  border: 1px solid #86efac;
+  border-radius: 10px;
+}
+
+.couponInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.couponIcon {
+  font-size: 1.5rem;
+}
+
+.couponDetails {
+  display: flex;
+  flex-direction: column;
+}
+
+.couponCode {
+  font-weight: 600;
+  color: #16a34a;
+}
+
+.couponDescription {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.couponDiscount {
+  font-weight: 600;
+  color: #16a34a;
+}
+
+.removeCouponButton {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: #fee2e2;
+  color: #dc2626;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.removeCouponButton:hover {
+  background: #fecaca;
+}
+
+/* ============================================
+   Scheduling Section
+   ============================================ */
+.schedulingSection {
+  margin-bottom: 1rem;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+}
+
+.checkboxLabel input {
+  width: 18px;
+  height: 18px;
+  accent-color: #A2215A;
+}
+
+.checkboxText {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.scheduleIcon {
+  font-size: 1.1rem;
+}
+
+.schedulingOptions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #f9f9f9;
+  border-radius: 10px;
+}
+
+.schedulingOptions .formGroup {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+/* ============================================
+   Order Summary
+   ============================================ */
+.orderSummary {
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.summaryTitle {
+  font-size: 1.1rem;
+  color: #333;
+  margin: 0 0 1rem 0;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #eee;
+}
+
+.cartItems {
+  margin-bottom: 1rem;
+}
+
+.cartItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 0.75rem 0;
+  border-bottom: 1px dashed #eee;
+}
+
+.cartItem:last-child {
+  border-bottom: none;
+}
+
+.itemInfo {
+  flex: 1;
+}
+
+.itemName {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 0.25rem 0;
+}
+
+.itemQty {
+  font-size: 0.85rem;
+  color: #666;
+  margin: 0;
+}
+
+.itemOptions {
+  font-size: 0.8rem;
+  color: #888;
+  margin: 0.25rem 0 0 0;
+}
+
+.itemPrice {
+  font-weight: 600;
+  color: #A2215A;
+}
+
+.summaryTotals {
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+}
+
+.summaryRow {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  font-size: 0.95rem;
+}
+
+.discountRow {
+  color: #16a34a;
+}
+
+.discountValue {
+  font-weight: 600;
+}
+
+.couponTag {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.totalRow {
+  padding-top: 1rem;
+  margin-top: 0.5rem;
+  border-top: 2px solid #A2215A;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.totalRow span:first-child {
+  color: #A2215A;
+}
+
+.totalValue {
+  color: #A2215A;
+  font-size: 1.25rem;
+}
+
+.freeShipping {
+  color: #16a34a;
+  font-weight: 600;
+}
+
+.securePayment {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: #f9f9f9;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.secureIcon {
+  font-size: 1rem;
+}
+
+/* ============================================
+   Submit Button
+   ============================================ */
+.submitButton {
+  width: 100%;
+  padding: 1rem 2rem;
+  background: #A2215A;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 1rem;
+}
+
+.submitButton:hover:not(:disabled) {
+  background: #5a252c;
+  transform: translateY(-1px);
+}
+
+.submitButton:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.saveAddressCheckbox {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  margin-top: 1rem;
+}
+
+.saveAddressCheckbox input {
+  width: 18px;
+  height: 18px;
+  accent-color: #A2215A;
+}
+
+/* ============================================
+   Error Message
+   ============================================ */
+.errorMessage {
+  background: #fee2e2;
+  color: #dc2626;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-top: 1rem;
+  border: 1px solid #fecaca;
+}
+
+/* ============================================
+   Empty Cart
+   ============================================ */
+.emptyCart {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.emptyCart h2 {
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.emptyCart p {
+  color: #666;
+  margin-bottom: 1.5rem;
+}
+
+.backButton {
+  display: inline-block;
+  padding: 0.875rem 2rem;
+  background: #A2215A;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.backButton:hover {
+  background: #5a252c;
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
+@media (max-width: 900px) {
+  .checkoutContent {
+    grid-template-columns: 1fr;
+  }
+
+  .checkoutSidebar {
+    position: static;
+    order: -1;
+  }
+
+  .formRow {
+    flex-direction: column;
+  }
+
+  .schedulingOptions {
+    flex-direction: column;
+  }
+
+  .routeSummary {
+    flex-wrap: wrap;
+  }
+
+  .confirmationActions {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .checkoutPage {
+    padding: 1rem 0.5rem;
+  }
+
+  .checkoutMain {
+    padding: 1.25rem;
+  }
+
+  .orderSummary {
+    padding: 1.25rem;
+  }
+
+  .gpsErrorActions {
+    flex-direction: column;
+  }
+
+  .couponInputWrapper {
+    flex-direction: column;
+  }
+
+  .applyCouponButton {
+    width: 100%;
+  }
+}

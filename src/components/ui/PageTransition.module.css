@@ -1,0 +1,163 @@
+/* PageTransition - Smooth animations */
+
+.container {
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.visible {
+  opacity: 1;
+}
+
+/* Fade Up */
+.fadeUp {
+  transform: translateY(20px);
+}
+
+.fadeUp.visible {
+  transform: translateY(0);
+}
+
+/* Fade In */
+.fadeIn {
+  transform: none;
+}
+
+/* Slide Left */
+.slideLeft {
+  transform: translateX(30px);
+}
+
+.slideLeft.visible {
+  transform: translateX(0);
+}
+
+/* Slide Right */
+.slideRight {
+  transform: translateX(-30px);
+}
+
+.slideRight.visible {
+  transform: translateX(0);
+}
+
+/* Scale */
+.scale {
+  transform: scale(0.95);
+}
+
+.scale.visible {
+  transform: scale(1);
+}
+
+/* Animated Card */
+.animatedCard {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hoverEffect:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+}
+
+.hoverEffect:active {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Button animations */
+@keyframes buttonPress {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.95);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.buttonPress {
+  animation: buttonPress 0.2s ease;
+}
+
+/* Success animation */
+@keyframes successPop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.successPop {
+  animation: successPop 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* Shake animation (for errors) */
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-4px);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(4px);
+  }
+}
+
+.shake {
+  animation: shake 0.5s ease;
+}
+
+/* Pulse animation */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.pulse {
+  animation: pulse 2s infinite;
+}
+
+/* Slide in from bottom (for modals) */
+@keyframes slideInBottom {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.slideInBottom {
+  animation: slideInBottom 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Fade backdrop */
+@keyframes fadeBackdrop {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.fadeBackdrop {
+  animation: fadeBackdrop 0.2s ease;
+}

@@ -1,0 +1,127 @@
+/* Input Component Styles */
+
+.ui-input-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.ui-input-wrapper--full {
+  width: 100%;
+}
+
+.ui-input__label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-gray-700);
+}
+
+.ui-input__container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.ui-input {
+  width: 100%;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-gray-300);
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-size: 1rem;
+  color: var(--color-text);
+  transition: all var(--transition-fast);
+}
+
+.ui-input::placeholder {
+  color: var(--color-gray-400);
+}
+
+.ui-input:hover:not(:disabled) {
+  border-color: var(--color-gray-400);
+}
+
+.ui-input:focus {
+  outline: none;
+  border-color: var(--color-marsala);
+  box-shadow: 0 0 0 3px rgba(114, 47, 55, 0.1);
+}
+
+.ui-input:disabled {
+  background-color: var(--color-gray-100);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Sizes */
+.ui-input--sm {
+  padding: 8px 12px;
+  font-size: 0.875rem;
+}
+
+.ui-input--md {
+  padding: 12px 16px;
+  font-size: 1rem;
+}
+
+.ui-input--lg {
+  padding: 16px 20px;
+  font-size: 1.125rem;
+}
+
+/* Error State */
+.ui-input--error {
+  border-color: var(--color-error);
+}
+
+.ui-input--error:focus {
+  border-color: var(--color-error);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+/* Icons */
+.ui-input__icon {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-gray-400);
+  pointer-events: none;
+}
+
+.ui-input__icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.ui-input__icon--left {
+  left: 12px;
+}
+
+.ui-input__icon--right {
+  right: 12px;
+}
+
+.ui-input--with-left-icon {
+  padding-left: 40px;
+}
+
+.ui-input--with-right-icon {
+  padding-right: 40px;
+}
+
+/* Helper Text */
+.ui-input__helper {
+  font-size: 0.75rem;
+  color: var(--color-gray-500);
+}
+
+.ui-input__helper--error {
+  color: var(--color-error);
+}
+
+/* Textarea variant */
+textarea.ui-input {
+  min-height: 100px;
+  resize: vertical;
+}
