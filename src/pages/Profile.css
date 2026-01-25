@@ -22,7 +22,7 @@
 .profile-header h1 {
   font-size: 2.5rem;
   font-weight: 700;
-  color: var(--color-marsala, #A2215A);
+  color: var(--color-marsala, #2D6A4F);
   margin-bottom: 8px;
   letter-spacing: -0.02em;
 }
@@ -62,12 +62,12 @@
 }
 
 .profile-tab:hover {
-  color: var(--color-marsala, #A2215A);
+  color: var(--color-marsala, #2D6A4F);
   background: rgba(114, 47, 55, 0.05);
 }
 
 .profile-tab.active {
-  background: var(--color-marsala, #A2215A);
+  background: var(--color-marsala, #2D6A4F);
   color: #fff;
   box-shadow: 0 4px 12px rgba(114, 47, 55, 0.3);
 }
@@ -159,7 +159,7 @@
 
 .orders-summary .profile-value {
   font-size: 1.5rem;
-  color: var(--color-marsala, #A2215A);
+  color: var(--color-marsala, #2D6A4F);
 }
 
 /* Orders List */
@@ -180,7 +180,7 @@
 
 .order-card:hover {
   background: #fff;
-  border-color: var(--color-marsala, #A2215A);
+  border-color: var(--color-marsala, #2D6A4F);
   box-shadow: 0 4px 20px rgba(114, 47, 55, 0.1);
   transform: translateY(-2px);
 }
@@ -201,7 +201,7 @@
 .order-number {
   font-weight: 700;
   font-size: 1.1rem;
-  color: var(--color-marsala, #A2215A);
+  color: var(--color-marsala, #2D6A4F);
 }
 
 .order-date {
@@ -249,7 +249,7 @@
 }
 
 .order-total {
-  color: var(--color-marsala, #A2215A) !important;
+  color: var(--color-marsala, #2D6A4F) !important;
   font-size: 1.05rem !important;
 }
 
@@ -263,7 +263,7 @@
 .order-view-details {
   font-size: 0.9rem;
   font-weight: 600;
-  color: var(--color-marsala, #A2215A);
+  color: var(--color-marsala, #2D6A4F);
 }
 
 /* Loading & Empty States */
@@ -392,7 +392,7 @@
   width: 40px;
   height: 40px;
   border: 3px solid #e5e7eb;
-  border-top-color: var(--color-marsala, #A2215A);
+  border-top-color: var(--color-marsala, #2D6A4F);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
   margin: 0 auto 16px;
@@ -437,7 +437,7 @@
   display: inline-flex;
   align-items: center;
   padding: 10px 20px;
-  background: var(--color-marsala, #A2215A);
+  background: var(--color-marsala, #2D6A4F);
   color: #fff;
   border-radius: 12px;
   font-weight: 600;
@@ -475,7 +475,7 @@
 
 .order-item-qty {
   font-weight: 700;
-  color: var(--color-marsala, #A2215A);
+  color: var(--color-marsala, #2D6A4F);
   min-width: 28px;
 }
 
@@ -563,7 +563,7 @@
 .order-modal-actions .btn-primary {
   flex: 1;
   padding: 14px 20px;
-  background: var(--color-marsala, #A2215A);
+  background: var(--color-marsala, #2D6A4F);
   color: #fff;
   border: none;
   border-radius: 12px;
@@ -708,7 +708,7 @@
 }
 
 .address-card:hover {
-  border-color: var(--color-marsala, #A2215A);
+  border-color: var(--color-marsala, #2D6A4F);
   box-shadow: 0 4px 12px rgba(114, 47, 55, 0.08);
 }
 
@@ -729,7 +729,7 @@
 }
 
 .default-badge {
-  background: var(--color-marsala, #A2215A);
+  background: var(--color-marsala, #2D6A4F);
   color: #fff;
   font-size: 0.7rem;
   padding: 3px 8px;
@@ -808,7 +808,7 @@
 .checkbox-label input[type="checkbox"] {
   width: 20px;
   height: 20px;
-  accent-color: var(--color-marsala, #A2215A);
+  accent-color: var(--color-marsala, #2D6A4F);
 }
 
 .empty-icon {
@@ -920,7 +920,7 @@
 }
 
 .preference-toggle input:checked + .toggle-slider {
-  background: var(--color-marsala, #A2215A);
+  background: var(--color-marsala, #2D6A4F);
 }
 
 .preference-toggle input:checked + .toggle-slider::after {

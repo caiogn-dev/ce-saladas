@@ -126,19 +126,20 @@ const LandingPage = () => {
               <div className="hero-placeholder" style={{
                 width: '100%',
                 height: '400px',
-                background: 'linear-gradient(135deg, #00B894 0%, #A2215A 100%)',
+                background: 'linear-gradient(135deg, #40916C 0%, #2D6A4F 50%, #1B4332 100%)',
                 borderRadius: '20px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                fontSize: '4rem'
+                fontSize: '5rem',
+                boxShadow: '0 20px 40px rgba(45, 106, 79, 0.3)'
               }}>
                 🥗
               </div>
               {/* Floating badge */}
               <div className="hero-badge-float">
                 <span className="badge-icon">🌿</span>
-                <span className="badge-text">Fresquinho</span>
+                <span className="badge-text">100% Fresco</span>
               </div>
             </div>
           </div>

@@ -615,7 +615,7 @@
 
 .pix-copy-button {
   padding: 12px 20px;
-  background: var(--color-marsala, #A2215A);
+  background: var(--color-marsala, #2D6A4F);
   color: white;
   border: none;
   border-radius: 8px;
@@ -760,7 +760,7 @@
 
 .coupon-input:focus {
   outline: none;
-  border-color: var(--color-marsala, #A2215A);
+  border-color: var(--color-marsala, #2D6A4F);
 }
 
 .coupon-input-group {
@@ -775,7 +775,7 @@
 
 .coupon-apply-btn {
   padding: 10px 18px;
-  background: var(--color-marsala, #A2215A);
+  background: var(--color-marsala, #2D6A4F);
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -949,7 +949,7 @@
 }
 
 .timeline-dot.active {
-  background: var(--color-marsala, #A2215A);
+  background: var(--color-marsala, #2D6A4F);
 }
 
 .timeline-dot.completed {
@@ -984,7 +984,7 @@
 .checkout-checkbox-label input[type="checkbox"] {
   width: 18px;
   height: 18px;
-  accent-color: var(--color-marsala, #A2215A);
+  accent-color: var(--color-marsala, #2D6A4F);
 }
 
 .scheduling-fields {

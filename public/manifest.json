@@ -4,8 +4,8 @@
   "description": "Cardápio digital - Saladas frescas e confeitaria artesanal",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#FAFAFA",
-  "theme_color": "#A2215A",
+  "background_color": "#FEFDF8",
+  "theme_color": "#2D6A4F",
   "orientation": "portrait-primary",
   "icons": [
     {

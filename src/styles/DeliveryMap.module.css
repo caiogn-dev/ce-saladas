@@ -120,7 +120,7 @@
   font-size: 13px;
   font-weight: 500;
   color: white;
-  background: #A2215A;
+  background: #2D6A4F;
   border: none;
   border-radius: 20px;
   cursor: pointer;
@@ -172,7 +172,7 @@
   width: 40px;
   height: 40px;
   border: 3px solid #f0f0f0;
-  border-top-color: #A2215A;
+  border-top-color: #2D6A4F;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }

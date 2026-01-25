@@ -18,7 +18,7 @@
 
 .favorite-button:hover {
   background: #fff;
-  color: var(--color-marsala, #A2215A);
+  color: var(--color-marsala, #2D6A4F);
   transform: scale(1.1);
 }
 

@@ -28,7 +28,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  color: #A2215A;
+  color: #2D6A4F;
   text-decoration: none;
   font-size: 0.875rem;
   font-weight: 500;
@@ -85,7 +85,7 @@
 }
 
 .step.active .stepNumber {
-  background: linear-gradient(135deg, #A2215A 0%, #8B3A44 100%);
+  background: linear-gradient(135deg, #2D6A4F 0%, #8B3A44 100%);
   color: white;
   box-shadow: 0 4px 16px rgba(114, 47, 55, 0.35);
   transform: scale(1.05);
@@ -107,7 +107,7 @@
 }
 
 .step.active .stepLabel {
-  color: #A2215A;
+  color: #2D6A4F;
 }
 
 .step.completed .stepLabel {
@@ -132,7 +132,7 @@
   left: 0;
   height: 100%;
   width: 0;
-  background: linear-gradient(90deg, #A2215A 0%, #8B3A44 100%);
+  background: linear-gradient(90deg, #2D6A4F 0%, #8B3A44 100%);
   transition: width 0.5s ease;
 }
 
@@ -200,7 +200,7 @@
   align-items: center;
   justify-content: center;
   padding: 1rem 2.5rem;
-  background: linear-gradient(135deg, #A2215A 0%, #8B3A44 100%);
+  background: linear-gradient(135deg, #2D6A4F 0%, #8B3A44 100%);
   color: white;
   text-decoration: none;
   border-radius: 14px;

@@ -36,7 +36,7 @@
 
 .search-input:focus {
   outline: none;
-  border-color: var(--color-marsala, #A2215A);
+  border-color: var(--color-marsala, #2D6A4F);
   box-shadow: 0 0 0 3px rgba(114, 47, 55, 0.1);
 }
 
@@ -86,13 +86,13 @@
 }
 
 .category-chip:hover {
-  border-color: var(--color-marsala, #A2215A);
-  color: var(--color-marsala, #A2215A);
+  border-color: var(--color-marsala, #2D6A4F);
+  color: var(--color-marsala, #2D6A4F);
 }
 
 .category-chip.active {
-  background: var(--color-marsala, #A2215A);
-  border-color: var(--color-marsala, #A2215A);
+  background: var(--color-marsala, #2D6A4F);
+  border-color: var(--color-marsala, #2D6A4F);
   color: #fff;
 }
 

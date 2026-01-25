@@ -195,7 +195,7 @@
 
 .retryBtn {
   padding: 0.875rem 1.5rem;
-  background: linear-gradient(135deg, #A2215A 0%, #8B3A44 100%);
+  background: linear-gradient(135deg, #2D6A4F 0%, #8B3A44 100%);
   color: white;
   border: none;
   border-radius: 12px;
@@ -238,7 +238,7 @@
 }
 
 .skipLink:hover {
-  color: #A2215A;
+  color: #2D6A4F;
 }
 
 /* ============================================
@@ -306,7 +306,7 @@
   width: 44px;
   height: 44px;
   border: 3px solid #f0f0f0;
-  border-top-color: #A2215A;
+  border-top-color: #2D6A4F;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -331,7 +331,7 @@
 }
 
 .deliveryInfoCard {
-  background: linear-gradient(135deg, #A2215A 0%, #8B3A44 100%);
+  background: linear-gradient(135deg, #2D6A4F 0%, #8B3A44 100%);
   border-radius: 16px;
   padding: 1.5rem;
   margin: 1.25rem 0;
@@ -431,7 +431,7 @@
 
 .confirmBtn {
   padding: 1.125rem;
-  background: linear-gradient(135deg, #A2215A 0%, #8B3A44 100%);
+  background: linear-gradient(135deg, #2D6A4F 0%, #8B3A44 100%);
   color: white;
   border: none;
   border-radius: 14px;
@@ -572,7 +572,7 @@
 
 .itemPrice {
   font-weight: 700;
-  color: #A2215A;
+  color: #2D6A4F;
   white-space: nowrap;
   font-size: 1rem;
 }
@@ -617,7 +617,7 @@
 }
 
 .deliveryOption.selected {
-  border-color: #A2215A;
+  border-color: #2D6A4F;
   background: linear-gradient(135deg, #fdf8f6 0%, #faf5f2 100%);
   box-shadow: 0 4px 16px rgba(114, 47, 55, 0.12);
 }
@@ -629,7 +629,7 @@
 .optionRadio input {
   width: 20px;
   height: 20px;
-  accent-color: #A2215A;
+  accent-color: #2D6A4F;
   cursor: pointer;
 }
 
@@ -659,7 +659,7 @@
 .deliveryFee {
   margin-top: 0.625rem;
   font-size: 0.9rem;
-  color: #A2215A;
+  color: #2D6A4F;
   font-weight: 600;
   display: flex;
   align-items: center;
@@ -675,7 +675,7 @@
 .zoneBadge {
   display: inline-block;
   padding: 0.25rem 0.625rem;
-  background: linear-gradient(135deg, #A2215A 0%, #8B3A44 100%);
+  background: linear-gradient(135deg, #2D6A4F 0%, #8B3A44 100%);
   color: white;
   border-radius: 6px;
   font-size: 0.7rem;
@@ -705,7 +705,7 @@
 
 .selectAddressBtn {
   padding: 0.625rem 1.125rem;
-  background: linear-gradient(135deg, #A2215A 0%, #8B3A44 100%);
+  background: linear-gradient(135deg, #2D6A4F 0%, #8B3A44 100%);
   color: white;
   border: none;
   border-radius: 10px;
@@ -725,8 +725,8 @@
 .changeAddressBtn {
   padding: 0.5rem 1rem;
   background: white;
-  color: #A2215A;
-  border: 1.5px solid #A2215A;
+  color: #2D6A4F;
+  border: 1.5px solid #2D6A4F;
   border-radius: 8px;
   font-size: 0.85rem;
   font-weight: 500;
@@ -775,7 +775,7 @@
 
 .addressComplement {
   font-size: 0.85rem;
-  color: #A2215A;
+  color: #2D6A4F;
   margin: 0 0 0.25rem 0;
   font-weight: 500;
 }
@@ -806,12 +806,12 @@
 }
 
 .totalRow.grandTotal {
-  border-top: 2px solid #A2215A;
+  border-top: 2px solid #2D6A4F;
   margin-top: 0.625rem;
   padding-top: 0.875rem;
   font-size: 1.2rem;
   font-weight: 700;
-  color: #A2215A;
+  color: #2D6A4F;
 }
 
 .freeText {
@@ -828,7 +828,7 @@
 .proceedButton {
   width: 100%;
   padding: 1.125rem;
-  background: linear-gradient(135deg, #A2215A 0%, #8B3A44 100%);
+  background: linear-gradient(135deg, #2D6A4F 0%, #8B3A44 100%);
   color: white;
   border: none;
   border-radius: 14px;
@@ -864,7 +864,7 @@
 .backButton {
   background: none;
   border: none;
-  color: #A2215A;
+  color: #2D6A4F;
   font-size: 0.95rem;
   cursor: pointer;
   padding: 0;
@@ -910,11 +910,11 @@
 }
 
 .summaryRow.totalRow {
-  border-top: 2px solid #A2215A;
+  border-top: 2px solid #2D6A4F;
   margin-top: 0.5rem;
   padding-top: 0.75rem;
   font-weight: 700;
-  color: #A2215A;
+  color: #2D6A4F;
 }
 
 .errorMessage {
@@ -929,7 +929,7 @@
 .submitButton {
   width: 100%;
   padding: 1rem;
-  background: #A2215A;
+  background: #2D6A4F;
   color: white;
   border: none;
   border-radius: 10px;
@@ -1058,7 +1058,7 @@
 .editLocationBtn {
   background: none;
   border: none;
-  color: #A2215A;
+  color: #2D6A4F;
   font-size: 0.85rem;
   font-weight: 500;
   cursor: pointer;
@@ -1105,7 +1105,7 @@
 
 .mapEditOverlay span {
   background: rgba(255, 255, 255, 0.95);
-  color: #A2215A;
+  color: #2D6A4F;
   font-size: 0.75rem;
   font-weight: 600;
   padding: 0.35rem 0.75rem;
@@ -1190,7 +1190,7 @@
 
 .complementInput:focus {
   outline: none;
-  border-color: #A2215A;
+  border-color: #2D6A4F;
   box-shadow: 0 0 0 3px rgba(114, 47, 55, 0.1);
 }
 
@@ -1248,7 +1248,7 @@
 }
 
 .statFee {
-  color: #A2215A;
+  color: #2D6A4F;
   font-weight: 600;
 }
 
@@ -1266,7 +1266,7 @@
   width: calc(100% - 2rem);
   margin: 0 1rem 1.25rem;
   padding: 1rem;
-  background: linear-gradient(135deg, #A2215A 0%, #8B3A44 100%);
+  background: linear-gradient(135deg, #2D6A4F 0%, #8B3A44 100%);
   color: white;
   border: none;
   border-radius: 14px;
