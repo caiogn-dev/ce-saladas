@@ -7,6 +7,21 @@ import { useStore } from '../context/StoreContext';
 const PROMO_STORAGE_KEY = 'storefrontPromoSeen';
 const PROMO_EVENT = 'storefront-promo';
 
+function subscribePromo(callback) {
+  window.addEventListener(PROMO_EVENT, callback);
+  return () => {
+    window.removeEventListener(PROMO_EVENT, callback);
+  };
+}
+
+function getPromoSnapshot() {
+  return sessionStorage.getItem(PROMO_STORAGE_KEY);
+}
+
+function getPromoServerSnapshot() {
+  return null;
+}
+
 const LandingPage = () => {
   const { store, isLoading } = useStore();
   const hasSeenPromo = useSyncExternalStore(
