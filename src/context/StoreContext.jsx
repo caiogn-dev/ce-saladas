@@ -44,7 +44,7 @@ export const StoreProvider = ({ children }) => {
 
     try {
       const data = await storeApi.getCatalog();
-      
+
       // Update state
       setStore(data.store);
       setCategories(data.categories || []);
@@ -53,11 +53,11 @@ export const StoreProvider = ({ children }) => {
       setCombos(data.combos || []);
       setFeaturedProducts(data.featured_products || []);
       setProductTypes(data.product_types || []);
-      
+
       // Update cache
       catalogCache = data;
       catalogCacheTs = Date.now();
-      
+
       return data;
     } catch (err) {
       console.error('Error fetching catalog:', err);
@@ -72,6 +72,23 @@ export const StoreProvider = ({ children }) => {
   useEffect(() => {
     fetchCatalog();
   }, [fetchCatalog]);
+
+  // Apply store branding (colors)
+  useEffect(() => {
+    if (store && typeof document !== 'undefined') {
+      if (store.primary_color) {
+        document.documentElement.style.setProperty('--primary-color', store.primary_color);
+      }
+      if (store.secondary_color) {
+        document.documentElement.style.setProperty('--secondary-color', store.secondary_color);
+      }
+      // Update theme color meta tag
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+      if (metaThemeColor && store.primary_color) {
+        metaThemeColor.setAttribute('content', store.primary_color);
+      }
+    }
+  }, [store]);
 
   // Get products by category slug
   const getProductsByCategory = useCallback((categorySlug) => {
@@ -99,7 +116,7 @@ export const StoreProvider = ({ children }) => {
   const searchProducts = useCallback((query) => {
     if (!query || query.length < 2) return [];
     const lowerQuery = query.toLowerCase();
-    return products.filter(p => 
+    return products.filter(p =>
       p.name.toLowerCase().includes(lowerQuery) ||
       p.description?.toLowerCase().includes(lowerQuery)
     );
@@ -115,7 +132,7 @@ export const StoreProvider = ({ children }) => {
       // Store info
       store,
       storeSlug: storeApi.STORE_SLUG,
-      
+
       // Catalog data
       categories,
       products,
@@ -123,23 +140,23 @@ export const StoreProvider = ({ children }) => {
       combos,
       featuredProducts,
       productTypes,
-      
+
       // Pastita-specific groupings
       molhos,
       carnes,
       rondellis,
-      
+
       // Helper functions
       getProductsByCategory,
       getProductsByType,
       getProductById,
       getComboById,
       searchProducts,
-      
+
       // State
       isLoading,
       error,
-      
+
       // Actions
       refreshCatalog: () => fetchCatalog(true),
     }}>

@@ -43,15 +43,9 @@ import ErrorBoundary from '../src/components/ErrorBoundary';
 import CartSidebar from '../src/components/CartSidebar';
 import { ToastProvider } from '../src/components/Toast';
 import { fetchCsrfToken } from '../src/services/storeApi';
+import StoreHead from '../src/components/StoreHead';
 
 const GA_ID = 'G-F6RDSM45Q0';
-
-const DEFAULT_SEO = {
-  title: 'Cê Saladas | Massas artesanais',
-  description: 'Cê Saladas: massas artesanais, molhos e refeicoes prontas. Peca online e receba em casa.',
-  url: 'https://ce-saladas.com.br/',
-  image: 'https://ce-saladas.com.br/design.webp'
-};
 
 export default function App({ Component, pageProps }) {
   useEffect(() => {
@@ -60,40 +54,6 @@ export default function App({ Component, pageProps }) {
 
   return (
     <>
-      <Head>
-        <title>{DEFAULT_SEO.title}</title>
-        <meta name="description" content={DEFAULT_SEO.description} />
-        <meta name="robots" content="index,follow" />
-        <link rel="icon" type="image/x-icon" href="/ce-saladas-logo.ico" />
-        <link rel="canonical" href={DEFAULT_SEO.url} />
-        <meta name="theme-color" content="#722f37" />
-        <meta property="og:locale" content="pt_BR" />
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content="Cê Saladas | Massas artesanais e molhos frescos" />
-        <meta property="og:description" content="Massas artesanais, molhos e refeicoes prontas. Peca online e receba em casa." />
-        <meta property="og:url" content={DEFAULT_SEO.url} />
-        <meta property="og:image" content={DEFAULT_SEO.image} />
-        <meta property="og:image:alt" content="Cê Saladas massas artesanais" />
-        <meta property="og:site_name" content="Cê Saladas" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Cê Saladas | Massas artesanais e molhos frescos" />
-        <meta name="twitter:description" content="Massas artesanais, molhos e refeicoes prontas. Peca online e receba em casa." />
-        <meta name="twitter:image" content={DEFAULT_SEO.image} />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              '@context': 'https://schema.org',
-              '@type': 'Organization',
-              name: 'Cê Saladas',
-              url: 'https://ce-saladas.com.br/',
-              logo: 'https://ce-saladas.com.br/design.webp',
-              image: 'https://ce-saladas.com.br/design.webp'
-            })
-          }}
-        />
-      </Head>
-
       <Script src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} strategy="afterInteractive" />
       <Script id="gtag-init" strategy="afterInteractive">
         {`window.dataLayer = window.dataLayer || [];
@@ -105,6 +65,7 @@ gtag('config', '${GA_ID}');`}
       <ErrorBoundary>
         <AuthProvider>
           <StoreProvider>
+            <StoreHead />
             <WishlistProvider>
               <CartProvider>
                 <ToastProvider>

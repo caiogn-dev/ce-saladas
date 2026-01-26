@@ -4,7 +4,10 @@ import { useRouter } from 'next/router';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 
+import { useStore } from '../context/StoreContext';
+
 const Navbar = () => {
+  const { store } = useStore();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { cartCount, toggleCart } = useCart();
   const { isAuthenticated, signOut, profile, user } = useAuth();
@@ -69,25 +72,29 @@ const Navbar = () => {
     <nav className="navbar">
       <div className="navbar-container">
         {/* Logo */}
-        <Link href="/" className="navbar-logo" onClick={closeMobileMenu} aria-label="Cê Saladas">
-          <img src="/pastita-logo.ico" alt="Cê Saladas" className="navbar-logo-image" />
+        <Link href="/" className="navbar-logo" onClick={closeMobileMenu} aria-label={store?.name || 'Início'}>
+          {store?.logo_url ? (
+            <img src={store.logo_url} alt={store.name} className="navbar-logo-image" />
+          ) : (
+            <span className="navbar-logo-text">{store?.name || 'Store'}</span>
+          )}
         </Link>
 
         {/* Desktop Navigation */}
         <div className="navbar-links">
-          <Link 
-            href="/" 
+          <Link
+            href="/"
             className={`navbar-link ${isActive('/') ? 'active' : ''}`}
           >
             Início
           </Link>
-          <Link 
-            href="/cardapio" 
+          <Link
+            href="/cardapio"
             className={`navbar-link ${isActive('/cardapio') ? 'active' : ''}`}
           >
             Cardápio
           </Link>
-          
+
           {isAuthenticated ? (
             <>
               <Link
@@ -104,8 +111,8 @@ const Navbar = () => {
               </button>
             </>
           ) : (
-            <Link 
-              href="/login" 
+            <Link
+              href="/login"
               className={`navbar-link ${isActive('/login') ? 'active' : ''}`}
             >
               Login
@@ -129,7 +136,7 @@ const Navbar = () => {
         </button>
 
         {/* Mobile Menu Button */}
-        <button 
+        <button
           className={`navbar-mobile-toggle ${mobileMenuOpen ? 'open' : ''}`}
           onClick={toggleMobileMenu}
           aria-label="Menu"
@@ -142,7 +149,7 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       <div className={`navbar-mobile-menu ${mobileMenuOpen ? 'open' : ''}`}>
-        <Link 
+        <Link
           href="/"
           className={`navbar-mobile-link ${isActive('/') ? 'active' : ''}`}
           onClick={closeMobileMenu}
@@ -156,7 +163,7 @@ const Navbar = () => {
         >
           Cardápio
         </button>
-        
+
         {isAuthenticated ? (
           <>
             <button
@@ -169,8 +176,8 @@ const Navbar = () => {
             <span className="navbar-mobile-user">
               Olá, {displayName}
             </span>
-            <button 
-              onClick={() => { signOut(); closeMobileMenu(); }} 
+            <button
+              onClick={() => { signOut(); closeMobileMenu(); }}
               className="navbar-mobile-link navbar-mobile-logout"
             >
               Sair

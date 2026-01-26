@@ -8,17 +8,43 @@
 import axios from 'axios';
 import logger from './logger';
 
-// Store slug - can be configured per deployment
-const STORE_SLUG = process.env.NEXT_PUBLIC_STORE_SLUG || 'ce-saladas';
+// Helper to get store slug from hostname or env
+export const getStoreSlug = () => {
+  if (typeof window !== 'undefined') {
+    const hostname = window.location.hostname;
+
+    // Specific domain mapping
+    if (hostname.includes('ce-saladas')) return 'ce-saladas';
+    if (hostname.includes('pastita')) return 'pastita';
+
+    // Subdomain check (e.g. pastita.mysaas.com)
+    const parts = hostname.split('.');
+    if (parts.length > 2 && parts[0] !== 'www') {
+      return parts[0];
+    }
+
+    // Path check (e.g. mysaas.com/s/pastita)
+    const pathParts = window.location.pathname.split('/');
+    if (pathParts[1] === 's' && pathParts[2]) {
+      return pathParts[2];
+    }
+  }
+  return process.env.NEXT_PUBLIC_STORE_SLUG || 'ce-saladas';
+};
+
+const STORE_SLUG = getStoreSlug();
 
 // API base URL
-const API_ROOT = (process.env.NEXT_PUBLIC_API_URL || 'https://web-production-3e83a.up.railway.app/api/v1').replace(/\/+$/, '');
+// Priority: Environment Variable > Local Development > Production Fallback
+const DEFAULT_API_URL = 'http://localhost:8000/api/v1';
+const API_ROOT = (process.env.NEXT_PUBLIC_API_URL || DEFAULT_API_URL).replace(/\/+$/, '');
 const STORES_API_URL = `${API_ROOT}/stores`;
 const STORE_API_URL = `${STORES_API_URL}/s/${STORE_SLUG}`;
 const AUTH_API_URL = `${API_ROOT}`;
 
 // WebSocket URL
-const WS_BASE_URL = process.env.NEXT_PUBLIC_WS_URL || 'wss://web-production-3e83a.up.railway.app/ws';
+const DEFAULT_WS_URL = 'ws://localhost:8000/ws';
+const WS_BASE_URL = process.env.NEXT_PUBLIC_WS_URL || DEFAULT_WS_URL;
 
 // Create axios instance for store-specific endpoints
 const storeApi = axios.create({
@@ -273,7 +299,7 @@ export const calculateDeliveryFee = async (distanceKm = null, zipCode = null) =>
   const params = new URLSearchParams();
   if (distanceKm) params.append('distance_km', distanceKm);
   if (zipCode) params.append('zip_code', zipCode);
-  
+
   const response = await storeApi.get(`/delivery-fee/?${params.toString()}`);
   return response.data;
 };
@@ -416,7 +442,7 @@ export const getOrderStatus = async (orderIdOrNumber, token = null) => {
   const params = token ? { token } : {};
   const authToken = getAuthToken();
   const headers = authToken ? { Authorization: `Token ${authToken}` } : {};
-  
+
   const response = await axios.get(`${STORES_API_URL}/orders/${orderIdOrNumber}/payment-status/`, {
     params,
     headers,
@@ -518,7 +544,7 @@ export const updateProfile = async (data) => {
 export const createOrderWebSocket = (orderId, onMessage, onError = null) => {
   const wsUrl = `${WS_BASE_URL}/orders/${orderId}/`;
   const ws = new WebSocket(wsUrl);
-  
+
   ws.onmessage = (event) => {
     try {
       const data = JSON.parse(event.data);
@@ -527,16 +553,16 @@ export const createOrderWebSocket = (orderId, onMessage, onError = null) => {
       logger.error('WebSocket parse error', e);
     }
   };
-  
+
   ws.onerror = (error) => {
     logger.error('WebSocket error', error);
     if (onError) onError(error);
   };
-  
+
   ws.onclose = () => {
     logger.info('WebSocket closed');
   };
-  
+
   return ws;
 };
 
@@ -546,7 +572,7 @@ export const createOrderWebSocket = (orderId, onMessage, onError = null) => {
 export const createStoreOrdersWebSocket = (onMessage, onError = null) => {
   const wsUrl = `${WS_BASE_URL}/stores/${STORE_SLUG}/orders/`;
   const ws = new WebSocket(wsUrl);
-  
+
   ws.onmessage = (event) => {
     try {
       const data = JSON.parse(event.data);
@@ -555,12 +581,12 @@ export const createStoreOrdersWebSocket = (onMessage, onError = null) => {
       logger.error('WebSocket parse error', e);
     }
   };
-  
+
   ws.onerror = (error) => {
     logger.error('WebSocket error', error);
     if (onError) onError(error);
   };
-  
+
   return ws;
 };
 
