@@ -36,14 +36,16 @@ const STORE_SLUG = getStoreSlug();
 
 // API base URL
 // Priority: Environment Variable > Local Development > Production Fallback
-const DEFAULT_API_URL = 'http://localhost:8000/api/v1';
+// API base URL
+// Priority: Environment Variable > Local Development > Production Fallback
+const DEFAULT_API_URL = 'https://web-production-3e83a.up.railway.app/api/v1';
 const API_ROOT = (process.env.NEXT_PUBLIC_API_URL || DEFAULT_API_URL).replace(/\/+$/, '');
 const STORES_API_URL = `${API_ROOT}/stores`;
 const STORE_API_URL = `${STORES_API_URL}/s/${STORE_SLUG}`;
 const AUTH_API_URL = `${API_ROOT}`;
 
 // WebSocket URL
-const DEFAULT_WS_URL = 'ws://localhost:8000/ws';
+const DEFAULT_WS_URL = DEFAULT_API_URL.replace(/^http/, 'ws').replace('/api/v1', '/ws');
 const WS_BASE_URL = process.env.NEXT_PUBLIC_WS_URL || DEFAULT_WS_URL;
 
 // Create axios instance for store-specific endpoints
