@@ -1,7 +1,7 @@
 /**
  * Cart Context - Uses unified Store API
  * 
- * Manages shopping cart state using the new /api/v1/stores/s/{store_slug}/cart/ endpoints.
+ * Manages shopping cart state using /api/v1/stores/{store_slug}/cart/ endpoints.
  */
 import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import * as storeApi from '../services/storeApi';

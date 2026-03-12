@@ -1,7 +1,7 @@
 /**
  * Wishlist Context - Uses unified Store API
  * 
- * Manages user wishlist using the /api/v1/stores/s/{store_slug}/wishlist/ endpoints.
+ * Manages user wishlist using /api/v1/stores/{store_slug}/wishlist/ endpoints.
  */
 import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import * as storeApi from '../services/storeApi';

@@ -3,7 +3,7 @@
  * 
  * This is the PRIMARY API service for the Cê Saladas frontend.
  * All API calls should go through this service.
- * Uses the unified /api/v1/stores/s/{store_slug}/ endpoints.
+ * Uses the unified /api/v1/stores/{store_slug}/ endpoints.
  */
 import axios from 'axios';
 import logger from './logger';
@@ -36,17 +36,32 @@ const STORE_SLUG = getStoreSlug();
 
 // API base URL
 // Priority: Environment Variable > Local Development > Production Fallback
-// API base URL
-// Priority: Environment Variable > Local Development > Production Fallback
 const DEFAULT_API_URL = 'https://web-production-3e83a.up.railway.app/api/v1';
 const API_ROOT = (process.env.NEXT_PUBLIC_API_URL || DEFAULT_API_URL).replace(/\/+$/, '');
 const STORES_API_URL = `${API_ROOT}/stores`;
-const STORE_API_URL = `${STORES_API_URL}/s/${STORE_SLUG}`;
+const STORE_API_URL = `${STORES_API_URL}/${STORE_SLUG}`;
 const AUTH_API_URL = `${API_ROOT}`;
 
 // WebSocket URL
 const DEFAULT_WS_URL = DEFAULT_API_URL.replace(/^http/, 'ws').replace('/api/v1', '/ws');
 const WS_BASE_URL = process.env.NEXT_PUBLIC_WS_URL || DEFAULT_WS_URL;
+
+const shouldLogApiError = (error) => {
+  const status = error?.response?.status;
+  const endpoint = error?.config?.url || '';
+
+  // Expected during bootstrap when user is not authenticated yet.
+  if (status === 401 && endpoint.includes('/users/profile/')) {
+    return false;
+  }
+
+  // Request cancellations (route change/unmount) are not actionable errors.
+  if (error?.code === 'ERR_CANCELED') {
+    return false;
+  }
+
+  return true;
+};
 
 // Create axios instance for store-specific endpoints
 const storeApi = axios.create({
@@ -145,7 +160,9 @@ authApi.interceptors.request.use(
 storeApi.interceptors.response.use(
   (response) => response,
   (error) => {
-    logger.apiError(error.config?.url, error);
+    if (shouldLogApiError(error)) {
+      logger.apiError(error.config?.url, error);
+    }
     return Promise.reject(error);
   }
 );
@@ -153,7 +170,9 @@ storeApi.interceptors.response.use(
 authApi.interceptors.response.use(
   (response) => response,
   (error) => {
-    logger.apiError(error.config?.url, error);
+    if (shouldLogApiError(error)) {
+      logger.apiError(error.config?.url, error);
+    }
     return Promise.reject(error);
   }
 );

@@ -6,7 +6,7 @@
  * 2. If Delivery - Location Modal popup for GPS/address selection
  * 3. Payment Step - Customer info and payment
  */
-import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { initMercadoPago } from '@mercadopago/sdk-react';
@@ -24,9 +24,80 @@ import {
   useCheckoutForm,
   useGeolocation,
   useDelivery,
-  useCoupon,
-  formatCEP
+  useCoupon
 } from '../components/checkout';
+
+const normalizeString = (value) => (
+  typeof value === 'string' ? value.trim().toLowerCase() : ''
+);
+
+const resolveCardMethodFromPayload = (paymentPayload = {}) => {
+  const direct = normalizeString(
+    paymentPayload.selected_payment_method
+    || paymentPayload.selectedPaymentMethod
+    || paymentPayload.method
+    || paymentPayload.type
+  );
+
+  if (direct === 'credit_card' || direct === 'debit_card') {
+    return direct;
+  }
+
+  const formData = paymentPayload.form_data || paymentPayload.formData || {};
+  const fromForm = normalizeString(
+    formData.selected_payment_method
+    || formData.selectedPaymentMethod
+    || formData.payment_type
+    || formData.paymentType
+  );
+
+  if (fromForm === 'credit_card' || fromForm === 'debit_card') {
+    return fromForm;
+  }
+
+  return 'card';
+};
+
+const resolveCheckoutPaymentMethod = (selectedMethod, paymentPayload = {}) => {
+  const normalizedSelected = normalizeString(selectedMethod);
+
+  if (normalizedSelected === 'card') {
+    return resolveCardMethodFromPayload(paymentPayload);
+  }
+
+  if (normalizedSelected === 'cash' || normalizedSelected === 'dinheiro') {
+    return 'cash';
+  }
+
+  return 'pix';
+};
+
+const normalizePaymentPayload = (selectedMethod, paymentPayload = {}) => {
+  const normalizedSelected = normalizeString(selectedMethod);
+
+  if (normalizedSelected !== 'card') {
+    return paymentPayload || { method: normalizedSelected || 'pix' };
+  }
+
+  const formData = paymentPayload.form_data || paymentPayload.formData || {};
+  const payer = paymentPayload.payer || {};
+  const payerFromForm = formData.payer || {};
+  const identification = payer.identification || payerFromForm.identification || {};
+
+  return {
+    method: 'card',
+    selected_payment_method: resolveCardMethodFromPayload(paymentPayload),
+    token: formData.token || paymentPayload.token || '',
+    payment_method_id: formData.paymentMethodId || formData.payment_method_id || paymentPayload.payment_method_id || '',
+    issuer_id: formData.issuerId || formData.issuer_id || paymentPayload.issuer_id || '',
+    installments: formData.installments || paymentPayload.installments || 1,
+    payer: {
+      email: formData.cardholderEmail || payer.email || paymentPayload.email || '',
+      identification_type: formData.identificationType || identification.type || '',
+      identification_number: formData.identificationNumber || identification.number || '',
+    },
+  };
+};
 
 const CheckoutPage = () => {
   const router = useRouter();
@@ -120,6 +191,9 @@ const CheckoutPage = () => {
     setPaymentError('');
 
     try {
+      const resolvedPaymentMethod = resolveCheckoutPaymentMethod(paymentMethod, paymentPayload);
+      const normalizedPaymentPayload = normalizePaymentPayload(paymentMethod, paymentPayload);
+
       const checkoutData = {
         ...checkoutForm.buildCheckoutPayload(
           delivery.shippingMethod,
@@ -130,8 +204,8 @@ const CheckoutPage = () => {
         shipping_method: delivery.shippingMethod,
         delivery_method: delivery.shippingMethod,
         coupon_code: coupon.appliedCoupon ? coupon.appliedCoupon.code : '',
-        payment_method: paymentPayload.method || paymentPayload.type || 'pix',
-        payment: paymentPayload
+        payment_method: resolvedPaymentMethod,
+        payment: normalizedPaymentPayload
       };
       
       const response = await storeApi.checkout(checkoutData);
@@ -183,7 +257,18 @@ const CheckoutPage = () => {
       
       if (payment) {
         const paymentStatus = payment.status;
-        const paymentMethod = payment.payment_method || checkoutData.payment_method;
+        const paymentMethod = normalizeString(payment.payment_method || checkoutData.payment_method);
+        const checkoutUrl = payment.checkout_url
+          || response.payment_link
+          || response.init_point
+          || response.sandbox_init_point
+          || payment.init_point
+          || payment.sandbox_init_point;
+
+        if (payment.requires_redirect && checkoutUrl) {
+          window.location.href = checkoutUrl;
+          return;
+        }
 
         // Cash payment goes directly to success
         if (paymentMethod === 'cash') {
@@ -240,14 +325,8 @@ const CheckoutPage = () => {
   }
 
   // Map step names to indices for CheckoutProgress
-  const stepIndex = useMemo(() => {
-    return currentStep === 'order' ? 0 : 1;
-  }, [currentStep]);
-
-  const completedSteps = useMemo(() => {
-    if (currentStep === 'payment') return [0];
-    return [];
-  }, [currentStep]);
+  const stepIndex = currentStep === 'order' ? 0 : 1;
+  const completedSteps = currentStep === 'payment' ? [0] : [];
 
   return (
     <div className={styles.checkoutPage}>

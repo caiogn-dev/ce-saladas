@@ -1,7 +1,7 @@
 /**
  * Payment Step - Customer info and payment method selection
  */
-import React, { useState } from 'react';
+import React from 'react';
 import { CardPayment } from '@mercadopago/sdk-react';
 import styles from '../../styles/CheckoutModal.module.css';
 import CustomerForm from './CustomerForm';

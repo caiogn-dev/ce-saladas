@@ -1,6 +1,6 @@
-# Pastita 3D - Customer Frontend
+# CE Saladas - Customer Frontend
 
-Next.js 15 + React 19 customer-facing e-commerce frontend for Pastita artisanal pasta shop.
+Next.js storefront for CE Saladas integrated with the unified `server` API.
 
 ## Quick Start
 
@@ -16,137 +16,72 @@ App runs at: `http://localhost:3000`
 Create `.env.local`:
 
 ```env
-# API Configuration
 NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1
 NEXT_PUBLIC_WS_URL=ws://localhost:8000/ws
+NEXT_PUBLIC_MEDIA_URL=http://localhost:8000
+NEXT_PUBLIC_STORE_SLUG=ce-saladas
 
-# Payment
-NEXT_PUBLIC_MERCADO_PAGO_PUBLIC_KEY=your-mercado-pago-public-key
+NEXT_PUBLIC_MERCADO_PAGO_PUBLIC_KEY=TEST-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+NEXT_PUBLIC_HERE_API_KEY=your-here-api-key
 
-# Maps
-NEXT_PUBLIC_HERE_API_KEY=G9H9YAXgkVi1YDXhkea18Sb5EIUAch5m1oNYoaPUZNw
-
-# Contact
-NEXT_PUBLIC_WHATSAPP_NUMBER=5563992957931
-NEXT_PUBLIC_CONTACT_EMAIL=contato@pastita.com.br
-
-# Store Location
-NEXT_PUBLIC_STORE_ADDRESS=Q. 112 Sul Rua SR 1, conj. 06 lote 04 - Plano Diretor Sul
-NEXT_PUBLIC_STORE_CITY=Palmas
-NEXT_PUBLIC_STORE_STATE=TO
-NEXT_PUBLIC_STORE_ZIP=77020-170
-NEXT_PUBLIC_STORE_LAT=-10.1847
-NEXT_PUBLIC_STORE_LNG=-48.3337
-
-# Auth
-NEXT_PUBLIC_AUTH_COOKIE_NAME=auth_token
+NEXT_PUBLIC_CONTACT_EMAIL=contato@cesaladas.com.br
+NEXT_PUBLIC_WHATSAPP_NUMBER=5511999999999
 ```
 
-### HERE Maps API Key
+## API Contract
 
-Get your API key at: https://platform.here.com/
+This frontend uses the unified store endpoints:
 
-Required services:
-- HERE Vector Tile
-- HERE Routing
-- HERE Isoline Routing
-- HERE Geocoding & Search
+- `GET /api/v1/stores/{store_slug}/`
+- `GET /api/v1/stores/{store_slug}/catalog/`
+- `GET /api/v1/stores/{store_slug}/cart/`
+- `POST /api/v1/stores/{store_slug}/cart/add/`
+- `POST /api/v1/stores/{store_slug}/checkout/`
+- `POST /api/v1/stores/{store_slug}/validate-delivery/`
+- `GET /api/v1/stores/{store_slug}/delivery-zones/`
 
-Free tier: 250,000 transactions/month
+Global endpoints used by checkout and status pages:
 
-## Features
+- `GET /api/v1/stores/orders/by-token/{access_token}/`
+- `GET /api/v1/stores/orders/{order_id}/payment-status/`
+- `GET /api/v1/stores/maps/geocode/`
+- `GET /api/v1/stores/maps/reverse-geocode/`
 
-### Products
-- **Product catalog** with categories and search
-- **Product types**: Rondelli (Clássicos/Gourmet), Molhos, Carnes
-- **Combos**: Bundle deals with discounts
-- **Favorites/Wishlist** system
+WebSocket endpoints:
 
-### Shopping Cart
-- **Separate sections** for products and combos
-- **Real-time sync** with backend
-- **Quantity controls** with optimistic updates
-
-### Checkout
-- **Payment methods**: PIX, Credit Card, Cash on delivery
-- **Mercado Pago** integration
-- **Interactive map** for delivery address selection
-- **Route visualization** and delivery time estimation
-- **Order scheduling** (date/time selection)
-- **Coupon validation**
-- **Delivery fee calculation** with zone-based pricing
-
-### Post-Purchase
-- **WhatsApp confirmation** for orders
-- **Order tracking** and history
-- **User profile** management
-
-## Tech Stack
-
-- **Framework**: Next.js 15 + React 19
-- **Styling**: CSS Variables + Tailwind CSS
-- **Data Fetching**: SWR + Axios
-- **Maps**: HERE Maps JavaScript API
-- **Payments**: Mercado Pago SDK
-- **State**: React Context (Auth, Cart, Wishlist)
-
-## Project Structure
-
-```
-src/
-├── components/       # Reusable UI components
-│   ├── ui/          # Base UI components (Button, Input, etc.)
-│   ├── CartSidebar  # Shopping cart with products + combos
-│   ├── ComboCard    # Combo display component
-│   └── ...
-├── context/         # React Context providers
-│   ├── AuthContext  # Authentication state
-│   ├── CartContext  # Cart with products + combos support
-│   └── WishlistContext
-├── pages/           # Next.js pages
-│   ├── Cardapio    # Product catalog
-│   ├── CheckoutPage # Checkout flow
-│   └── Payment*    # Payment result pages
-├── services/        # API services
-│   ├── api.js      # Base API client
-│   ├── pastitaApi.js # Pastita-specific endpoints
-│   └── here*.js    # HERE Maps services
-└── styles/         # CSS files
-```
-
-## API Endpoints
-
-The frontend connects to these backend APIs:
-
-### Pastita API (`/api/v1/pastita/`)
-- `GET /catalogo/` - Full product catalog
-- `GET /rondellis/` - Rondelli pastas
-- `GET /molhos/` - Sauces
-- `GET /carnes/` - Meats
-- `GET /combos/` - Combo bundles
-- `GET /carrinho/` - User's cart
-- `POST /carrinho/adicionar_produto/` - Add product
-- `POST /carrinho/adicionar_combo/` - Add combo
-- `POST /checkout/` - Create payment
-- `GET /pedidos/` - User's orders
-
-### Legacy API (`/api/v1/`)
-- `/products/` - Products (fallback)
-- `/cart/` - Cart operations (fallback)
-- `/checkout/` - Checkout (fallback)
+- `/ws/orders/{order_id}/`
+- `/ws/stores/{store_slug}/orders/`
 
 ## Scripts
 
 ```bash
-npm run dev      # Development server (port 3000)
-npm run build    # Production build
-npm run start    # Production server
-npm run lint     # ESLint
+npm run dev
+npm run build
+npm run start
+npm run lint
 ```
 
-## Documentation
+## Deploy Checklist (ce-saladas -> API)
 
-See `/docs` folder in the project root:
-- [Technical Evaluation](../docs/TECHNICAL_EVALUATION.md)
-- [HERE Maps Integration](../docs/HERE_MAPS_INTEGRATION.md)
-- [Deployment Guide](../docs/DEPLOYMENT.md)
+Frontend envs (Vercel/host):
+
+```env
+NEXT_PUBLIC_API_URL=https://SEU_BACKEND/api/v1
+NEXT_PUBLIC_MEDIA_URL=https://SEU_BACKEND
+NEXT_PUBLIC_WS_URL=wss://SEU_BACKEND/ws
+NEXT_PUBLIC_STORE_SLUG=ce-saladas
+NEXT_PUBLIC_MERCADO_PAGO_PUBLIC_KEY=APP_USR-ou-TEST
+NEXT_PUBLIC_HERE_API_KEY=sua-chave
+NEXT_PUBLIC_SITE_URL=https://SEU_FRONTEND
+```
+
+Backend requirements:
+
+- Cadastrar loja com slug `ce-saladas` no backend.
+- Liberar origem do frontend em `CORS_ALLOWED_ORIGINS`.
+- Adicionar frontend em `DJANGO_CSRF_TRUSTED_ORIGINS` (ou `CSRF_TRUSTED_ORIGINS`).
+- Garantir que `ALLOWED_HOSTS` inclui o domínio da API.
+- Validar endpoints:
+  - `GET /api/v1/health/`
+  - `GET /api/v1/stores/ce-saladas/`
+  - `GET /api/v1/stores/ce-saladas/catalog/`
