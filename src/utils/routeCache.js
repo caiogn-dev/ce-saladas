@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Route Cache Utility
  * Caches route calculations in localStorage to avoid repeated API calls
  * 
@@ -8,7 +8,7 @@
  * - Maximum 100 cached routes to prevent storage overflow
  */
 
-const CACHE_KEY = 'pastita_route_cache';
+const CACHE_KEY = 'ce_saladas_route_cache';
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
 const MAX_CACHE_ENTRIES = 100;
 
@@ -152,3 +152,4 @@ export default {
   clearRouteCache,
   getRouteCacheStats
 };
+

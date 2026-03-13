@@ -126,7 +126,7 @@ const ProductCard = ({
             }}
             disabled={!inStock}
           >
-            {inStock ? 'Adicionar' : 'Indisponivel'}
+            {inStock ? 'Adicionar' : 'Indisponível'}
           </Button>
         </div>
       </div>

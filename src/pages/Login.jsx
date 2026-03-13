@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useAuth } from '../context/AuthContext';
@@ -17,8 +17,8 @@ const Login = () => {
     ? returnToParam[0]
     : returnToParam || '/cardapio';
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
     setLoading(true);
     setError('');
 
@@ -27,7 +27,7 @@ const Login = () => {
     if (result.success) {
       router.replace(returnTo);
     } else {
-      setError(result.error || 'E-mail ou celular inválidos');
+      setError(result.error || 'E-mail, celular ou senha inválidos.');
     }
     setLoading(false);
   };
@@ -37,8 +37,8 @@ const Login = () => {
       <div className="auth-container">
         <div className="auth-card">
           <div className="auth-header">
-            <Link href="/" className="auth-logo">PASTITA</Link>
-            <p>Bem-vindo de volta</p>
+            <Link href="/" className="auth-logo">Cê Saladas</Link>
+            <p>Entre apenas se quiser acompanhar seus dados com mais praticidade.</p>
           </div>
 
           {error && <div className="auth-error">{error}</div>}
@@ -48,7 +48,7 @@ const Login = () => {
               label="E-mail ou celular"
               type="text"
               value={formData.login}
-              onChange={(e) => setFormData({ ...formData, login: e.target.value })}
+              onChange={(event) => setFormData({ ...formData, login: event.target.value })}
               placeholder="seu@email.com ou 11999999999"
               fullWidth
               required
@@ -58,26 +58,19 @@ const Login = () => {
               label="Senha"
               type="password"
               value={formData.password}
-              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+              onChange={(event) => setFormData({ ...formData, password: event.target.value })}
               fullWidth
               required
             />
 
-            <Button
-              type="submit"
-              variant="primary"
-              fullWidth
-              isLoading={loading}
-              className="auth-submit"
-            >
+            <Button type="submit" variant="primary" fullWidth isLoading={loading} className="auth-submit">
               {loading ? 'Entrando...' : 'Entrar'}
             </Button>
           </form>
 
           <div className="auth-footer">
             <p>
-              Não tem uma conta?{' '}
-              <Link href="/registro">Cadastre-se</Link>
+              Ainda não tem conta? <Link href="/registro">Criar conta</Link>
             </p>
           </div>
         </div>

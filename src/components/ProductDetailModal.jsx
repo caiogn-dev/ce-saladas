@@ -30,7 +30,7 @@ const normalizePrimitive = (value) => {
   }
 
   if (typeof value === 'boolean') {
-    return value ? 'Sim' : 'Nao';
+    return value ? 'Sim' : 'Não';
   }
 
   return String(value);
@@ -142,7 +142,7 @@ const ProductDetailModal = ({
               </Badge>
             ))}
             <Badge variant={inStock ? 'success' : 'ghost'} size="sm">
-              {inStock ? 'Disponivel' : 'Indisponivel'}
+              {inStock ? 'Disponível' : 'Indisponível'}
             </Badge>
           </div>
 
@@ -211,14 +211,14 @@ const ProductDetailModal = ({
 
           <div className={styles.actions}>
             <Button variant="ghost" onClick={onClose}>
-              Continuar olhando
+              Continuar navegando
             </Button>
             <Button
               variant={inStock ? 'primary' : 'ghost'}
               onClick={() => onAddToCart?.(item)}
               disabled={!inStock}
             >
-              {inStock ? 'Adicionar ao carrinho' : 'Item indisponivel'}
+              {inStock ? 'Adicionar ao carrinho' : 'Item indisponível'}
             </Button>
           </div>
         </div>

@@ -1,9 +1,8 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
-
 import { useStore } from '../context/StoreContext';
 
 const Navbar = () => {
@@ -15,7 +14,6 @@ const Navbar = () => {
 
   const isActive = (path) => router.pathname === path;
 
-  // Close mobile menu on route change
   useEffect(() => {
     const handleRouteChange = () => {
       setMobileMenuOpen(false);
@@ -27,13 +25,8 @@ const Navbar = () => {
     };
   }, [router.events]);
 
-  // Prevent body scroll when mobile menu is open
   useEffect(() => {
-    if (mobileMenuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
+    document.body.style.overflow = mobileMenuOpen ? 'hidden' : '';
     return () => {
       document.body.style.overflow = '';
     };
@@ -46,22 +39,19 @@ const Navbar = () => {
     const loginFirstName = user?.first_name?.trim();
     const loginLastName = user?.last_name?.trim();
     const loginFullName = [loginFirstName, loginLastName].filter(Boolean).join(' ');
-    return fullName
+
+    return (
+      fullName
       || loginFullName
       || profile?.email
       || profile?.phone
       || user?.email
       || user?.phone
-      || 'Usuário';
+      || 'Cliente'
+    );
   }, [profile, user]);
 
-  const toggleMobileMenu = () => {
-    setMobileMenuOpen(!mobileMenuOpen);
-  };
-
-  const closeMobileMenu = () => {
-    setMobileMenuOpen(false);
-  };
+  const closeMobileMenu = () => setMobileMenuOpen(false);
 
   const handleMobileNavigate = (path) => {
     closeMobileMenu();
@@ -71,57 +61,45 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       <div className="navbar-container">
-        {/* Logo */}
-        <Link href="/" className="navbar-logo" onClick={closeMobileMenu} aria-label={store?.name || 'Início'}>
+        <Link
+          href="/"
+          className="navbar-logo"
+          onClick={closeMobileMenu}
+          aria-label={store?.name || 'Início'}
+        >
           {store?.logo_url ? (
             <img src={store.logo_url} alt={store.name} className="navbar-logo-image" />
           ) : (
-            <span className="navbar-logo-text">{store?.name || 'Store'}</span>
+            <span className="navbar-logo-text">{store?.name || 'Cê Saladas'}</span>
           )}
         </Link>
 
-        {/* Desktop Navigation */}
         <div className="navbar-links">
-          <Link
-            href="/"
-            className={`navbar-link ${isActive('/') ? 'active' : ''}`}
-          >
+          <Link href="/" className={`navbar-link ${isActive('/') ? 'active' : ''}`}>
             Início
           </Link>
-          <Link
-            href="/cardapio"
-            className={`navbar-link ${isActive('/cardapio') ? 'active' : ''}`}
-          >
+          <Link href="/cardapio" className={`navbar-link ${isActive('/cardapio') ? 'active' : ''}`}>
             Cardápio
           </Link>
 
           {isAuthenticated ? (
             <>
-              <Link
-                href="/perfil"
-                className={`navbar-link ${isActive('/perfil') ? 'active' : ''}`}
-              >
+              <Link href="/perfil" className={`navbar-link ${isActive('/perfil') ? 'active' : ''}`}>
                 Perfil
               </Link>
-              <span className="navbar-user">
-                Olá, {displayName}
-              </span>
+              <span className="navbar-user">Olá, {displayName}</span>
               <button onClick={signOut} className="navbar-link navbar-logout">
                 Sair
               </button>
             </>
           ) : (
-            <Link
-              href="/login"
-              className={`navbar-link ${isActive('/login') ? 'active' : ''}`}
-            >
+            <Link href="/login" className={`navbar-link ${isActive('/login') ? 'active' : ''}`}>
               Entrar
             </Link>
           )}
         </div>
 
-        {/* Cart Button */}
-        <button onClick={toggleCart} className="navbar-cart-btn">
+        <button onClick={toggleCart} className="navbar-cart-btn" aria-label="Abrir carrinho">
           <span className="cart-icon" aria-hidden="true">
             <svg viewBox="0 0 24 24" focusable="false">
               <path d="M6 6h15l-1.5 9h-12zM6 6l-1.5-3h-3" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -130,15 +108,12 @@ const Navbar = () => {
             </svg>
           </span>
           <span className="cart-text">Carrinho</span>
-          {cartCount > 0 && (
-            <span className="cart-badge">{cartCount}</span>
-          )}
+          {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
         </button>
 
-        {/* Mobile Menu Button */}
         <button
           className={`navbar-mobile-toggle ${mobileMenuOpen ? 'open' : ''}`}
-          onClick={toggleMobileMenu}
+          onClick={() => setMobileMenuOpen((current) => !current)}
           aria-label="Menu"
         >
           <span></span>
@@ -147,13 +122,8 @@ const Navbar = () => {
         </button>
       </div>
 
-      {/* Mobile Menu */}
       <div className={`navbar-mobile-menu ${mobileMenuOpen ? 'open' : ''}`}>
-        <Link
-          href="/"
-          className={`navbar-mobile-link ${isActive('/') ? 'active' : ''}`}
-          onClick={closeMobileMenu}
-        >
+        <Link href="/" className={`navbar-mobile-link ${isActive('/') ? 'active' : ''}`} onClick={closeMobileMenu}>
           Início
         </Link>
         <button
@@ -173,30 +143,28 @@ const Navbar = () => {
             >
               Perfil
             </button>
-            <span className="navbar-mobile-user">
-              Olá, {displayName}
-            </span>
+            <span className="navbar-mobile-user">Olá, {displayName}</span>
             <button
-              onClick={() => { signOut(); closeMobileMenu(); }}
+              onClick={() => {
+                signOut();
+                closeMobileMenu();
+              }}
               className="navbar-mobile-link navbar-mobile-logout"
             >
               Sair
             </button>
           </>
         ) : (
-          <>
-            <button
-              type="button"
-              className={`navbar-mobile-link ${isActive('/login') ? 'active' : ''}`}
-              onClick={() => handleMobileNavigate('/login')}
-            >
-              Entrar
-            </button>
-          </>
+          <button
+            type="button"
+            className={`navbar-mobile-link ${isActive('/login') ? 'active' : ''}`}
+            onClick={() => handleMobileNavigate('/login')}
+          >
+            Entrar
+          </button>
         )}
       </div>
 
-      {/* Mobile Overlay */}
       {mobileMenuOpen && (
         <div className="navbar-overlay" onClick={closeMobileMenu}></div>
       )}

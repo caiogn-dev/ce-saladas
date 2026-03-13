@@ -3,19 +3,19 @@ import Link from 'next/link';
 import { useCart } from '../context/CartContext';
 
 const CartSidebar = () => {
-  const { 
-    cart, 
+  const {
+    cart,
     combos,
-    removeFromCart, 
+    removeFromCart,
     removeComboFromCart,
-    updateQuantity, 
+    updateQuantity,
     updateComboQuantity,
     cartTotal,
     productTotal,
     comboTotal,
     hasItems,
-    isCartOpen, 
-    toggleCart 
+    isCartOpen,
+    toggleCart,
   } = useCart();
 
   if (!isCartOpen) return null;
@@ -28,7 +28,7 @@ const CartSidebar = () => {
 
       <div className="cart-sidebar">
         <div className="cart-header">
-          <h2>Seu Pedido</h2>
+          <h2>Seu pedido</h2>
           <button onClick={toggleCart} className="cart-close-btn" aria-label="Fechar">
             ✕
           </button>
@@ -51,11 +51,10 @@ const CartSidebar = () => {
             </div>
           ) : (
             <>
-              {/* Products Section */}
               {cart.length > 0 && (
                 <div className="cart-section">
                   <h3 className="cart-section-title">
-                    <span>🍝</span> Produtos
+                    <span>Itens</span> Produtos
                   </h3>
                   {cart.map((item) => (
                     <div key={`product-${item.id}`} className="cart-item">
@@ -68,24 +67,15 @@ const CartSidebar = () => {
 
                         <div className="cart-item-actions">
                           <div className="quantity-control">
-                            <button
-                              onClick={() => updateQuantity(item.id, -1)}
-                              aria-label="Diminuir quantidade"
-                            >
+                            <button onClick={() => updateQuantity(item.id, -1)} aria-label="Diminuir quantidade">
                               −
                             </button>
                             <span>{item.quantity}</span>
-                            <button
-                              onClick={() => updateQuantity(item.id, 1)}
-                              aria-label="Aumentar quantidade"
-                            >
+                            <button onClick={() => updateQuantity(item.id, 1)} aria-label="Aumentar quantidade">
                               +
                             </button>
                           </div>
-                          <button
-                            onClick={() => removeFromCart(item.id)}
-                            className="cart-item-remove"
-                          >
+                          <button onClick={() => removeFromCart(item.id)} className="cart-item-remove">
                             Remover
                           </button>
                         </div>
@@ -94,18 +84,17 @@ const CartSidebar = () => {
                   ))}
                   {productTotal > 0 && (
                     <div className="cart-section-subtotal">
-                      <span>Subtotal produtos:</span>
+                      <span>Subtotal dos produtos:</span>
                       <span>R$ {productTotal.toFixed(2)}</span>
                     </div>
                   )}
                 </div>
               )}
 
-              {/* Combos Section */}
               {combos.length > 0 && (
                 <div className="cart-section cart-section-combos">
                   <h3 className="cart-section-title">
-                    <span>🎁</span> Combos
+                    <span>Combos</span> Seleções
                   </h3>
                   {combos.map((item) => (
                     <div key={`combo-${item.id}`} className="cart-item cart-item-combo">
@@ -121,24 +110,15 @@ const CartSidebar = () => {
 
                         <div className="cart-item-actions">
                           <div className="quantity-control">
-                            <button
-                              onClick={() => updateComboQuantity(item.id, -1)}
-                              aria-label="Diminuir quantidade"
-                            >
+                            <button onClick={() => updateComboQuantity(item.id, -1)} aria-label="Diminuir quantidade">
                               −
                             </button>
                             <span>{item.quantity}</span>
-                            <button
-                              onClick={() => updateComboQuantity(item.id, 1)}
-                              aria-label="Aumentar quantidade"
-                            >
+                            <button onClick={() => updateComboQuantity(item.id, 1)} aria-label="Aumentar quantidade">
                               +
                             </button>
                           </div>
-                          <button
-                            onClick={() => removeComboFromCart(item.id)}
-                            className="cart-item-remove"
-                          >
+                          <button onClick={() => removeComboFromCart(item.id)} className="cart-item-remove">
                             Remover
                           </button>
                         </div>
@@ -147,7 +127,7 @@ const CartSidebar = () => {
                   ))}
                   {comboTotal > 0 && (
                     <div className="cart-section-subtotal">
-                      <span>Subtotal combos:</span>
+                      <span>Subtotal dos combos:</span>
                       <span>R$ {comboTotal.toFixed(2)}</span>
                     </div>
                   )}
@@ -163,12 +143,8 @@ const CartSidebar = () => {
               <span>Total:</span>
               <span>R$ {cartTotal.toFixed(2)}</span>
             </div>
-            <Link
-              href="/checkout"
-              onClick={toggleCart}
-              className="btn-primary cart-checkout-btn"
-            >
-              FINALIZAR PEDIDO
+            <Link href="/checkout" onClick={toggleCart} className="btn-primary cart-checkout-btn">
+              Finalizar pedido
             </Link>
           </div>
         )}

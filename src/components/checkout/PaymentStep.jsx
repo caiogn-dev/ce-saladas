@@ -1,7 +1,5 @@
-/**
- * Payment Step - Customer info and payment method selection
- */
-import React from 'react';
+﻿import React from 'react';
+import { ArrowLeft, CreditCard, ShieldCheck, UserRound } from 'lucide-react';
 import { CardPayment } from '@mercadopago/sdk-react';
 import styles from '../../styles/CheckoutModal.module.css';
 import CustomerForm from './CustomerForm';
@@ -35,13 +33,14 @@ const PaymentStep = ({
 
   return (
     <div className={styles.paymentStep}>
-      <button className={styles.backButton} onClick={onBack}>
-        ← Voltar ao pedido
+      <button className={styles.backButton} onClick={onBack} type="button">
+        <ArrowLeft size={16} />
+        Voltar ao pedido
       </button>
 
       <div className={styles.stepSection}>
         <h2 className={styles.sectionTitle}>
-          <span className={styles.sectionIcon}>👤</span>
+          <span className={styles.sectionIcon}><UserRound size={18} /></span>
           Seus dados
         </h2>
         <CustomerForm
@@ -58,7 +57,7 @@ const PaymentStep = ({
 
       {!isIdentificationComplete && (
         <div className={styles.paymentLockedHint}>
-          Continue com email e celular para liberar entrega, cupom e pagamento.
+          Continue com e-mail e celular para liberar entrega, cupom e pagamento.
         </div>
       )}
 
@@ -91,7 +90,7 @@ const PaymentStep = ({
 
           <div className={styles.stepSection}>
             <h2 className={styles.sectionTitle}>
-              <span className={styles.sectionIcon}>💳</span>
+              <span className={styles.sectionIcon}><CreditCard size={18} /></span>
               Forma de pagamento
             </h2>
             <PaymentMethodSelector
@@ -105,14 +104,14 @@ const PaymentStep = ({
                 <CardPayment
                   initialization={{ amount: total }}
                   onSubmit={onSubmit}
-                  onError={(error) => console.error('Card error:', error)}
+                  onError={(error) => console.error('Erro no cartão:', error)}
                 />
               </div>
             )}
 
             {paymentMethod === 'card' && !mpPublicKey && (
               <div className={styles.paymentLockedHint}>
-                O checkout por cartao vai abrir a pagina segura do Mercado Pago.
+                O pagamento com cartão abrirá a página segura do Mercado Pago.
               </div>
             )}
           </div>
@@ -128,7 +127,7 @@ const PaymentStep = ({
           <span>Entrega</span>
           <span>
             {shippingCost === 0 ? (
-              <span className={styles.freeText}>Gratis</span>
+              <span className={styles.freeText}>Grátis</span>
             ) : (
               `R$ ${(shippingCost || 0).toFixed(2)}`
             )}
@@ -146,28 +145,25 @@ const PaymentStep = ({
         </div>
       </div>
 
-      {paymentError && (
-        <div className={styles.errorMessage}>
-          {paymentError}
-        </div>
-      )}
+      {paymentError && <div className={styles.errorMessage}>{paymentError}</div>}
 
       {isIdentificationComplete && (paymentMethod !== 'card' || !mpPublicKey) && (
         <button
           className={styles.submitButton}
           onClick={() => onSubmit({ method: paymentMethod, type: paymentMethod })}
           disabled={loading}
+          type="button"
         >
           {loading ? 'Processando...' : (
             paymentMethod === 'pix' ? 'Gerar PIX' :
             paymentMethod === 'cash' ? 'Confirmar pedido' :
-            'Ir para pagamento'
+            'Ir para o pagamento'
           )}
         </button>
       )}
 
       <div className={styles.securePayment}>
-        <span>🔒</span>
+        <ShieldCheck size={16} />
         Pagamento seguro via Mercado Pago
       </div>
     </div>

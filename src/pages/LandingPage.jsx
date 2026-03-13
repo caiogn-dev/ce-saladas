@@ -1,7 +1,18 @@
-import React, { useState, useSyncExternalStore, useEffect } from 'react';
+﻿import React, { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import Link from 'next/link';
+import {
+  ArrowRight,
+  Clock3,
+  Instagram,
+  Leaf,
+  MapPinned,
+  MessageCircle,
+  ShieldCheck,
+  Sparkles,
+  Zap,
+} from 'lucide-react';
 import Navbar from '../components/Navbar';
-
+import ShaderBackground from '../components/ui/ShaderBackground';
 import { useStore } from '../context/StoreContext';
 
 const PROMO_STORAGE_KEY = 'storefrontPromoSeen';
@@ -23,27 +34,50 @@ function getPromoServerSnapshot() {
 }
 
 const LandingPage = () => {
-  const { store, isLoading } = useStore();
+  const { store, products = [], combos = [], isLoading } = useStore();
   const hasSeenPromo = useSyncExternalStore(
     subscribePromo,
     getPromoSnapshot,
-    getPromoServerSnapshot
+    getPromoServerSnapshot,
   );
   const [promoDismissed, setPromoDismissed] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
 
-  // Trigger animations on mount
   useEffect(() => {
     setIsVisible(true);
   }, []);
+
+  const heroStats = useMemo(() => {
+    const totalItems = (products?.length || 0) + (combos?.length || 0);
+
+    return [
+      {
+        value: totalItems > 0 ? `${totalItems}+` : 'Sob medida',
+        label: 'opções no catálogo',
+      },
+      {
+        value: 'Checkout leve',
+        label: 'pedido sem cadastro obrigatório',
+      },
+      {
+        value: 'Entrega clara',
+        label: 'etapas objetivas até o pagamento',
+      },
+    ];
+  }, [combos?.length, products?.length]);
 
   if (isLoading || !store) {
     return <div className="loading-screen">Carregando...</div>;
   }
 
   const showPromo = !hasSeenPromo && !promoDismissed;
-  const WHATSAPP_URL = `https://api.whatsapp.com/send?phone=${store.whatsapp_number || store.phone}`;
-  const INSTAGRAM_URL = store.metadata?.instagram_url || '#';
+  const whatsappNumber = store.whatsapp_number || store.phone || '';
+  const whatsappUrl = whatsappNumber
+    ? `https://api.whatsapp.com/send?phone=${whatsappNumber}`
+    : '#';
+  const instagramUrl = store.metadata?.instagram_url || '#';
+  const heroTitle = store.metadata?.hero_title || 'Seu pedido saudável, bonito e rápido.';
+  const heroDescription = store.description || 'Saladas, pratos leves e combinações frescas para quem quer comer bem sem complicação.';
 
   const handleClosePromo = () => {
     if (typeof window !== 'undefined') {
@@ -67,16 +101,16 @@ const LandingPage = () => {
             onClick={(event) => event.stopPropagation()}
           >
             <button className="promo-close" onClick={handleClosePromo} aria-label="Fechar aviso">
-              x
+              ×
             </button>
-            <div className="promo-badge">Novo</div>
-            <h3>Finalize sem cadastro obrigatorio</h3>
+            <div className="promo-badge">Novo fluxo</div>
+            <h3>Agora o pedido termina com menos atrito</h3>
             <p>
-              Monte seu pedido e siga para o checkout com um fluxo direto.
-              Para concluir, basta informar email e celular.
+              O cliente adiciona os itens ao carrinho, informa apenas e-mail e celular e segue para
+              um checkout mais direto, com entrega e pagamento organizados.
             </p>
             <div className="promo-actions">
-              <Link href="/cardapio" className="btn-primary">Pedir agora</Link>
+              <Link href="/cardapio" className="btn-primary">Explorar o cardápio</Link>
               <button type="button" className="btn-secondary" onClick={handleClosePromo}>
                 Fechar
               </button>
@@ -85,204 +119,198 @@ const LandingPage = () => {
         </div>
       )}
 
-      {/* Hero Section */}
       <header className="hero-section">
-        <div className="container hero-container">
-
-          {/* Lado Esquerdo: Texto */}
-          <div className={`hero-text ${isVisible ? 'animate-in' : ''}`}>
-            <span className="hero-eyebrow">
-              Ã¢Å“Â¨ {store.metadata?.eyebrow || 'Artesanal & PrÃƒÂ¡tico'}
-            </span>
-            <h1 className="hero-title">
-              {store.metadata?.hero_title || 'O verdadeiro sabor artesanal em minutos.'}
-            </h1>
-            <p className="hero-description">
-              {store.description || 'Sabor que cuida de vocÃƒÂª. Produtos feitos com ingredientes selecionados.'}
-            </p>
-            <div className="hero-buttons">
-              <Link href="/cardapio" className="btn-primary btn-glow">
-                <span>Ver cardÃƒÂ¡pio</span>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
-              </Link>
-              <a href="#como-funciona" className="btn-secondary">Como funciona</a>
-            </div>
-
-            {/* Social Proof */}
-            <div className="hero-social-proof">
-              <div className="social-proof-avatars">
-                <span className="avatar">Ã°Å¸â€˜Â¨Ã¢â‚¬ÂÃ°Å¸ÂÂ³</span>
-                <span className="avatar">Ã°Å¸â€˜Â©Ã¢â‚¬ÂÃ°Å¸ÂÂ³</span>
-                <span className="avatar">Ã°Å¸Â§â€˜Ã¢â‚¬ÂÃ°Å¸ÂÂ³</span>
-              </div>
-              <p><strong>+500</strong> clientes satisfeitos</p>
-            </div>
-          </div>
-
-          <div className={`hero-media ${isVisible ? 'animate-in-delay' : ''}`}>
-            <div className="hero-image-frame">
-              {store.banner_url ? (
-                <img src={store.banner_url} alt={store.name} className="hero-image" />
-              ) : (
-                <div className="hero-placeholder" style={{
-                  width: '100%',
-                  height: '400px',
-                  background: `linear-gradient(135deg, ${store.primary_color} 0%, ${store.primary_color}dd 100%)`,
-                  borderRadius: '20px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '5rem',
-                  boxShadow: '0 20px 40px rgba(0,0,0,0.1)'
-                }}>
-                  Ã°Å¸Â¥Ëœ
-                </div>
-              )}
-              {/* Floating badge */}
-              <div className="hero-badge-float">
-                <span className="badge-icon">Ã°Å¸Å’Â¿</span>
-                <span className="badge-text">100% Fresco</span>
-              </div>
-            </div>
-          </div>
-
+        <div className="hero-shader-shell" aria-hidden="true">
+          <ShaderBackground className="hero-shader-canvas" />
+          <div className="hero-shader-overlay" />
         </div>
 
-        {/* Background Decorativo */}
-        <div className="hero-bg-decoration"></div>
+        <div className="container hero-container">
+          <div className={`hero-copy ${isVisible ? 'is-visible' : ''}`}>
+            <div className="hero-kicker-row">
+              <span className="hero-kicker">Cê Saladas</span>
+              <span className="hero-chip">Leve, fresco e objetivo</span>
+            </div>
+
+            <h1 className="hero-title">{heroTitle}</h1>
+            <p className="hero-description">{heroDescription}</p>
+
+            <div className="hero-actions">
+              <Link href="/cardapio" className="btn-primary btn-glow">
+                Ver cardápio
+                <ArrowRight size={18} />
+              </Link>
+              <a href="#como-funciona" className="btn-secondary">Entender o fluxo</a>
+            </div>
+
+            <div className="hero-stats-grid">
+              {heroStats.map((stat) => (
+                <div key={stat.label} className="hero-stat-card">
+                  <strong>{stat.value}</strong>
+                  <span>{stat.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className={`hero-visual ${isVisible ? 'is-visible' : ''}`}>
+            <div className="hero-brand-panel">
+              <div className="hero-brand-badge">
+                <Leaf size={16} />
+                Ingredientes frescos todos os dias
+              </div>
+
+              <div className="hero-brand-surface">
+                {store.banner_url ? (
+                  <img src={store.banner_url} alt={store.name} className="hero-image" />
+                ) : (
+                  <div className="hero-placeholder">
+                    <span>Cê</span>
+                    <small>Saladas</small>
+                  </div>
+                )}
+              </div>
+
+              <div className="hero-floating-card hero-floating-card--top">
+                <Sparkles size={18} />
+                <div>
+                  <strong>Cardápio organizado</strong>
+                  <span>Mais clareza para decidir rápido.</span>
+                </div>
+              </div>
+
+              <div className="hero-floating-card hero-floating-card--bottom">
+                <ShieldCheck size={18} />
+                <div>
+                  <strong>Pagamento confiável</strong>
+                  <span>PIX, cartão e dinheiro no mesmo fluxo.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </header>
 
-      {/* Como Funciona Section */}
+      <section className="brand-strip">
+        <div className="container brand-strip__inner">
+          <div className="brand-strip__item"><Leaf size={18} /> Preparação cuidadosa</div>
+          <div className="brand-strip__item"><Clock3 size={18} /> Pedido com menos burocracia</div>
+          <div className="brand-strip__item"><Zap size={18} /> Checkout rápido e objetivo</div>
+        </div>
+      </section>
+
       <section id="como-funciona" className="how-it-works">
         <div className="container">
           <div className="section-header">
-            <span className="section-eyebrow">Simples assim</span>
-            <h2 className="section-title">Como funciona</h2>
+            <span className="section-eyebrow">Fluxo de compra</span>
+            <h2 className="section-title">Como o pedido funciona</h2>
           </div>
 
           <div className="steps-grid">
             <div className="step-card">
               <div className="step-number">01</div>
-              <h3>Escolha</h3>
-              <p>Navegue pelo cardÃƒÂ¡pio e escolha seus produtos favoritos.</p>
-            </div>
-            <div className="step-arrow" aria-hidden="true">
-              <svg viewBox="0 0 40 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M2 8h30" />
-                <path d="M26 3l6 5-6 5" />
-              </svg>
+              <h3>Escolha com contexto</h3>
+              <p>O cliente navega por categoria, abre o detalhe do produto e decide com mais segurança.</p>
             </div>
             <div className="step-card">
               <div className="step-number">02</div>
-              <h3>PeÃƒÂ§a</h3>
-              <p>FaÃƒÂ§a seu pedido online de forma rÃƒÂ¡pida e segura.</p>
-            </div>
-            <div className="step-arrow" aria-hidden="true">
-              <svg viewBox="0 0 40 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M2 8h30" />
-                <path d="M26 3l6 5-6 5" />
-              </svg>
+              <h3>Identifique sem excesso</h3>
+              <p>Na finalização, basta informar e-mail e celular para liberar o restante do checkout.</p>
             </div>
             <div className="step-card">
               <div className="step-number">03</div>
-              <h3>Receba</h3>
-              <p>Receba em casa fresquinho e pronto para saborear.</p>
+              <h3>Confirme entrega e pagamento</h3>
+              <p>Entrega, retirada, cupom e forma de pagamento aparecem em uma sequência clara.</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Por que Section */}
       <section className="why-ce-saladas">
         <div className="container">
           <div className="section-header">
             <span className="section-eyebrow">Diferenciais</span>
-            <h2 className="section-title">Por que escolher {store.name}?</h2>
+            <h2 className="section-title">Uma vitrine pensada para vender melhor</h2>
           </div>
 
           <div className="features-grid">
-            <div className="feature-card">
-              <span className="feature-icon">Ã¢Å“Â¨</span>
-              <h3>Ingredientes frescos</h3>
-              <p>Produtos preparados com ingredientes selecionados diariamente.</p>
-            </div>
-            <div className="feature-card">
-              <span className="feature-icon">Ã°Å¸â€˜Â©Ã¢â‚¬ÂÃ°Å¸ÂÂ³</span>
-              <h3>Feito com amor</h3>
-              <p>Cada item ÃƒÂ© preparado com cuidado e carinho artesanal.</p>
-            </div>
-            <div className="feature-card">
-              <span className="feature-icon">Ã°Å¸â€™Å¡</span>
-              <h3>Sabor IncomparÃƒÂ¡vel</h3>
-              <p>Receitas exclusivas que garantem o melhor paladar.</p>
-            </div>
-            <div className="feature-card">
-              <span className="feature-icon">Ã°Å¸Å¡â‚¬</span>
-              <h3>Entrega rÃƒÂ¡pida</h3>
-              <p>Receba seu pedido fresquinho onde vocÃƒÂª estiver.</p>
-            </div>
+            <article className="feature-card">
+              <span className="feature-icon"><Leaf size={22} /></span>
+              <h3>Visual coerente com a marca</h3>
+              <p>O laranja e o verde agora conduzem a experiência inteira, sem ruído de identidade.</p>
+            </article>
+            <article className="feature-card">
+              <span className="feature-icon"><Sparkles size={22} /></span>
+              <h3>Produtos com mais contexto</h3>
+              <p>O detalhe do item mostra preço, descrição, composição e sinais visuais mais úteis.</p>
+            </article>
+            <article className="feature-card">
+              <span className="feature-icon"><Zap size={22} /></span>
+              <h3>Catálogo mais escaneável</h3>
+              <p>Cada categoria ocupa sua própria faixa horizontal, o que melhora leitura e navegação.</p>
+            </article>
+            <article className="feature-card">
+              <span className="feature-icon"><ShieldCheck size={22} /></span>
+              <h3>Checkout mais direto</h3>
+              <p>O pedido continua sem cadastro obrigatório e o pagamento se encaixa melhor no fluxo.</p>
+            </article>
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
       <section className="cta-section">
-        <div className="container">
-          <div className="cta-content">
-            <h2>Pronto para experimentar?</h2>
-            <p>Descubra o sabor autÃƒÂªntico de {store.name}.</p>
+        <div className="container cta-shell">
+          <div className="cta-copy">
+            <span className="section-eyebrow section-eyebrow--light">Pronto para testar</span>
+            <h2>Explore o cardápio e valide o novo checkout.</h2>
+            <p>
+              O próximo passo natural agora é testar navegação por categoria, detalhe do produto,
+              carrinho e finalização com PIX, cartão ou dinheiro.
+            </p>
+          </div>
+          <div className="cta-actions">
             <Link href="/cardapio" className="btn-primary btn-large">
-              Ver cardÃƒÂ¡pio completo
+              Ir para o cardápio
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
       <footer className="footer">
-        <div className="container">
-          <div className="footer-content">
-            <div className="footer-brand">
-              <h3>{store.name}</h3>
-              <p>{store.description || 'Sabor artesanal de verdade.'}</p>
-              {/* Social Links */}
-              <div className="footer-social">
-                <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="social-link" aria-label="WhatsApp">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
-                  </svg>
-                </a>
-                <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="social-link" aria-label="Instagram">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
-                  </svg>
-                </a>
-              </div>
-            </div>
-            <div className="footer-links">
-              <h4>Links</h4>
-              <Link href="/">InÃƒÂ­cio</Link>
-              <Link href="/cardapio">CardÃƒÂ¡pio</Link>
-              <Link href="/checkout">Checkout</Link>
-            </div>
-            <div className="footer-contact">
-              <h4>Contato</h4>
-              <p>{store.email}</p>
-              <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">
-                Ã°Å¸â€œÂ± WhatsApp
+        <div className="container footer-content">
+          <div className="footer-brand">
+            <h3>{store.name}</h3>
+            <p>{heroDescription}</p>
+          </div>
+
+          <div className="footer-links">
+            <h4>Navegação</h4>
+            <Link href="/">Início</Link>
+            <Link href="/cardapio">Cardápio</Link>
+            <Link href="/checkout">Checkout</Link>
+          </div>
+
+          <div className="footer-contact">
+            <h4>Contato</h4>
+            {store.email && <p>{store.email}</p>}
+            <div className="footer-social">
+              <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="social-link" aria-label="WhatsApp">
+                <MessageCircle size={18} />
               </a>
-              <p className="footer-address">
-                Ã°Å¸â€œÂ {store.address || 'Consultar endereÃƒÂ§o'}<br />
-                {store.city} - {store.state}
-              </p>
+              <a href={instagramUrl} target="_blank" rel="noopener noreferrer" className="social-link" aria-label="Instagram">
+                <Instagram size={18} />
+              </a>
             </div>
+            <p className="footer-address">
+              <MapPinned size={16} />
+              <span>{store.address || 'Consulte o endereço pelo WhatsApp'}</span>
+            </p>
           </div>
-          <div className="footer-bottom">
-            <p>Ã‚Â© {new Date().getFullYear()} {store.name}. Todos os direitos reservados.</p>
-            <p className="footer-made">Feito com Ã¢ÂÂ¤Ã¯Â¸Â por Antigravity</p>
-          </div>
+        </div>
+
+        <div className="container footer-bottom">
+          <p>© {new Date().getFullYear()} {store.name}. Todos os direitos reservados.</p>
+          <p className="footer-made">Experiência digital alinhada à marca.</p>
         </div>
       </footer>
     </div>

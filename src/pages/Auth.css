@@ -1,4 +1,4 @@
-/* Auth Pages (Login & Register) */
+﻿/* Auth Pages (Login & Register) */
 
 .auth-page {
   min-height: 100vh;
@@ -86,7 +86,7 @@
 
 .auth-field input:focus {
   border-color: var(--color-marsala);
-  box-shadow: 0 0 0 3px rgba(114, 47, 55, 0.1);
+  box-shadow: 0 0 0 3px rgba(var(--color-brand-green-rgb), 0.12);
 }
 
 .auth-field input::placeholder {
@@ -213,3 +213,4 @@
     grid-column: auto;
   }
 }
+

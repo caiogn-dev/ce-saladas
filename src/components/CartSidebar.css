@@ -1,4 +1,4 @@
-/* ===== Cart Sidebar Styles ===== */
+﻿/* ===== Cart Sidebar Styles ===== */
 
 /* Overlay */
 .cart-overlay {
@@ -230,7 +230,7 @@
 }
 
 .quantity-control button:hover {
-  background-color: rgba(114, 47, 55, 0.08);
+  background-color: rgba(var(--color-brand-green-rgb), 0.08);
 }
 
 .quantity-control button:active {
@@ -304,7 +304,7 @@
 
 .cart-checkout-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(114, 47, 55, 0.25);
+  box-shadow: 0 6px 20px rgba(var(--color-brand-orange-rgb), 0.25);
 }
 
 /* Cart Sections */
@@ -357,7 +357,7 @@
 
 /* Combo Items */
 .cart-section-combos {
-  background: linear-gradient(135deg, rgba(212, 175, 55, 0.05) 0%, rgba(212, 175, 55, 0.02) 100%);
+  background: linear-gradient(135deg, rgba(var(--color-brand-green-rgb), 0.08) 0%, rgba(var(--color-brand-green-rgb), 0.03) 100%);
   border-radius: var(--radius-lg);
   padding: var(--space-md);
   margin-top: var(--space-md);
@@ -365,12 +365,12 @@
 
 .cart-item-combo {
   background-color: rgba(255, 255, 255, 0.8);
-  border: 1px solid rgba(212, 175, 55, 0.2);
+  border: 1px solid rgba(var(--color-brand-green-rgb), 0.2);
 }
 
 .cart-item-combo:hover {
   background-color: rgba(255, 255, 255, 0.95);
-  border-color: rgba(212, 175, 55, 0.4);
+  border-color: rgba(var(--color-brand-green-rgb), 0.4);
 }
 
 .combo-badge {
@@ -426,3 +426,4 @@
     padding: var(--space-sm);
   }
 }
+

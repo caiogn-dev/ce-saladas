@@ -1,7 +1,5 @@
-/**
- * Order Confirmation - Initial step showing cart items and delivery method selection
- */
-import React from 'react';
+﻿import React from 'react';
+import { MapPinned, ShoppingCart, Store } from 'lucide-react';
 import styles from '../../styles/CheckoutModal.module.css';
 
 const OrderConfirmation = ({
@@ -22,7 +20,7 @@ const OrderConfirmation = ({
     <div className={styles.orderConfirmation}>
       <div className={styles.cartSection}>
         <h2 className={styles.sectionTitle}>
-          <span className={styles.sectionIcon}>🛒</span>
+          <span className={styles.sectionIcon}><ShoppingCart size={18} /></span>
           Seu pedido
         </h2>
 
@@ -33,21 +31,17 @@ const OrderConfirmation = ({
                 {item.image ? (
                   <img src={item.image} alt={item.name} />
                 ) : (
-                  <div className={styles.itemPlaceholder}>🥗</div>
+                  <div className={styles.itemPlaceholder}>Item</div>
                 )}
               </div>
               <div className={styles.itemDetails}>
                 <h4>{item.name}</h4>
                 <p className={styles.itemQty}>Quantidade: {item.quantity}</p>
                 {item.selectedOptions && Object.keys(item.selectedOptions).length > 0 && (
-                  <p className={styles.itemOptions}>
-                    {Object.values(item.selectedOptions).join(', ')}
-                  </p>
+                  <p className={styles.itemOptions}>{Object.values(item.selectedOptions).join(', ')}</p>
                 )}
               </div>
-              <div className={styles.itemPrice}>
-                R$ {((item.price || 0) * (item.quantity || 1)).toFixed(2)}
-              </div>
+              <div className={styles.itemPrice}>R$ {((item.price || 0) * (item.quantity || 1)).toFixed(2)}</div>
             </div>
           ))}
         </div>
@@ -60,7 +54,7 @@ const OrderConfirmation = ({
 
       <div className={styles.deliverySection}>
         <h2 className={styles.sectionTitle}>
-          <span className={styles.sectionIcon}>🚚</span>
+          <span className={styles.sectionIcon}><MapPinned size={18} /></span>
           Como deseja receber?
         </h2>
 
@@ -76,20 +70,19 @@ const OrderConfirmation = ({
                 onChange={() => onShippingMethodChange('delivery')}
               />
             </div>
-            <div className={styles.optionIcon}>🏍️</div>
+            <div className={styles.optionIcon}><MapPinned size={24} /></div>
             <div className={styles.optionContent}>
               <h3>Entrega</h3>
-              <p>Receba no conforto da sua casa</p>
+              <p>Receba no conforto da sua casa.</p>
               {shippingMethod === 'delivery' && deliveryInfo && (
                 <div className={styles.deliveryFee}>
-                  Taxa: {deliveryInfo.fee === 0 ? (
-                    <span className={styles.freeDelivery}>Gratis</span>
+                  Taxa:{' '}
+                  {deliveryInfo.fee === 0 ? (
+                    <span className={styles.freeDelivery}>Grátis</span>
                   ) : (
                     <span>R$ {deliveryInfo.fee.toFixed(2)}</span>
                   )}
-                  {deliveryInfo.zone_name && (
-                    <span className={styles.zoneBadge}>{deliveryInfo.zone_name}</span>
-                  )}
+                  {deliveryInfo.zone_name && <span className={styles.zoneBadge}>{deliveryInfo.zone_name}</span>}
                 </div>
               )}
             </div>
@@ -102,6 +95,7 @@ const OrderConfirmation = ({
                       event.stopPropagation();
                       onSelectDeliveryAddress();
                     }}
+                    type="button"
                   >
                     Alterar
                   </button>
@@ -112,8 +106,9 @@ const OrderConfirmation = ({
                       event.stopPropagation();
                       onSelectDeliveryAddress();
                     }}
+                    type="button"
                   >
-                    Selecionar endereco
+                    Selecionar endereço
                   </button>
                 )}
               </div>
@@ -122,16 +117,14 @@ const OrderConfirmation = ({
 
           {shippingMethod === 'delivery' && confirmedAddress && (
             <div className={styles.confirmedAddress}>
-              <div className={styles.addressPin}>📍</div>
+              <div className={styles.addressPin}><MapPinned size={20} /></div>
               <div className={styles.addressText}>
                 <p className={styles.addressStreet}>
                   {confirmedAddress.street}
                   {confirmedAddress.number && `, ${confirmedAddress.number}`}
                 </p>
                 {confirmedAddress.complement && (
-                  <p className={styles.addressComplement}>
-                    Complemento: {confirmedAddress.complement}
-                  </p>
+                  <p className={styles.addressComplement}>Complemento: {confirmedAddress.complement}</p>
                 )}
                 <p className={styles.addressCity}>
                   {confirmedAddress.neighborhood && `${confirmedAddress.neighborhood}, `}
@@ -152,10 +145,10 @@ const OrderConfirmation = ({
                 onChange={() => onShippingMethodChange('pickup')}
               />
             </div>
-            <div className={styles.optionIcon}>🏪</div>
+            <div className={styles.optionIcon}><Store size={24} /></div>
             <div className={styles.optionContent}>
               <h3>Retirar no local</h3>
-              <p>Q. 112 Sul Rua SR 1, conj. 06 lote 04</p>
+              <p>Q. 112 Sul, Rua SR 1, conjunto 06, lote 04.</p>
               <div className={styles.pickupBenefit}>
                 <span className={styles.freeTag}>Sem taxa</span>
               </div>
@@ -173,15 +166,15 @@ const OrderConfirmation = ({
           <span>Entrega</span>
           <span>
             {shippingMethod === 'pickup' ? (
-              <span className={styles.freeText}>Gratis</span>
+              <span className={styles.freeText}>Grátis</span>
             ) : deliveryInfo ? (
               deliveryInfo.fee === 0 ? (
-                <span className={styles.freeText}>Gratis</span>
+                <span className={styles.freeText}>Grátis</span>
               ) : (
                 `R$ ${deliveryInfo.fee.toFixed(2)}`
               )
             ) : (
-              <span className={styles.pendingText}>Selecione o endereco</span>
+              <span className={styles.pendingText}>Selecione o endereço</span>
             )}
           </span>
         </div>
@@ -191,12 +184,8 @@ const OrderConfirmation = ({
         </div>
       </div>
 
-      <button
-        className={styles.proceedButton}
-        onClick={onProceedToPayment}
-        disabled={!canProceed}
-      >
-        {canProceed ? 'Continuar para identificacao' : 'Selecione o endereco de entrega'}
+      <button className={styles.proceedButton} onClick={onProceedToPayment} disabled={!canProceed} type="button">
+        {canProceed ? 'Continuar para identificação' : 'Selecione o endereço de entrega'}
       </button>
     </div>
   );

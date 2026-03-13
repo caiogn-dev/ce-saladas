@@ -1,38 +1,38 @@
-/**
- * Payment method selector component
- */
-import React from 'react';
+﻿import React from 'react';
+import { Banknote, CreditCard, QrCode } from 'lucide-react';
 import styles from '../../styles/Checkout.module.css';
+
+const methods = [
+  {
+    value: 'pix',
+    icon: QrCode,
+    name: 'PIX',
+    description: 'Pagamento instantâneo',
+  },
+  {
+    value: 'card',
+    icon: CreditCard,
+    name: 'Cartão',
+    description: 'Crédito ou débito',
+  },
+  {
+    value: 'cash',
+    icon: Banknote,
+    name: 'Dinheiro',
+    description: 'Pagamento na entrega ou retirada',
+  },
+];
 
 const PaymentMethodSelector = ({
   paymentMethod,
   onChange,
-  disabled = false
-}) => {
-  const methods = [
-    {
-      value: 'pix',
-      icon: '💠',
-      name: 'PIX',
-      description: 'Pagamento instantâneo'
-    },
-    {
-      value: 'card',
-      icon: '💳',
-      name: 'Cartão',
-      description: 'Crédito ou débito'
-    },
-    {
-      value: 'cash',
-      icon: '💵',
-      name: 'Dinheiro',
-      description: 'Pague na entrega/retirada'
-    }
-  ];
+  disabled = false,
+}) => (
+  <div className={styles.paymentMethodSelector}>
+    {methods.map((method) => {
+      const Icon = method.icon;
 
-  return (
-    <div className={styles.paymentMethodSelector}>
-      {methods.map((method) => (
+      return (
         <label key={method.value} className={styles.paymentOption}>
           <input
             type="radio"
@@ -44,17 +44,15 @@ const PaymentMethodSelector = ({
           />
           <div className={styles.paymentContent}>
             <div className={styles.paymentHeader}>
-              <span className={styles.paymentIcon}>{method.icon}</span>
+              <span className={styles.paymentIcon} aria-hidden="true"><Icon size={18} /></span>
               <span className={styles.paymentName}>{method.name}</span>
             </div>
-            <div className={styles.paymentDescription}>
-              {method.description}
-            </div>
+            <div className={styles.paymentDescription}>{method.description}</div>
           </div>
         </label>
-      ))}
-    </div>
-  );
-};
+      );
+    })}
+  </div>
+);
 
 export default PaymentMethodSelector;

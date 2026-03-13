@@ -1,4 +1,4 @@
-/* Checkout Modal and Flow Styles - Premium Design */
+﻿/* Checkout Modal and Flow Styles - Premium Design */
 
 /* ============================================
    Modal Overlay
@@ -114,7 +114,7 @@
   transform: translate(-50%, -50%);
   width: 90px;
   height: 90px;
-  border: 3px solid rgba(114, 47, 55, 0.4);
+  border: 3px solid rgba(var(--color-brand-green-rgb), 0.34);
   border-radius: 50%;
   animation: pulseRing 2s ease-out infinite;
 }
@@ -127,7 +127,7 @@
   transform: translate(-50%, -50%);
   width: 100%;
   height: 100%;
-  border: 3px solid rgba(114, 47, 55, 0.2);
+  border: 3px solid rgba(var(--color-brand-green-rgb), 0.16);
   border-radius: 50%;
   animation: pulseRing 2s ease-out infinite 0.5s;
 }
@@ -195,19 +195,19 @@
 
 .retryBtn {
   padding: 0.875rem 1.5rem;
-  background: linear-gradient(135deg, #2D6A4F 0%, #8B3A44 100%);
+  background: linear-gradient(135deg, var(--color-brand-orange) 0%, var(--color-brand-orange-dark) 100%);
   color: white;
   border: none;
   border-radius: 12px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 12px rgba(114, 47, 55, 0.25);
+  box-shadow: 0 4px 12px rgba(var(--color-brand-orange-rgb), 0.25);
 }
 
 .retryBtn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(114, 47, 55, 0.35);
+  box-shadow: 0 6px 16px rgba(var(--color-brand-orange-rgb), 0.35);
 }
 
 .skipBtn {
@@ -238,7 +238,7 @@
 }
 
 .skipLink:hover {
-  color: #2D6A4F;
+  color: var(--color-marsala);
 }
 
 /* ============================================
@@ -306,7 +306,7 @@
   width: 44px;
   height: 44px;
   border: 3px solid #f0f0f0;
-  border-top-color: #2D6A4F;
+  border-top-color: var(--color-brand-green);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -331,12 +331,12 @@
 }
 
 .deliveryInfoCard {
-  background: linear-gradient(135deg, #2D6A4F 0%, #8B3A44 100%);
+  background: linear-gradient(135deg, var(--color-brand-green-dark) 0%, var(--color-brand-green) 100%);
   border-radius: 16px;
   padding: 1.5rem;
   margin: 1.25rem 0;
   color: white;
-  box-shadow: 0 4px 20px rgba(114, 47, 55, 0.3);
+  box-shadow: 0 4px 20px rgba(var(--color-brand-orange-rgb), 0.3);
 }
 
 .routeStats {
@@ -431,7 +431,7 @@
 
 .confirmBtn {
   padding: 1.125rem;
-  background: linear-gradient(135deg, #2D6A4F 0%, #8B3A44 100%);
+  background: linear-gradient(135deg, var(--color-brand-orange) 0%, var(--color-brand-orange-dark) 100%);
   color: white;
   border: none;
   border-radius: 14px;
@@ -439,12 +439,12 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 16px rgba(114, 47, 55, 0.3);
+  box-shadow: 0 4px 16px rgba(var(--color-brand-orange-rgb), 0.3);
 }
 
 .confirmBtn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(114, 47, 55, 0.4);
+  box-shadow: 0 6px 20px rgba(var(--color-brand-orange-rgb), 0.4);
 }
 
 .confirmBtn:active {
@@ -572,7 +572,7 @@
 
 .itemPrice {
   font-weight: 700;
-  color: #2D6A4F;
+  color: var(--color-brand-orange);
   white-space: nowrap;
   font-size: 1rem;
 }
@@ -612,14 +612,14 @@
 }
 
 .deliveryOption:hover {
-  border-color: #c9a0a5;
-  background: #fdfbfa;
+  border-color: rgba(var(--color-brand-green-rgb), 0.46);
+  background: #f7fbef;
 }
 
 .deliveryOption.selected {
-  border-color: #2D6A4F;
-  background: linear-gradient(135deg, #fdf8f6 0%, #faf5f2 100%);
-  box-shadow: 0 4px 16px rgba(114, 47, 55, 0.12);
+  border-color: var(--color-brand-green);
+  background: linear-gradient(135deg, #fbfdf4 0%, #f4f9e5 100%);
+  box-shadow: 0 4px 16px rgba(var(--color-brand-green-rgb), 0.12);
 }
 
 .optionRadio {
@@ -629,7 +629,7 @@
 .optionRadio input {
   width: 20px;
   height: 20px;
-  accent-color: #2D6A4F;
+  accent-color: var(--color-brand-green);
   cursor: pointer;
 }
 
@@ -659,7 +659,7 @@
 .deliveryFee {
   margin-top: 0.625rem;
   font-size: 0.9rem;
-  color: #2D6A4F;
+  color: var(--color-brand-orange);
   font-weight: 600;
   display: flex;
   align-items: center;
@@ -675,7 +675,7 @@
 .zoneBadge {
   display: inline-block;
   padding: 0.25rem 0.625rem;
-  background: linear-gradient(135deg, #2D6A4F 0%, #8B3A44 100%);
+  background: linear-gradient(135deg, var(--color-brand-green-dark) 0%, var(--color-brand-green) 100%);
   color: white;
   border-radius: 6px;
   font-size: 0.7rem;
@@ -705,7 +705,7 @@
 
 .selectAddressBtn {
   padding: 0.625rem 1.125rem;
-  background: linear-gradient(135deg, #2D6A4F 0%, #8B3A44 100%);
+  background: linear-gradient(135deg, var(--color-brand-orange) 0%, var(--color-brand-orange-dark) 100%);
   color: white;
   border: none;
   border-radius: 10px;
@@ -714,19 +714,19 @@
   cursor: pointer;
   white-space: nowrap;
   transition: all 0.2s ease;
-  box-shadow: 0 2px 8px rgba(114, 47, 55, 0.25);
+  box-shadow: 0 2px 8px rgba(var(--color-brand-orange-rgb), 0.25);
 }
 
 .selectAddressBtn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(114, 47, 55, 0.35);
+  box-shadow: 0 4px 12px rgba(var(--color-brand-orange-rgb), 0.35);
 }
 
 .changeAddressBtn {
   padding: 0.5rem 1rem;
   background: white;
-  color: #2D6A4F;
-  border: 1.5px solid #2D6A4F;
+  color: var(--color-marsala);
+  border: 1.5px solid rgba(var(--color-brand-green-rgb), 0.36);
   border-radius: 8px;
   font-size: 0.85rem;
   font-weight: 500;
@@ -735,7 +735,7 @@
 }
 
 .changeAddressBtn:hover {
-  background: #fdf6f0;
+  background: #f7fbef;
 }
 
 /* Confirmed Address */
@@ -775,7 +775,7 @@
 
 .addressComplement {
   font-size: 0.85rem;
-  color: #2D6A4F;
+  color: var(--color-brand-orange);
   margin: 0 0 0.25rem 0;
   font-weight: 500;
 }
@@ -806,12 +806,12 @@
 }
 
 .totalRow.grandTotal {
-  border-top: 2px solid #2D6A4F;
+  border-top: 2px solid var(--color-brand-green);
   margin-top: 0.625rem;
   padding-top: 0.875rem;
   font-size: 1.2rem;
   font-weight: 700;
-  color: #2D6A4F;
+  color: var(--color-brand-orange);
 }
 
 .freeText {
@@ -828,7 +828,7 @@
 .proceedButton {
   width: 100%;
   padding: 1.125rem;
-  background: linear-gradient(135deg, #2D6A4F 0%, #8B3A44 100%);
+  background: linear-gradient(135deg, var(--color-brand-orange) 0%, var(--color-brand-orange-dark) 100%);
   color: white;
   border: none;
   border-radius: 14px;
@@ -836,12 +836,12 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 16px rgba(114, 47, 55, 0.3);
+  box-shadow: 0 4px 16px rgba(var(--color-brand-orange-rgb), 0.3);
 }
 
 .proceedButton:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(114, 47, 55, 0.4);
+  box-shadow: 0 6px 20px rgba(var(--color-brand-orange-rgb), 0.4);
 }
 
 .proceedButton:active:not(:disabled) {
@@ -864,7 +864,7 @@
 .backButton {
   background: none;
   border: none;
-  color: #2D6A4F;
+  color: var(--color-marsala);
   font-size: 0.95rem;
   cursor: pointer;
   padding: 0;
@@ -921,11 +921,11 @@
 }
 
 .summaryRow.totalRow {
-  border-top: 2px solid #2D6A4F;
+  border-top: 2px solid var(--color-brand-green);
   margin-top: 0.5rem;
   padding-top: 0.75rem;
   font-weight: 700;
-  color: #2D6A4F;
+  color: var(--color-brand-orange);
 }
 
 .errorMessage {
@@ -940,7 +940,7 @@
 .submitButton {
   width: 100%;
   padding: 1rem;
-  background: #2D6A4F;
+  background: var(--color-brand-orange);
   color: white;
   border: none;
   border-radius: 10px;
@@ -951,7 +951,7 @@
 }
 
 .submitButton:hover:not(:disabled) {
-  background: #5a252c;
+  background: var(--color-brand-orange-dark);
 }
 
 .submitButton:disabled {
@@ -1027,12 +1027,12 @@
   justify-content: center;
   gap: 0.5rem;
   padding: 0.75rem 1rem;
-  background: linear-gradient(135deg, #fff7ed 0%, #fef3c7 100%);
-  border: 1px solid #fcd34d;
+  background: linear-gradient(135deg, #f7fbef 0%, #edf5d8 100%);
+  border: 1px solid rgba(var(--color-brand-green-rgb), 0.28);
   border-radius: 12px;
   margin-bottom: 1rem;
   font-size: 0.9rem;
-  color: #92400e;
+  color: var(--color-brand-green-dark);
   animation: pulseHint 2s ease-in-out infinite;
 }
 
@@ -1069,7 +1069,7 @@
 .editLocationBtn {
   background: none;
   border: none;
-  color: #2D6A4F;
+  color: var(--color-marsala);
   font-size: 0.85rem;
   font-weight: 500;
   cursor: pointer;
@@ -1079,7 +1079,7 @@
 }
 
 .editLocationBtn:hover {
-  background: rgba(114, 47, 55, 0.08);
+  background: rgba(var(--color-brand-orange-rgb), 0.08);
 }
 
 /* Clickable Map Container */
@@ -1094,7 +1094,7 @@
 
 .mapContainerClickable:hover {
   transform: scale(1.01);
-  box-shadow: 0 4px 20px rgba(114, 47, 55, 0.15);
+  box-shadow: 0 4px 20px rgba(var(--color-brand-green-rgb), 0.15);
 }
 
 .mapContainerClickable:hover .mapEditOverlay {
@@ -1116,7 +1116,7 @@
 
 .mapEditOverlay span {
   background: rgba(255, 255, 255, 0.95);
-  color: #2D6A4F;
+  color: var(--color-marsala);
   font-size: 0.75rem;
   font-weight: 600;
   padding: 0.35rem 0.75rem;
@@ -1213,8 +1213,8 @@
 
 .complementInput:focus {
   outline: none;
-  border-color: #2D6A4F;
-  box-shadow: 0 0 0 3px rgba(114, 47, 55, 0.1);
+  border-color: var(--color-brand-green);
+  box-shadow: 0 0 0 3px rgba(var(--color-brand-green-rgb), 0.12);
 }
 
 .complementInput::placeholder {
@@ -1248,9 +1248,9 @@
   gap: 0.75rem;
   padding: 0.875rem 1rem;
   margin: 0 1rem 1rem;
-  background: linear-gradient(135deg, #f8f4f0 0%, #f5efe8 100%);
+  background: linear-gradient(135deg, #fbfdf4 0%, #f4f9e5 100%);
   border-radius: 12px;
-  border: 1px solid rgba(114, 47, 55, 0.1);
+  border: 1px solid rgba(var(--color-brand-green-rgb), 0.12);
 }
 
 .statCompact {
@@ -1271,7 +1271,7 @@
 }
 
 .statFee {
-  color: #2D6A4F;
+  color: var(--color-marsala);
   font-weight: 600;
 }
 
@@ -1289,7 +1289,7 @@
   width: calc(100% - 2rem);
   margin: 0 1rem 1.25rem;
   padding: 1rem;
-  background: linear-gradient(135deg, #2D6A4F 0%, #8B3A44 100%);
+  background: linear-gradient(135deg, var(--color-brand-orange) 0%, var(--color-brand-orange-dark) 100%);
   color: white;
   border: none;
   border-radius: 14px;
@@ -1297,12 +1297,12 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 16px rgba(114, 47, 55, 0.3);
+  box-shadow: 0 4px 16px rgba(var(--color-brand-orange-rgb), 0.3);
 }
 
 .confirmBtnFull:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 6px 24px rgba(114, 47, 55, 0.4);
+  box-shadow: 0 6px 24px rgba(var(--color-brand-orange-rgb), 0.4);
 }
 
 .confirmBtnFull:active:not(:disabled) {
@@ -1364,3 +1364,4 @@
     font-size: 0.9rem;
   }
 }
+

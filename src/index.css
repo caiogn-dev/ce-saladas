@@ -1,4 +1,4 @@
-/* src/index.css - Global Styles */
+﻿/* src/index.css - Global Styles */
 
 /* Tailwind CSS */
 @tailwind base;
@@ -7,31 +7,44 @@
 
 /* ===== CSS Variables ===== */
 :root {
-  /* Brand Colors */
-  --color-marsala: #2D6A4F;
-  --color-marsala-dark: #4a1e23;
-  --color-marsala-light: #8a3d46;
-  --color-gold: #40916C;
-  --color-gold-light: #e5c04a;
+  /* Brand Colors - Cê Saladas */
+  --color-brand-orange: #f26a38;
+  --color-brand-orange-rgb: 242, 106, 56;
+  --color-brand-orange-dark: #d85829;
+  --color-brand-orange-light: #f6a17d;
+  --color-brand-green: #9ebf26;
+  --color-brand-green-rgb: 158, 191, 38;
+  --color-brand-green-dark: #4a5912;
+  --color-brand-green-light: #ebf2d4;
+  --color-brand-cream: #fef6e1;
+  --color-brand-cream-soft: #fffaf0;
+  --color-brand-graphite: #2d2d2d;
+
+  /* Semantic aliases used by existing UI */
+  --color-marsala: var(--color-brand-green-dark);
+  --color-marsala-dark: #39440d;
+  --color-marsala-light: #93b31f;
+  --color-gold: var(--color-brand-orange);
+  --color-gold-light: var(--color-brand-orange-light);
   
   /* Neutral Colors */
-  --color-cream: #FDFBF7;
-  --color-white: #FFFFFF;
-  --color-gray-50: #f9fafb;
-  --color-gray-100: #f3f4f6;
-  --color-gray-200: #e5e7eb;
-  --color-gray-300: #d1d5db;
-  --color-gray-400: #9ca3af;
-  --color-gray-500: #6b7280;
-  --color-gray-600: #4b5563;
-  --color-gray-700: #374151;
-  --color-gray-800: #1f2937;
-  --color-gray-900: #111827;
+  --color-cream: var(--color-brand-cream);
+  --color-white: #fffdf7;
+  --color-gray-50: #fffdf7;
+  --color-gray-100: #f7f3e7;
+  --color-gray-200: #e8e3d2;
+  --color-gray-300: #d8d1bf;
+  --color-gray-400: #b5ad98;
+  --color-gray-500: #857e70;
+  --color-gray-600: #635d53;
+  --color-gray-700: #47423b;
+  --color-gray-800: #35322d;
+  --color-gray-900: #2d2d2d;
   
   /* Semantic Colors */
-  --color-text: #2D2D2D;
-  --color-text-light: #666666;
-  --color-success: #10b981;
+  --color-text: var(--color-brand-graphite);
+  --color-text-light: #5e5a50;
+  --color-success: #4f8d1f;
   --color-error: #ef4444;
   --color-warning: #f59e0b;
   
@@ -56,10 +69,10 @@
   --radius-full: 9999px;
   
   /* Shadows */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
-  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
-  --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.15);
+  --shadow-sm: 0 10px 24px rgba(74, 89, 18, 0.05);
+  --shadow-md: 0 16px 36px rgba(74, 89, 18, 0.08);
+  --shadow-lg: 0 24px 52px rgba(74, 89, 18, 0.1);
+  --shadow-xl: 0 32px 68px rgba(74, 89, 18, 0.14);
   
   /* Transitions */
   --transition-fast: 150ms ease;
@@ -67,8 +80,8 @@
   --transition-slow: 300ms ease;
   
   /* Typography */
-  --font-sans: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  --font-serif: 'Georgia', serif;
+  --font-sans: 'Sora', 'Trebuchet MS', 'Segoe UI', sans-serif;
+  --font-serif: 'Fraunces', 'Georgia', serif;
 }
 
 /* ===== Reset & Base ===== */
@@ -85,7 +98,10 @@ html {
 body {
   margin: 0;
   padding: 0;
-  background-color: var(--color-cream);
+  background:
+    radial-gradient(circle at top right, rgba(var(--color-brand-green-rgb), 0.12), transparent 26%),
+    radial-gradient(circle at top left, rgba(var(--color-brand-green-rgb), 0.08), transparent 32%),
+    linear-gradient(180deg, #fffdf7 0%, var(--color-brand-cream) 56%, #fffbf2 100%);
   color: var(--color-text);
   font-family: var(--font-sans);
   font-size: 16px;
@@ -114,6 +130,7 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 700;
   margin: 0;
   line-height: 1.2;
+  font-family: var(--font-sans);
 }
 
 h1 { font-size: clamp(2rem, 5vw, 3.5rem); }
@@ -133,7 +150,7 @@ p {
   align-items: center;
   justify-content: center;
   gap: var(--space-sm);
-  background-color: var(--color-marsala);
+  background-color: var(--color-brand-orange);
   color: var(--color-white);
   padding: 12px 32px;
   border-radius: var(--radius-full);
@@ -148,9 +165,9 @@ p {
 }
 
 .btn-primary:hover {
-  background-color: var(--color-marsala-dark);
+  background-color: var(--color-brand-orange-dark);
   transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(114, 47, 55, 0.3);
+  box-shadow: 0 12px 28px rgba(var(--color-brand-orange-rgb), 0.28);
 }
 
 .btn-primary:active {
@@ -181,8 +198,9 @@ p {
 }
 
 .btn-secondary:hover {
-  background-color: var(--color-marsala);
-  color: var(--color-white);
+  background:
+    linear-gradient(135deg, rgba(var(--color-brand-green-rgb), 0.12), rgba(var(--color-brand-green-rgb), 0.18));
+  color: var(--color-marsala);
 }
 
 .btn-secondary:active {
@@ -251,8 +269,8 @@ input:focus, textarea:focus, select:focus {
 
 /* ===== Selection ===== */
 ::selection {
-  background-color: var(--color-marsala);
-  color: var(--color-white);
+  background-color: rgba(var(--color-brand-green-rgb), 0.24);
+  color: var(--color-brand-green-dark);
 }
 
 /* ===== Grid System ===== */
@@ -470,3 +488,33 @@ input:focus, textarea:focus, select:focus {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-cream: #1e2117;
+    --color-white: #24281d;
+    --color-gray-50: #24281d;
+    --color-gray-100: #2d3224;
+    --color-gray-200: #3b4130;
+    --color-gray-300: #555c48;
+    --color-gray-400: #7b8468;
+    --color-gray-500: #a2aa93;
+    --color-gray-600: #c0c8b0;
+    --color-gray-700: #d8dfcd;
+    --color-gray-800: #eef2e6;
+    --color-gray-900: #fffdf7;
+    --color-text: #eef2e6;
+    --color-text-light: #c5ccb8;
+    --shadow-sm: 0 10px 24px rgba(0, 0, 0, 0.22);
+    --shadow-md: 0 18px 38px rgba(0, 0, 0, 0.28);
+    --shadow-lg: 0 28px 56px rgba(0, 0, 0, 0.34);
+    --shadow-xl: 0 36px 72px rgba(0, 0, 0, 0.4);
+  }
+
+  body {
+    background:
+      radial-gradient(circle at top right, rgba(var(--color-brand-green-rgb), 0.14), transparent 24%),
+      linear-gradient(180deg, #171914 0%, #1d2018 52%, #20231b 100%);
+  }
+}
+

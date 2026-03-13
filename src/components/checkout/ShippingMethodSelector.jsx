@@ -1,7 +1,5 @@
-/**
- * Shipping method selector component
- */
-import React from 'react';
+﻿import React from 'react';
+import { MapPinned, ShoppingBag, Store } from 'lucide-react';
 import styles from '../../styles/Checkout.module.css';
 
 const ShippingMethodSelector = ({
@@ -9,7 +7,7 @@ const ShippingMethodSelector = ({
   onChange,
   deliveryInfo,
   loadingDelivery,
-  disabled = false
+  disabled = false,
 }) => {
   const formatFee = (fee) => {
     if (fee === null || fee === undefined) return 'Calculando...';
@@ -30,7 +28,7 @@ const ShippingMethodSelector = ({
         />
         <div className={styles.methodContent}>
           <div className={styles.methodHeader}>
-            <span className={styles.methodIcon}>🚚</span>
+            <span className={styles.methodIcon} aria-hidden="true"><ShoppingBag size={18} /></span>
             <span className={styles.methodName}>Entrega</span>
           </div>
           <div className={styles.methodDetails}>
@@ -39,15 +37,13 @@ const ShippingMethodSelector = ({
             ) : deliveryInfo ? (
               <>
                 <span className={styles.methodPrice}>{formatFee(deliveryInfo.fee)}</span>
-                {deliveryInfo.zone_name && (
-                  <span className={styles.methodZone}> - {deliveryInfo.zone_name}</span>
-                )}
+                {deliveryInfo.zone_name && <span className={styles.methodZone}> - {deliveryInfo.zone_name}</span>}
                 {deliveryInfo.estimated_days > 0 && (
                   <span className={styles.methodDays}> ({deliveryInfo.estimated_days} dias)</span>
                 )}
               </>
             ) : (
-              <span className={styles.methodHint}>Informe o endereço para calcular</span>
+              <span className={styles.methodHint}>Informe o endereço para calcular.</span>
             )}
           </div>
         </div>
@@ -64,12 +60,12 @@ const ShippingMethodSelector = ({
         />
         <div className={styles.methodContent}>
           <div className={styles.methodHeader}>
-            <span className={styles.methodIcon}>🏪</span>
+            <span className={styles.methodIcon} aria-hidden="true"><Store size={18} /></span>
             <span className={styles.methodName}>Retirada</span>
           </div>
           <div className={styles.methodDetails}>
             <span className={styles.methodPrice}>Sem frete</span>
-            <span className={styles.methodHint}> na loja (112 Sul)</span>
+            <span className={styles.methodHint}> na loja</span>
           </div>
         </div>
       </label>

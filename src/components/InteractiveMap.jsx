@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import {
@@ -167,7 +167,7 @@ export default function InteractiveMap({
         center = storeCoords;
         zoom = 14;
       } else {
-        // Fallback to Palmas, TO (Cê Saladas location)
+        // Fallback to Palmas, TO (CÃª Saladas location)
         center = { lat: -10.1854332, lng: -48.3038653 };
         zoom = 13;
       }
@@ -393,7 +393,7 @@ export default function InteractiveMap({
         map.addObject(polyline);
         routeLineRef.current = polyline;
         pendingPolylineRef.current = null; // Clear pending
-        logger.info('InteractiveMap: ✅ Route polyline added to map successfully');
+        logger.info('InteractiveMap: âœ… Route polyline added to map successfully');
         
         // Fit bounds to show the entire route with padding
         try {
@@ -581,7 +581,7 @@ export default function InteractiveMap({
 
     } catch (err) {
       logger.error('Error selecting location', err);
-      setError('Erro ao obter endereço');
+      setError('Erro ao obter endereÃ§o');
       
       const location = { latitude, longitude };
       setSelectedLocation(location);
@@ -631,7 +631,7 @@ export default function InteractiveMap({
       const position = await getCurrentLocation();
       await selectLocation(position.latitude, position.longitude);
     } catch (err) {
-      setError(err.message || 'Erro ao obter localização');
+      setError(err.message || 'Erro ao obter localizaÃ§Ã£o');
     } finally {
       setIsLoading(false);
     }
@@ -664,7 +664,7 @@ export default function InteractiveMap({
             const state = (cepData.state || '').toLowerCase();
             if (!city.includes('palmas') || (state !== 'to' && state !== 'tocantins')) {
               setSuggestions([{
-                display_name: `CEP ${cleanQuery} não é de Palmas - TO. Só entregamos em Palmas.`,
+                display_name: `CEP ${cleanQuery} nÃ£o Ã© de Palmas - TO. SÃ³ entregamos em Palmas.`,
                 error: true,
                 notDeliverable: true
               }]);
@@ -771,12 +771,12 @@ export default function InteractiveMap({
     try {
       const result = await geocodeBrazilianAddress(cep);
       if (result && result.error) {
-        setError(result.message || 'Só entregamos em Palmas - TO');
+        setError(result.message || 'SÃ³ entregamos em Palmas - TO');
       } else if (result && result.latitude) {
         await selectLocation(result.latitude, result.longitude);
         setSearchQuery(result.display_name || '');
       } else {
-        setError('CEP não encontrado');
+        setError('CEP nÃ£o encontrado');
       }
     } catch {
       setError('Erro ao buscar CEP');
@@ -830,10 +830,10 @@ export default function InteractiveMap({
           };
           handleSuggestionSelect(result);
         } else {
-          setError('Endereço não encontrado');
+          setError('EndereÃ§o nÃ£o encontrado');
         }
       } catch (err) {
-        setError('Erro ao buscar endereço');
+        setError('Erro ao buscar endereÃ§o');
       } finally {
         setIsLoading(false);
       }
@@ -908,7 +908,7 @@ export default function InteractiveMap({
               onClick={handleGetCurrentLocation}
               className="geolocation-button"
               disabled={isLoading}
-              title="Usar minha localização"
+              title="Usar minha localizaÃ§Ã£o"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="12" r="10"></circle>
@@ -948,7 +948,7 @@ export default function InteractiveMap({
       {error && (
         <div className="map-error">
           <span>{error}</span>
-          <button onClick={() => setError(null)}>×</button>
+          <button onClick={() => setError(null)}>Ã—</button>
         </div>
       )}
 
@@ -1223,3 +1223,4 @@ export default function InteractiveMap({
     </div>
   );
 }
+

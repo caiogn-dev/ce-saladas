@@ -1,4 +1,4 @@
-/* Button Component Styles */
+﻿/* Button Component Styles */
 
 .ui-btn {
   display: inline-flex;
@@ -19,7 +19,7 @@
 }
 
 .ui-btn:focus-visible {
-  outline: 2px solid var(--color-marsala);
+  outline: 2px solid var(--color-brand-green);
   outline-offset: 2px;
 }
 
@@ -52,14 +52,14 @@
 
 /* Variants */
 .ui-btn--primary {
-  background-color: var(--color-marsala);
+  background-color: var(--color-brand-orange);
   color: var(--color-white);
 }
 
 .ui-btn--primary:hover:not(:disabled) {
-  background-color: var(--color-marsala-dark);
+  background-color: var(--color-brand-orange-dark);
   transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(114, 47, 55, 0.3);
+  box-shadow: 0 4px 15px rgba(var(--color-brand-orange-rgb), 0.3);
 }
 
 .ui-btn--primary:active:not(:disabled) {
@@ -67,20 +67,21 @@
 }
 
 .ui-btn--secondary {
-  background-color: var(--color-gold);
-  color: var(--color-gray-900);
+  background-color: transparent;
+  color: var(--color-marsala);
+  border: 2px solid rgba(var(--color-brand-green-rgb), 0.42);
 }
 
 .ui-btn--secondary:hover:not(:disabled) {
-  background-color: var(--color-gold-light);
+  background-color: rgba(var(--color-brand-green-rgb), 0.1);
   transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+  box-shadow: 0 4px 15px rgba(var(--color-brand-green-rgb), 0.16);
 }
 
 .ui-btn--outline {
   background-color: transparent;
   color: var(--color-marsala);
-  border: 2px solid var(--color-marsala);
+  border: 2px solid rgba(var(--color-brand-green-rgb), 0.42);
   padding-top: 10px;
   padding-bottom: 10px;
 }
@@ -96,8 +97,8 @@
 }
 
 .ui-btn--outline:hover:not(:disabled) {
-  background-color: var(--color-marsala);
-  color: var(--color-white);
+  background-color: rgba(var(--color-brand-green-rgb), 0.12);
+  color: var(--color-marsala);
 }
 
 .ui-btn--ghost {
@@ -106,7 +107,7 @@
 }
 
 .ui-btn--ghost:hover:not(:disabled) {
-  background-color: rgba(114, 47, 55, 0.1);
+  background-color: rgba(var(--color-brand-green-rgb), 0.1);
 }
 
 .ui-btn--danger {
@@ -173,3 +174,4 @@
 .ui-btn__icon--right {
   margin-left: var(--space-xs);
 }
+

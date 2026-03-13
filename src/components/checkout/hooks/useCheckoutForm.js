@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Hook for checkout form state management
  */
 import { useState, useCallback, useEffect, useRef } from 'react';
@@ -167,11 +167,11 @@ export const useCheckoutForm = () => {
   const getIdentificationErrors = useCallback(() => {
     const nextErrors = {};
 
-    if (!formData.email.trim()) nextErrors.email = 'E-mail e obrigatorio';
-    else if (!isValidEmail(formData.email)) nextErrors.email = 'E-mail invalido';
+    if (!formData.email.trim()) nextErrors.email = 'E-mail é obrigatório';
+    else if (!isValidEmail(formData.email)) nextErrors.email = 'E-mail inválido';
 
-    if (!formData.phone.trim()) nextErrors.phone = 'Celular e obrigatorio';
-    else if (!isValidPhone(formData.phone)) nextErrors.phone = 'Celular invalido';
+    if (!formData.phone.trim()) nextErrors.phone = 'Celular é obrigatório';
+    else if (!isValidPhone(formData.phone)) nextErrors.phone = 'Celular inválido';
 
     return nextErrors;
   }, [formData.email, formData.phone]);
@@ -184,7 +184,7 @@ export const useCheckoutForm = () => {
       email: identificationErrors.email || '',
       phone: identificationErrors.phone || '',
       identification: Object.keys(identificationErrors).length > 0
-        ? 'Informe um e-mail valido e um celular valido para continuar'
+        ? 'Informe um e-mail válido e um celular válido para continuar'
         : '',
     }));
 
@@ -272,24 +272,24 @@ export const useCheckoutForm = () => {
     const newErrors = getIdentificationErrors();
 
     if (!isIdentificationComplete) {
-      newErrors.identification = 'Confirme seu e-mail e celular antes de continuar';
+      newErrors.identification = 'Confirme seu e-mail e celular antes de continuar.';
     }
 
-    if (!formData.name.trim()) newErrors.name = 'Nome e obrigatorio';
+    if (!formData.name.trim()) newErrors.name = 'Nome é obrigatório';
 
     const normalizedCpf = onlyDigits(formData.cpf);
     if (normalizedCpf && !validateCPF(formData.cpf)) {
-      newErrors.cpf = 'CPF invalido';
+      newErrors.cpf = 'CPF inválido';
     }
 
     if (shippingMethod === 'delivery') {
-      if (!formData.address.trim()) newErrors.address = 'Endereco e obrigatorio';
-      if (!formData.number.trim()) newErrors.number = 'Numero e obrigatorio';
-      if (!formData.neighborhood.trim()) newErrors.neighborhood = 'Bairro e obrigatorio';
-      if (!formData.city.trim()) newErrors.city = 'Cidade e obrigatoria';
-      if (!formData.state) newErrors.state = 'Estado e obrigatorio';
-      if (!formData.zip_code.trim()) newErrors.zip_code = 'CEP e obrigatorio';
-      else if (onlyDigits(formData.zip_code).length !== 8) newErrors.zip_code = 'CEP invalido';
+      if (!formData.address.trim()) newErrors.address = 'Endereço é obrigatório';
+      if (!formData.number.trim()) newErrors.number = 'Número é obrigatório';
+      if (!formData.neighborhood.trim()) newErrors.neighborhood = 'Bairro é obrigatório';
+      if (!formData.city.trim()) newErrors.city = 'Cidade é obrigatória';
+      if (!formData.state) newErrors.state = 'Estado é obrigatório';
+      if (!formData.zip_code.trim()) newErrors.zip_code = 'CEP é obrigatório';
+      else if (onlyDigits(formData.zip_code).length !== 8) newErrors.zip_code = 'CEP inválido';
     }
 
     setErrors(newErrors);
@@ -382,3 +382,4 @@ export const useCheckoutForm = () => {
 };
 
 export default useCheckoutForm;
+

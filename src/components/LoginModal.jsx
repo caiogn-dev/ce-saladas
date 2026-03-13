@@ -10,8 +10,8 @@ const LoginModal = ({ isOpen, onClose, onSuccess }) => {
 
   if (!isOpen) return null;
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
     setLoading(true);
     setError('');
 
@@ -23,11 +23,12 @@ const LoginModal = ({ isOpen, onClose, onSuccess }) => {
     } else {
       setError(result.error || 'Usuário ou senha inválidos');
     }
+
     setLoading(false);
   };
 
-  const handleOverlayClick = (e) => {
-    if (e.target === e.currentTarget) {
+  const handleOverlayClick = (event) => {
+    if (event.target === event.currentTarget) {
       onClose();
     }
   };
@@ -35,11 +36,13 @@ const LoginModal = ({ isOpen, onClose, onSuccess }) => {
   return (
     <div className="login-modal-overlay" onClick={handleOverlayClick}>
       <div className="login-modal">
-        <button className="login-modal-close" onClick={onClose}>x</button>
+        <button className="login-modal-close" onClick={onClose} aria-label="Fechar">
+          ×
+        </button>
 
         <div className="login-modal-header">
           <h2>Faça login</h2>
-          <p>Entre para adicionar produtos ao carrinho</p>
+          <p>Entre para salvar favoritos e acompanhar seus pedidos.</p>
         </div>
 
         {error && <div className="login-modal-error">{error}</div>}
@@ -50,7 +53,7 @@ const LoginModal = ({ isOpen, onClose, onSuccess }) => {
             <input
               type="text"
               value={formData.username}
-              onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+              onChange={(event) => setFormData({ ...formData, username: event.target.value })}
               placeholder="Seu e-mail ou celular"
               required
               autoFocus
@@ -62,7 +65,7 @@ const LoginModal = ({ isOpen, onClose, onSuccess }) => {
             <input
               type="password"
               value={formData.password}
-              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+              onChange={(event) => setFormData({ ...formData, password: event.target.value })}
               placeholder="Sua senha"
               required
             />
@@ -73,7 +76,7 @@ const LoginModal = ({ isOpen, onClose, onSuccess }) => {
             className="btn-primary login-modal-submit"
             disabled={loading}
           >
-            {loading ? 'Entrando...' : 'ENTRAR'}
+            {loading ? 'Entrando...' : 'Entrar'}
           </button>
         </form>
 

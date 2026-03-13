@@ -1,7 +1,4 @@
-/**
- * Customer information form component
- */
-import React from 'react';
+﻿import React from 'react';
 import styles from '../../styles/Checkout.module.css';
 
 const CustomerForm = ({
@@ -17,9 +14,9 @@ const CustomerForm = ({
   <div className={styles.customerForm}>
     <div className={styles.identificationCard}>
       <div className={styles.formSectionHeader}>
-        <span className={styles.formSectionEyebrow}>Identificacao</span>
+        <span className={styles.formSectionEyebrow}>Identificação</span>
         <p className={styles.formSectionDescription}>
-          Informe seu email e celular para continuar. Nao pedimos senha para finalizar o pedido.
+          Informe seu e-mail e celular para continuar. Não pedimos senha para concluir o pedido.
         </p>
       </div>
 
@@ -27,7 +24,7 @@ const CustomerForm = ({
         <>
           <div className={styles.formRow}>
             <div className={styles.formGroup}>
-              <label className={styles.label}>Email *</label>
+              <label className={styles.label}>E-mail *</label>
               <input
                 type="email"
                 name="email"
@@ -57,9 +54,7 @@ const CustomerForm = ({
             </div>
           </div>
 
-          {errors.identification && (
-            <div className={styles.identificationError}>{errors.identification}</div>
-          )}
+          {errors.identification && <div className={styles.identificationError}>{errors.identification}</div>}
 
           <button
             type="button"
@@ -71,13 +66,13 @@ const CustomerForm = ({
           </button>
 
           <p className={styles.identificationHelp}>
-            Usaremos esses dados para confirmacao do pedido, contato de entrega e retomada rapida do checkout.
+            Usaremos esses dados para confirmação do pedido, contato de entrega e retomada rápida do checkout.
           </p>
         </>
       ) : (
         <div className={styles.identificationSummary}>
           <div className={styles.identificationSummaryItem}>
-            <span className={styles.identificationSummaryLabel}>Email</span>
+            <span className={styles.identificationSummaryLabel}>E-mail</span>
             <strong>{formData.email}</strong>
           </div>
           <div className={styles.identificationSummaryItem}>
@@ -90,7 +85,7 @@ const CustomerForm = ({
             onClick={onEditIdentification}
             disabled={disabled}
           >
-            Editar identificacao
+            Editar identificação
           </button>
         </div>
       )}
@@ -101,7 +96,7 @@ const CustomerForm = ({
         <div className={styles.formSectionHeader}>
           <span className={styles.formSectionEyebrow}>Dados pessoais</span>
           <p className={styles.formSectionDescription}>
-            Preencha apenas o necessario para concluir o pedido.
+            Preencha apenas o necessário para concluir o pedido.
           </p>
         </div>
 
@@ -133,9 +128,7 @@ const CustomerForm = ({
             inputMode="numeric"
           />
           {errors.cpf && <span className={styles.errorText}>{errors.cpf}</span>}
-          {existingFields.cpf && (
-            <span className={styles.savedFieldHint}>CPF ja cadastrado</span>
-          )}
+          {existingFields.cpf && <span className={styles.savedFieldHint}>CPF já cadastrado</span>}
         </div>
       </div>
     )}

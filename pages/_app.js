@@ -27,6 +27,8 @@ import '../src/components/ui/OrderTimeline.css';
 import '../src/components/ui/PixPayment.css';
 import '../src/components/ui/Skeleton.css';
 import '../src/components/ui/ProductCard.css';
+import '../src/components/ui/ShaderBackground.css';
+import '../src/components/ui/CarouselCard.css';
 
 // Page styles
 import '../src/pages/LandingPage.css';

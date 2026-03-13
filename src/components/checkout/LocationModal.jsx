@@ -1,8 +1,9 @@
-/**
+﻿/**
  * Location Modal - Popup for GPS detection and address selection
  */
 'use client';
 import React, { useState, useEffect, useCallback } from 'react';
+import { Clock3, Hand, Hash, Home, MapPin, MapPinned, Navigation, Route, Wallet } from 'lucide-react';
 import styles from '../../styles/CheckoutModal.module.css';
 import { STORE_LOCATION } from './utils';
 import InteractiveMap from '../InteractiveMap';
@@ -108,7 +109,7 @@ const LocationModal = ({
 
     const resolvedDeliveryInfo = detectedDeliveryInfo || delivery.deliveryInfo || {
       fee: 0,
-      zone_name: 'Area de entrega',
+      zone_name: 'Área de entrega',
     };
 
     onConfirm({
@@ -163,10 +164,10 @@ const LocationModal = ({
           <div className={styles.detectingStep}>
             <div className={styles.gpsAnimation}>
               <div className={styles.pulseRing} />
-              <div className={styles.gpsIcon}>📍</div>
+              <div className={styles.gpsIcon}><MapPinned size={42} /></div>
             </div>
-            <h2>Detectando sua localizacao...</h2>
-            <p>Permita o acesso a localizacao para calcularmos a taxa de entrega.</p>
+            <h2>Detectando sua localização...</h2>
+            <p>Permita o acesso à localização para calcularmos a taxa de entrega.</p>
 
             {error ? (
               <div className={styles.errorBox}>
@@ -176,13 +177,13 @@ const LocationModal = ({
                     Tentar novamente
                   </button>
                   <button onClick={handleSkipGps} className={styles.skipBtn}>
-                    Inserir endereco manualmente
+                    Inserir endereço manualmente
                   </button>
                 </div>
               </div>
             ) : (
               <button onClick={handleSkipGps} className={styles.skipLink}>
-                Prefiro inserir o endereco manualmente
+                Prefiro inserir o endereço manualmente
               </button>
             )}
           </div>
@@ -190,11 +191,11 @@ const LocationModal = ({
 
         {currentStep === 'map' && (
           <div className={styles.mapStep}>
-            <h2>Selecione seu endereco no mapa</h2>
+            <h2>Selecione seu endereço no mapa</h2>
 
             <div className={styles.mapHintBanner}>
-              <span className={styles.mapHintIcon}>👆</span>
-              <span>Toque no mapa para marcar sua localizacao exata</span>
+              <span className={styles.mapHintIcon}><Hand size={18} /></span>
+              <span>Toque no mapa para marcar sua localização exata</span>
             </div>
 
             <div className={styles.mapContainer}>
@@ -213,7 +214,7 @@ const LocationModal = ({
             {loading && (
               <div className={styles.loadingOverlay}>
                 <div className={styles.spinner} />
-                <p>Buscando endereco...</p>
+                <p>Buscando endereço...</p>
               </div>
             )}
           </div>
@@ -222,11 +223,11 @@ const LocationModal = ({
         {currentStep === 'confirm' && detectedAddress && (
           <div className={styles.confirmStep}>
             <div className={styles.confirmHeader}>
-              <h2>Endereco de entrega</h2>
+              <h2>Endereço de entrega</h2>
               <button
                 onClick={handleSkipGps}
                 className={styles.editLocationBtn}
-                title="Clique para ajustar a localizacao no mapa"
+                title="Clique para ajustar a localização no mapa"
               >
                 Ajustar no mapa
               </button>
@@ -235,7 +236,7 @@ const LocationModal = ({
             <div
               className={styles.mapContainerClickable}
               onClick={handleSkipGps}
-              title="Clique para ajustar a localizacao"
+              title="Clique para ajustar a localização"
             >
               <InteractiveMap
                 storeLocation={STORE_LOCATION}
@@ -253,14 +254,14 @@ const LocationModal = ({
 
             <div className={styles.addressCardInline}>
               <div className={styles.addressMainInfo}>
-                <div className={styles.addressIcon}>📍</div>
+                <div className={styles.addressIcon}><MapPin size={18} /></div>
                 <div className={styles.addressText}>
                   <p className={styles.streetName}>
                     {resolvedStreet}
                     {resolvedNumber && `, ${resolvedNumber}`}
                   </p>
                   <p className={styles.addressSecondary}>
-                    {resolvedNeighborhood && `${resolvedNeighborhood} • `}
+                    {resolvedNeighborhood && `${resolvedNeighborhood} â€¢ `}
                     {detectedAddress.city}
                     {detectedAddress.state && ` - ${detectedAddress.state}`}
                   </p>
@@ -270,7 +271,7 @@ const LocationModal = ({
               <div className={styles.complementSection}>
                 <div className={styles.complementField}>
                   <label className={styles.complementLabel}>
-                    <span className={styles.complementIcon}>🛣️</span>
+                    <span className={styles.complementIcon}><MapPinned size={16} /></span>
                     Logradouro *
                   </label>
                   <input
@@ -285,8 +286,8 @@ const LocationModal = ({
                 <div className={styles.complementGrid}>
                   <div className={styles.complementField}>
                     <label className={styles.complementLabel}>
-                      <span className={styles.complementIcon}>#</span>
-                      Numero *
+                      <span className={styles.complementIcon}><Hash size={16} /></span>
+                      Número *
                     </label>
                     <input
                       type="text"
@@ -297,14 +298,14 @@ const LocationModal = ({
                     />
                     {requiresNumber && (
                       <p className={styles.complementHint}>
-                        Nao detectamos o numero. Informe para liberar a entrega.
+                        Não detectamos o número. Informe-o para liberar a entrega.
                       </p>
                     )}
                   </div>
 
                   <div className={styles.complementField}>
                     <label className={styles.complementLabel}>
-                      <span className={styles.complementIcon}>📌</span>
+                      <span className={styles.complementIcon}><MapPin size={16} /></span>
                       Bairro *
                     </label>
                     <input
@@ -319,13 +320,13 @@ const LocationModal = ({
 
                 <div className={styles.complementField}>
                   <label className={styles.complementLabel}>
-                    <span className={styles.complementIcon}>🏠</span>
-                    Complemento / referencia
+                    <span className={styles.complementIcon}><Home size={16} /></span>
+                    Complemento / referência
                   </label>
                   <input
                     type="text"
                     className={styles.complementInput}
-                    placeholder="Apto, bloco, portao, referencia (opcional)"
+                    placeholder="Apto, bloco, portão, referência (opcional)"
                     value={resolvedComplement}
                     onChange={(event) => setAddressComplement(event.target.value)}
                   />
@@ -333,34 +334,34 @@ const LocationModal = ({
               </div>
             </div>
 
-            <div className={styles.deliveryStatsCompact}>
+              <div className={styles.deliveryStatsCompact}>
               <div className={styles.statCompact}>
-                <span className={styles.statIcon}>📏</span>
+                <span className={styles.statIcon}><Route size={16} /></span>
                 <span>
                   {routeInfo?.distance_km
                     ? formatDistance(routeInfo.distance_km)
                     : detectedDeliveryInfo?.distance_km
                     ? formatDistance(detectedDeliveryInfo.distance_km)
-                    : '—'}
+                    : 'â€”'}
                 </span>
               </div>
-              <div className={styles.statDivider}>•</div>
+              <div className={styles.statDivider}>â€¢</div>
               <div className={styles.statCompact}>
-                <span className={styles.statIcon}>⏱️</span>
+                <span className={styles.statIcon}><Clock3 size={16} /></span>
                 <span>
                   {routeInfo?.duration_minutes
                     ? formatDuration(routeInfo.duration_minutes)
                     : detectedDeliveryInfo?.estimated_minutes
                     ? formatDuration(detectedDeliveryInfo.estimated_minutes)
-                    : '—'}
+                    : 'â€”'}
                 </span>
               </div>
-              <div className={styles.statDivider}>•</div>
+              <div className={styles.statDivider}>â€¢</div>
               <div className={`${styles.statCompact} ${styles.statFee}`}>
-                <span className={styles.statIcon}>💰</span>
+                <span className={styles.statIcon}><Wallet size={16} /></span>
                 <span className={styles.feeValue}>
                   {(detectedDeliveryInfo?.fee ?? delivery.deliveryInfo?.fee) === 0
-                    ? 'Gratis'
+                    ? 'Grátis'
                     : `R$ ${(detectedDeliveryInfo?.fee ?? delivery.deliveryInfo?.fee ?? 0).toFixed(2)}`}
                 </span>
               </div>
@@ -371,8 +372,8 @@ const LocationModal = ({
               className={styles.confirmBtnFull}
               disabled={!isAddressReady}
             >
-              <span className={styles.confirmBtnIcon}>✓</span>
-              Confirmar endereco
+              <span className={styles.confirmBtnIcon}><Navigation size={16} /></span>
+              Confirmar endereço
             </button>
           </div>
         )}
@@ -382,3 +383,4 @@ const LocationModal = ({
 };
 
 export default LocationModal;
+

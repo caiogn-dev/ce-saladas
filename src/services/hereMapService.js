@@ -1,4 +1,4 @@
-/**
+﻿/**
  * HERE Maps Service
  * Core service for HERE Maps JavaScript API integration
  */
@@ -17,21 +17,21 @@ const HERE_EVENTS_JS = `https://js.api.here.com/v3/${HERE_API_VERSION}/mapsjs-ma
 const HERE_CLUSTERING_JS = `https://js.api.here.com/v3/${HERE_API_VERSION}/mapsjs-clustering.js`;
 const HERE_UI_CSS = `https://js.api.here.com/v3/${HERE_API_VERSION}/mapsjs-ui.css`;
 
-// Default map center - Ivoneth Banqueteria/Pastita (Palmas, TO)
+// Default map center - Cê Saladas (Palmas, TO)
 const DEFAULT_CENTER = { lat: -10.1854332, lng: -48.3038653 };
 const DEFAULT_ZOOM = 13;
 
-// Pastita brand colors
+// Cê Saladas brand colors
 const PASTITA_COLORS = {
-  marsala: '#722F37',
-  marsalaDark: '#4a1e23',
-  gold: '#D4AF37',
-  cream: '#FDFBF7',
-  zoneFill: 'rgba(114, 47, 55, 0.2)',
-  zoneStroke: '#722F37',
-  routeColor: '#722F37',
-  isochoneFill: 'rgba(212, 175, 55, 0.15)',
-  isochroneStroke: '#D4AF37'
+  marsala: '#f06a32',
+  marsalaDark: '#d85b28',
+  gold: '#9fc223',
+  cream: '#fff8ee',
+  zoneFill: 'rgba(240, 106, 50, 0.18)',
+  zoneStroke: '#f06a32',
+  routeColor: '#f06a32',
+  isochoneFill: 'rgba(159, 194, 35, 0.16)',
+  isochroneStroke: '#9fc223'
 };
 
 let platform = null;
@@ -200,7 +200,7 @@ export function createMarker(coords, options = {}) {
  */
 export function createStoreMarker(coords) {
   logger.info('createStoreMarker called with coords:', coords);
-  const svgIcon = `<svg width="48" height="56" xmlns="http://www.w3.org/2000/svg"><path d="M24 0C10.745 0 0 10.745 0 24c0 18 24 32 24 32s24-14 24-32C48 10.745 37.255 0 24 0z" fill="#722F37" stroke="white" stroke-width="3"/><circle cx="24" cy="20" r="12" fill="white"/><text x="24" y="25" text-anchor="middle" fill="#722F37" font-size="12" font-weight="bold">P</text></svg>`;
+  const svgIcon = `<svg width="48" height="56" xmlns="http://www.w3.org/2000/svg"><path d="M24 0C10.745 0 0 10.745 0 24c0 18 24 32 24 32s24-14 24-32C48 10.745 37.255 0 24 0z" fill="#f06a32" stroke="white" stroke-width="3"/><circle cx="24" cy="20" r="12" fill="white"/><text x="24" y="25" text-anchor="middle" fill="#f06a32" font-size="12" font-weight="bold">P</text></svg>`;
   
   try {
     const marker = createMarker(coords, { 
@@ -613,7 +613,7 @@ export function createPolyline(coordinates, options = {}) {
     });
 
     // Use a visible color - marsala red with full opacity
-    const strokeColor = options.strokeColor || 'rgba(114, 47, 55, 1)'; // PASTITA marsala
+    const strokeColor = options.strokeColor || 'rgba(240, 106, 50, 1)'; // PASTITA marsala
     const lineWidth = options.lineWidth || 6;
 
     logger.info('Creating polyline with style', { strokeColor, lineWidth, pointCount: finalPoints.length });
@@ -1024,7 +1024,7 @@ export async function calculateRouteAPI(origin, destination, options = {}) {
       distance_km: parseFloat((section.summary.length / 1000).toFixed(2)),
       duration_minutes: Math.round(section.summary.duration / 60),
       polyline: section.polyline,
-      summary: `${(section.summary.length / 1000).toFixed(1)} km • ${Math.round(section.summary.duration / 60)} min`,
+      summary: `${(section.summary.length / 1000).toFixed(1)} km â€¢ ${Math.round(section.summary.duration / 60)} min`,
     };
   } catch (error) {
     logger.error('Routing error', error);
@@ -1078,7 +1078,7 @@ export async function geocodeBrazilianAddress(cep, addressData = {}) {
       logger.warn('CEP is not from Palmas, TO:', cepData);
       return {
         error: true,
-        message: 'Desculpe, só entregamos em Palmas - TO',
+        message: 'Desculpe, sÃ³ entregamos em Palmas - TO',
         city: cepData.city,
         state: cepData.state
       };
@@ -1118,7 +1118,7 @@ export async function geocodeBrazilianAddress(cep, addressData = {}) {
 export function getCurrentLocation(options = {}) {
   return new Promise((resolve, reject) => {
     if (typeof navigator === 'undefined' || !navigator.geolocation) {
-      reject(new Error('Geolocalização não suportada pelo navegador'));
+      reject(new Error('GeolocalizaÃ§Ã£o nÃ£o suportada pelo navegador'));
       return;
     }
 
@@ -1132,7 +1132,7 @@ export function getCurrentLocation(options = {}) {
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const { latitude, longitude, accuracy } = position.coords;
-        console.log(`📍 GPS: ${latitude}, ${longitude} (accuracy: ${Math.round(accuracy)}m)`);
+        console.log(`ðŸ“ GPS: ${latitude}, ${longitude} (accuracy: ${Math.round(accuracy)}m)`);
         
         resolve({
           latitude,
@@ -1142,11 +1142,11 @@ export function getCurrentLocation(options = {}) {
       },
       (error) => {
         const messages = {
-          1: 'Permissão de localização negada. Permita o acesso nas configurações do navegador.',
-          2: 'Não foi possível obter sua localização. Verifique se o GPS está ativado.',
-          3: 'Tempo esgotado ao obter localização. Tente novamente.',
+          1: 'PermissÃ£o de localizaÃ§Ã£o negada. Permita o acesso nas configuraÃ§Ãµes do navegador.',
+          2: 'NÃ£o foi possÃ­vel obter sua localizaÃ§Ã£o. Verifique se o GPS estÃ¡ ativado.',
+          3: 'Tempo esgotado ao obter localizaÃ§Ã£o. Tente novamente.',
         };
-        reject(new Error(messages[error.code] || 'Erro ao obter localização'));
+        reject(new Error(messages[error.code] || 'Erro ao obter localizaÃ§Ã£o'));
       },
       defaultOptions
     );
@@ -1172,3 +1172,4 @@ export function isValidCEP(cep) {
 
 // Export constants
 export { DEFAULT_CENTER, DEFAULT_ZOOM, PASTITA_COLORS, HERE_API_KEY };
+

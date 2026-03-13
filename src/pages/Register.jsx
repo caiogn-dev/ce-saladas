@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import * as storeApi from '../services/storeApi';
@@ -21,39 +21,39 @@ const Register = () => {
     confirmPassword: '',
     first_name: '',
     last_name: '',
-    coupon_code: ''
+    coupon_code: '',
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
   const validateForm = () => {
-    const newErrors = {};
+    const nextErrors = {};
 
     if (!formData.email.trim()) {
-      newErrors.email = 'E-mail é obrigatório';
+      nextErrors.email = 'E-mail é obrigatório.';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'E-mail inválido';
+      nextErrors.email = 'E-mail inválido.';
     }
 
     if (!formData.phone.trim()) {
-      newErrors.phone = 'Celular é obrigatório';
+      nextErrors.phone = 'Celular é obrigatório.';
     } else if (formData.phone.replace(/\D/g, '').length < 10) {
-      newErrors.phone = 'Celular inválido (10-11 dígitos)';
+      nextErrors.phone = 'Celular inválido. Informe entre 10 e 11 dígitos.';
     }
 
     if (!formData.password) {
-      newErrors.password = 'Senha é obrigatória';
+      nextErrors.password = 'Senha é obrigatória.';
     } else if (formData.password.length < 8) {
-      newErrors.password = 'Senha deve ter pelo menos 8 caracteres';
+      nextErrors.password = 'A senha deve ter pelo menos 8 caracteres.';
     }
 
     if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'As senhas não coincidem';
+      nextErrors.confirmPassword = 'As senhas não coincidem.';
     }
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    setErrors(nextErrors);
+    return Object.keys(nextErrors).length === 0;
   };
 
   const getPasswordStrength = () => {
@@ -72,8 +72,8 @@ const Register = () => {
     return { level: strength, text: 'Forte', color: '#16a34a' };
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
 
     if (!validateForm()) return;
 
@@ -88,24 +88,24 @@ const Register = () => {
         first_name: formData.first_name,
         last_name: formData.last_name,
         coupon_code: formData.coupon_code.trim(),
-        store_slug: storeApi.STORE_SLUG  // Send store slug for email automation
+        store_slug: storeApi.STORE_SLUG,
       });
 
       setSuccess(true);
       setTimeout(() => {
         router.push('/login');
       }, 2000);
-    } catch (err) {
-      if (err.response?.data) {
+    } catch (error) {
+      if (error.response?.data) {
         const backendErrors = {};
-        Object.entries(err.response.data).forEach(([key, value]) => {
+        Object.entries(error.response.data).forEach(([key, value]) => {
           if (key === 'email' && Array.isArray(value)) {
             backendErrors.email = value[0].includes('exists')
-              ? 'Este e-mail já está cadastrado'
+              ? 'Este e-mail já está cadastrado.'
               : value[0];
           } else if (key === 'phone' && Array.isArray(value)) {
             backendErrors.phone = value[0].includes('exists')
-              ? 'Este celular já está cadastrado'
+              ? 'Este celular já está cadastrado.'
               : value[0];
           } else if (Array.isArray(value)) {
             backendErrors[key] = value[0];
@@ -115,12 +115,13 @@ const Register = () => {
         if (Object.keys(backendErrors).length > 0) {
           setErrors(backendErrors);
         } else {
-          setErrors({ general: 'Erro ao cadastrar. Tente novamente.' });
+          setErrors({ general: 'Erro ao criar a conta. Tente novamente.' });
         }
       } else {
         setErrors({ general: 'Erro ao conectar com o servidor.' });
       }
     }
+
     setLoading(false);
   };
 
@@ -132,7 +133,7 @@ const Register = () => {
         <div className="auth-container">
           <div className="auth-card auth-success">
             <div className="auth-success-icon">OK</div>
-            <h2>Conta criada!</h2>
+            <h2>Conta criada.</h2>
             <p>Redirecionando para o login...</p>
           </div>
         </div>
@@ -145,8 +146,8 @@ const Register = () => {
       <div className="auth-container">
         <div className="auth-card">
           <div className="auth-header">
-            <Link href="/" className="auth-logo">PASTITA</Link>
-            <p>Crie sua conta para fazer pedidos</p>
+            <Link href="/" className="auth-logo">Cê Saladas</Link>
+            <p>Crie sua conta apenas se quiser salvar dados e consultar pedidos com mais facilidade.</p>
           </div>
 
           {errors.general && <div className="auth-error">{errors.general}</div>}
@@ -157,7 +158,7 @@ const Register = () => {
                 label="Nome"
                 type="text"
                 value={formData.first_name}
-                onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
+                onChange={(event) => setFormData({ ...formData, first_name: event.target.value })}
                 placeholder="João"
                 fullWidth
               />
@@ -165,7 +166,7 @@ const Register = () => {
                 label="Sobrenome"
                 type="text"
                 value={formData.last_name}
-                onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
+                onChange={(event) => setFormData({ ...formData, last_name: event.target.value })}
                 placeholder="Silva"
                 fullWidth
               />
@@ -175,8 +176,8 @@ const Register = () => {
               label="E-mail *"
               type="email"
               value={formData.email}
-              onChange={(e) => {
-                setFormData({ ...formData, email: e.target.value });
+              onChange={(event) => {
+                setFormData({ ...formData, email: event.target.value });
                 if (errors.email) setErrors({ ...errors, email: '' });
               }}
               placeholder="seu@email.com"
@@ -189,8 +190,8 @@ const Register = () => {
               label="Celular *"
               type="tel"
               value={formData.phone}
-              onChange={(e) => {
-                const formatted = formatPhone(e.target.value);
+              onChange={(event) => {
+                const formatted = formatPhone(event.target.value);
                 setFormData({ ...formData, phone: formatted });
                 if (errors.phone) setErrors({ ...errors, phone: '' });
               }}
@@ -205,11 +206,11 @@ const Register = () => {
                 label="Senha *"
                 type="password"
                 value={formData.password}
-                onChange={(e) => {
-                  setFormData({ ...formData, password: e.target.value });
+                onChange={(event) => {
+                  setFormData({ ...formData, password: event.target.value });
                   if (errors.password) setErrors({ ...errors, password: '' });
                 }}
-                placeholder="Mínimo 8 caracteres"
+                placeholder="Mínimo de 8 caracteres"
                 error={errors.password}
                 fullWidth
                 required
@@ -217,12 +218,12 @@ const Register = () => {
               {formData.password && (
                 <div className="password-strength">
                   <div className="strength-bars">
-                    {[1, 2, 3, 4, 5].map((i) => (
+                    {[1, 2, 3, 4, 5].map((level) => (
                       <div
-                        key={i}
+                        key={level}
                         className="strength-bar"
                         style={{
-                          backgroundColor: i <= passwordStrength.level ? passwordStrength.color : '#e5e5e5'
+                          backgroundColor: level <= passwordStrength.level ? passwordStrength.color : '#e5e5e5',
                         }}
                       />
                     ))}
@@ -238,8 +239,8 @@ const Register = () => {
               label="Confirmar senha *"
               type="password"
               value={formData.confirmPassword}
-              onChange={(e) => {
-                setFormData({ ...formData, confirmPassword: e.target.value });
+              onChange={(event) => {
+                setFormData({ ...formData, confirmPassword: event.target.value });
                 if (errors.confirmPassword) setErrors({ ...errors, confirmPassword: '' });
               }}
               placeholder="Digite a senha novamente"
@@ -252,26 +253,19 @@ const Register = () => {
               label="Cupom (opcional)"
               type="text"
               value={formData.coupon_code}
-              onChange={(e) => setFormData({ ...formData, coupon_code: e.target.value })}
-              placeholder="PASTITA10"
+              onChange={(event) => setFormData({ ...formData, coupon_code: event.target.value })}
+              placeholder="CESALADAS10"
               fullWidth
             />
 
-            <Button
-              type="submit"
-              variant="primary"
-              fullWidth
-              isLoading={loading}
-              className="auth-submit"
-            >
+            <Button type="submit" variant="primary" fullWidth isLoading={loading} className="auth-submit">
               {loading ? 'Criando conta...' : 'Criar conta'}
             </Button>
           </form>
 
-
           <div className="auth-footer">
             <p>
-              Já tem conta? <Link href="/login">Faça login</Link>
+              Já tem conta? <Link href="/login">Entrar</Link>
             </p>
           </div>
         </div>
