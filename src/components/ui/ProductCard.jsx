@@ -3,18 +3,12 @@ import Button from './Button';
 import Badge from './Badge';
 
 /**
- * ProductCard - Componente padronizado para exibição de produtos
- * @param {Object} props
- * @param {Object} props.product - Dados do produto
- * @param {Function} props.onAddToCart - Callback ao adicionar ao carrinho
- * @param {React.ReactNode} props.favoriteButton - Botão de favorito
- * @param {React.ReactNode} props.stockBadge - Badge de estoque
- * @param {string} props.weightLabel - Label de peso (ex: "500g")
- * @param {number} props.index - Índice para animação staggered
+ * ProductCard - standard storefront product tile.
  */
 const ProductCard = ({
   product,
   onAddToCart,
+  onOpenDetails,
   favoriteButton,
   stockBadge,
   weightLabel,
@@ -23,7 +17,7 @@ const ProductCard = ({
 }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
-  
+
   const inStock = Number(product.stock_quantity) > 0;
   const imageSrc = product.image || product.image_url;
   const animationDelay = `${index * 50}ms`;
@@ -34,13 +28,21 @@ const ProductCard = ({
     }
   };
 
+  const handleOpenDetails = () => {
+    if (onOpenDetails) {
+      onOpenDetails(product);
+    }
+  };
+
   return (
-    <article 
+    <article
       className={`product-card ${className}`}
       style={{ '--animation-delay': animationDelay }}
     >
-      {/* Imagem */}
-      <div className="product-card__image-wrapper">
+      <div
+        className={`product-card__image-wrapper ${onOpenDetails ? 'product-card__image-wrapper--interactive' : ''}`}
+        onClick={handleOpenDetails}
+      >
         <div className={`product-card__image ${imageLoaded ? 'loaded' : ''} ${imageError ? 'error' : ''}`}>
           {!imageError && imageSrc ? (
             <img
@@ -62,49 +64,69 @@ const ProductCard = ({
           )}
         </div>
 
-        {/* Preço */}
         <div className="product-card__price">
           <span className="product-card__price-currency">R$</span>
           <span className="product-card__price-value">{Number(product.price).toFixed(2)}</span>
         </div>
 
-        {/* Favorito */}
         {favoriteButton && (
-          <div className="product-card__favorite">
+          <div
+            className="product-card__favorite"
+            onClick={(event) => event.stopPropagation()}
+          >
             {favoriteButton}
           </div>
         )}
 
-        {/* Badge de estoque */}
         {stockBadge && (
-          <div className="product-card__stock">
+          <div
+            className="product-card__stock"
+            onClick={(event) => event.stopPropagation()}
+          >
             {stockBadge}
           </div>
         )}
       </div>
 
-      {/* Conteúdo */}
       <div className="product-card__content">
-        <h3 className="product-card__name">{product.name}</h3>
-        
-        {weightLabel && (
-          <Badge variant="marsala" size="sm" className="product-card__weight">
-            {weightLabel}
-          </Badge>
-        )}
-        
-        {product.description && (
-          <p className="product-card__description">{product.description}</p>
-        )}
+        <div
+          className={`product-card__info ${onOpenDetails ? 'product-card__info--interactive' : ''}`}
+          onClick={handleOpenDetails}
+        >
+          <h3 className="product-card__name">{product.name}</h3>
+
+          {weightLabel && (
+            <Badge variant="marsala" size="sm" className="product-card__weight">
+              {weightLabel}
+            </Badge>
+          )}
+
+          {product.description && (
+            <p className="product-card__description">{product.description}</p>
+          )}
+        </div>
 
         <div className="product-card__actions">
+          {onOpenDetails && (
+            <button
+              type="button"
+              className="product-card__details"
+              onClick={handleOpenDetails}
+            >
+              Ver detalhes
+            </button>
+          )}
+
           <Button
             variant={inStock ? 'outline' : 'ghost'}
             fullWidth
-            onClick={handleAddToCart}
+            onClick={(event) => {
+              event.stopPropagation();
+              handleAddToCart();
+            }}
             disabled={!inStock}
           >
-            {inStock ? 'Adicionar' : 'Indisponível'}
+            {inStock ? 'Adicionar' : 'Indisponivel'}
           </Button>
         </div>
       </div>

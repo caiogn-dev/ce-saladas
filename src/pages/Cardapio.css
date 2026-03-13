@@ -42,6 +42,13 @@
   font-weight: 700;
 }
 
+.cardapio-intro {
+  max-width: 660px;
+  margin: 0 auto 18px;
+  color: var(--color-gray-500);
+  line-height: 1.7;
+}
+
 .cardapio-divider {
   width: 60px;
   height: 3px;
@@ -70,6 +77,49 @@
   justify-content: center;
   flex-wrap: wrap;
   gap: 10px;
+}
+
+.cardapio-overview {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 180px)) minmax(220px, 1fr);
+  gap: 14px;
+  align-items: stretch;
+  margin: 0 auto var(--space-xl);
+}
+
+.cardapio-overview__stat,
+.cardapio-overview__note {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(114, 47, 55, 0.08);
+  border-radius: 20px;
+  padding: 16px 18px;
+  box-shadow: 0 10px 30px rgba(114, 47, 55, 0.06);
+}
+
+.cardapio-overview__stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cardapio-overview__stat strong {
+  color: var(--color-marsala);
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.cardapio-overview__stat span,
+.cardapio-overview__note {
+  color: var(--color-gray-600);
+}
+
+.cardapio-overview__note {
+  display: flex;
+  align-items: center;
+  line-height: 1.6;
+  background:
+    linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(114, 47, 55, 0.05)),
+    rgba(255, 255, 255, 0.8);
 }
 
 .category-chip {
@@ -172,6 +222,10 @@
   .products-grid {
     grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
     gap: var(--space-lg);
+  }
+
+  .cardapio-overview {
+    grid-template-columns: 1fr;
   }
 
   .category-chip {

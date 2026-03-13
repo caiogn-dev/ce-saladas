@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useWishlist } from '../context/WishlistContext';
@@ -7,13 +7,14 @@ import LoginModal from '../components/LoginModal';
 import Navbar from '../components/Navbar';
 import FavoriteButton from '../components/FavoriteButton';
 import StockBadge from '../components/StockBadge';
+import ProductDetailModal from '../components/ProductDetailModal';
 import Input from '../components/ui/Input';
 import Skeleton from '../components/ui/Skeleton';
 import EmptyState from '../components/ui/EmptyState';
 import ProductCard from '../components/ui/ProductCard';
 import PageTransition, { StaggeredList, AnimatedCard } from '../components/ui/PageTransition';
 
-const CATEGORY_PRIORITY = ['rondelli', 'rondellis', 'molho', 'molhos'];
+const CATEGORY_PRIORITY = ['rondelli', 'rondellis', 'molho', 'molhos', 'combo'];
 const WEIGHTED_CATEGORIES = new Set(['rondelli', 'rondellis', 'molho', 'molhos']);
 
 const normalizeCategory = (value) => (value || '')
@@ -38,7 +39,15 @@ const getProductWeightLabel = (product) => {
   return '';
 };
 
-// Loading skeleton for products
+const resolveCategorySlug = (categoryName = '') => {
+  const normalized = categoryName.toLowerCase();
+
+  if (normalized.includes('rondelli')) return 'rondelli';
+  if (normalized.includes('molho')) return 'molho';
+  if (normalized.includes('carne')) return 'carne';
+  return 'outro';
+};
+
 const ProductsSkeleton = () => (
   <div className="products-grid">
     {Array.from({ length: 6 }, (_, i) => (
@@ -49,46 +58,62 @@ const ProductsSkeleton = () => (
 
 const Cardapio = () => {
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
   const [query, setQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
-  
-  const { addToCart } = useCart();
+
+  const { addToCart, addComboToCart } = useCart();
   const { isAuthenticated } = useAuth();
   const { isFavorited } = useWishlist();
-  const { products: storeProducts, combos, isLoading, error, refreshCatalog } = useStore();
+  const { store, products: storeProducts, combos, isLoading, error, refreshCatalog } = useStore();
 
-  // Transform store products to match expected format
   const products = useMemo(() => {
-    const transformed = storeProducts.map(p => ({
-      id: p.id,
-      name: p.name,
-      description: p.description || p.short_description,
-      price: parseFloat(p.price),
-      image_url: p.main_image_url || p.main_image,
-      stock_quantity: p.stock_quantity ?? 100,
-      category: p.category_name?.toLowerCase().includes('rondelli') ? 'rondelli' :
-                p.category_name?.toLowerCase().includes('molho') ? 'molho' :
-                p.category_name?.toLowerCase().includes('carne') ? 'carne' : 'outro',
-      is_in_stock: p.is_in_stock,
-      is_low_stock: p.is_low_stock,
+    const transformedProducts = storeProducts.map((product) => ({
+      id: product.id,
+      itemType: 'product',
+      name: product.name,
+      description: product.description || product.short_description,
+      shortDescription: product.short_description || '',
+      price: parseFloat(product.price),
+      original_price: product.compare_at_price ? parseFloat(product.compare_at_price) : null,
+      image_url: product.main_image_url || product.main_image,
+      images: product.images || [],
+      stock_quantity: product.stock_quantity ?? 100,
+      category: resolveCategorySlug(product.category_name),
+      categoryLabel: product.category_name || 'Produto',
+      productTypeName: product.product_type_name || '',
+      attributes: product.attributes || {},
+      typeAttributes: product.type_attributes || {},
+      tags: product.tags || [],
+      variants: product.variants || [],
+      is_in_stock: product.is_in_stock,
+      is_low_stock: product.is_low_stock,
     }));
-    
-    // Add combos
-    const transformedCombos = combos.map(c => ({
-      id: c.id,
-      name: c.name,
-      description: c.description,
-      price: parseFloat(c.price),
-      original_price: c.original_price ? parseFloat(c.original_price) : null,
-      image_url: c.image_url,
-      stock_quantity: 100,
+
+    const transformedCombos = combos.map((combo) => ({
+      id: combo.id,
+      itemType: 'combo',
+      isCombo: true,
+      name: combo.name,
+      description: combo.description,
+      shortDescription: combo.description || '',
+      price: parseFloat(combo.price),
+      original_price: combo.compare_at_price ? parseFloat(combo.compare_at_price) : null,
+      savings: combo.savings ? parseFloat(combo.savings) : 0,
+      image_url: combo.image_url,
+      images: [],
+      stock_quantity: combo.stock_quantity ?? 100,
       category: 'combo',
-      is_in_stock: c.is_active,
+      categoryLabel: 'Combo',
+      productTypeName: 'Selecao da casa',
+      comboItems: combo.items || [],
+      tags: combo.featured ? ['Mais pedido'] : [],
+      is_in_stock: combo.is_in_stock ?? combo.is_active,
       is_low_stock: false,
     }));
-    
-    return [...transformed, ...transformedCombos];
+
+    return [...transformedProducts, ...transformedCombos];
   }, [storeProducts, combos]);
 
   const loading = isLoading && products.length === 0;
@@ -97,6 +122,7 @@ const Cardapio = () => {
     const values = products
       .map((product) => (product.category || '').trim())
       .filter(Boolean);
+
     return Array.from(new Set(values)).sort((a, b) => {
       const rankA = getCategoryRank(a);
       const rankB = getCategoryRank(b);
@@ -109,15 +135,19 @@ const Cardapio = () => {
 
   const filteredProducts = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
+
     const filtered = products.filter((product) => {
       const matchesCategory = categoryFilter === 'all' || product.category === categoryFilter;
       const matchesFavorites = !showFavoritesOnly || isFavorited(product.id);
+
       if (!normalizedQuery) {
         return matchesCategory && matchesFavorites;
       }
-      const haystack = `${product.name || ''} ${product.description || ''}`.toLowerCase();
+
+      const haystack = `${product.name || ''} ${product.description || ''} ${product.categoryLabel || ''}`.toLowerCase();
       return matchesCategory && matchesFavorites && haystack.includes(normalizedQuery);
     });
+
     return filtered.slice().sort((a, b) => {
       const rankA = getCategoryRank(a.category);
       const rankB = getCategoryRank(b.category);
@@ -128,11 +158,17 @@ const Cardapio = () => {
     });
   }, [products, query, categoryFilter, showFavoritesOnly, isFavorited]);
 
-  const handleAddToCart = (product) => {
-    if (product.stock_quantity <= 0) {
+  const handleAddToCart = (item) => {
+    if ((item.stock_quantity ?? 0) <= 0) {
       return;
     }
-    addToCart(product);
+
+    if (item.itemType === 'combo' || item.isCombo) {
+      addComboToCart(item);
+      return;
+    }
+
+    addToCart(item);
   };
 
   const handleCloseModal = () => {
@@ -156,29 +192,39 @@ const Cardapio = () => {
   return (
     <div className="cardapio-page">
       <Navbar />
-      
-      <LoginModal 
-        isOpen={showLoginModal} 
+
+      <LoginModal
+        isOpen={showLoginModal}
         onClose={handleCloseModal}
       />
 
-      {/* Header with animation */}
+      <ProductDetailModal
+        isOpen={Boolean(selectedItem)}
+        item={selectedItem}
+        onClose={() => setSelectedItem(null)}
+        onAddToCart={(item) => {
+          handleAddToCart(item);
+          setSelectedItem(null);
+        }}
+      />
+
       <PageTransition animation="fadeUp" delay={0}>
         <div className="cardapio-header">
-          <span className="cardapio-subtitle">Artesanal</span>
-          <h1 className="cardapio-title">Nosso Cardápio</h1>
+          <span className="cardapio-subtitle">{store?.name || 'Artesanal'}</span>
+          <h1 className="cardapio-title">Nosso Cardapio</h1>
+          <p className="cardapio-intro">
+            Veja os detalhes de cada item antes de pedir e monte seu pedido com menos atrito.
+          </p>
           <div className="cardapio-divider"></div>
         </div>
       </PageTransition>
 
-      {/* Loading State */}
       {loading && (
         <div className="container">
           <ProductsSkeleton />
         </div>
       )}
 
-      {/* Error State */}
       {error && !loading && (
         <PageTransition animation="fadeIn" delay={100}>
           <div className="container">
@@ -187,7 +233,6 @@ const Cardapio = () => {
         </PageTransition>
       )}
 
-      {/* Empty State */}
       {!loading && !error && products.length === 0 && (
         <PageTransition animation="fadeIn" delay={100}>
           <div className="container">
@@ -196,7 +241,6 @@ const Cardapio = () => {
         </PageTransition>
       )}
 
-      {/* Grid de Produtos */}
       {!loading && !error && products.length > 0 && (
         <div className="container">
           <PageTransition animation="fadeUp" delay={100}>
@@ -204,18 +248,19 @@ const Cardapio = () => {
               <div className="cardapio-search">
                 <Input
                   type="text"
-                  placeholder="Buscar por nome ou descrição"
+                  placeholder="Buscar por nome, categoria ou descricao"
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
                   fullWidth
-                  leftIcon={
+                  leftIcon={(
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <circle cx="11" cy="11" r="8" />
                       <path d="M21 21l-4.35-4.35" />
                     </svg>
-                  }
+                  )}
                 />
               </div>
+
               <div className="cardapio-category-buttons" role="tablist" aria-label="Categorias">
                 <button
                   type="button"
@@ -245,32 +290,47 @@ const Cardapio = () => {
                   role="tab"
                   aria-selected={showFavoritesOnly}
                 >
-                  ❤️ Favoritos
+                  Favoritos
                 </button>
               </div>
             </div>
           </PageTransition>
 
-          {/* No results for search */}
-          {filteredProducts.length === 0 && (query || categoryFilter !== 'all') && (
+          <PageTransition animation="fadeUp" delay={130}>
+            <div className="cardapio-overview">
+              <div className="cardapio-overview__stat">
+                <strong>{filteredProducts.length}</strong>
+                <span>itens visiveis</span>
+              </div>
+              <div className="cardapio-overview__stat">
+                <strong>{categories.length}</strong>
+                <span>categorias ativas</span>
+              </div>
+              <div className="cardapio-overview__note">
+                Clique em um item para ver mais detalhes antes de adicionar ao carrinho.
+              </div>
+            </div>
+          </PageTransition>
+
+          {filteredProducts.length === 0 && (query || categoryFilter !== 'all' || showFavoritesOnly) && (
             <PageTransition animation="fadeIn" delay={150}>
               <EmptyState.Search query={query} onAction={handleClearSearch} />
             </PageTransition>
           )}
 
-          {/* Products Grid with staggered animation */}
           {filteredProducts.length > 0 && (
             <div className="products-grid">
               <StaggeredList staggerDelay={50} animation="fadeUp">
-                {filteredProducts.map((p, index) => (
-                  <AnimatedCard key={p.id} hover={true}>
+                {filteredProducts.map((product, index) => (
+                  <AnimatedCard key={`${product.itemType}-${product.id}`} hover={true}>
                     <ProductCard
-                      product={p}
+                      product={product}
                       index={index}
                       onAddToCart={handleAddToCart}
-                      weightLabel={getProductWeightLabel(p)}
-                      favoriteButton={<FavoriteButton productId={p.id} size="small" />}
-                      stockBadge={<StockBadge quantity={p.stock_quantity} />}
+                      onOpenDetails={setSelectedItem}
+                      weightLabel={getProductWeightLabel(product)}
+                      favoriteButton={product.itemType === 'product' ? <FavoriteButton productId={product.id} size="small" /> : null}
+                      stockBadge={<StockBadge quantity={product.stock_quantity} />}
                     />
                   </AnimatedCard>
                 ))}

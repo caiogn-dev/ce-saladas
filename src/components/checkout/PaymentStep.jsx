@@ -109,6 +109,12 @@ const PaymentStep = ({
                 />
               </div>
             )}
+
+            {paymentMethod === 'card' && !mpPublicKey && (
+              <div className={styles.paymentLockedHint}>
+                O checkout por cartao vai abrir a pagina segura do Mercado Pago.
+              </div>
+            )}
           </div>
         </>
       )}
@@ -146,7 +152,7 @@ const PaymentStep = ({
         </div>
       )}
 
-      {isIdentificationComplete && paymentMethod !== 'card' && (
+      {isIdentificationComplete && (paymentMethod !== 'card' || !mpPublicKey) && (
         <button
           className={styles.submitButton}
           onClick={() => onSubmit({ method: paymentMethod, type: paymentMethod })}
@@ -155,7 +161,7 @@ const PaymentStep = ({
           {loading ? 'Processando...' : (
             paymentMethod === 'pix' ? 'Gerar PIX' :
             paymentMethod === 'cash' ? 'Confirmar pedido' :
-            'Finalizar pedido'
+            'Ir para pagamento'
           )}
         </button>
       )}

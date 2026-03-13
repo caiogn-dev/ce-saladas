@@ -71,6 +71,17 @@ export const CartProvider = ({ children }) => {
     isCombo: true,
   });
 
+  const syncCartState = useCallback((data) => {
+    const formattedProducts = (data?.items || []).map(normalizeCartItem);
+    const formattedCombos = (data?.combo_items || []).map(normalizeComboItem);
+
+    setCart(formattedProducts);
+    setCombos(formattedCombos);
+    writeCartCache({ products: formattedProducts, combos: formattedCombos });
+
+    return { products: formattedProducts, combos: formattedCombos };
+  }, []);
+
   const buildOptimisticItem = (product, quantity) => ({
     id: product.id,
     cart_item_id: `temp_${product.id}`,
@@ -99,30 +110,26 @@ export const CartProvider = ({ children }) => {
       return cached;
     }
 
-    if (cartFetchPromise) return cartFetchPromise;
+    if (!force && cartFetchPromise) return cartFetchPromise;
 
-    cartFetchPromise = (async () => {
+    const requestPromise = (async () => {
       try {
         const data = await storeApi.getCart();
-        
-        // Normalize items from unified API
-        const formattedProducts = (data.items || []).map(normalizeCartItem);
-        const formattedCombos = (data.combo_items || []).map(normalizeComboItem);
-        
-        setCart(formattedProducts);
-        setCombos(formattedCombos);
-        writeCartCache({ products: formattedProducts, combos: formattedCombos });
-        return { products: formattedProducts, combos: formattedCombos };
+        return syncCartState(data);
       } catch (error) {
         console.error('Error fetching cart:', error);
         return null;
       } finally {
-        cartFetchPromise = null;
+        if (cartFetchPromise === requestPromise) {
+          cartFetchPromise = null;
+        }
       }
     })();
 
-    return cartFetchPromise;
-  }, []);
+    cartFetchPromise = requestPromise;
+
+    return requestPromise;
+  }, [syncCartState]);
 
   // Fetch cart on mount
   useEffect(() => {
@@ -152,8 +159,8 @@ export const CartProvider = ({ children }) => {
     setIsCartOpen(true);
 
     try {
-      await storeApi.addToCart(product.id, 1, {}, '');
-      await fetchCart({ force: true });
+      const data = await storeApi.addToCart(product.id, 1, {}, '');
+      syncCartState(data);
     } catch (error) {
       console.error('Error adding to cart:', error);
       setCart(previousCart);
@@ -184,8 +191,8 @@ export const CartProvider = ({ children }) => {
     setIsCartOpen(true);
 
     try {
-      await storeApi.addComboToCart(combo.id, 1, {}, '');
-      await fetchCart({ force: true });
+      const data = await storeApi.addComboToCart(combo.id, 1, {}, '');
+      syncCartState(data);
     } catch (error) {
       console.error('Error adding combo to cart:', error);
       setCombos(previousCombos);
@@ -204,7 +211,8 @@ export const CartProvider = ({ children }) => {
     
     try {
       if (item?.cart_item_id && !item.cart_item_id.startsWith('temp_')) {
-        await storeApi.removeCartItem(item.cart_item_id);
+        const data = await storeApi.removeCartItem(item.cart_item_id);
+        syncCartState(data);
       }
     } catch (error) {
       console.error('Error removing from cart:', error);
@@ -221,7 +229,8 @@ export const CartProvider = ({ children }) => {
     
     try {
       if (item?.cart_item_id && !item.cart_item_id.startsWith('temp_')) {
-        await storeApi.removeCartItem(item.cart_item_id);
+        const data = await storeApi.removeCartItem(item.cart_item_id);
+        syncCartState(data);
       }
     } catch (error) {
       console.error('Error removing combo from cart:', error);
@@ -246,9 +255,9 @@ export const CartProvider = ({ children }) => {
 
     try {
       if (currentItem.cart_item_id && !currentItem.cart_item_id.startsWith('temp_')) {
-        await storeApi.updateCartItem(currentItem.cart_item_id, newQuantity);
+        const data = await storeApi.updateCartItem(currentItem.cart_item_id, newQuantity);
+        syncCartState(data);
       }
-      await fetchCart({ force: true });
     } catch (error) {
       console.error('Error updating quantity:', error);
       setCart(previousCart);
@@ -272,9 +281,9 @@ export const CartProvider = ({ children }) => {
 
     try {
       if (currentItem.cart_item_id && !currentItem.cart_item_id.startsWith('temp_')) {
-        await storeApi.updateCartItem(currentItem.cart_item_id, newQuantity);
+        const data = await storeApi.updateCartItem(currentItem.cart_item_id, newQuantity);
+        syncCartState(data);
       }
-      await fetchCart({ force: true });
     } catch (error) {
       console.error('Error updating combo quantity:', error);
       setCombos(previousCombos);
@@ -284,9 +293,8 @@ export const CartProvider = ({ children }) => {
   // Clear entire cart
   const clearCart = async () => {
     try {
-      await storeApi.clearCart();
-      setCart([]);
-      setCombos([]);
+      const data = await storeApi.clearCart();
+      syncCartState(data);
       clearCartCacheInternal();
     } catch (error) {
       console.error('Error clearing cart:', error);

@@ -8,6 +8,53 @@
 import axios from 'axios';
 import logger from './logger';
 
+const GUEST_CART_KEY_STORAGE = 'guest_cart_key';
+
+const generateGuestCartKey = () => {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return `cart_${crypto.randomUUID()}`;
+  }
+
+  return `cart_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
+};
+
+export const getGuestCartKey = () => {
+  if (typeof window === 'undefined') {
+    return null;
+  }
+
+  let cartKey = localStorage.getItem(GUEST_CART_KEY_STORAGE);
+  if (!cartKey) {
+    cartKey = generateGuestCartKey();
+    localStorage.setItem(GUEST_CART_KEY_STORAGE, cartKey);
+  }
+
+  return cartKey;
+};
+
+const attachGuestCartKey = (config) => {
+  const cartKey = getGuestCartKey();
+  if (!cartKey) {
+    return config;
+  }
+
+  config.headers = config.headers || {};
+  config.headers['X-Cart-Key'] = cartKey;
+  config.params = {
+    ...(config.params || {}),
+    cart_key: cartKey,
+  };
+
+  if (config.data && typeof config.data === 'object' && !(config.data instanceof FormData)) {
+    config.data = {
+      ...config.data,
+      cart_key: cartKey,
+    };
+  }
+
+  return config;
+};
+
 // Helper to get store slug from hostname or env
 export const getStoreSlug = () => {
   if (typeof window !== 'undefined') {
@@ -126,6 +173,9 @@ storeApi.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Token ${token}`;
     }
+
+    attachGuestCartKey(config);
+
     // Add CSRF token for non-GET requests
     if (config.method !== 'get') {
       const csrfToken = getCsrfToken();
