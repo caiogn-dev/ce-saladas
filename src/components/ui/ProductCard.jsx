@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import Button from './Button';
 import Badge from './Badge';
 
@@ -21,6 +21,7 @@ const ProductCard = ({
   const inStock = Number(product.stock_quantity) > 0;
   const imageSrc = product.image || product.image_url;
   const animationDelay = `${index * 50}ms`;
+  const formattedPrice = Number(product.price).toFixed(2).replace('.', ',');
 
   const handleAddToCart = () => {
     if (onAddToCart && inStock) {
@@ -64,11 +65,6 @@ const ProductCard = ({
           )}
         </div>
 
-        <div className="product-card__price">
-          <span className="product-card__price-currency">R$</span>
-          <span className="product-card__price-value">{Number(product.price).toFixed(2)}</span>
-        </div>
-
         {favoriteButton && (
           <div
             className="product-card__favorite"
@@ -93,7 +89,13 @@ const ProductCard = ({
           className={`product-card__info ${onOpenDetails ? 'product-card__info--interactive' : ''}`}
           onClick={handleOpenDetails}
         >
-          <h3 className="product-card__name">{product.name}</h3>
+          <div className="product-card__header">
+            <h3 className="product-card__name">{product.name}</h3>
+            <div className="product-card__price">
+              <span className="product-card__price-currency">R$</span>
+              <span className="product-card__price-value">{formattedPrice}</span>
+            </div>
+          </div>
 
           {weightLabel && (
             <Badge variant="marsala" size="sm" className="product-card__weight">
@@ -118,7 +120,7 @@ const ProductCard = ({
           )}
 
           <Button
-            variant={inStock ? 'outline' : 'ghost'}
+            variant={inStock ? 'primary' : 'ghost'}
             fullWidth
             onClick={(event) => {
               event.stopPropagation();
@@ -126,7 +128,7 @@ const ProductCard = ({
             }}
             disabled={!inStock}
           >
-            {inStock ? 'Adicionar' : 'Indisponível'}
+            {inStock ? 'Adicionar ao carrinho' : 'Indisponível'}
           </Button>
         </div>
       </div>
