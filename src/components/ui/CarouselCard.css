@@ -30,7 +30,7 @@
 
 .carousel-card__slide {
   flex: 0 0 calc((100% - (var(--cards-per-view) - 1) * 18px) / var(--cards-per-view));
-  min-width: min(100%, 320px);
+  min-width: min(100%, 280px);
   display: flex;
   scroll-snap-align: start;
   scroll-snap-stop: always;
@@ -133,7 +133,7 @@
 
   .carousel-card__slide {
     flex-basis: calc((100% - (var(--cards-per-view) - 1) * 14px) / var(--cards-per-view));
-    min-width: min(100%, 82vw);
+    min-width: min(100%, 72vw);
   }
 
   .carousel-card__pagination {
@@ -149,4 +149,5 @@
   flex: 1 1 0;
   min-width: 0;
 }
+
 

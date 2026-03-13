@@ -291,9 +291,9 @@ const Cardapio = () => {
 
                     <CarouselCard
                       items={section.items}
-                      mobileCardsPerView={1.08}
-                      tabletCardsPerView={2}
-                      desktopCardsPerView={3.2}
+                      mobileCardsPerView={1.32}
+                      tabletCardsPerView={2.45}
+                      desktopCardsPerView={4.4}
                       renderItem={(product, index) => (
                         <ProductCard
                           product={product}
@@ -318,4 +318,5 @@ const Cardapio = () => {
 };
 
 export default Cardapio;
+
 

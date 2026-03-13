@@ -115,7 +115,7 @@ const ProductCard = ({
               className="product-card__details"
               onClick={handleOpenDetails}
             >
-              Ver detalhes
+              Detalhes
             </button>
           )}
 
@@ -128,7 +128,7 @@ const ProductCard = ({
             }}
             disabled={!inStock}
           >
-            {inStock ? 'Adicionar ao carrinho' : 'Indisponível'}
+            {inStock ? 'Adicionar' : 'Indisponível'}
           </Button>
         </div>
       </div>
@@ -137,3 +137,4 @@ const ProductCard = ({
 };
 
 export default ProductCard;
+
