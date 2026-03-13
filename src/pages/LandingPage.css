@@ -95,7 +95,7 @@
   max-width: 56ch;
   font-size: 1.05rem;
   color: #594c43;
-  margin-bottom: 28px;
+  margin-bottom: 24px;
 }
 
 .hero-actions {
@@ -103,42 +103,13 @@
   align-items: center;
   gap: 14px;
   flex-wrap: wrap;
-  margin-bottom: 28px;
+  margin-bottom: 0;
 }
 
 .btn-glow {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-}
-
-.hero-stats-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
-}
-
-.hero-stat-card {
-  padding: 18px 18px 16px;
-  border-radius: 22px;
-  background: rgba(255, 255, 255, 0.78);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(var(--color-brand-green-rgb), 0.12);
-  box-shadow: 0 22px 50px rgba(var(--color-brand-green-rgb), 0.1);
-}
-
-.hero-stat-card strong {
-  display: block;
-  color: var(--color-marsala);
-  font-size: 1rem;
-  margin-bottom: 6px;
-}
-
-.hero-stat-card span {
-  display: block;
-  color: var(--color-gray-600);
-  font-size: 0.86rem;
-  line-height: 1.45;
 }
 
 .hero-brand-panel {
@@ -211,48 +182,6 @@
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-}
-
-.hero-floating-card {
-  position: absolute;
-  z-index: 2;
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 10px;
-  align-items: start;
-  max-width: 240px;
-  padding: 14px 16px;
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.94);
-  box-shadow: 0 18px 40px rgba(var(--color-brand-green-rgb), 0.14);
-}
-
-.hero-floating-card svg {
-  color: var(--color-brand-green-dark);
-  margin-top: 2px;
-}
-
-.hero-floating-card strong {
-  display: block;
-  color: var(--color-marsala);
-  margin-bottom: 4px;
-}
-
-.hero-floating-card span {
-  display: block;
-  color: var(--color-gray-600);
-  font-size: 0.85rem;
-  line-height: 1.45;
-}
-
-.hero-floating-card--top {
-  right: -12px;
-  top: 92px;
-}
-
-.hero-floating-card--bottom {
-  left: -18px;
-  bottom: 42px;
 }
 
 .brand-strip {
@@ -599,7 +528,6 @@
     max-width: none;
   }
 
-  .hero-stats-grid,
   .brand-strip__inner,
   .steps-grid,
   .features-grid,
@@ -621,17 +549,6 @@
   .hero-image,
   .hero-placeholder {
     min-height: 360px;
-  }
-
-  .hero-floating-card--top,
-  .hero-floating-card--bottom {
-    position: relative;
-    left: auto;
-    right: auto;
-    top: auto;
-    bottom: auto;
-    margin-top: 12px;
-    max-width: none;
   }
 
   .hero-brand-panel {

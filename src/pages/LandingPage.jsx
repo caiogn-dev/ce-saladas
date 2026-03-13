@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
+﻿import React, { useEffect, useState, useSyncExternalStore } from 'react';
 import Link from 'next/link';
 import {
   ArrowRight,
@@ -34,7 +34,7 @@ function getPromoServerSnapshot() {
 }
 
 const LandingPage = () => {
-  const { store, products = [], combos = [], isLoading } = useStore();
+  const { store, isLoading } = useStore();
   const hasSeenPromo = useSyncExternalStore(
     subscribePromo,
     getPromoSnapshot,
@@ -46,25 +46,6 @@ const LandingPage = () => {
   useEffect(() => {
     setIsVisible(true);
   }, []);
-
-  const heroStats = useMemo(() => {
-    const totalItems = (products?.length || 0) + (combos?.length || 0);
-
-    return [
-      {
-        value: totalItems > 0 ? `${totalItems}+` : 'Sob medida',
-        label: 'opções no catálogo',
-      },
-      {
-        value: 'Checkout leve',
-        label: 'pedido sem cadastro obrigatório',
-      },
-      {
-        value: 'Entrega clara',
-        label: 'etapas objetivas até o pagamento',
-      },
-    ];
-  }, [combos?.length, products?.length]);
 
   if (isLoading || !store) {
     return <div className="loading-screen">Carregando...</div>;
@@ -142,15 +123,6 @@ const LandingPage = () => {
               </Link>
               <a href="#como-funciona" className="btn-secondary">Entender o fluxo</a>
             </div>
-
-            <div className="hero-stats-grid">
-              {heroStats.map((stat) => (
-                <div key={stat.label} className="hero-stat-card">
-                  <strong>{stat.value}</strong>
-                  <span>{stat.label}</span>
-                </div>
-              ))}
-            </div>
           </div>
 
           <div className={`hero-visual ${isVisible ? 'is-visible' : ''}`}>
@@ -171,21 +143,6 @@ const LandingPage = () => {
                 )}
               </div>
 
-              <div className="hero-floating-card hero-floating-card--top">
-                <Sparkles size={18} />
-                <div>
-                  <strong>Cardápio organizado</strong>
-                  <span>Mais clareza para decidir rápido.</span>
-                </div>
-              </div>
-
-              <div className="hero-floating-card hero-floating-card--bottom">
-                <ShieldCheck size={18} />
-                <div>
-                  <strong>Pagamento confiável</strong>
-                  <span>PIX, cartão e dinheiro no mesmo fluxo.</span>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -318,3 +275,4 @@ const LandingPage = () => {
 };
 
 export default LandingPage;
+
