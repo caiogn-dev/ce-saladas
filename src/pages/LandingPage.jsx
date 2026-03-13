@@ -63,22 +63,22 @@ const LandingPage = () => {
             className="promo-modal"
             role="dialog"
             aria-modal="true"
-            aria-label={`Promoção ${store.name} 10% OFF`}
+            aria-label={`Fluxo de checkout em ${store.name}`}
             onClick={(event) => event.stopPropagation()}
           >
-            <button className="promo-close" onClick={handleClosePromo} aria-label="Fechar promoção">
-              ×
+            <button className="promo-close" onClick={handleClosePromo} aria-label="Fechar aviso">
+              x
             </button>
-            <div className="promo-badge">🎉 Novidade</div>
-            <h3>Ganhe 10% OFF no primeiro pedido</h3>
+            <div className="promo-badge">Novo</div>
+            <h3>Finalize sem cadastro obrigatorio</h3>
             <p>
-              Crie sua conta agora e receba um cupom exclusivo para usar na primeira compra.
-              Válido para pedidos feitos pelo site de {store.name}.
+              Monte seu pedido e siga para o checkout com um fluxo direto.
+              Para concluir, basta informar email e celular.
             </p>
             <div className="promo-actions">
-              <Link href="/registro" className="btn-primary">Criar conta e ganhar 10%</Link>
+              <Link href="/cardapio" className="btn-primary">Pedir agora</Link>
               <button type="button" className="btn-secondary" onClick={handleClosePromo}>
-                Ver cardápio primeiro
+                Fechar
               </button>
             </div>
           </div>
@@ -92,17 +92,17 @@ const LandingPage = () => {
           {/* Lado Esquerdo: Texto */}
           <div className={`hero-text ${isVisible ? 'animate-in' : ''}`}>
             <span className="hero-eyebrow">
-              ✨ {store.metadata?.eyebrow || 'Artesanal & Prático'}
+              Ã¢Å“Â¨ {store.metadata?.eyebrow || 'Artesanal & PrÃƒÂ¡tico'}
             </span>
             <h1 className="hero-title">
               {store.metadata?.hero_title || 'O verdadeiro sabor artesanal em minutos.'}
             </h1>
             <p className="hero-description">
-              {store.description || 'Sabor que cuida de você. Produtos feitos com ingredientes selecionados.'}
+              {store.description || 'Sabor que cuida de vocÃƒÂª. Produtos feitos com ingredientes selecionados.'}
             </p>
             <div className="hero-buttons">
               <Link href="/cardapio" className="btn-primary btn-glow">
-                <span>Ver cardápio</span>
+                <span>Ver cardÃƒÂ¡pio</span>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M5 12h14M12 5l7 7-7 7" />
                 </svg>
@@ -113,9 +113,9 @@ const LandingPage = () => {
             {/* Social Proof */}
             <div className="hero-social-proof">
               <div className="social-proof-avatars">
-                <span className="avatar">👨‍🍳</span>
-                <span className="avatar">👩‍🍳</span>
-                <span className="avatar">🧑‍🍳</span>
+                <span className="avatar">Ã°Å¸â€˜Â¨Ã¢â‚¬ÂÃ°Å¸ÂÂ³</span>
+                <span className="avatar">Ã°Å¸â€˜Â©Ã¢â‚¬ÂÃ°Å¸ÂÂ³</span>
+                <span className="avatar">Ã°Å¸Â§â€˜Ã¢â‚¬ÂÃ°Å¸ÂÂ³</span>
               </div>
               <p><strong>+500</strong> clientes satisfeitos</p>
             </div>
@@ -137,12 +137,12 @@ const LandingPage = () => {
                   fontSize: '5rem',
                   boxShadow: '0 20px 40px rgba(0,0,0,0.1)'
                 }}>
-                  🥘
+                  Ã°Å¸Â¥Ëœ
                 </div>
               )}
               {/* Floating badge */}
               <div className="hero-badge-float">
-                <span className="badge-icon">🌿</span>
+                <span className="badge-icon">Ã°Å¸Å’Â¿</span>
                 <span className="badge-text">100% Fresco</span>
               </div>
             </div>
@@ -166,7 +166,7 @@ const LandingPage = () => {
             <div className="step-card">
               <div className="step-number">01</div>
               <h3>Escolha</h3>
-              <p>Navegue pelo cardápio e escolha seus produtos favoritos.</p>
+              <p>Navegue pelo cardÃƒÂ¡pio e escolha seus produtos favoritos.</p>
             </div>
             <div className="step-arrow" aria-hidden="true">
               <svg viewBox="0 0 40 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -176,8 +176,8 @@ const LandingPage = () => {
             </div>
             <div className="step-card">
               <div className="step-number">02</div>
-              <h3>Peça</h3>
-              <p>Faça seu pedido online de forma rápida e segura.</p>
+              <h3>PeÃƒÂ§a</h3>
+              <p>FaÃƒÂ§a seu pedido online de forma rÃƒÂ¡pida e segura.</p>
             </div>
             <div className="step-arrow" aria-hidden="true">
               <svg viewBox="0 0 40 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -204,24 +204,24 @@ const LandingPage = () => {
 
           <div className="features-grid">
             <div className="feature-card">
-              <span className="feature-icon">✨</span>
+              <span className="feature-icon">Ã¢Å“Â¨</span>
               <h3>Ingredientes frescos</h3>
               <p>Produtos preparados com ingredientes selecionados diariamente.</p>
             </div>
             <div className="feature-card">
-              <span className="feature-icon">👩‍🍳</span>
+              <span className="feature-icon">Ã°Å¸â€˜Â©Ã¢â‚¬ÂÃ°Å¸ÂÂ³</span>
               <h3>Feito com amor</h3>
-              <p>Cada item é preparado com cuidado e carinho artesanal.</p>
+              <p>Cada item ÃƒÂ© preparado com cuidado e carinho artesanal.</p>
             </div>
             <div className="feature-card">
-              <span className="feature-icon">💚</span>
-              <h3>Sabor Incomparável</h3>
+              <span className="feature-icon">Ã°Å¸â€™Å¡</span>
+              <h3>Sabor IncomparÃƒÂ¡vel</h3>
               <p>Receitas exclusivas que garantem o melhor paladar.</p>
             </div>
             <div className="feature-card">
-              <span className="feature-icon">🚀</span>
-              <h3>Entrega rápida</h3>
-              <p>Receba seu pedido fresquinho onde você estiver.</p>
+              <span className="feature-icon">Ã°Å¸Å¡â‚¬</span>
+              <h3>Entrega rÃƒÂ¡pida</h3>
+              <p>Receba seu pedido fresquinho onde vocÃƒÂª estiver.</p>
             </div>
           </div>
         </div>
@@ -232,9 +232,9 @@ const LandingPage = () => {
         <div className="container">
           <div className="cta-content">
             <h2>Pronto para experimentar?</h2>
-            <p>Descubra o sabor autêntico de {store.name}.</p>
+            <p>Descubra o sabor autÃƒÂªntico de {store.name}.</p>
             <Link href="/cardapio" className="btn-primary btn-large">
-              Ver cardápio completo
+              Ver cardÃƒÂ¡pio completo
             </Link>
           </div>
         </div>
@@ -263,25 +263,25 @@ const LandingPage = () => {
             </div>
             <div className="footer-links">
               <h4>Links</h4>
-              <Link href="/">Início</Link>
-              <Link href="/cardapio">Cardápio</Link>
-              <Link href="/login">Minha Conta</Link>
+              <Link href="/">InÃƒÂ­cio</Link>
+              <Link href="/cardapio">CardÃƒÂ¡pio</Link>
+              <Link href="/checkout">Checkout</Link>
             </div>
             <div className="footer-contact">
               <h4>Contato</h4>
               <p>{store.email}</p>
               <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">
-                📱 WhatsApp
+                Ã°Å¸â€œÂ± WhatsApp
               </a>
               <p className="footer-address">
-                📍 {store.address || 'Consultar endereço'}<br />
+                Ã°Å¸â€œÂ {store.address || 'Consultar endereÃƒÂ§o'}<br />
                 {store.city} - {store.state}
               </p>
             </div>
           </div>
           <div className="footer-bottom">
-            <p>© {new Date().getFullYear()} {store.name}. Todos os direitos reservados.</p>
-            <p className="footer-made">Feito com ❤️ por Antigravity</p>
+            <p>Ã‚Â© {new Date().getFullYear()} {store.name}. Todos os direitos reservados.</p>
+            <p className="footer-made">Feito com Ã¢ÂÂ¤Ã¯Â¸Â por Antigravity</p>
           </div>
         </div>
       </footer>

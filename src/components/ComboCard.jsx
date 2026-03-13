@@ -1,20 +1,14 @@
 import React from 'react';
 import { useCart } from '../context/CartContext';
-import { useAuth } from '../context/AuthContext';
 
 /**
  * ComboCard Component
  * Displays a combo bundle with its included items and pricing
  */
-const ComboCard = ({ combo, onLoginRequired }) => {
+const ComboCard = ({ combo }) => {
   const { addComboToCart } = useCart();
-  const { isAuthenticated } = useAuth();
 
   const handleAddToCart = () => {
-    if (!isAuthenticated) {
-      onLoginRequired?.();
-      return;
-    }
     addComboToCart(combo);
   };
 

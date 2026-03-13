@@ -115,7 +115,7 @@ const Navbar = () => {
               href="/login"
               className={`navbar-link ${isActive('/login') ? 'active' : ''}`}
             >
-              Login
+              Entrar
             </Link>
           )}
         </div>
@@ -190,14 +190,7 @@ const Navbar = () => {
               className={`navbar-mobile-link ${isActive('/login') ? 'active' : ''}`}
               onClick={() => handleMobileNavigate('/login')}
             >
-              Login
-            </button>
-            <button
-              type="button"
-              className="navbar-mobile-link navbar-mobile-register"
-              onClick={() => handleMobileNavigate('/registro')}
-            >
-              Criar conta
+              Entrar
             </button>
           </>
         )}
