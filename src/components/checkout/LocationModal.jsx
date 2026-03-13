@@ -1,122 +1,137 @@
 /**
  * Location Modal - Popup for GPS detection and address selection
- * 
- * Features:
- * - GPS auto-detection
- * - Manual map selection
- * - Address complement field (house number, apartment, etc.)
- * - Inline confirmation with edit hint
  */
 'use client';
 import React, { useState, useEffect, useCallback } from 'react';
 import styles from '../../styles/CheckoutModal.module.css';
 import { STORE_LOCATION } from './utils';
-
-// Import InteractiveMap directly - it already has 'use client' directive
 import InteractiveMap from '../InteractiveMap';
+
+const resolveDetectedNumber = (value) => value?.address?.number || value?.number || '';
 
 const LocationModal = ({
   isOpen,
   onClose,
   onConfirm,
   geolocation,
-  delivery
+  delivery,
 }) => {
-  const [step, setStep] = useState('detecting'); // 'detecting' | 'map' | 'confirm'
+  const {
+    position,
+    detectedAddress,
+    deliveryInfo: detectedDeliveryInfo,
+    routeInfo,
+    loading,
+    error,
+    detectLocation,
+    updateLocation,
+  } = geolocation;
+
   const [manualMode, setManualMode] = useState(false);
-  const [complement, setComplement] = useState('');
-  const [showComplementHint, setShowComplementHint] = useState(false);
+  const [addressStreet, setAddressStreet] = useState('');
+  const [addressNeighborhood, setAddressNeighborhood] = useState('');
+  const [addressNumber, setAddressNumber] = useState('');
+  const [addressComplement, setAddressComplement] = useState('');
 
-  // Start GPS detection when modal opens
+  const currentStep = manualMode ? 'map' : (detectedAddress ? 'confirm' : 'detecting');
+
   useEffect(() => {
-    if (isOpen && !geolocation.position && !manualMode) {
-      setStep('detecting');
-      geolocation.detectLocation().then((result) => {
-        if (result) {
-          setStep('confirm');
-          // Show complement hint if no house number detected
-          if (!result.address?.number) {
-            setShowComplementHint(true);
-          }
-        } else {
-          setStep('map');
-          setManualMode(true);
-        }
-      });
-    } else if (isOpen && geolocation.position) {
-      setStep('confirm');
-      // Show complement hint if no house number
-      if (!geolocation.detectedAddress?.number) {
-        setShowComplementHint(true);
+    if (!isOpen || manualMode || detectedAddress || position) return undefined;
+
+    let cancelled = false;
+
+    detectLocation().then((result) => {
+      if (cancelled) return;
+
+      if (!result) {
+        setManualMode(true);
       }
-    }
-  }, [isOpen]);
+    });
 
-  // Reset state when modal closes
-  useEffect(() => {
-    if (!isOpen) {
-      setComplement('');
-      setShowComplementHint(false);
-    }
-  }, [isOpen]);
+    return () => {
+      cancelled = true;
+    };
+  }, [isOpen, manualMode, detectedAddress, position, detectLocation]);
+
+  const resetLocalState = useCallback(() => {
+    setManualMode(false);
+    setAddressStreet('');
+    setAddressNeighborhood('');
+    setAddressNumber('');
+    setAddressComplement('');
+  }, []);
+
+  const handleClose = useCallback(() => {
+    resetLocalState();
+    onClose();
+  }, [onClose, resetLocalState]);
 
   const handleSkipGps = useCallback(() => {
     setManualMode(true);
-    setStep('map');
   }, []);
 
   const handleRetryGps = useCallback(() => {
     setManualMode(false);
-    setStep('detecting');
-    geolocation.detectLocation().then((result) => {
-      if (result) {
-        setStep('confirm');
-        if (!result.address?.number) {
-          setShowComplementHint(true);
-        }
-      } else {
-        setStep('map');
+    detectLocation().then((result) => {
+      if (!result) {
         setManualMode(true);
       }
     });
-  }, [geolocation]);
+  }, [detectLocation]);
 
   const handleMapLocationSelect = useCallback(async (location) => {
     const lat = location?.lat || location?.latitude;
     const lng = location?.lng || location?.longitude;
-    
-    if (lat && lng) {
-      const result = await geolocation.updateLocation(lat, lng);
-      setStep('confirm');
-      // Show complement hint if no house number
-      if (!result?.number && !geolocation.detectedAddress?.number) {
-        setShowComplementHint(true);
-      }
-    }
-  }, [geolocation]);
+
+    if (!lat || !lng) return;
+
+    await updateLocation(lat, lng);
+    setManualMode(false);
+  }, [updateLocation]);
+
+  const resolvedStreet = addressStreet.trim() || detectedAddress?.street || '';
+  const resolvedNeighborhood = addressNeighborhood.trim() || detectedAddress?.neighborhood || '';
+  const resolvedNumber = addressNumber.trim() || detectedAddress?.number || '';
+  const resolvedComplement = addressComplement.trim() || detectedAddress?.complement || '';
+  const requiresNumber = !resolvedNumber && !resolveDetectedNumber(detectedAddress);
 
   const handleConfirmLocation = useCallback(() => {
-    if (geolocation.detectedAddress) {
-      // Merge complement into address
-      const addressWithComplement = {
-        ...geolocation.detectedAddress,
-        complement: complement.trim() || geolocation.detectedAddress.complement || ''
-      };
-      
-      // Prefer geolocation.deliveryInfo as it's the most recent from the API
-      const deliveryData = geolocation.deliveryInfo || delivery.deliveryInfo || { fee: 0, zone_name: 'Área de entrega' };
-      onConfirm({
-        address: addressWithComplement,
-        position: geolocation.position,
-        deliveryInfo: deliveryData,
-        routeInfo: geolocation.routeInfo
-      });
-    }
-  }, [geolocation, delivery, onConfirm, complement]);
+    if (!detectedAddress) return;
 
-  const handleEditLocation = useCallback(() => {
-    setStep('map');
-  }, []);
+    const mergedAddress = {
+      ...detectedAddress,
+      street: resolvedStreet,
+      neighborhood: resolvedNeighborhood,
+      number: resolvedNumber,
+      complement: resolvedComplement,
+    };
+
+    const resolvedDeliveryInfo = detectedDeliveryInfo || delivery.deliveryInfo || {
+      fee: 0,
+      zone_name: 'Area de entrega',
+    };
+
+    onConfirm({
+      address: mergedAddress,
+      position,
+      deliveryInfo: resolvedDeliveryInfo,
+      routeInfo,
+    });
+
+    resetLocalState();
+  }, [
+    delivery.deliveryInfo,
+    detectedAddress,
+    detectedDeliveryInfo,
+    onConfirm,
+    position,
+    resetLocalState,
+    resolvedComplement,
+    resolvedNeighborhood,
+    resolvedNumber,
+    resolvedStreet,
+    routeInfo,
+  ]);
 
   const formatDistance = (km) => {
     if (!km) return '';
@@ -131,103 +146,101 @@ const LocationModal = ({
     return `${hours}h ${mins}min`;
   };
 
+  const isAddressReady = (
+    Boolean(resolvedStreet)
+    && Boolean(resolvedNeighborhood)
+    && Boolean(resolvedNumber || !requiresNumber)
+  );
+
   if (!isOpen) return null;
 
   return (
-    <div className={styles.modalOverlay} onClick={onClose}>
-      <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-        <button className={styles.closeButton} onClick={onClose}>×</button>
+    <div className={styles.modalOverlay} onClick={handleClose}>
+      <div className={styles.modalContent} onClick={(event) => event.stopPropagation()}>
+        <button className={styles.closeButton} onClick={handleClose}>×</button>
 
-        {/* Step 1: Detecting GPS */}
-        {step === 'detecting' && (
+        {currentStep === 'detecting' && (
           <div className={styles.detectingStep}>
             <div className={styles.gpsAnimation}>
-              <div className={styles.pulseRing}></div>
+              <div className={styles.pulseRing} />
               <div className={styles.gpsIcon}>📍</div>
             </div>
-            <h2>Detectando sua localização...</h2>
-            <p>Permita o acesso à localização para calcularmos a taxa de entrega</p>
-            
-            {geolocation.error && (
+            <h2>Detectando sua localizacao...</h2>
+            <p>Permita o acesso a localizacao para calcularmos a taxa de entrega.</p>
+
+            {error ? (
               <div className={styles.errorBox}>
-                <p>{geolocation.error}</p>
+                <p>{error}</p>
                 <div className={styles.errorActions}>
                   <button onClick={handleRetryGps} className={styles.retryBtn}>
-                    🔄 Tentar novamente
+                    Tentar novamente
                   </button>
                   <button onClick={handleSkipGps} className={styles.skipBtn}>
-                    Inserir endereço manualmente
+                    Inserir endereco manualmente
                   </button>
                 </div>
               </div>
-            )}
-
-            {!geolocation.error && (
+            ) : (
               <button onClick={handleSkipGps} className={styles.skipLink}>
-                Prefiro inserir o endereço manualmente
+                Prefiro inserir o endereco manualmente
               </button>
             )}
           </div>
         )}
 
-        {/* Step 2: Map Selection */}
-        {step === 'map' && (
+        {currentStep === 'map' && (
           <div className={styles.mapStep}>
-            <h2>Selecione seu endereço no mapa</h2>
-            
-            {/* Interactive hint banner */}
+            <h2>Selecione seu endereco no mapa</h2>
+
             <div className={styles.mapHintBanner}>
               <span className={styles.mapHintIcon}>👆</span>
-              <span>Toque no mapa para marcar sua localização exata</span>
+              <span>Toque no mapa para marcar sua localizacao exata</span>
             </div>
 
             <div className={styles.mapContainer}>
               <InteractiveMap
                 storeLocation={STORE_LOCATION}
-                customerLocation={geolocation.position}
-                routePolyline={geolocation.routeInfo?.polyline}
+                customerLocation={position}
+                routePolyline={routeInfo?.polyline}
                 onLocationSelect={handleMapLocationSelect}
                 enableSelection={true}
                 showStoreMarker={true}
-                showCustomerMarker={!!geolocation.position}
+                showCustomerMarker={!!position}
                 height="350px"
               />
             </div>
 
-            {geolocation.loading && (
+            {loading && (
               <div className={styles.loadingOverlay}>
-                <div className={styles.spinner}></div>
-                <p>Buscando endereço...</p>
+                <div className={styles.spinner} />
+                <p>Buscando endereco...</p>
               </div>
             )}
           </div>
         )}
 
-        {/* Step 3: Confirm Location */}
-        {step === 'confirm' && geolocation.detectedAddress && (
+        {currentStep === 'confirm' && detectedAddress && (
           <div className={styles.confirmStep}>
-            {/* Compact header with edit hint */}
             <div className={styles.confirmHeader}>
-              <h2>📍 Endereço de entrega</h2>
-              <button 
-                onClick={handleEditLocation} 
+              <h2>Endereco de entrega</h2>
+              <button
+                onClick={handleSkipGps}
                 className={styles.editLocationBtn}
-                title="Clique para ajustar a localização no mapa"
+                title="Clique para ajustar a localizacao no mapa"
               >
                 Ajustar no mapa
               </button>
             </div>
 
-            {/* Map with route - clickable to edit */}
-            <div 
+            <div
               className={styles.mapContainerClickable}
-              onClick={handleEditLocation}
-              title="Clique para ajustar a localização"
+              onClick={handleSkipGps}
+              title="Clique para ajustar a localizacao"
             >
               <InteractiveMap
                 storeLocation={STORE_LOCATION}
-                customerLocation={geolocation.position}
-                routePolyline={geolocation.routeInfo?.polyline}
+                customerLocation={position}
+                routePolyline={routeInfo?.polyline}
                 enableSelection={false}
                 showStoreMarker={true}
                 showCustomerMarker={true}
@@ -238,57 +251,96 @@ const LocationModal = ({
               </div>
             </div>
 
-            {/* Inline Address Card with Edit */}
             <div className={styles.addressCardInline}>
               <div className={styles.addressMainInfo}>
                 <div className={styles.addressIcon}>📍</div>
                 <div className={styles.addressText}>
                   <p className={styles.streetName}>
-                    {geolocation.detectedAddress.street}
-                    {geolocation.detectedAddress.number && `, ${geolocation.detectedAddress.number}`}
+                    {resolvedStreet}
+                    {resolvedNumber && `, ${resolvedNumber}`}
                   </p>
                   <p className={styles.addressSecondary}>
-                    {geolocation.detectedAddress.neighborhood && `${geolocation.detectedAddress.neighborhood} • `}
-                    {geolocation.detectedAddress.city}
-                    {geolocation.detectedAddress.state && ` - ${geolocation.detectedAddress.state}`}
+                    {resolvedNeighborhood && `${resolvedNeighborhood} • `}
+                    {detectedAddress.city}
+                    {detectedAddress.state && ` - ${detectedAddress.state}`}
                   </p>
                 </div>
               </div>
-              
-              {/* Complement/Details Field */}
+
               <div className={styles.complementSection}>
-                <label className={styles.complementLabel}>
-                  <span className={styles.complementIcon}>🏠</span>
-                  Complemento / Detalhes de entrega
-                  {showComplementHint && !geolocation.detectedAddress.number && (
-                    <span className={styles.complementRequired}>*</span>
-                  )}
-                </label>
-                <input
-                  type="text"
-                  className={styles.complementInput}
-                  placeholder="Ex: Nº 123, Apto 45, Bloco B, Portaria, Interfone 102..."
-                  value={complement}
-                  onChange={(e) => setComplement(e.target.value)}
-                  autoFocus={showComplementHint}
-                />
-                {showComplementHint && !geolocation.detectedAddress.number && (
-                  <p className={styles.complementHint}>
-                    💡 Não detectamos o número. Por favor, informe para facilitar a entrega.
-                  </p>
-                )}
+                <div className={styles.complementField}>
+                  <label className={styles.complementLabel}>
+                    <span className={styles.complementIcon}>🛣️</span>
+                    Logradouro *
+                  </label>
+                  <input
+                    type="text"
+                    className={styles.complementInput}
+                    placeholder="Rua, avenida, quadra..."
+                    value={resolvedStreet}
+                    onChange={(event) => setAddressStreet(event.target.value)}
+                  />
+                </div>
+
+                <div className={styles.complementGrid}>
+                  <div className={styles.complementField}>
+                    <label className={styles.complementLabel}>
+                      <span className={styles.complementIcon}>#</span>
+                      Numero *
+                    </label>
+                    <input
+                      type="text"
+                      className={styles.complementInput}
+                      placeholder="Ex: 123"
+                      value={resolvedNumber}
+                      onChange={(event) => setAddressNumber(event.target.value)}
+                    />
+                    {requiresNumber && (
+                      <p className={styles.complementHint}>
+                        Nao detectamos o numero. Informe para liberar a entrega.
+                      </p>
+                    )}
+                  </div>
+
+                  <div className={styles.complementField}>
+                    <label className={styles.complementLabel}>
+                      <span className={styles.complementIcon}>📌</span>
+                      Bairro *
+                    </label>
+                    <input
+                      type="text"
+                      className={styles.complementInput}
+                      placeholder="Bairro"
+                      value={resolvedNeighborhood}
+                      onChange={(event) => setAddressNeighborhood(event.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div className={styles.complementField}>
+                  <label className={styles.complementLabel}>
+                    <span className={styles.complementIcon}>🏠</span>
+                    Complemento / referencia
+                  </label>
+                  <input
+                    type="text"
+                    className={styles.complementInput}
+                    placeholder="Apto, bloco, portao, referencia (opcional)"
+                    value={resolvedComplement}
+                    onChange={(event) => setAddressComplement(event.target.value)}
+                  />
+                </div>
               </div>
             </div>
 
-            {/* Delivery Stats - Compact */}
             <div className={styles.deliveryStatsCompact}>
               <div className={styles.statCompact}>
                 <span className={styles.statIcon}>📏</span>
                 <span>
-                  {geolocation.routeInfo?.distance_km 
-                    ? formatDistance(geolocation.routeInfo.distance_km)
-                    : geolocation.deliveryInfo?.distance_km
-                    ? formatDistance(geolocation.deliveryInfo.distance_km)
+                  {routeInfo?.distance_km
+                    ? formatDistance(routeInfo.distance_km)
+                    : detectedDeliveryInfo?.distance_km
+                    ? formatDistance(detectedDeliveryInfo.distance_km)
                     : '—'}
                 </span>
               </div>
@@ -296,10 +348,10 @@ const LocationModal = ({
               <div className={styles.statCompact}>
                 <span className={styles.statIcon}>⏱️</span>
                 <span>
-                  {geolocation.routeInfo?.duration_minutes 
-                    ? formatDuration(geolocation.routeInfo.duration_minutes)
-                    : geolocation.deliveryInfo?.estimated_minutes
-                    ? formatDuration(geolocation.deliveryInfo.estimated_minutes)
+                  {routeInfo?.duration_minutes
+                    ? formatDuration(routeInfo.duration_minutes)
+                    : detectedDeliveryInfo?.estimated_minutes
+                    ? formatDuration(detectedDeliveryInfo.estimated_minutes)
                     : '—'}
                 </span>
               </div>
@@ -307,21 +359,20 @@ const LocationModal = ({
               <div className={`${styles.statCompact} ${styles.statFee}`}>
                 <span className={styles.statIcon}>💰</span>
                 <span className={styles.feeValue}>
-                  {(geolocation.deliveryInfo?.fee ?? delivery.deliveryInfo?.fee) === 0 
-                    ? 'Grátis!' 
-                    : `R$ ${(geolocation.deliveryInfo?.fee ?? delivery.deliveryInfo?.fee ?? 0).toFixed(2)}`}
+                  {(detectedDeliveryInfo?.fee ?? delivery.deliveryInfo?.fee) === 0
+                    ? 'Gratis'
+                    : `R$ ${(detectedDeliveryInfo?.fee ?? delivery.deliveryInfo?.fee ?? 0).toFixed(2)}`}
                 </span>
               </div>
             </div>
 
-            {/* Confirm Button - Full Width */}
-            <button 
-              onClick={handleConfirmLocation} 
+            <button
+              onClick={handleConfirmLocation}
               className={styles.confirmBtnFull}
-              disabled={showComplementHint && !geolocation.detectedAddress.number && !complement.trim()}
+              disabled={!isAddressReady}
             >
               <span className={styles.confirmBtnIcon}>✓</span>
-              Confirmar endereço
+              Confirmar endereco
             </button>
           </div>
         )}

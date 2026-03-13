@@ -12,7 +12,7 @@ const OrderConfirmation = ({
   deliveryInfo,
   onSelectDeliveryAddress,
   confirmedAddress,
-  onProceedToPayment
+  onProceedToPayment,
 }) => {
   const canProceed = shippingMethod === 'pickup' || (shippingMethod === 'delivery' && confirmedAddress);
   const shippingCost = shippingMethod === 'pickup' ? 0 : (deliveryInfo?.fee || 0);
@@ -20,13 +20,12 @@ const OrderConfirmation = ({
 
   return (
     <div className={styles.orderConfirmation}>
-      {/* Cart Items */}
       <div className={styles.cartSection}>
         <h2 className={styles.sectionTitle}>
           <span className={styles.sectionIcon}>🛒</span>
-          Seu Pedido
+          Seu pedido
         </h2>
-        
+
         <div className={styles.cartItems}>
           {cart.map((item, index) => (
             <div key={item.id || index} className={styles.cartItem}>
@@ -34,7 +33,7 @@ const OrderConfirmation = ({
                 {item.image ? (
                   <img src={item.image} alt={item.name} />
                 ) : (
-                  <div className={styles.itemPlaceholder}>🍝</div>
+                  <div className={styles.itemPlaceholder}>🥗</div>
                 )}
               </div>
               <div className={styles.itemDetails}>
@@ -59,7 +58,6 @@ const OrderConfirmation = ({
         </div>
       </div>
 
-      {/* Delivery Method Selection */}
       <div className={styles.deliverySection}>
         <h2 className={styles.sectionTitle}>
           <span className={styles.sectionIcon}>🚚</span>
@@ -67,15 +65,14 @@ const OrderConfirmation = ({
         </h2>
 
         <div className={styles.deliveryOptions}>
-          {/* Delivery Option */}
-          <div 
+          <div
             className={`${styles.deliveryOption} ${shippingMethod === 'delivery' ? styles.selected : ''}`}
             onClick={() => onShippingMethodChange('delivery')}
           >
             <div className={styles.optionRadio}>
-              <input 
-                type="radio" 
-                checked={shippingMethod === 'delivery'} 
+              <input
+                type="radio"
+                checked={shippingMethod === 'delivery'}
                 onChange={() => onShippingMethodChange('delivery')}
               />
             </div>
@@ -86,7 +83,7 @@ const OrderConfirmation = ({
               {shippingMethod === 'delivery' && deliveryInfo && (
                 <div className={styles.deliveryFee}>
                   Taxa: {deliveryInfo.fee === 0 ? (
-                    <span className={styles.freeDelivery}>Grátis!</span>
+                    <span className={styles.freeDelivery}>Gratis</span>
                   ) : (
                     <span>R$ {deliveryInfo.fee.toFixed(2)}</span>
                   )}
@@ -99,25 +96,30 @@ const OrderConfirmation = ({
             {shippingMethod === 'delivery' && (
               <div className={styles.optionAction}>
                 {confirmedAddress ? (
-                  <button 
+                  <button
                     className={styles.changeAddressBtn}
-                    onClick={(e) => { e.stopPropagation(); onSelectDeliveryAddress(); }}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      onSelectDeliveryAddress();
+                    }}
                   >
                     Alterar
                   </button>
                 ) : (
-                  <button 
+                  <button
                     className={styles.selectAddressBtn}
-                    onClick={(e) => { e.stopPropagation(); onSelectDeliveryAddress(); }}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      onSelectDeliveryAddress();
+                    }}
                   >
-                    Selecionar endereço
+                    Selecionar endereco
                   </button>
                 )}
               </div>
             )}
           </div>
 
-          {/* Confirmed Address Display */}
           {shippingMethod === 'delivery' && confirmedAddress && (
             <div className={styles.confirmedAddress}>
               <div className={styles.addressPin}>📍</div>
@@ -128,7 +130,7 @@ const OrderConfirmation = ({
                 </p>
                 {confirmedAddress.complement && (
                   <p className={styles.addressComplement}>
-                    🏠 {confirmedAddress.complement}
+                    Complemento: {confirmedAddress.complement}
                   </p>
                 )}
                 <p className={styles.addressCity}>
@@ -139,21 +141,20 @@ const OrderConfirmation = ({
             </div>
           )}
 
-          {/* Pickup Option */}
-          <div 
+          <div
             className={`${styles.deliveryOption} ${shippingMethod === 'pickup' ? styles.selected : ''}`}
             onClick={() => onShippingMethodChange('pickup')}
           >
             <div className={styles.optionRadio}>
-              <input 
-                type="radio" 
-                checked={shippingMethod === 'pickup'} 
+              <input
+                type="radio"
+                checked={shippingMethod === 'pickup'}
                 onChange={() => onShippingMethodChange('pickup')}
               />
             </div>
             <div className={styles.optionIcon}>🏪</div>
             <div className={styles.optionContent}>
-              <h3>Retirada na Loja</h3>
+              <h3>Retirar no local</h3>
               <p>Q. 112 Sul Rua SR 1, conj. 06 lote 04</p>
               <div className={styles.pickupBenefit}>
                 <span className={styles.freeTag}>Sem taxa</span>
@@ -163,7 +164,6 @@ const OrderConfirmation = ({
         </div>
       </div>
 
-      {/* Order Total */}
       <div className={styles.orderTotal}>
         <div className={styles.totalRow}>
           <span>Subtotal</span>
@@ -173,15 +173,15 @@ const OrderConfirmation = ({
           <span>Entrega</span>
           <span>
             {shippingMethod === 'pickup' ? (
-              <span className={styles.freeText}>Grátis</span>
+              <span className={styles.freeText}>Gratis</span>
             ) : deliveryInfo ? (
               deliveryInfo.fee === 0 ? (
-                <span className={styles.freeText}>Grátis</span>
+                <span className={styles.freeText}>Gratis</span>
               ) : (
                 `R$ ${deliveryInfo.fee.toFixed(2)}`
               )
             ) : (
-              <span className={styles.pendingText}>Selecione o endereço</span>
+              <span className={styles.pendingText}>Selecione o endereco</span>
             )}
           </span>
         </div>
@@ -191,13 +191,12 @@ const OrderConfirmation = ({
         </div>
       </div>
 
-      {/* Proceed Button */}
-      <button 
+      <button
         className={styles.proceedButton}
         onClick={onProceedToPayment}
         disabled={!canProceed}
       >
-        {canProceed ? 'Continuar para Pagamento' : 'Selecione o endereço de entrega'}
+        {canProceed ? 'Continuar para identificacao' : 'Selecione o endereco de entrega'}
       </button>
     </div>
   );

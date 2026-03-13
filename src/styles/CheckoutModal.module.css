@@ -885,6 +885,17 @@
   border-bottom: none;
 }
 
+.paymentLockedHint {
+  margin: -0.25rem 0 1.5rem;
+  padding: 0.95rem 1rem;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #fff7ed 0%, #fef3c7 100%);
+  border: 1px solid #fcd34d;
+  color: #92400e;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
 .cardPaymentContainer {
   margin-top: 1rem;
   padding: 1rem;
@@ -1160,6 +1171,18 @@
   gap: 0.5rem;
 }
 
+.complementGrid {
+  display: grid;
+  grid-template-columns: minmax(120px, 160px) minmax(0, 1fr);
+  gap: 0.75rem;
+}
+
+.complementField {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
 .complementLabel {
   display: flex;
   align-items: center;
@@ -1313,6 +1336,10 @@
   .addressCardInline {
     margin: 0 0.75rem 0.75rem;
     padding: 0.875rem;
+  }
+
+  .complementGrid {
+    grid-template-columns: 1fr;
   }
 
   .deliveryStatsCompact {

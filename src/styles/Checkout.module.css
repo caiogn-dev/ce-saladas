@@ -314,6 +314,116 @@
   margin-top: 0.25rem;
 }
 
+.identificationCard,
+.personalDataCard {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 14px;
+  border: 1px solid #eadfd5;
+  background: linear-gradient(135deg, #fffdfa 0%, #f9f4ee 100%);
+}
+
+.personalDataCard {
+  background: white;
+  border-color: #ece7df;
+}
+
+.formSectionHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.formSectionEyebrow {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #2D6A4F;
+}
+
+.formSectionDescription {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: #6b6b6b;
+}
+
+.identificationButton {
+  width: fit-content;
+  min-width: 160px;
+  padding: 0.8rem 1.2rem;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #2D6A4F 0%, #8B3A44 100%);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 8px 20px rgba(45, 106, 79, 0.18);
+}
+
+.identificationButton:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(45, 106, 79, 0.24);
+}
+
+.identificationButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.identificationHelp {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: #7a746e;
+}
+
+.identificationError {
+  padding: 0.8rem 0.95rem;
+  border-radius: 10px;
+  background: #fff1f2;
+  color: #be123c;
+  border: 1px solid #fecdd3;
+  font-size: 0.85rem;
+}
+
+.identificationSummary {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.identificationSummaryItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.identificationSummaryLabel {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #8a8178;
+}
+
+.identificationLink {
+  width: fit-content;
+  padding: 0;
+  border: none;
+  background: none;
+  color: #2D6A4F;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.identificationLink:hover:not(:disabled) {
+  text-decoration: underline;
+}
+
 /* ============================================
    Address Form
    ============================================ */

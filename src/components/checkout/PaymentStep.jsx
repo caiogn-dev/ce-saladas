@@ -13,8 +13,10 @@ const PaymentStep = ({
   formData,
   errors,
   existingFields,
-  hasPreviousOrder,
   onFormChange,
+  isIdentificationComplete,
+  onCompleteIdentification,
+  onEditIdentification,
   paymentMethod,
   onPaymentMethodChange,
   coupon,
@@ -27,85 +29,90 @@ const PaymentStep = ({
   onBack,
   loading,
   paymentError,
-  mpPublicKey
+  mpPublicKey,
 }) => {
   const total = Math.max(0, cartTotal + (shippingCost || 0) - discount);
 
   return (
     <div className={styles.paymentStep}>
-      {/* Back Button */}
       <button className={styles.backButton} onClick={onBack}>
         ← Voltar ao pedido
       </button>
 
-      {/* Customer Info */}
       <div className={styles.stepSection}>
         <h2 className={styles.sectionTitle}>
           <span className={styles.sectionIcon}>👤</span>
-          Seus Dados
+          Seus dados
         </h2>
         <CustomerForm
           formData={formData}
           errors={errors}
           onChange={onFormChange}
+          onCompleteIdentification={onCompleteIdentification}
+          onEditIdentification={onEditIdentification}
+          isIdentificationComplete={isIdentificationComplete}
           existingFields={existingFields}
-          hasPreviousOrder={hasPreviousOrder}
           disabled={loading}
         />
       </div>
 
-      {/* Scheduling */}
-      <div className={styles.stepSection}>
-        <SchedulingSection
-          enableScheduling={scheduling.enabled}
-          scheduledDate={scheduling.date}
-          scheduledTimeSlot={scheduling.timeSlot}
-          onEnableChange={scheduling.setEnabled}
-          onDateChange={scheduling.setDate}
-          onTimeSlotChange={scheduling.setTimeSlot}
-          disabled={loading}
-        />
-      </div>
+      {!isIdentificationComplete && (
+        <div className={styles.paymentLockedHint}>
+          Continue com email e celular para liberar entrega, cupom e pagamento.
+        </div>
+      )}
 
-      {/* Coupon */}
-      <div className={styles.stepSection}>
-        <CouponInput
-          couponCode={coupon.couponCode}
-          couponError={coupon.couponError}
-          appliedCoupon={coupon.appliedCoupon}
-          loadingCoupon={coupon.loadingCoupon}
-          onChange={coupon.handleCouponChange}
-          onApply={onApplyCoupon}
-          onRemove={coupon.removeCoupon}
-          disabled={loading}
-        />
-      </div>
-
-      {/* Payment Method */}
-      <div className={styles.stepSection}>
-        <h2 className={styles.sectionTitle}>
-          <span className={styles.sectionIcon}>💳</span>
-          Forma de Pagamento
-        </h2>
-        <PaymentMethodSelector
-          paymentMethod={paymentMethod}
-          onChange={onPaymentMethodChange}
-          disabled={loading}
-        />
-
-        {/* Card Payment Form */}
-        {paymentMethod === 'card' && mpPublicKey && (
-          <div className={styles.cardPaymentContainer}>
-            <CardPayment
-              initialization={{ amount: total }}
-              onSubmit={onSubmit}
-              onError={(error) => console.error('Card error:', error)}
+      {isIdentificationComplete && (
+        <>
+          <div className={styles.stepSection}>
+            <SchedulingSection
+              enableScheduling={scheduling.enabled}
+              scheduledDate={scheduling.date}
+              scheduledTimeSlot={scheduling.timeSlot}
+              onEnableChange={scheduling.setEnabled}
+              onDateChange={scheduling.setDate}
+              onTimeSlotChange={scheduling.setTimeSlot}
+              disabled={loading}
             />
           </div>
-        )}
-      </div>
 
-      {/* Order Summary */}
+          <div className={styles.stepSection}>
+            <CouponInput
+              couponCode={coupon.couponCode}
+              couponError={coupon.couponError}
+              appliedCoupon={coupon.appliedCoupon}
+              loadingCoupon={coupon.loadingCoupon}
+              onChange={coupon.handleCouponChange}
+              onApply={onApplyCoupon}
+              onRemove={coupon.removeCoupon}
+              disabled={loading}
+            />
+          </div>
+
+          <div className={styles.stepSection}>
+            <h2 className={styles.sectionTitle}>
+              <span className={styles.sectionIcon}>💳</span>
+              Forma de pagamento
+            </h2>
+            <PaymentMethodSelector
+              paymentMethod={paymentMethod}
+              onChange={onPaymentMethodChange}
+              disabled={loading}
+            />
+
+            {paymentMethod === 'card' && mpPublicKey && (
+              <div className={styles.cardPaymentContainer}>
+                <CardPayment
+                  initialization={{ amount: total }}
+                  onSubmit={onSubmit}
+                  onError={(error) => console.error('Card error:', error)}
+                />
+              </div>
+            )}
+          </div>
+        </>
+      )}
+
       <div className={styles.paymentSummary}>
         <div className={styles.summaryRow}>
           <span>Subtotal</span>
@@ -115,7 +122,7 @@ const PaymentStep = ({
           <span>Entrega</span>
           <span>
             {shippingCost === 0 ? (
-              <span className={styles.freeText}>Grátis</span>
+              <span className={styles.freeText}>Gratis</span>
             ) : (
               `R$ ${(shippingCost || 0).toFixed(2)}`
             )}
@@ -133,29 +140,26 @@ const PaymentStep = ({
         </div>
       </div>
 
-      {/* Error Message */}
       {paymentError && (
         <div className={styles.errorMessage}>
           {paymentError}
         </div>
       )}
 
-      {/* Submit Button (for non-card payments) */}
-      {paymentMethod !== 'card' && (
+      {isIdentificationComplete && paymentMethod !== 'card' && (
         <button
           className={styles.submitButton}
           onClick={() => onSubmit({ method: paymentMethod, type: paymentMethod })}
           disabled={loading}
         >
           {loading ? 'Processando...' : (
-            paymentMethod === 'pix' ? 'GERAR PIX' :
-            paymentMethod === 'cash' ? 'CONFIRMAR PEDIDO' :
-            'FINALIZAR PEDIDO'
+            paymentMethod === 'pix' ? 'Gerar PIX' :
+            paymentMethod === 'cash' ? 'Confirmar pedido' :
+            'Finalizar pedido'
           )}
         </button>
       )}
 
-      {/* Secure Payment Badge */}
       <div className={styles.securePayment}>
         <span>🔒</span>
         Pagamento seguro via Mercado Pago

@@ -340,7 +340,7 @@ const CheckoutPage = () => {
           
           {/* Progress Steps - Using CheckoutProgress component */}
           <CheckoutProgress
-            steps={['Pedido', 'Pagamento']}
+            steps={['Pedido', 'Checkout']}
             currentStep={stepIndex}
             completedSteps={completedSteps}
           />
@@ -366,8 +366,10 @@ const CheckoutPage = () => {
               formData={checkoutForm.formData}
               errors={checkoutForm.errors}
               existingFields={checkoutForm.existingFields}
-              hasPreviousOrder={checkoutForm.hasPreviousOrder}
               onFormChange={checkoutForm.handleChange}
+              isIdentificationComplete={checkoutForm.isIdentificationComplete}
+              onCompleteIdentification={checkoutForm.completeIdentification}
+              onEditIdentification={checkoutForm.editIdentification}
               paymentMethod={paymentMethod}
               onPaymentMethodChange={setPaymentMethod}
               coupon={coupon}
