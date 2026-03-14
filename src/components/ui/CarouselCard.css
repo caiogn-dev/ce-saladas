@@ -29,8 +29,9 @@
 }
 
 .carousel-card__slide {
-  flex: 0 0 calc((100% - (var(--cards-per-view) - 1) * 18px) / var(--cards-per-view));
-  min-width: min(100%, 280px);
+  flex: 0 0 260px;
+  width: 260px;
+  min-width: 0;
   display: flex;
   scroll-snap-align: start;
   scroll-snap-stop: always;
@@ -107,10 +108,6 @@
   .carousel-card__track {
     gap: 16px;
   }
-
-  .carousel-card__slide {
-    flex-basis: calc((100% - (var(--cards-per-view) - 1) * 16px) / var(--cards-per-view));
-  }
 }
 
 @media (max-width: 640px) {
@@ -131,23 +128,17 @@
     gap: 14px;
   }
 
-  .carousel-card__slide {
-    flex-basis: calc((100% - (var(--cards-per-view) - 1) * 14px) / var(--cards-per-view));
-    min-width: min(100%, 72vw);
-  }
-
   .carousel-card__pagination {
     display: flex;
   }
 }
 
 .carousel-card--static .carousel-card__track {
-  width: 100%;
-}
-
-.carousel-card--static .carousel-card__slide {
-  flex: 1 1 0;
+  width: max-content;
   min-width: 0;
 }
 
-
+.carousel-card--static .carousel-card__slide {
+  flex: 0 0 min(100%, 248px);
+  width: min(100%, 248px);
+}

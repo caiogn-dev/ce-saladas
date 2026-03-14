@@ -1,10 +1,16 @@
-﻿import React, { useCallback, useEffect, useRef, useState } from 'react';
+﻿import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const resolveCardsPerView = (width, mobile, tablet, desktop) => {
   if (width < 640) return mobile;
   if (width < 1024) return tablet;
   return desktop;
+};
+
+const resolveGap = (width) => {
+  if (width < 640) return 14;
+  if (width < 1024) return 16;
+  return 18;
 };
 
 const CarouselCard = ({
@@ -19,6 +25,7 @@ const CarouselCard = ({
 }) => {
   const viewportRef = useRef(null);
   const [cardsPerView, setCardsPerView] = useState(desktopCardsPerView);
+  const [viewportWidth, setViewportWidth] = useState(0);
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
   const [activePage, setActivePage] = useState(0);
@@ -33,9 +40,40 @@ const CarouselCard = ({
     return () => window.removeEventListener('resize', syncCardsPerView);
   }, [desktopCardsPerView, mobileCardsPerView, tabletCardsPerView]);
 
+  useEffect(() => {
+    const viewport = viewportRef.current;
+    if (!viewport || typeof ResizeObserver === 'undefined') {
+      return undefined;
+    }
+
+    const observer = new ResizeObserver((entries) => {
+      const entry = entries[0];
+      if (!entry) {
+        return;
+      }
+
+      setViewportWidth(entry.contentRect.width);
+    });
+
+    observer.observe(viewport);
+    setViewportWidth(viewport.clientWidth);
+
+    return () => observer.disconnect();
+  }, []);
+
   const visibleCount = Math.max(1, Math.floor(cardsPerView));
   const canSlide = showCarousel && items.length > visibleCount;
   const totalPages = canSlide ? Math.max(1, items.length - visibleCount + 1) : 1;
+  const gap = resolveGap(typeof window !== 'undefined' ? window.innerWidth : 1280);
+
+  const slideWidth = useMemo(() => {
+    if (!canSlide || !viewportWidth) {
+      return null;
+    }
+
+    const calculatedWidth = (viewportWidth - gap * (cardsPerView - 1)) / cardsPerView;
+    return Math.max(208, Math.floor(calculatedWidth));
+  }, [canSlide, cardsPerView, gap, viewportWidth]);
 
   const updateScrollState = useCallback(() => {
     const viewport = viewportRef.current;
@@ -83,12 +121,12 @@ const CarouselCard = ({
 
     const firstSlide = viewport.querySelector('.carousel-card__slide');
     const track = viewport.querySelector('.carousel-card__track');
-    const gap = track ? parseFloat(window.getComputedStyle(track).gap || '0') : 0;
-    const slideWidth = firstSlide ? firstSlide.getBoundingClientRect().width : viewport.clientWidth;
+    const computedGap = track ? parseFloat(window.getComputedStyle(track).gap || '0') : 0;
+    const measuredSlideWidth = firstSlide ? firstSlide.getBoundingClientRect().width : viewport.clientWidth;
     const cardsToAdvance = window.innerWidth < 640 ? 1 : Math.max(1, Math.floor(cardsPerView));
 
     viewport.scrollBy({
-      left: (slideWidth + gap) * cardsToAdvance * direction,
+      left: (measuredSlideWidth + computedGap) * cardsToAdvance * direction,
       behavior: 'smooth',
     });
   };
@@ -98,10 +136,7 @@ const CarouselCard = ({
   }
 
   return (
-    <div
-      className={`carousel-card ${!canSlide ? 'carousel-card--static' : ''} ${className}`.trim()}
-      style={{ '--cards-per-view': cardsPerView }}
-    >
+    <div className={`carousel-card ${!canSlide ? 'carousel-card--static' : ''} ${className}`.trim()}>
       {canSlide && (
         <div className="carousel-card__controls">
           <button
@@ -131,6 +166,7 @@ const CarouselCard = ({
             <div
               key={`${item.id || item.name || 'item'}-${index}`}
               className="carousel-card__slide"
+              style={slideWidth ? { width: `${slideWidth}px`, flexBasis: `${slideWidth}px` } : undefined}
             >
               <div className="carousel-card__surface">
                 {renderItem ? renderItem(item, index) : null}
@@ -155,5 +191,3 @@ const CarouselCard = ({
 };
 
 export default CarouselCard;
-
-
