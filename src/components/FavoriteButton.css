@@ -18,7 +18,7 @@
 }
 
 .favorite-button:hover {
-  background: #fff;
+  background: var(--color-surface-card);
   color: var(--color-brand-green-dark);
   transform: scale(1.1);
 }
@@ -112,3 +112,4 @@
   from { opacity: 0; transform: translateX(-50%) translateY(4px); }
   to { opacity: 1; transform: translateX(-50%) translateY(0); }
 }
+
