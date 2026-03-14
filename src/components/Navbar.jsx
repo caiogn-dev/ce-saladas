@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+﻿import React, { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useCart } from '../context/CartContext';
@@ -61,6 +61,16 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       <div className="navbar-container">
+        <button
+          className={`navbar-mobile-toggle ${mobileMenuOpen ? 'open' : ''}`}
+          onClick={() => setMobileMenuOpen((current) => !current)}
+          aria-label="Menu"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
         <Link
           href="/"
           className="navbar-logo"
@@ -109,16 +119,6 @@ const Navbar = () => {
           </span>
           <span className="cart-text">Carrinho</span>
           {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
-        </button>
-
-        <button
-          className={`navbar-mobile-toggle ${mobileMenuOpen ? 'open' : ''}`}
-          onClick={() => setMobileMenuOpen((current) => !current)}
-          aria-label="Menu"
-        >
-          <span></span>
-          <span></span>
-          <span></span>
         </button>
       </div>
 
