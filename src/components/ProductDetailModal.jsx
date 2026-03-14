@@ -103,6 +103,7 @@ const ProductDetailModal = ({
   const inStock = isCombo
     ? (item.stock_quantity ?? 1) > 0
     : Boolean(item.is_in_stock ?? ((item.stock_quantity ?? 0) > 0));
+  const categoryName = item.categoryLabel || item.productTypeName || (isCombo ? 'Monte sua salada' : 'Produto');
 
   const badges = Array.from(new Set([
     item.categoryLabel,
@@ -172,11 +173,22 @@ const ProductDetailModal = ({
                 {description}
               </p>
             )}
+
+            <div className={styles.summaryFacts}>
+              <div className={styles.summaryFact}>
+                <span>Categoria</span>
+                <strong>{categoryName}</strong>
+              </div>
+              <div className={styles.summaryFact}>
+                <span>Formato</span>
+                <strong>{isCombo ? 'Montagem personalizada' : 'Pronto para pedir'}</strong>
+              </div>
+            </div>
           </section>
 
           {isCombo && Array.isArray(item.comboItems) && item.comboItems.length > 0 && (
             <section className={styles.section}>
-              <h3>O que acompanha</h3>
+              <h3>O que vem no combo</h3>
               <ul className={styles.list}>
                 {item.comboItems.map((comboItem, index) => (
                   <li key={`${comboItem.product_name || comboItem.product || index}-${index}`}>
@@ -190,7 +202,7 @@ const ProductDetailModal = ({
 
           {details.length > 0 && (
             <section className={styles.section}>
-              <h3>Mais detalhes</h3>
+              <h3>Informações do produto</h3>
               <dl className={styles.detailsGrid}>
                 {details.map((detail) => (
                   <div key={detail.label} className={styles.detailCard}>
@@ -204,7 +216,7 @@ const ProductDetailModal = ({
 
           {Array.isArray(item.tags) && item.tags.length > 0 && (
             <section className={styles.section}>
-              <h3>Tags</h3>
+              <h3>Características</h3>
               <div className={styles.tags}>
                 {item.tags.map((tag) => (
                   <span key={tag} className={styles.tag}>
@@ -217,7 +229,7 @@ const ProductDetailModal = ({
 
           <div className={styles.actions}>
             <Button variant="outline" onClick={onClose}>
-              Continuar navegando
+              Continuar no cardápio
             </Button>
             <Button
               variant={inStock ? 'primary' : 'ghost'}
