@@ -111,7 +111,7 @@ const PaymentStep = ({
 
             {paymentMethod === 'card' && !mpPublicKey && (
               <div className={styles.paymentLockedHint}>
-                O pagamento com cartão abrirá a página segura do Mercado Pago.
+                O pagamento com cartão direto está indisponível porque a chave pública do Mercado Pago não foi configurada neste frontend.
               </div>
             )}
           </div>
@@ -147,7 +147,7 @@ const PaymentStep = ({
 
       {paymentError && <div className={styles.errorMessage}>{paymentError}</div>}
 
-      {isIdentificationComplete && (paymentMethod !== 'card' || !mpPublicKey) && (
+      {isIdentificationComplete && paymentMethod !== 'card' && (
         <button
           className={styles.submitButton}
           onClick={() => onSubmit({ method: paymentMethod, type: paymentMethod })}

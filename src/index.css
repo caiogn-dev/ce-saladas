@@ -7,6 +7,7 @@
 
 /* ===== CSS Variables ===== */
 :root {
+  color-scheme: light;
   /* Brand Colors - Cê Saladas */
   --color-brand-orange: #f26a38;
   --color-brand-orange-rgb: 242, 106, 56;
@@ -90,6 +91,7 @@
 }
 
 html {
+  color-scheme: light;
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -489,32 +491,4 @@ input:focus, textarea:focus, select:focus {
   overflow: hidden;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-cream: #1e2117;
-    --color-white: #24281d;
-    --color-gray-50: #24281d;
-    --color-gray-100: #2d3224;
-    --color-gray-200: #3b4130;
-    --color-gray-300: #555c48;
-    --color-gray-400: #7b8468;
-    --color-gray-500: #a2aa93;
-    --color-gray-600: #c0c8b0;
-    --color-gray-700: #d8dfcd;
-    --color-gray-800: #eef2e6;
-    --color-gray-900: #fffdf7;
-    --color-text: #eef2e6;
-    --color-text-light: #c5ccb8;
-    --shadow-sm: 0 10px 24px rgba(0, 0, 0, 0.22);
-    --shadow-md: 0 18px 38px rgba(0, 0, 0, 0.28);
-    --shadow-lg: 0 28px 56px rgba(0, 0, 0, 0.34);
-    --shadow-xl: 0 36px 72px rgba(0, 0, 0, 0.4);
-  }
-
-  body {
-    background:
-      radial-gradient(circle at top right, rgba(var(--color-brand-green-rgb), 0.14), transparent 24%),
-      linear-gradient(180deg, #171914 0%, #1d2018 52%, #20231b 100%);
-  }
-}
 

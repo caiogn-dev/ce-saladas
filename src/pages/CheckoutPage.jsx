@@ -99,6 +99,10 @@ const normalizePaymentPayload = (selectedMethod, paymentPayload = {}) => {
   };
 };
 
+const hasDirectCardPayload = (paymentPayload = {}) => (
+  Boolean(paymentPayload?.token && paymentPayload?.payment_method_id)
+);
+
 const CheckoutPage = () => {
   const router = useRouter();
   const { cart, cartTotal, clearCart } = useCart();
@@ -193,6 +197,16 @@ const CheckoutPage = () => {
     try {
       const resolvedPaymentMethod = resolveCheckoutPaymentMethod(paymentMethod, paymentPayload);
       const normalizedPaymentPayload = normalizePaymentPayload(paymentMethod, paymentPayload);
+
+      if (normalizeString(paymentMethod) === 'card') {
+        if (!mpPublicKey) {
+          throw new Error('Pagamento com cartão indisponível: a chave pública do Mercado Pago não está configurada no frontend.');
+        }
+
+        if (!hasDirectCardPayload(normalizedPaymentPayload)) {
+          throw new Error('Os dados do cartão não foram gerados corretamente pelo Mercado Pago. Recarregue a página e tente novamente.');
+        }
+      }
 
       const checkoutData = {
         ...checkoutForm.buildCheckoutPayload(
