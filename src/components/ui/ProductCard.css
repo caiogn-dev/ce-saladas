@@ -1,11 +1,11 @@
 ﻿/* ProductCard Component Styles */
 
 .product-card {
-  background-color: var(--color-white);
+  background-color: #fffdf8;
   border-radius: 18px;
   overflow: hidden;
-  border: 1px solid rgba(var(--color-brand-green-rgb), 0.12);
-  box-shadow: 0 14px 28px rgba(var(--color-brand-green-rgb), 0.08);
+  border: 1px solid rgba(var(--color-brand-green-rgb), 0.1);
+  box-shadow: 0 14px 28px rgba(74, 89, 18, 0.06);
   transition:
     transform var(--transition-slow),
     box-shadow var(--transition-slow),
@@ -16,8 +16,8 @@
 
 .product-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 18px 34px rgba(var(--color-brand-green-rgb), 0.12);
-  border-color: rgba(var(--color-brand-green-rgb), 0.26);
+  box-shadow: 0 18px 34px rgba(74, 89, 18, 0.1);
+  border-color: rgba(var(--color-brand-green-rgb), 0.18);
 }
 
 .product-card__image-wrapper {
@@ -32,7 +32,7 @@
 .product-card__image {
   aspect-ratio: 16 / 10;
   overflow: hidden;
-  background: linear-gradient(135deg, #f7f2e6 0%, #f0e8d6 100%);
+  background: linear-gradient(135deg, #f8f4ea 0%, #f2ecde 100%);
   position: relative;
 }
 
@@ -127,6 +127,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  background: linear-gradient(180deg, rgba(255, 253, 247, 0.98), rgba(255, 251, 242, 0.94));
 }
 
 .product-card__info--interactive {
@@ -143,7 +144,7 @@
 .product-card__name {
   font-size: 0.92rem;
   font-weight: 700;
-  color: var(--color-brand-green-dark);
+  color: var(--color-gray-800);
   margin: 0;
   line-height: 1.32;
 }
@@ -154,8 +155,8 @@
 
 .product-card__description {
   font-size: 0.86rem;
-  color: var(--color-gray-600);
-  line-height: 1.6;
+  color: var(--color-gray-700);
+  line-height: 1.55;
   margin: 0;
   flex: 1;
   display: -webkit-box;
@@ -171,7 +172,8 @@
   gap: 3px;
   padding: 6px 10px;
   border-radius: 999px;
-  background: rgba(var(--color-brand-orange-rgb), 0.12);
+  background: rgba(var(--color-brand-orange-rgb), 0.1);
+  border: 1px solid rgba(var(--color-brand-orange-rgb), 0.14);
 }
 
 .product-card__price-currency {
@@ -196,8 +198,8 @@
 
 .product-card__details {
   min-width: 104px;
-  border: 0;
-  background: rgba(var(--color-brand-green-rgb), 0.1);
+  border: 1px solid rgba(var(--color-brand-green-rgb), 0.18);
+  background: rgba(255, 255, 255, 0.7);
   color: var(--color-brand-green-dark);
   border-radius: var(--radius-full);
   padding: 10px 12px;
@@ -210,7 +212,7 @@
 }
 
 .product-card__details:hover {
-  background: rgba(var(--color-brand-green-rgb), 0.16);
+  background: rgba(var(--color-brand-green-rgb), 0.1);
   transform: translateY(-1px);
 }
 
@@ -273,5 +275,3 @@
     font-size: 0.9rem;
   }
 }
-
-

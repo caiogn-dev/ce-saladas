@@ -1,11 +1,16 @@
-import React, { useMemo } from 'react';
+﻿import React, { useMemo } from 'react';
 import Modal from './ui/Modal';
 import Button from './ui/Button';
 import Badge from './ui/Badge';
 import { buildMediaUrl } from '../utils/media';
 import styles from './ProductDetailModal.module.css';
 
-const formatCurrency = (value) => Number(value || 0).toFixed(2);
+const currencyFormatter = new Intl.NumberFormat('pt-BR', {
+  style: 'currency',
+  currency: 'BRL',
+});
+
+const formatCurrency = (value) => currencyFormatter.format(Number(value || 0));
 
 const toLabel = (value) => String(value || '')
   .replace(/[_-]+/g, ' ')
@@ -93,17 +98,18 @@ const ProductDetailModal = ({
     return null;
   }
 
+  const description = item.description || item.shortDescription;
   const isCombo = item.itemType === 'combo' || item.isCombo;
   const inStock = isCombo
     ? (item.stock_quantity ?? 1) > 0
     : Boolean(item.is_in_stock ?? ((item.stock_quantity ?? 0) > 0));
 
-  const badges = [
+  const badges = Array.from(new Set([
     item.categoryLabel,
     item.productTypeName,
     item.weightLabel,
     isCombo ? 'Combo' : 'Produto',
-  ].filter(Boolean);
+  ].filter(Boolean)));
 
   return (
     <Modal
@@ -135,38 +141,38 @@ const ProductDetailModal = ({
         </div>
 
         <div className={styles.contentColumn}>
-          <div className={styles.badges}>
-            {badges.map((badge) => (
-              <Badge key={badge} variant="outline" size="sm">
-                {badge}
+          <section className={styles.summaryCard}>
+            <div className={styles.badges}>
+              {badges.map((badge) => (
+                <Badge key={badge} variant="outline" size="sm">
+                  {badge}
+                </Badge>
+              ))}
+              <Badge variant={inStock ? 'success' : 'warning'} size="sm">
+                {inStock ? 'Disponível' : 'Indisponível'}
               </Badge>
-            ))}
-            <Badge variant={inStock ? 'success' : 'ghost'} size="sm">
-              {inStock ? 'Disponível' : 'Indisponível'}
-            </Badge>
-          </div>
-
-          <div className={styles.pricing}>
-            {item.original_price && Number(item.original_price) > Number(item.price) && (
-              <span className={styles.originalPrice}>
-                R$ {formatCurrency(item.original_price)}
-              </span>
-            )}
-            <div className={styles.currentPrice}>
-              R$ {formatCurrency(item.price)}
             </div>
-            {item.savings && Number(item.savings) > 0 && (
-              <div className={styles.savings}>
-                Economize R$ {formatCurrency(item.savings)}
-              </div>
-            )}
-          </div>
 
-          {(item.shortDescription || item.description) && (
-            <p className={styles.description}>
-              {item.description || item.shortDescription}
-            </p>
-          )}
+            <div className={styles.pricing}>
+              {item.original_price && Number(item.original_price) > Number(item.price) && (
+                <span className={styles.originalPrice}>
+                  {formatCurrency(item.original_price)}
+                </span>
+              )}
+              <div className={styles.currentPrice}>{formatCurrency(item.price)}</div>
+              {item.savings && Number(item.savings) > 0 && (
+                <div className={styles.savings}>
+                  Economize {formatCurrency(item.savings)}
+                </div>
+              )}
+            </div>
+
+            {description && (
+              <p className={styles.description}>
+                {description}
+              </p>
+            )}
+          </section>
 
           {isCombo && Array.isArray(item.comboItems) && item.comboItems.length > 0 && (
             <section className={styles.section}>
@@ -210,7 +216,7 @@ const ProductDetailModal = ({
           )}
 
           <div className={styles.actions}>
-            <Button variant="ghost" onClick={onClose}>
+            <Button variant="outline" onClick={onClose}>
               Continuar navegando
             </Button>
             <Button
