@@ -1,3 +1,12 @@
-import Register from '../src/pages/Register';
+﻿import { useEffect } from 'react';
+import { useRouter } from 'next/router';
 
-export default Register;
+export default function RegistroRoute() {
+  const router = useRouter();
+
+  useEffect(() => {
+    router.replace('/cardapio');
+  }, [router]);
+
+  return null;
+}

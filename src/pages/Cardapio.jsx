@@ -11,6 +11,7 @@ import ProductCard from '../components/ui/ProductCard';
 import CarouselCard from '../components/ui/CarouselCard';
 import PageTransition from '../components/ui/PageTransition';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 import { useStore } from '../context/StoreContext';
 
 const MENU_SECTIONS = [
@@ -104,6 +105,7 @@ const ProductsSkeleton = () => (
 const Cardapio = () => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [query, setQuery] = useState('');
+  const { isAuthenticated } = useAuth();
 
   const {
     addToCart,
@@ -451,7 +453,7 @@ const Cardapio = () => {
                           className="catalog-product-card catalog-product-card--featured"
                           onAddToCart={handleAddToCart}
                           onOpenDetails={setSelectedItem}
-                          favoriteButton={product.itemType === 'product' ? <FavoriteButton productId={product.id} size="small" /> : null}
+                          favoriteButton={product.itemType === 'product' && isAuthenticated ? <FavoriteButton productId={product.id} size="small" /> : null}
                           stockBadge={<StockBadge quantity={product.stock_quantity} />}
                         />
                       )}
@@ -486,7 +488,7 @@ const Cardapio = () => {
                             className="catalog-product-card"
                             onAddToCart={handleAddToCart}
                             onOpenDetails={setSelectedItem}
-                            favoriteButton={product.itemType === 'product' ? <FavoriteButton productId={product.id} size="small" /> : null}
+                            favoriteButton={product.itemType === 'product' && isAuthenticated ? <FavoriteButton productId={product.id} size="small" /> : null}
                             stockBadge={<StockBadge quantity={product.stock_quantity} />}
                           />
                         )}

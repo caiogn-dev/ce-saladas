@@ -1,15 +1,13 @@
-﻿import React, { useEffect, useMemo, useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useCart } from '../context/CartContext';
-import { useAuth } from '../context/AuthContext';
 import { useStore } from '../context/StoreContext';
 
 const Navbar = () => {
   const { store } = useStore();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { cartCount, openCart } = useCart();
-  const { isAuthenticated, signOut, profile, user } = useAuth();
   const router = useRouter();
 
   const isActive = (path) => router.pathname === path;
@@ -31,25 +29,6 @@ const Navbar = () => {
       document.body.style.overflow = '';
     };
   }, [mobileMenuOpen]);
-
-  const displayName = useMemo(() => {
-    const firstName = profile?.first_name?.trim();
-    const lastName = profile?.last_name?.trim();
-    const fullName = [firstName, lastName].filter(Boolean).join(' ');
-    const loginFirstName = user?.first_name?.trim();
-    const loginLastName = user?.last_name?.trim();
-    const loginFullName = [loginFirstName, loginLastName].filter(Boolean).join(' ');
-
-    return (
-      fullName
-      || loginFullName
-      || profile?.email
-      || profile?.phone
-      || user?.email
-      || user?.phone
-      || 'Cliente'
-    );
-  }, [profile, user]);
 
   const closeMobileMenu = () => setMobileMenuOpen(false);
 
@@ -91,22 +70,6 @@ const Navbar = () => {
           <Link href="/cardapio" className={`navbar-link ${isActive('/cardapio') ? 'active' : ''}`}>
             Cardápio
           </Link>
-
-          {isAuthenticated ? (
-            <>
-              <Link href="/perfil" className={`navbar-link ${isActive('/perfil') ? 'active' : ''}`}>
-                Perfil
-              </Link>
-              <span className="navbar-user">Olá, {displayName}</span>
-              <button onClick={signOut} className="navbar-link navbar-logout">
-                Sair
-              </button>
-            </>
-          ) : (
-            <Link href="/login" className={`navbar-link ${isActive('/login') ? 'active' : ''}`}>
-              Entrar
-            </Link>
-          )}
         </div>
 
         <button onClick={openCart} className="navbar-cart-btn" aria-label="Abrir sacola">
@@ -133,36 +96,6 @@ const Navbar = () => {
         >
           Cardápio
         </button>
-
-        {isAuthenticated ? (
-          <>
-            <button
-              type="button"
-              className={`navbar-mobile-link ${isActive('/perfil') ? 'active' : ''}`}
-              onClick={() => handleMobileNavigate('/perfil')}
-            >
-              Perfil
-            </button>
-            <span className="navbar-mobile-user">Olá, {displayName}</span>
-            <button
-              onClick={() => {
-                signOut();
-                closeMobileMenu();
-              }}
-              className="navbar-mobile-link navbar-mobile-logout"
-            >
-              Sair
-            </button>
-          </>
-        ) : (
-          <button
-            type="button"
-            className={`navbar-mobile-link ${isActive('/login') ? 'active' : ''}`}
-            onClick={() => handleMobileNavigate('/login')}
-          >
-            Entrar
-          </button>
-        )}
       </div>
 
       {mobileMenuOpen && (

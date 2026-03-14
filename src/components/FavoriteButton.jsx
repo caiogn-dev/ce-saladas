@@ -1,36 +1,27 @@
-import React, { useState } from 'react';
+﻿import React from 'react';
 import { useWishlist } from '../context/WishlistContext';
 import { useAuth } from '../context/AuthContext';
 
 const FavoriteButton = ({ productId, size = 'medium', showLabel = false }) => {
   const { isFavorited, toggleFavorite } = useWishlist();
   const { isAuthenticated } = useAuth();
-  const [loading, setLoading] = useState(false);
-  const [showLoginHint, setShowLoginHint] = useState(false);
-
   const favorited = isFavorited(productId);
+
+  if (!isAuthenticated) {
+    return null;
+  }
 
   const handleClick = async (event) => {
     event.preventDefault();
     event.stopPropagation();
-
-    if (!isAuthenticated) {
-      setShowLoginHint(true);
-      setTimeout(() => setShowLoginHint(false), 2000);
-      return;
-    }
-
-    setLoading(true);
     await toggleFavorite(productId);
-    setLoading(false);
   };
 
   return (
     <div className="favorite-button-wrapper">
       <button
-        className={`favorite-button favorite-button-${size} ${favorited ? 'favorited' : ''} ${loading ? 'loading' : ''}`}
+        className={`favorite-button favorite-button-${size} ${favorited ? 'favorited' : ''}`}
         onClick={handleClick}
-        disabled={loading}
         aria-label={favorited ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
         title={favorited ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
       >
@@ -51,11 +42,6 @@ const FavoriteButton = ({ productId, size = 'medium', showLabel = false }) => {
           </span>
         )}
       </button>
-      {showLoginHint && (
-        <div className="favorite-login-hint">
-          Faça login para favoritar
-        </div>
-      )}
     </div>
   );
 };

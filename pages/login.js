@@ -1,3 +1,12 @@
-import Login from '../src/pages/Login';
+﻿import { useEffect } from 'react';
+import { useRouter } from 'next/router';
 
-export default Login;
+export default function LoginRoute() {
+  const router = useRouter();
+
+  useEffect(() => {
+    router.replace('/cardapio');
+  }, [router]);
+
+  return null;
+}

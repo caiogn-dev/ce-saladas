@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+﻿import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Profile from '../src/pages/Profile';
 import { useAuth } from '../src/context/AuthContext';
@@ -9,7 +9,7 @@ export default function PerfilRoute() {
 
   useEffect(() => {
     if (!loading && !isAuthenticated) {
-      router.replace('/login?returnTo=/perfil');
+      router.replace('/cardapio');
     }
   }, [isAuthenticated, loading, router]);
 
