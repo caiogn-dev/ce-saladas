@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Cart Context - Uses unified Store API
  * 
  * Manages shopping cart state using /api/v1/stores/{store_slug}/cart/ endpoints.
@@ -136,7 +136,9 @@ export const CartProvider = ({ children }) => {
     fetchCart();
   }, [fetchCart]);
 
-  const toggleCart = () => setIsCartOpen(!isCartOpen);
+  const openCart = () => setIsCartOpen(true);
+  const closeCart = () => setIsCartOpen(false);
+  const toggleCart = () => setIsCartOpen((current) => !current);
 
   // Add product to cart
   const addToCart = async (product) => {
@@ -156,15 +158,13 @@ export const CartProvider = ({ children }) => {
       }
       return [...prevCart, buildOptimisticItem(product, 1)];
     });
-    setIsCartOpen(true);
-
     try {
       const data = await storeApi.addToCart(product.id, 1, {}, '');
       syncCartState(data);
     } catch (error) {
       console.error('Error adding to cart:', error);
       setCart(previousCart);
-      alert('Erro ao adicionar ao carrinho.');
+      alert('Erro ao adicionar à sacola.');
     } finally {
       setIsLoading(false);
     }
@@ -188,15 +188,13 @@ export const CartProvider = ({ children }) => {
       }
       return [...prevCombos, buildOptimisticCombo(combo, 1)];
     });
-    setIsCartOpen(true);
-
     try {
       const data = await storeApi.addComboToCart(combo.id, 1, {}, '');
       syncCartState(data);
     } catch (error) {
       console.error('Error adding combo to cart:', error);
       setCombos(previousCombos);
-      alert('Erro ao adicionar combo ao carrinho.');
+      alert('Erro ao adicionar item à sacola.');
     } finally {
       setIsLoading(false);
     }
@@ -336,6 +334,8 @@ export const CartProvider = ({ children }) => {
       // UI State
       isCartOpen,
       isLoading,
+      openCart,
+      closeCart,
       toggleCart,
       clearCart,
       fetchCart,
@@ -346,3 +346,4 @@ export const CartProvider = ({ children }) => {
 };
 
 export const useCart = () => useContext(CartContext);
+

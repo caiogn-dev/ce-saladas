@@ -111,7 +111,7 @@ const Cardapio = () => {
     cartCount,
     cartTotal,
     hasItems,
-    toggleCart,
+    openCart,
   } = useCart();
 
   const {
@@ -326,7 +326,7 @@ const Cardapio = () => {
                   </div>
                 </div>
 
-                <button type="button" className="cardapio-hero__cart-btn" onClick={toggleCart}>
+                <button type="button" className="cardapio-hero__cart-btn" onClick={openCart}>
                   <ShoppingBag size={18} />
                   <span>{hasItems ? `Sacola (${cartCount})` : 'Abrir sacola'}</span>
                   <ArrowRight size={16} />
@@ -411,7 +411,7 @@ const Cardapio = () => {
               ))}
             </div>
 
-            <button type="button" className="catalog-toolbar__cart" onClick={toggleCart}>
+            <button type="button" className="catalog-toolbar__cart" onClick={openCart}>
               <ShoppingBag size={18} />
               <span>{hasItems ? `${cartCount} item(ns) - ${formatMoney(cartTotal)}` : 'Sacola vazia'}</span>
             </button>

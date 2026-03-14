@@ -87,7 +87,7 @@ const LandingPage = () => {
             <div className="promo-badge">Novo fluxo</div>
             <h3>Agora o pedido termina com menos atrito</h3>
             <p>
-              O cliente adiciona os itens ao carrinho, informa apenas e-mail e celular e segue para
+              O cliente adiciona os itens à sacola, informa apenas e-mail e celular e segue para
               um checkout mais direto, com entrega e pagamento organizados.
             </p>
             <div className="promo-actions">
@@ -222,7 +222,7 @@ const LandingPage = () => {
             <h2>Explore o cardápio e valide o novo checkout.</h2>
             <p>
               O próximo passo natural agora é testar navegação por categoria, detalhe do produto,
-              carrinho e finalização com PIX, cartão ou dinheiro.
+              sacola e finalização com PIX, cartão ou dinheiro.
             </p>
           </div>
           <div className="cta-actions">
@@ -275,4 +275,6 @@ const LandingPage = () => {
 };
 
 export default LandingPage;
+
+
 

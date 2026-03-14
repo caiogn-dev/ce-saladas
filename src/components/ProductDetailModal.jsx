@@ -236,7 +236,7 @@ const ProductDetailModal = ({
               onClick={() => onAddToCart?.(item)}
               disabled={!inStock}
             >
-              {inStock ? 'Adicionar ao carrinho' : 'Item indisponível'}
+              {inStock ? 'Adicionar à sacola' : 'Item indisponível'}
             </Button>
           </div>
         </div>
@@ -246,3 +246,5 @@ const ProductDetailModal = ({
 };
 
 export default ProductDetailModal;
+
+

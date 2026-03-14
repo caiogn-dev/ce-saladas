@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import Button from './Button';
 
 /**
@@ -65,9 +65,9 @@ EmptyState.Cart = ({ onAction }) => (
         <path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6" />
       </svg>
     }
-    title="Seu carrinho está vazio"
-    description="Adicione produtos deliciosos ao seu carrinho para continuar."
-    actionLabel="Ver Cardápio"
+    title="Sua sacola está vazia"
+    description="Adicione itens deliciosos à sua sacola para continuar."
+    actionLabel="Ver cardápio"
     onAction={onAction}
   />
 );
@@ -82,7 +82,7 @@ EmptyState.Orders = ({ onAction }) => (
       </svg>
     }
     title="Nenhum pedido encontrado"
-    description="Você ainda não fez nenhum pedido. Que tal experimentar nossas delícias?"
+    description="VocÃª ainda nÃ£o fez nenhum pedido. Que tal experimentar nossas delÃ­cias?"
     actionLabel="Fazer Pedido"
     onAction={onAction}
   />
@@ -96,9 +96,9 @@ EmptyState.Products = ({ onAction }) => (
         <line x1="7" y1="7" x2="7.01" y2="7" />
       </svg>
     }
-    title="Nenhum produto disponível"
-    description="No momento não há produtos disponíveis. Volte em breve!"
-    actionLabel={onAction ? "Voltar ao Início" : undefined}
+    title="Nenhum produto disponÃ­vel"
+    description="No momento nÃ£o hÃ¡ produtos disponÃ­veis. Volte em breve!"
+    actionLabel={onAction ? "Voltar ao InÃ­cio" : undefined}
     onAction={onAction}
   />
 );
@@ -112,7 +112,7 @@ EmptyState.Search = ({ query, onAction }) => (
       </svg>
     }
     title="Nenhum resultado encontrado"
-    description={query ? `Não encontramos resultados para "${query}".` : "Tente buscar por outro termo."}
+    description={query ? `NÃ£o encontramos resultados para "${query}".` : "Tente buscar por outro termo."}
     actionLabel="Limpar Busca"
     onAction={onAction}
   />
@@ -135,3 +135,5 @@ EmptyState.Error = ({ onAction }) => (
 );
 
 export default EmptyState;
+
+

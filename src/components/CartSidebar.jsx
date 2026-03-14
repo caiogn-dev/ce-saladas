@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import Link from 'next/link';
 import { useCart } from '../context/CartContext';
 
@@ -15,7 +15,7 @@ const CartSidebar = () => {
     comboTotal,
     hasItems,
     isCartOpen,
-    toggleCart,
+    closeCart,
   } = useCart();
 
   if (!isCartOpen) return null;
@@ -24,12 +24,12 @@ const CartSidebar = () => {
 
   return (
     <>
-      <div className="cart-overlay" onClick={toggleCart} />
+      <div className="cart-overlay" onClick={closeCart} />
 
       <div className="cart-sidebar">
         <div className="cart-header">
-          <h2>Seu pedido</h2>
-          <button onClick={toggleCart} className="cart-close-btn" aria-label="Fechar">
+          <h2>Sua sacola</h2>
+          <button onClick={closeCart} className="cart-close-btn" aria-label="Fechar">
             ✕
           </button>
         </div>
@@ -44,8 +44,8 @@ const CartSidebar = () => {
                   <circle cx="18" cy="20" r="1.5" fill="currentColor" />
                 </svg>
               </span>
-              <p>Seu carrinho está vazio.</p>
-              <button onClick={toggleCart} className="btn-secondary">
+              <p>Sua sacola está vazia.</p>
+              <button onClick={closeCart} className="btn-secondary">
                 Ver cardápio
               </button>
             </div>
@@ -143,7 +143,7 @@ const CartSidebar = () => {
               <span>Total:</span>
               <span>R$ {cartTotal.toFixed(2)}</span>
             </div>
-            <Link href="/checkout" onClick={toggleCart} className="btn-primary cart-checkout-btn">
+            <Link href="/checkout" onClick={closeCart} className="btn-primary cart-checkout-btn">
               Finalizar pedido
             </Link>
           </div>

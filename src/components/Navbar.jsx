@@ -8,7 +8,7 @@ import { useStore } from '../context/StoreContext';
 const Navbar = () => {
   const { store } = useStore();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { cartCount, toggleCart } = useCart();
+  const { cartCount, openCart } = useCart();
   const { isAuthenticated, signOut, profile, user } = useAuth();
   const router = useRouter();
 
@@ -109,7 +109,7 @@ const Navbar = () => {
           )}
         </div>
 
-        <button onClick={toggleCart} className="navbar-cart-btn" aria-label="Abrir carrinho">
+        <button onClick={openCart} className="navbar-cart-btn" aria-label="Abrir sacola">
           <span className="cart-icon" aria-hidden="true">
             <svg viewBox="0 0 24 24" focusable="false">
               <path d="M6 6h15l-1.5 9h-12zM6 6l-1.5-3h-3" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -117,7 +117,7 @@ const Navbar = () => {
               <circle cx="18" cy="20" r="1.5" fill="currentColor" />
             </svg>
           </span>
-          <span className="cart-text">Carrinho</span>
+          <span className="cart-text">Sacola</span>
           {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
         </button>
       </div>

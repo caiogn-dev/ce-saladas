@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Checkout Page V2 - New flow with order confirmation first
  * 
  * Flow:
@@ -200,7 +200,7 @@ const CheckoutPage = () => {
 
       if (normalizeString(paymentMethod) === 'card') {
         if (!mpPublicKey) {
-          throw new Error('Pagamento com cartão indisponível: a chave pública do Mercado Pago não está configurada no frontend.');
+          throw new Error('Pagamento com cartão indisponÃ­vel: a chave pública do Mercado Pago não estÃ¡ configurada no frontend.');
         }
 
         if (!hasDirectCardPayload(normalizedPaymentPayload)) {
@@ -327,11 +327,11 @@ const CheckoutPage = () => {
     return (
       <div className={styles.emptyCart}>
         <div className={styles.emptyCartContent}>
-          <span className={styles.emptyCartIcon}>🛒</span>
-          <h2>Seu carrinho está vazio</h2>
-          <p>Adicione produtos antes de finalizar o pedido.</p>
+          <span className={styles.emptyCartIcon}>ðŸ›’</span>
+          <h2>Sua sacola está vazia</h2>
+          <p>Adicione itens antes de finalizar o pedido.</p>
           <Link href="/cardapio" className={styles.backButton}>
-            Ver Cardápio
+            Ver cardápio
           </Link>
         </div>
       </div>
@@ -348,7 +348,7 @@ const CheckoutPage = () => {
         {/* Header */}
         <div className={styles.checkoutHeader}>
           <Link href="/cardapio" className={styles.backLink}>
-            ← Voltar ao Cardápio
+            ← Voltar ao cardápio
           </Link>
           <h1>Finalizar Pedido</h1>
           
@@ -422,3 +422,5 @@ const CheckoutPage = () => {
 };
 
 export default CheckoutPage;
+
+
