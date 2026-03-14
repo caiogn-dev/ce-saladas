@@ -1,13 +1,5 @@
-import React, { useMemo, useState } from 'react';
-import {
-  ArrowRight,
-  Clock3,
-  Leaf,
-  MapPin,
-  ReceiptText,
-  ShoppingBag,
-  Sparkles,
-} from 'lucide-react';
+﻿import React, { useMemo, useState } from 'react';
+import { ArrowRight, Clock3, MapPin, ShoppingBag } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import FavoriteButton from '../components/FavoriteButton';
 import StockBadge from '../components/StockBadge';
@@ -25,17 +17,17 @@ const MENU_SECTIONS = [
   {
     key: 'saladas',
     title: 'Saladas',
-    description: 'Combinações prontas, frescas e pensadas para resolver a refeição com leveza e rapidez.',
+    description: 'Combinações frescas para almoço, jantar ou uma pausa leve no dia.',
   },
   {
     key: 'molhos',
     title: 'Molhos',
-    description: 'Complementos pensados para equilibrar sabor, textura e personalidade em cada pedido.',
+    description: 'Complementos para ajustar o sabor e finalizar o pedido do seu jeito.',
   },
   {
     key: 'monte-sua-salada',
     title: 'Monte sua Salada',
-    description: 'Escolha sua base, complemente com toppings e deixe o pedido com a sua cara.',
+    description: 'Bases, extras e acompanhamentos para montar a combinação ideal.',
   },
 ];
 
@@ -66,10 +58,10 @@ const inferCatalogSection = (item) => {
   }
 
   if (
-    haystack.includes('monte sua salada') ||
-    haystack.includes('monte') ||
-    haystack.includes('personaliz') ||
-    haystack.includes('custom')
+    haystack.includes('monte sua salada')
+    || haystack.includes('monte')
+    || haystack.includes('personaliz')
+    || haystack.includes('custom')
   ) {
     return 'monte-sua-salada';
   }
@@ -83,30 +75,29 @@ const formatMoney = (value) => Number(value || 0).toLocaleString('pt-BR', {
 });
 
 const ProductsSkeleton = () => (
-  <div className="catalog-layout">
-    <div className="catalog-main">
-      <div className="catalog-sections">
-        {MENU_SECTIONS.map((section, sectionIndex) => (
-          <section key={section.key} className="catalog-section catalog-section--skeleton">
-            <div className="catalog-section__header">
-              <div>
-                <h2 className="catalog-section__title">{section.title}</h2>
-                <p className="catalog-section__description">{section.description}</p>
-              </div>
-            </div>
-            <div className="catalog-skeleton-grid">
-              {Array.from({ length: 4 }, (_, index) => (
-                <Skeleton.ProductCard key={`${sectionIndex}-${index}`} index={index} />
-              ))}
-            </div>
-          </section>
-        ))}
-      </div>
+  <div className="catalog-main">
+    <div className="catalog-toolbar catalog-toolbar--skeleton">
+      <Skeleton variant="rect" height={52} style={{ borderRadius: '999px' }} />
+      <Skeleton variant="rect" height={52} style={{ borderRadius: '999px' }} />
     </div>
-    <aside className="catalog-aside catalog-aside--skeleton">
-      <Skeleton variant="rect" height={200} style={{ borderRadius: '26px' }} />
-      <Skeleton variant="rect" height={200} style={{ borderRadius: '26px' }} />
-    </aside>
+
+    <div className="catalog-sections">
+      {MENU_SECTIONS.map((section, sectionIndex) => (
+        <section key={section.key} className="catalog-section catalog-section--skeleton">
+          <div className="catalog-section__header">
+            <div>
+              <h2 className="catalog-section__title">{section.title}</h2>
+              <p className="catalog-section__description">{section.description}</p>
+            </div>
+          </div>
+          <div className="catalog-skeleton-grid">
+            {Array.from({ length: 4 }, (_, index) => (
+              <Skeleton.ProductCard key={`${sectionIndex}-${index}`} index={index} />
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
   </div>
 );
 
@@ -122,6 +113,7 @@ const Cardapio = () => {
     hasItems,
     toggleCart,
   } = useCart();
+
   const {
     store,
     products: storeProducts,
@@ -229,10 +221,10 @@ const Cardapio = () => {
     const taggedHighlights = filteredItems.filter((item) => {
       const tagStack = normalizeText((item.tags || []).join(' '));
       return (
-        featuredIds.has(item.id) ||
-        tagStack.includes('mais pedido') ||
-        tagStack.includes('novidade') ||
-        tagStack.includes('destaque')
+        featuredIds.has(item.id)
+        || tagStack.includes('mais pedido')
+        || tagStack.includes('novidade')
+        || tagStack.includes('destaque')
       );
     });
 
@@ -250,35 +242,23 @@ const Cardapio = () => {
       ? `${store.metadata.city} • ${store.metadata.state}`
       : null;
 
-    return (
-      metadataLocation
-      || store?.city && store?.state ? `${store.city} • ${store.state}` : null
-      || store?.address
-      || 'Pedido online para retirada ou entrega'
-    );
+    if (metadataLocation) {
+      return metadataLocation;
+    }
+
+    if (store?.city && store?.state) {
+      return `${store.city} • ${store.state}`;
+    }
+
+    return store?.address || 'Retirada e entrega disponíveis';
   }, [store]);
 
   const storeHoursLabel = store?.metadata?.business_hours_label
     || store?.metadata?.opening_hours
-    || 'Montado com ingredientes frescos e preparo rápido';
+    || 'Pedido simples, rápido e sem cadastro obrigatório';
 
-  const heroHighlights = [
-    {
-      icon: Leaf,
-      label: 'Ingredientes frescos',
-      value: `${catalogItems.length} itens no catálogo`,
-    },
-    {
-      icon: Clock3,
-      label: 'Fluxo direto',
-      value: 'Escolha, adicione e finalize sem etapas desnecessárias',
-    },
-    {
-      icon: ReceiptText,
-      label: 'Checkout organizado',
-      value: 'Entrega, retirada e pagamento em uma sequência clara',
-    },
-  ];
+  const heroDescription = store?.metadata?.catalog_pitch
+    || 'Escolha sua refeição, ajuste os sabores e finalize em poucos toques.';
 
   const handleAddToCart = (item) => {
     if ((item.stock_quantity ?? 0) <= 0) {
@@ -326,16 +306,10 @@ const Cardapio = () => {
       <PageTransition animation="fadeUp" delay={0}>
         <header className="cardapio-hero">
           <div className="container">
-            <div className="cardapio-hero__banner">
-              {store?.banner_url ? (
-                <img src={store.banner_url} alt={store.name} className="cardapio-hero__banner-image" />
-              ) : (
-                <div className="cardapio-hero__banner-fallback" aria-hidden="true" />
-              )}
-            </div>
-
             <div className="cardapio-hero__panel">
-              <div className="cardapio-hero__store-card">
+              <span className="cardapio-hero__accent" aria-hidden="true" />
+
+              <div className="cardapio-hero__top">
                 <div className="cardapio-hero__brand">
                   <div className="cardapio-hero__logo-shell">
                     {store?.logo_url ? (
@@ -346,64 +320,52 @@ const Cardapio = () => {
                   </div>
 
                   <div className="cardapio-hero__copy">
-                    <span className="cardapio-hero__eyebrow">Cardápio digital</span>
+                    <span className="cardapio-hero__eyebrow">Cardápio</span>
                     <h1 className="cardapio-hero__title">{store?.name || 'Cê Saladas'}</h1>
-                    <p className="cardapio-hero__intro">
-                      Saladas, molhos e montagens em uma vitrine clara, atraente e pronta para vender melhor no desktop e no mobile.
-                    </p>
-
-                    <div className="cardapio-hero__meta">
-                      <span>
-                        <MapPin size={16} />
-                        {storeLocation}
-                      </span>
-                      <span>
-                        <Clock3 size={16} />
-                        {storeHoursLabel}
-                      </span>
-                    </div>
+                    <p className="cardapio-hero__intro">{heroDescription}</p>
                   </div>
                 </div>
 
-                <div className="cardapio-hero__actions">
-                  <div className="cardapio-hero__search">
-                    <Input
-                      type="text"
-                      placeholder="Buscar saladas, molhos ou montagens"
-                      value={query}
-                      onChange={(event) => setQuery(event.target.value)}
-                      fullWidth
-                      leftIcon={(
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <circle cx="11" cy="11" r="8" />
-                          <path d="M21 21l-4.35-4.35" />
-                        </svg>
-                      )}
-                    />
-                  </div>
-
-                  <button type="button" className="cardapio-hero__cart-btn" onClick={toggleCart}>
-                    <ShoppingBag size={18} />
-                    {hasItems ? `Abrir sacola • ${cartCount}` : 'Abrir sacola'}
-                  </button>
-                </div>
+                <button type="button" className="cardapio-hero__cart-btn" onClick={toggleCart}>
+                  <ShoppingBag size={18} />
+                  <span>{hasItems ? `Sacola (${cartCount})` : 'Abrir sacola'}</span>
+                  <ArrowRight size={16} />
+                </button>
               </div>
 
-              <div className="cardapio-hero__highlights">
-                {heroHighlights.map((item) => {
-                  const Icon = item.icon;
-                  return (
-                    <div key={item.label} className="cardapio-highlight-card">
-                      <span className="cardapio-highlight-card__icon">
-                        <Icon size={18} />
-                      </span>
-                      <div>
-                        <strong>{item.label}</strong>
-                        <span>{item.value}</span>
-                      </div>
-                    </div>
-                  );
-                })}
+              <div className="cardapio-hero__meta">
+                <span>
+                  <MapPin size={16} />
+                  {storeLocation}
+                </span>
+                <span>
+                  <Clock3 size={16} />
+                  {storeHoursLabel}
+                </span>
+              </div>
+
+              <div className="cardapio-hero__search-row">
+                <div className="cardapio-hero__search">
+                  <Input
+                    type="text"
+                    placeholder="Buscar saladas, molhos ou montagens"
+                    value={query}
+                    onChange={(event) => setQuery(event.target.value)}
+                    fullWidth
+                    leftIcon={(
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="M21 21l-4.35-4.35" />
+                      </svg>
+                    )}
+                  />
+                </div>
+
+                {query && (
+                  <button type="button" className="cardapio-hero__clear" onClick={handleClearSearch}>
+                    Limpar busca
+                  </button>
+                )}
               </div>
             </div>
           </div>
@@ -434,18 +396,25 @@ const Cardapio = () => {
 
       {!loading && !error && catalogItems.length > 0 && (
         <div className="container">
-          <div className="catalog-quick-nav">
-            {groupedSections.map((section) => (
-              <button
-                key={section.key}
-                type="button"
-                className="catalog-quick-nav__chip"
-                onClick={() => handleJumpToSection(section.key)}
-              >
-                <span>{section.title}</span>
-                <strong>{section.items.length}</strong>
-              </button>
-            ))}
+          <div className="catalog-toolbar">
+            <div className="catalog-quick-nav">
+              {groupedSections.map((section) => (
+                <button
+                  key={section.key}
+                  type="button"
+                  className="catalog-quick-nav__chip"
+                  onClick={() => handleJumpToSection(section.key)}
+                >
+                  <span>{section.title}</span>
+                  <strong>{section.items.length}</strong>
+                </button>
+              ))}
+            </div>
+
+            <button type="button" className="catalog-toolbar__cart" onClick={toggleCart}>
+              <ShoppingBag size={18} />
+              <span>{hasItems ? `${cartCount} item(ns) - ${formatMoney(cartTotal)}` : 'Sacola vazia'}</span>
+            </button>
           </div>
 
           {filteredItems.length === 0 && query && (
@@ -455,32 +424,66 @@ const Cardapio = () => {
           )}
 
           {groupedSections.length > 0 && (
-            <div className="catalog-layout">
-              <main className="catalog-main">
-                {!query && featuredItems.length > 0 && (
-                  <PageTransition animation="fadeUp" delay={50}>
-                    <section className="catalog-featured">
-                      <div className="catalog-featured__header">
+            <main className="catalog-main">
+              {!query && featuredItems.length > 0 && (
+                <PageTransition animation="fadeUp" delay={50}>
+                  <section className="catalog-featured">
+                    <div className="catalog-featured__header">
+                      <div>
+                        <span className="catalog-featured__eyebrow">Mais pedidos</span>
+                        <h2 className="catalog-featured__title">Comece pelos favoritos da casa</h2>
+                      </div>
+                      <p className="catalog-featured__description">
+                        Uma seleção objetiva para decidir rápido, sem poluir a experiência.
+                      </p>
+                    </div>
+
+                    <CarouselCard
+                      items={featuredItems}
+                      mobileCardsPerView={1.18}
+                      tabletCardsPerView={2.2}
+                      desktopCardsPerView={3.35}
+                      trackClassName="catalog-featured__track"
+                      renderItem={(product, index) => (
+                        <ProductCard
+                          product={product}
+                          index={index}
+                          className="catalog-product-card catalog-product-card--featured"
+                          onAddToCart={handleAddToCart}
+                          onOpenDetails={setSelectedItem}
+                          favoriteButton={product.itemType === 'product' ? <FavoriteButton productId={product.id} size="small" /> : null}
+                          stockBadge={<StockBadge quantity={product.stock_quantity} />}
+                        />
+                      )}
+                    />
+                  </section>
+                </PageTransition>
+              )}
+
+              <div className="catalog-sections">
+                {groupedSections.map((section, sectionIndex) => (
+                  <PageTransition key={section.key} animation="fadeUp" delay={sectionIndex * 70}>
+                    <section id={`catalog-section-${section.key}`} className="catalog-section">
+                      <div className="catalog-section__header">
                         <div>
-                          <span className="catalog-featured__eyebrow">Destaques da casa</span>
-                          <h2 className="catalog-featured__title">Seleções para começar rápido</h2>
+                          <h2 className="catalog-section__title">{section.title}</h2>
+                          <p className="catalog-section__description">{section.description}</p>
                         </div>
-                        <p className="catalog-featured__description">
-                          Produtos com mais apelo visual e compra recorrente para deixar a decisão mais simples logo no começo da navegação.
-                        </p>
+                        <span className="catalog-section__count">
+                          {section.items.length} {section.items.length === 1 ? 'item' : 'itens'}
+                        </span>
                       </div>
 
                       <CarouselCard
-                        items={featuredItems}
-                        mobileCardsPerView={1.12}
-                        tabletCardsPerView={2.05}
-                        desktopCardsPerView={2.85}
-                        trackClassName="catalog-featured__track"
+                        items={section.items}
+                        mobileCardsPerView={1.18}
+                        tabletCardsPerView={2.2}
+                        desktopCardsPerView={3.35}
                         renderItem={(product, index) => (
                           <ProductCard
                             product={product}
                             index={index}
-                            className="catalog-product-card catalog-product-card--featured"
+                            className="catalog-product-card"
                             onAddToCart={handleAddToCart}
                             onOpenDetails={setSelectedItem}
                             favoriteButton={product.itemType === 'product' ? <FavoriteButton productId={product.id} size="small" /> : null}
@@ -490,96 +493,9 @@ const Cardapio = () => {
                       />
                     </section>
                   </PageTransition>
-                )}
-
-                <div className="catalog-sections">
-                  {groupedSections.map((section, sectionIndex) => (
-                    <PageTransition key={section.key} animation="fadeUp" delay={sectionIndex * 70}>
-                      <section id={`catalog-section-${section.key}`} className="catalog-section">
-                        <div className="catalog-section__header">
-                          <div>
-                            <span className="catalog-section__eyebrow">Categoria</span>
-                            <h2 className="catalog-section__title">{section.title}</h2>
-                            <p className="catalog-section__description">{section.description}</p>
-                          </div>
-                          <span className="catalog-section__count">
-                            {section.items.length} {section.items.length === 1 ? 'item' : 'itens'}
-                          </span>
-                        </div>
-
-                        <CarouselCard
-                          items={section.items}
-                          mobileCardsPerView={1.12}
-                          tabletCardsPerView={2.1}
-                          desktopCardsPerView={3.1}
-                          renderItem={(product, index) => (
-                            <ProductCard
-                              product={product}
-                              index={index}
-                              className="catalog-product-card"
-                              onAddToCart={handleAddToCart}
-                              onOpenDetails={setSelectedItem}
-                              favoriteButton={product.itemType === 'product' ? <FavoriteButton productId={product.id} size="small" /> : null}
-                              stockBadge={<StockBadge quantity={product.stock_quantity} />}
-                            />
-                          )}
-                        />
-                      </section>
-                    </PageTransition>
-                  ))}
-                </div>
-              </main>
-
-              <aside className="catalog-aside">
-                <div className="catalog-aside__card catalog-aside__card--cart">
-                  <div className="catalog-aside__icon">
-                    <ShoppingBag size={18} />
-                  </div>
-                  <div className="catalog-aside__content">
-                    <h3>Sacola</h3>
-                    <p>
-                      {hasItems
-                        ? `${cartCount} ${cartCount === 1 ? 'item' : 'itens'} adicionados.`
-                        : 'Adicione seus itens e acompanhe o total sem sair do cardápio.'}
-                    </p>
-                  </div>
-                  <div className="catalog-aside__price">
-                    <span>Total atual</span>
-                    <strong>{formatMoney(cartTotal)}</strong>
-                  </div>
-                  <button type="button" className="catalog-aside__action" onClick={toggleCart}>
-                    {hasItems ? 'Ver sacola e finalizar' : 'Abrir sacola'}
-                    <ArrowRight size={16} />
-                  </button>
-                </div>
-
-                <div className="catalog-aside__card">
-                  <div className="catalog-aside__icon catalog-aside__icon--muted">
-                    <Sparkles size={18} />
-                  </div>
-                  <div className="catalog-aside__content">
-                    <h3>Navegação mais clara</h3>
-                    <p>
-                      O cardápio foi reorganizado para leitura rápida: banner, destaques, categorias horizontais e detalhe de produto mais útil.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="catalog-aside__card">
-                  <div className="catalog-aside__icon catalog-aside__icon--muted">
-                    <ReceiptText size={18} />
-                  </div>
-                  <div className="catalog-aside__content">
-                    <h3>Fluxo de compra</h3>
-                    <ul className="catalog-aside__list">
-                      <li>Escolha os itens direto no catálogo.</li>
-                      <li>Abra o detalhe quando quiser mais contexto.</li>
-                      <li>Finalize pelo checkout com identificação leve.</li>
-                    </ul>
-                  </div>
-                </div>
-              </aside>
-            </div>
+                ))}
+              </div>
+            </main>
           )}
         </div>
       )}
