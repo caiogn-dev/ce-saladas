@@ -10,9 +10,9 @@ const FavoriteButton = ({ productId, size = 'medium', showLabel = false }) => {
 
   const favorited = isFavorited(productId);
 
-  const handleClick = async (e) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const handleClick = async (event) => {
+    event.preventDefault();
+    event.stopPropagation();
 
     if (!isAuthenticated) {
       setShowLoginHint(true);

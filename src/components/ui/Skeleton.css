@@ -4,9 +4,9 @@
   display: block;
   background: linear-gradient(
     90deg,
-    #f0e8e0 0%,
-    #f8f4f0 50%,
-    #f0e8e0 100%
+    #eee7d7 0%,
+    #f9f5ea 50%,
+    #eee7d7 100%
   );
   background-size: 200% 100%;
   animation: skeleton-shimmer 1.8s ease-in-out infinite;
@@ -44,11 +44,11 @@
 
 /* ===== Product Card Skeleton ===== */
 .ui-skeleton-product {
-  background-color: var(--color-white);
+  background-color: var(--color-surface-card);
   border-radius: var(--radius-xl);
   overflow: hidden;
   box-shadow: var(--shadow-sm);
-  border: 1px solid rgba(212, 175, 55, 0.15);
+  border: 1px solid var(--color-border-soft);
   opacity: 0;
   animation: skeletonFadeIn 0.4s ease forwards;
   animation-delay: var(--skeleton-delay, 0ms);

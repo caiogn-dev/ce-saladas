@@ -7,6 +7,10 @@
   justify-content: center;
   text-align: center;
   padding: var(--space-2xl);
+  border-radius: 28px;
+  background: linear-gradient(180deg, rgba(255, 253, 247, 0.94), rgba(255, 249, 238, 0.92));
+  border: 1px solid var(--color-border-soft);
+  box-shadow: var(--shadow-sm);
 }
 
 /* Sizes */
@@ -48,7 +52,7 @@
 /* Icon */
 .ui-empty-state__icon {
   margin-bottom: var(--space-lg);
-  color: var(--color-gray-300);
+  color: rgba(var(--color-brand-green-rgb), 0.45);
 }
 
 .ui-empty-state__icon svg {
@@ -59,14 +63,14 @@
 .ui-empty-state__title {
   font-size: 1.25rem;
   font-weight: 600;
-  color: var(--color-gray-700);
+  color: var(--color-brand-green-dark);
   margin: 0 0 var(--space-sm);
 }
 
 /* Description */
 .ui-empty-state__description {
   font-size: 1rem;
-  color: var(--color-gray-500);
+  color: var(--color-text-light);
   margin: 0 0 var(--space-lg);
   max-width: 400px;
   line-height: 1.6;

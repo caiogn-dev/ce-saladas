@@ -3,7 +3,7 @@ import React from 'react';
 /**
  * Badge component for status indicators and labels
  * @param {Object} props
- * @param {'default' | 'success' | 'warning' | 'error' | 'info' | 'marsala'} props.variant
+ * @param {'default' | 'success' | 'warning' | 'error' | 'info' | 'marsala' | 'outline'} props.variant
  * @param {'sm' | 'md' | 'lg'} props.size
  * @param {boolean} props.dot - Show dot indicator
  * @param {boolean} props.pill - Rounded pill shape

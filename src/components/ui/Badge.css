@@ -31,8 +31,8 @@
 
 /* Variants */
 .ui-badge--default {
-  background-color: var(--color-gray-100);
-  color: var(--color-gray-700);
+  background-color: var(--color-surface-muted);
+  color: var(--color-text-light);
 }
 
 .ui-badge--success {
@@ -56,8 +56,14 @@
 }
 
 .ui-badge--marsala {
-  background-color: rgba(114, 47, 55, 0.1);
-  color: var(--color-marsala);
+  background-color: rgba(var(--color-brand-green-rgb), 0.12);
+  color: var(--color-brand-green-dark);
+}
+
+.ui-badge--outline {
+  background-color: rgba(255, 255, 255, 0.82);
+  color: var(--color-brand-green-dark);
+  border: 1px solid rgba(var(--color-brand-green-rgb), 0.2);
 }
 
 /* Dot indicator */

@@ -1,29 +1,36 @@
-﻿.cardapio-page {
+.cardapio-page {
   min-height: 100vh;
   padding-bottom: 96px;
+  color: var(--color-text);
   background:
-    radial-gradient(circle at top left, rgba(var(--color-brand-green-rgb), 0.09), transparent 30%),
-    radial-gradient(circle at top right, rgba(var(--color-brand-green-rgb), 0.08), transparent 22%),
-    linear-gradient(180deg, #fffdf7 0%, var(--color-brand-cream) 46%, #fffbf2 100%);
+    radial-gradient(circle at top left, rgba(var(--color-brand-green-rgb), 0.08), transparent 28%),
+    radial-gradient(circle at top right, rgba(var(--color-brand-green-rgb), 0.06), transparent 24%),
+    linear-gradient(180deg, var(--color-surface-page) 0%, var(--color-brand-cream) 44%, #fffaf2 100%);
 }
 
 .cardapio-header {
-  padding: 36px 0 28px;
+  padding: 34px 0 28px;
 }
 
 .cardapio-header .container {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  gap: 0;
+  padding: 28px;
+  border-radius: 30px;
+  background: linear-gradient(180deg, rgba(255, 253, 247, 0.96), rgba(255, 249, 238, 0.92));
+  border: 1px solid var(--color-border-soft);
+  box-shadow: 0 22px 44px rgba(var(--color-brand-green-rgb), 0.08);
 }
 
 .cardapio-subtitle {
   display: inline-flex;
   align-items: center;
-  min-height: 34px;
+  min-height: 36px;
   padding: 0 14px;
   border-radius: 999px;
-  background: rgba(var(--color-brand-green-rgb), 0.12);
+  background: rgba(var(--color-brand-green-rgb), 0.14);
   color: var(--color-brand-green-dark);
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -32,36 +39,38 @@
 }
 
 .cardapio-title {
-  max-width: 680px;
-  margin: 18px 0 12px;
+  max-width: 700px;
+  margin: 16px 0 12px;
   color: var(--color-brand-green-dark);
   line-height: 1.04;
 }
 
 .cardapio-intro {
-  max-width: 720px;
+  max-width: 740px;
   margin: 0 0 22px;
-  color: var(--color-gray-600);
+  color: var(--color-text-light);
   font-size: 1rem;
+  line-height: 1.72;
 }
 
 .cardapio-toolbar {
   width: 100%;
-  max-width: 560px;
+  max-width: 600px;
 }
 
 .cardapio-search .ui-input {
   min-height: 56px;
   border-radius: 18px;
-  border-color: rgba(var(--color-brand-green-rgb), 0.14);
-  box-shadow: 0 10px 24px rgba(var(--color-brand-green-rgb), 0.06);
+  border-color: rgba(var(--color-brand-green-rgb), 0.16);
+  background: rgba(255, 253, 247, 0.98);
+  box-shadow: 0 12px 26px rgba(var(--color-brand-green-rgb), 0.06);
 }
 
 .cardapio-divider {
   width: 100%;
   height: 1px;
-  margin-top: 26px;
-  background: linear-gradient(90deg, rgba(var(--color-brand-green-rgb), 0.14), rgba(var(--color-brand-orange-rgb), 0.16), transparent 92%);
+  margin-top: 24px;
+  background: linear-gradient(90deg, rgba(var(--color-brand-green-rgb), 0.18), rgba(var(--color-brand-orange-rgb), 0.16), transparent 92%);
 }
 
 .catalog-sections {
@@ -71,15 +80,15 @@
 }
 
 .catalog-section {
-  padding: 26px;
-  border-radius: 30px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(255, 252, 243, 0.88));
-  border: 1px solid rgba(var(--color-brand-green-rgb), 0.12);
-  box-shadow: 0 22px 44px rgba(var(--color-brand-green-rgb), 0.08);
+  padding: 24px;
+  border-radius: 28px;
+  background: linear-gradient(180deg, rgba(255, 253, 247, 0.96), rgba(255, 249, 238, 0.92));
+  border: 1px solid var(--color-border-soft);
+  box-shadow: 0 20px 40px rgba(var(--color-brand-green-rgb), 0.08);
 }
 
 .catalog-section--skeleton {
-  padding-bottom: 22px;
+  padding-bottom: 20px;
 }
 
 .catalog-section__header {
@@ -87,7 +96,11 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 18px;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
+}
+
+.catalog-section__header > div {
+  min-width: 0;
 }
 
 .catalog-section__title {
@@ -98,8 +111,8 @@
 
 .catalog-section__description {
   margin: 0;
-  max-width: 560px;
-  color: var(--color-gray-600);
+  max-width: 580px;
+  color: var(--color-text-light);
 }
 
 .catalog-section__count {
@@ -109,9 +122,9 @@
   min-height: 36px;
   padding: 0 14px;
   border-radius: 999px;
-  background: rgba(var(--color-brand-green-rgb), 0.1);
+  background: rgba(var(--color-brand-green-rgb), 0.12);
   color: var(--color-brand-green-dark);
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   font-weight: 800;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -133,14 +146,13 @@
   }
 
   .catalog-section {
-    padding: 22px;
-    border-radius: 28px;
+    padding: 20px;
   }
 }
 
 @media (max-width: 768px) {
   .cardapio-page {
-    padding-bottom: 88px;
+    padding-bottom: 84px;
   }
 
   .cardapio-header {
@@ -148,13 +160,15 @@
   }
 
   .cardapio-header .container {
+    padding: 22px 18px;
+    border-radius: 24px;
     align-items: center;
     text-align: center;
   }
 
   .cardapio-title {
-    margin-top: 14px;
     max-width: none;
+    margin-top: 14px;
   }
 
   .cardapio-intro {
@@ -177,7 +191,7 @@
 
   .catalog-section {
     padding: 18px 14px 16px;
-    border-radius: 24px;
+    border-radius: 22px;
   }
 
   .catalog-section__header {
@@ -189,24 +203,24 @@
 
   .catalog-section__title {
     margin-bottom: 6px;
-    font-size: 1.25rem;
+    font-size: 1.22rem;
   }
 
   .catalog-section__description {
     font-size: 0.9rem;
-    line-height: 1.55;
+    line-height: 1.6;
   }
 }
 
 @media (max-width: 560px) {
   .cardapio-page {
-    padding-bottom: 80px;
+    padding-bottom: 76px;
   }
 
   .cardapio-subtitle {
     min-height: 32px;
     padding-inline: 12px;
-    font-size: 0.7rem;
+    font-size: 0.68rem;
   }
 
   .cardapio-intro {
@@ -216,12 +230,11 @@
   .catalog-section__count {
     min-height: 32px;
     padding-inline: 12px;
-    font-size: 0.72rem;
+    font-size: 0.7rem;
   }
 
   .catalog-section {
     padding: 16px 12px 14px;
-    border-radius: 22px;
   }
 
   .catalog-sections {

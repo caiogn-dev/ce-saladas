@@ -8,17 +8,18 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  background: rgba(255, 255, 255, 0.9);
-  border: none;
+  background: rgba(255, 253, 247, 0.96);
+  border: 1px solid rgba(var(--color-brand-green-rgb), 0.16);
   border-radius: 50%;
   cursor: pointer;
   transition: all 0.2s ease;
-  color: #999;
+  color: var(--color-text-muted);
+  box-shadow: 0 12px 22px rgba(var(--color-brand-green-rgb), 0.08);
 }
 
 .favorite-button:hover {
   background: #fff;
-  color: var(--color-marsala, #2D6A4F);
+  color: var(--color-brand-green-dark);
   transform: scale(1.1);
 }
 
@@ -87,8 +88,8 @@
   bottom: 100%;
   left: 50%;
   transform: translateX(-50%);
-  background: #333;
-  color: #fff;
+  background: var(--color-text-strong);
+  color: var(--color-white);
   padding: 6px 12px;
   border-radius: 6px;
   font-size: 0.75rem;
@@ -104,7 +105,7 @@
   left: 50%;
   transform: translateX(-50%);
   border: 6px solid transparent;
-  border-top-color: #333;
+  border-top-color: var(--color-text-strong);
 }
 
 @keyframes fadeIn {

@@ -4,22 +4,27 @@
   padding: 4px 10px;
   border-radius: 12px;
   font-size: 0.75rem;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.04em;
+  border: 1px solid transparent;
+  backdrop-filter: blur(10px);
 }
 
 .stock-badge.in-stock {
-  background: #dcfce7;
-  color: #16a34a;
+  background: rgba(236, 253, 245, 0.95);
+  color: #166534;
+  border-color: rgba(22, 101, 52, 0.12);
 }
 
 .stock-badge.low-stock {
-  background: #fef3c7;
-  color: #d97706;
+  background: rgba(255, 247, 237, 0.96);
+  color: #b45309;
+  border-color: rgba(180, 83, 9, 0.12);
 }
 
 .stock-badge.out-of-stock {
-  background: #fee2e2;
-  color: #dc2626;
+  background: rgba(254, 242, 242, 0.96);
+  color: #b91c1c;
+  border-color: rgba(185, 28, 28, 0.12);
 }

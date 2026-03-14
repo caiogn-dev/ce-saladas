@@ -20,6 +20,13 @@
   --color-brand-cream: #fef6e1;
   --color-brand-cream-soft: #fffaf0;
   --color-brand-graphite: #2d2d2d;
+  --color-surface-page: #fcf8ef;
+  --color-surface-page-alt: #f8f3e7;
+  --color-surface-card: #fffdf8;
+  --color-surface-card-strong: #fff9ee;
+  --color-surface-muted: #f4eedf;
+  --color-border-soft: rgba(var(--color-brand-green-rgb), 0.14);
+  --color-border-strong: rgba(var(--color-brand-green-rgb), 0.24);
 
   /* Semantic aliases used by existing UI */
   --color-marsala: var(--color-brand-green-dark);
@@ -43,8 +50,10 @@
   --color-gray-900: #2d2d2d;
   
   /* Semantic Colors */
-  --color-text: var(--color-brand-graphite);
-  --color-text-light: #5e5a50;
+  --color-text: #303428;
+  --color-text-strong: #20261a;
+  --color-text-light: #575445;
+  --color-text-muted: #726b5c;
   --color-success: #4f8d1f;
   --color-error: #ef4444;
   --color-warning: #f59e0b;
@@ -101,14 +110,19 @@ body {
   margin: 0;
   padding: 0;
   background:
-    radial-gradient(circle at top right, rgba(var(--color-brand-green-rgb), 0.12), transparent 26%),
-    radial-gradient(circle at top left, rgba(var(--color-brand-green-rgb), 0.08), transparent 32%),
-    linear-gradient(180deg, #fffdf7 0%, var(--color-brand-cream) 56%, #fffbf2 100%);
+    radial-gradient(circle at top right, rgba(var(--color-brand-green-rgb), 0.1), transparent 28%),
+    radial-gradient(circle at top left, rgba(var(--color-brand-green-rgb), 0.06), transparent 34%),
+    linear-gradient(180deg, var(--color-surface-page) 0%, var(--color-brand-cream) 58%, #fffaf2 100%);
   color: var(--color-text);
   font-family: var(--font-sans);
   font-size: 16px;
   line-height: 1.5;
   overflow-x: hidden;
+}
+
+#__next {
+  min-height: 100vh;
+  color: var(--color-text);
 }
 
 img {
@@ -124,11 +138,12 @@ a {
 
 button {
   font-family: inherit;
+  color: inherit;
 }
 
 /* ===== Typography ===== */
 h1, h2, h3, h4, h5, h6 {
-  color: var(--color-marsala);
+  color: var(--color-brand-green-dark);
   font-weight: 700;
   margin: 0;
   line-height: 1.2;
@@ -164,6 +179,7 @@ p {
   cursor: pointer;
   transition: all var(--transition-slow);
   text-decoration: none;
+  box-shadow: 0 14px 30px rgba(var(--color-brand-orange-rgb), 0.18);
 }
 
 .btn-primary:hover {
@@ -187,7 +203,7 @@ p {
   align-items: center;
   justify-content: center;
   gap: var(--space-sm);
-  background-color: transparent;
+  background-color: rgba(255, 255, 255, 0.66);
   color: var(--color-marsala);
   border: 2px solid var(--color-marsala);
   padding: 10px 30px;
@@ -244,10 +260,27 @@ p {
 input, textarea, select {
   font-family: inherit;
   font-size: 1rem;
+  color: var(--color-text);
+  caret-color: var(--color-brand-green-dark);
 }
 
 input:focus, textarea:focus, select:focus {
   outline: none;
+}
+
+.loading-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  background:
+    radial-gradient(circle at top, rgba(var(--color-brand-green-rgb), 0.08), transparent 30%),
+    linear-gradient(180deg, var(--color-surface-page) 0%, var(--color-brand-cream) 100%);
+  color: var(--color-brand-green-dark);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
 }
 
 /* ===== Scrollbar ===== */
