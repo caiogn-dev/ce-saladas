@@ -4,8 +4,12 @@
  */
 import { useState, useCallback } from 'react';
 import * as storeApi from '../../../services/storeApi';
-import { getStateCode, STORE_LOCATION } from '../utils';
+import { getStateCode, STORE_ADDRESS, STORE_LOCATION } from '../utils';
 import { getCachedRoute, cacheRoute } from '../../../utils/routeCache';
+
+const requestCurrentPosition = (options) => new Promise((resolve, reject) => {
+  navigator.geolocation.getCurrentPosition(resolve, reject, options);
+});
 
 export const useGeolocation = () => {
   const [loading, setLoading] = useState(false);
@@ -125,7 +129,12 @@ export const useGeolocation = () => {
   // Detect user location
   const detectLocation = useCallback(async () => {
     if (!navigator.geolocation) {
-      setError('Geolocalização não suportada pelo navegador');
+      setError('Geolocalizacao nao suportada pelo navegador');
+      return null;
+    }
+
+    if (typeof window !== 'undefined' && !window.isSecureContext) {
+      setError('A localizacao do navegador so funciona em conexao segura (HTTPS).');
       return null;
     }
 
@@ -133,48 +142,67 @@ export const useGeolocation = () => {
     setError(null);
 
     try {
-      const pos = await new Promise((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(resolve, reject, {
+      let pos;
+
+      try {
+        pos = await requestCurrentPosition({
           enableHighAccuracy: true,
           timeout: 20000,
-          maximumAge: 0 // Always get fresh location, no cache
+          maximumAge: 0,
         });
-      });
+      } catch (highAccuracyError) {
+        const shouldRetryWithRelaxedAccuracy = [2, 3].includes(highAccuracyError?.code);
+        if (!shouldRetryWithRelaxedAccuracy) {
+          throw highAccuracyError;
+        }
+
+        console.warn('High accuracy geolocation failed, retrying with relaxed settings', highAccuracyError);
+
+        pos = await requestCurrentPosition({
+          enableHighAccuracy: false,
+          timeout: 12000,
+          maximumAge: 300000,
+        });
+      }
 
       const { latitude, longitude, accuracy } = pos.coords;
-      
-      // Log accuracy for debugging
-      console.log(`📍 GPS Location: ${latitude}, ${longitude} (accuracy: ${accuracy}m)`);
-      
-      // Warn if accuracy is poor (> 100m)
+
+      console.log(`GPS Location: ${latitude}, ${longitude} (accuracy: ${accuracy}m)`);
+
       if (accuracy > 100) {
-        console.warn(`⚠️ GPS accuracy is low: ${accuracy}m`);
+        console.warn(`GPS accuracy is low: ${accuracy}m`);
       }
-      
+
       setPosition({ lat: latitude, lng: longitude });
 
-      // Reverse geocode
       const address = await reverseGeocode(latitude, longitude);
-      if (address) {
-        setDetectedAddress(address);
-      }
+      const fallbackAddress = address || {
+        street: '',
+        number: '',
+        neighborhood: '',
+        city: STORE_ADDRESS.city,
+        state: STORE_ADDRESS.state,
+        zip_code: '',
+        lat: latitude,
+        lng: longitude,
+      };
+      setDetectedAddress(fallbackAddress);
 
-      // Calculate route and fee
       await calculateRouteAndFee(latitude, longitude);
 
       setLoading(false);
-      return { lat: latitude, lng: longitude, address, accuracy };
+      return { lat: latitude, lng: longitude, address: fallbackAddress, accuracy };
     } catch (err) {
       setLoading(false);
-      
+
       if (err.code === 1) {
-        setError('Permissão de localização negada. Por favor, permita o acesso à localização nas configurações do navegador.');
+        setError('Permissao de localizacao negada. Permita o acesso nas configuracoes do Safari/navegador.');
       } else if (err.code === 2) {
-        setError('Não foi possível obter sua localização. Verifique se o GPS está ativado.');
+        setError('Nao foi possivel obter sua localizacao. Verifique se o GPS e a localizacao precisa estao ativados.');
       } else if (err.code === 3) {
-        setError('Tempo esgotado ao obter localização. Tente novamente.');
+        setError('Tempo esgotado ao obter localizacao. Tente novamente.');
       } else {
-        setError('Erro ao obter localização');
+        setError('Erro ao obter localizacao');
       }
       return null;
     }
@@ -186,14 +214,22 @@ export const useGeolocation = () => {
     setLoading(true);
 
     const address = await reverseGeocode(lat, lng);
-    if (address) {
-      setDetectedAddress(address);
-    }
+    const fallbackAddress = address || {
+      street: '',
+      number: '',
+      neighborhood: '',
+      city: STORE_ADDRESS.city,
+      state: STORE_ADDRESS.state,
+      zip_code: '',
+      lat,
+      lng,
+    };
+    setDetectedAddress(fallbackAddress);
 
     await calculateRouteAndFee(lat, lng);
     setLoading(false);
 
-    return address;
+    return fallbackAddress;
   }, [reverseGeocode, calculateRouteAndFee]);
 
   // Clear all data

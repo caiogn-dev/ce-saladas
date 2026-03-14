@@ -44,7 +44,7 @@ const LocationModal = ({
     detectLocation().then((result) => {
       if (cancelled) return;
 
-      if (!result) {
+      if (!result || !result.address) {
         setManualMode(true);
       }
     });
@@ -74,7 +74,7 @@ const LocationModal = ({
   const handleRetryGps = useCallback(() => {
     setManualMode(false);
     detectLocation().then((result) => {
-      if (!result) {
+      if (!result || !result.address) {
         setManualMode(true);
       }
     });
