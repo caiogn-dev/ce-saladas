@@ -1,102 +1,29 @@
-/* Empty State Component Styles */
-
+/* EmptyState Component · Minimalismo Orgânico */
 .ui-empty-state {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: var(--space-2xl);
-  border-radius: 28px;
-  background: linear-gradient(180deg, rgba(255, 253, 247, 0.94), rgba(255, 249, 238, 0.92));
-  border: 1px solid var(--color-border-soft);
-  box-shadow: var(--shadow-sm);
+  padding: var(--space-12);
+  border-radius: var(--o-radius-2xl);
+  background: linear-gradient(180deg, rgba(253,251,247,.96), rgba(248,243,235,.92));
+  border: 1px solid rgba(var(--clr-leaf-rgb), .1);
+  box-shadow: var(--o-shadow-sm);
 }
-
-/* Sizes */
-.ui-empty-state--sm {
-  padding: var(--space-lg);
-}
-
-.ui-empty-state--sm .ui-empty-state__icon svg {
-  width: 48px;
-  height: 48px;
-}
-
-.ui-empty-state--sm .ui-empty-state__title {
-  font-size: 1rem;
-}
-
-.ui-empty-state--sm .ui-empty-state__description {
-  font-size: 0.875rem;
-}
-
-.ui-empty-state--md .ui-empty-state__icon svg {
-  width: 64px;
-  height: 64px;
-}
-
-.ui-empty-state--lg {
-  padding: var(--space-3xl);
-}
-
-.ui-empty-state--lg .ui-empty-state__icon svg {
-  width: 80px;
-  height: 80px;
-}
-
-.ui-empty-state--lg .ui-empty-state__title {
-  font-size: 1.5rem;
-}
-
-/* Icon */
-.ui-empty-state__icon {
-  margin-bottom: var(--space-lg);
-  color: rgba(var(--color-brand-green-rgb), 0.45);
-}
-
-.ui-empty-state__icon svg {
-  stroke-width: 1.5;
-}
-
-/* Title */
-.ui-empty-state__title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--color-brand-green-dark);
-  margin: 0 0 var(--space-sm);
-}
-
-/* Description */
-.ui-empty-state__description {
-  font-size: 1rem;
-  color: var(--color-text-light);
-  margin: 0 0 var(--space-lg);
-  max-width: 400px;
-  line-height: 1.6;
-}
-
-/* Action */
-.ui-empty-state__action {
-  margin-top: var(--space-sm);
-}
-
-/* Responsive */
+.ui-empty-state--sm { padding: var(--space-6); }
+.ui-empty-state--sm .ui-empty-state__icon svg { width: 48px; height: 48px; }
+.ui-empty-state--sm .ui-empty-state__title { font-size: var(--text-base); }
+.ui-empty-state--md .ui-empty-state__icon svg { width: 64px; height: 64px; }
+.ui-empty-state--lg { padding: var(--space-16); }
+.ui-empty-state--lg .ui-empty-state__icon svg { width: 80px; height: 80px; }
+.ui-empty-state--lg .ui-empty-state__title { font-size: var(--text-xl); }
+.ui-empty-state__icon { margin-bottom: var(--space-6); color: rgba(var(--clr-leaf-rgb), .45); }
+.ui-empty-state__icon svg { stroke-width: 1.5; }
+.ui-empty-state__title { font-family: var(--font-display); font-size: var(--text-lg); font-weight: 400; font-style: italic; color: var(--clr-leaf-700); margin: 0 0 var(--space-2); }
+.ui-empty-state__description { font-size: var(--text-base); color: var(--color-text-muted); margin: 0 0 var(--space-6); max-width: 400px; line-height: var(--leading-loose); }
+.ui-empty-state__action { margin-top: var(--space-2); }
 @media (max-width: 640px) {
-  .ui-empty-state {
-    padding: var(--space-xl);
-  }
-
-  .ui-empty-state__icon svg {
-    width: 56px;
-    height: 56px;
-  }
-
-  .ui-empty-state__title {
-    font-size: 1.125rem;
-  }
-
-  .ui-empty-state__description {
-    font-size: 0.875rem;
-  }
+  .ui-empty-state { padding: var(--space-8); }
+  .ui-empty-state__icon svg { width: 56px; height: 56px; }
 }

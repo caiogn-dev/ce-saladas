@@ -1,48 +1,20 @@
-﻿.form-field {
-  display: grid;
-  gap: 6px;
-  margin-bottom: 18px;
-}
-
-.form-grid-2 {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 15px;
-}
-
-.form-label {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #444;
-}
-
+/* Forms · Minimalismo Orgânico */
+.form-field { display: grid; gap: 6px; margin-bottom: 18px; }
+.form-grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 15px; }
+.form-label { font-size: var(--text-sm); font-weight: 500; color: var(--clr-stone-700); }
 .form-input {
   width: 100%;
-  padding: 12px 14px;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  font-size: 1rem;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--o-radius-md);
+  border: 1.5px solid var(--clr-stone-200);
+  font-size: var(--text-base);
+  font-family: var(--font-body);
+  font-weight: 300;
   outline: none;
-  background: #fff;
+  background: rgba(255,255,255,.88);
+  transition: all var(--dur-fast) var(--ease-organic);
 }
-
-.form-input.is-error {
-  border-color: #dc2626;
-}
-
-.form-input:focus {
-  border-color: var(--color-brand-green);
-  box-shadow: 0 0 0 3px rgba(var(--color-brand-green-rgb), 0.15);
-}
-
-.form-error {
-  font-size: 0.8rem;
-  color: #dc2626;
-}
-
-@media (max-width: 640px) {
-  .form-grid-2 {
-    grid-template-columns: 1fr;
-  }
-}
-
+.form-input.is-error { border-color: var(--clr-clay-400); }
+.form-input:focus { border-color: var(--clr-leaf-500); box-shadow: 0 0 0 3px rgba(var(--clr-leaf-rgb), .12); background: #fff; }
+.form-error { font-size: var(--text-xs); color: var(--clr-clay-400); }
+@media (max-width: 640px) { .form-grid-2 { grid-template-columns: 1fr; } }

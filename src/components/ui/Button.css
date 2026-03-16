@@ -1,182 +1,159 @@
-﻿/* Button Component Styles */
+/* ═══════════════════════════════════════════════════════════════
+   BUTTON COMPONENT — Minimalismo Orgânico · Cê Saladas
+   ═══════════════════════════════════════════════════════════════ */
 
 .ui-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--space-sm);
-  font-family: inherit;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  border: none;
-  border-radius: var(--radius-full);
+  gap: var(--space-2);
+  font-family: var(--font-body);
+  font-weight: 500;
+  letter-spacing: var(--tracking-wide);
+  border: 1.5px solid transparent;
+  border-radius: var(--o-radius-full);
   cursor: pointer;
-  transition: all var(--transition-base);
   text-decoration: none;
   white-space: nowrap;
   position: relative;
+  overflow: hidden;
+  transition:
+    background var(--dur-fast) var(--ease-organic),
+    border-color var(--dur-fast) var(--ease-organic),
+    color var(--dur-fast) var(--ease-organic),
+    transform var(--dur-fast) var(--ease-spring),
+    box-shadow var(--dur-fast) var(--ease-organic);
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.ui-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: rgba(255,255,255,0);
+  transition: background var(--dur-fast);
 }
 
 .ui-btn:focus-visible {
-  outline: 2px solid var(--color-brand-green);
+  outline: 2px solid var(--clr-leaf-500);
   outline-offset: 2px;
 }
 
 .ui-btn:disabled {
-  opacity: 0.6;
+  opacity: .5;
   cursor: not-allowed;
   transform: none !important;
+  box-shadow: none !important;
 }
 
-/* Sizes */
-.ui-btn--sm {
-  padding: 8px 16px;
-  font-size: 0.75rem;
-}
+.ui-btn:active:not(:disabled) { transform: scale(.97) !important; }
 
-.ui-btn--md {
-  padding: 12px 28px;
-  font-size: 0.875rem;
-}
+/* ─── Tamanhos ─── */
+.ui-btn--sm { padding: var(--space-2) var(--space-4);  font-size: var(--text-xs);  }
+.ui-btn--md { padding: var(--space-3) var(--space-6);  font-size: var(--text-sm);  }
+.ui-btn--lg { padding: var(--space-3) var(--space-8);  font-size: var(--text-base);}
+.ui-btn--full { width: 100%; }
 
-.ui-btn--lg {
-  padding: 16px 36px;
-  font-size: 1rem;
-}
-
-/* Full Width */
-.ui-btn--full {
-  width: 100%;
-}
-
-/* Variants */
+/* ─── Primário ─── */
 .ui-btn--primary {
-  background-color: var(--color-brand-orange);
-  color: var(--color-white);
-  box-shadow: 0 12px 24px rgba(var(--color-brand-orange-rgb), 0.2);
+  background: var(--color-accent);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(var(--clr-terra-rgb), .2);
 }
 
 .ui-btn--primary:hover:not(:disabled) {
-  background-color: var(--color-brand-orange-dark);
+  background: var(--color-accent-hover);
   transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(var(--color-brand-orange-rgb), 0.3);
+  box-shadow: 0 6px 20px rgba(var(--clr-terra-rgb), .28);
 }
 
-.ui-btn--primary:active:not(:disabled) {
-  transform: translateY(0);
-}
-
+/* ─── Secundário ─── */
 .ui-btn--secondary {
-  background-color: rgba(255, 255, 255, 0.78);
-  color: var(--color-brand-green-dark);
-  border: 1px solid rgba(var(--color-brand-green-rgb), 0.34);
+  background: rgba(255,255,255,.85);
+  color: var(--clr-leaf-700);
+  border-color: rgba(var(--clr-leaf-rgb), .28);
+  backdrop-filter: blur(4px);
 }
 
 .ui-btn--secondary:hover:not(:disabled) {
-  background-color: rgba(var(--color-brand-green-rgb), 0.1);
+  background: var(--clr-leaf-50);
+  border-color: rgba(var(--clr-leaf-rgb), .5);
   transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(var(--color-brand-green-rgb), 0.16);
+  box-shadow: var(--o-shadow-md);
 }
 
+/* ─── Outline ─── */
 .ui-btn--outline {
-  background-color: rgba(255, 255, 255, 0.78);
-  color: var(--color-brand-green-dark);
-  border: 1px solid rgba(var(--color-brand-green-rgb), 0.34);
-  padding-top: 10px;
-  padding-bottom: 10px;
-}
-
-.ui-btn--outline.ui-btn--sm {
-  padding-top: 6px;
-  padding-bottom: 6px;
-}
-
-.ui-btn--outline.ui-btn--lg {
-  padding-top: 14px;
-  padding-bottom: 14px;
+  background: transparent;
+  color: var(--color-primary);
+  border-color: currentColor;
 }
 
 .ui-btn--outline:hover:not(:disabled) {
-  background-color: rgba(var(--color-brand-green-rgb), 0.12);
-  color: var(--color-marsala);
+  background: var(--clr-leaf-50);
+  transform: translateY(-2px);
+  box-shadow: var(--o-shadow-sm);
 }
 
+/* ─── Ghost ─── */
 .ui-btn--ghost {
-  background-color: rgba(var(--color-brand-green-rgb), 0.08);
-  color: var(--color-brand-green-dark);
+  background: transparent;
+  color: var(--clr-leaf-600);
+  border-color: transparent;
 }
 
 .ui-btn--ghost:hover:not(:disabled) {
-  background-color: rgba(var(--color-brand-green-rgb), 0.14);
+  background: var(--clr-leaf-50);
+  border-color: rgba(var(--clr-leaf-rgb), .2);
 }
 
+/* ─── Danger ─── */
 .ui-btn--danger {
-  background-color: var(--color-error);
-  color: var(--color-white);
+  background: var(--clr-clay-400);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(217,79,61,.2);
 }
 
 .ui-btn--danger:hover:not(:disabled) {
-  background-color: #dc2626;
+  background: var(--clr-clay-600);
   transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+  box-shadow: 0 6px 20px rgba(217,79,61,.28);
 }
 
-/* Loading State */
-.ui-btn--loading {
-  color: transparent !important;
-}
+/* ─── Loading ─── */
+.ui-btn--loading { color: transparent !important; pointer-events: none; }
 
 .ui-btn__spinner {
   position: absolute;
   display: flex;
   align-items: center;
   justify-content: center;
+  color: inherit;
 }
+
+.ui-btn--primary   .ui-btn__spinner,
+.ui-btn--danger    .ui-btn__spinner { color: #fff; }
+.ui-btn--secondary .ui-btn__spinner,
+.ui-btn--outline   .ui-btn__spinner,
+.ui-btn--ghost     .ui-btn__spinner { color: var(--clr-leaf-600); }
 
 .ui-btn__spinner svg {
-  width: 20px;
-  height: 20px;
-  animation: btn-spin 1s linear infinite;
+  width: 18px;
+  height: 18px;
+  animation: btn-spin .8s linear infinite;
 }
 
-.ui-btn--primary .ui-btn__spinner,
-.ui-btn--secondary .ui-btn__spinner,
-.ui-btn--danger .ui-btn__spinner {
-  color: var(--color-white);
-}
+@keyframes btn-spin { to { transform: rotate(360deg); } }
 
-.ui-btn--outline .ui-btn__spinner,
-.ui-btn--ghost .ui-btn__spinner {
-  color: var(--color-marsala);
-}
-
-@keyframes btn-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-/* Icons */
+/* ─── Ícones ─── */
 .ui-btn__icon {
   display: flex;
   align-items: center;
   justify-content: center;
 }
+.ui-btn__icon svg { width: 1em; height: 1em; }
 
-.ui-btn__icon svg {
-  width: 1em;
-  height: 1em;
-}
-
-.ui-btn__icon--left {
-  margin-right: var(--space-xs);
-}
-
-.ui-btn__icon--right {
-  margin-left: var(--space-xs);
-}
-
-.ui-btn__text {
-  color: inherit;
-}
-
+/* ─── Texto ─── */
+.ui-btn__text { color: inherit; }

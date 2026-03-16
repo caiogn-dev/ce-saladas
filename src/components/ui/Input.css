@@ -1,129 +1,54 @@
-﻿/* Input Component Styles */
+/* Input Component · Minimalismo Orgânico */
 
-.ui-input-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-xs);
-}
-
-.ui-input-wrapper--full {
-  width: 100%;
-}
+.ui-input-wrapper { display: flex; flex-direction: column; gap: var(--space-1); }
+.ui-input-wrapper--full { width: 100%; }
 
 .ui-input__label {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--color-text);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--clr-stone-700);
 }
 
-.ui-input__container {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
+.ui-input__container { position: relative; display: flex; align-items: center; }
 
 .ui-input {
   width: 100%;
-  background-color: var(--color-surface-card);
-  border: 1px solid var(--color-border-soft);
-  border-radius: var(--radius-md);
-  font-family: inherit;
-  font-size: 1rem;
-  color: var(--color-text);
-  transition: all var(--transition-fast);
-  box-shadow: 0 10px 22px rgba(var(--color-brand-green-rgb), 0.05);
+  background: rgba(255,255,255,.88);
+  border: 1.5px solid var(--clr-stone-200);
+  border-radius: var(--o-radius-md);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  font-weight: 300;
+  color: var(--color-text-base);
+  transition: all var(--dur-fast) var(--ease-organic);
+  box-shadow: var(--o-shadow-xs);
 }
 
-.ui-input::placeholder {
-  color: var(--color-text-muted);
-}
-
-.ui-input:hover:not(:disabled) {
-  border-color: rgba(var(--color-brand-green-rgb), 0.44);
-}
-
+.ui-input::placeholder { color: var(--clr-stone-400); }
+.ui-input:hover:not(:disabled) { border-color: rgba(var(--clr-leaf-rgb), .44); }
 .ui-input:focus {
   outline: none;
-  border-color: var(--color-brand-green);
-  box-shadow: 0 0 0 3px rgba(var(--color-brand-green-rgb), 0.14);
+  border-color: var(--clr-leaf-500);
+  box-shadow: 0 0 0 3px rgba(var(--clr-leaf-rgb), .14);
+  background: #fff;
 }
+.ui-input:disabled { background: var(--clr-stone-100); cursor: not-allowed; opacity: .7; }
 
-.ui-input:disabled {
-  background-color: var(--color-surface-muted);
-  cursor: not-allowed;
-  opacity: 0.7;
-}
+.ui-input--sm { padding: var(--space-2) var(--space-3); font-size: var(--text-sm); }
+.ui-input--md { padding: var(--space-3) var(--space-4); font-size: var(--text-base); }
+.ui-input--lg { padding: var(--space-4) var(--space-5); font-size: var(--text-md); }
 
-/* Sizes */
-.ui-input--sm {
-  padding: 8px 12px;
-  font-size: 0.875rem;
-}
+.ui-input--error { border-color: var(--clr-clay-400); }
+.ui-input--error:focus { border-color: var(--clr-clay-400); box-shadow: 0 0 0 3px rgba(217,79,61,.12); }
 
-.ui-input--md {
-  padding: 12px 16px;
-  font-size: 1rem;
-}
+.ui-input__icon { position: absolute; display: flex; align-items: center; justify-content: center; color: var(--clr-stone-400); pointer-events: none; }
+.ui-input__icon svg { width: 20px; height: 20px; }
+.ui-input__icon--left  { left: 12px; }
+.ui-input__icon--right { right: 12px; }
+.ui-input--with-left-icon  { padding-left: 40px; }
+.ui-input--with-right-icon { padding-right: 40px; }
 
-.ui-input--lg {
-  padding: 16px 20px;
-  font-size: 1.125rem;
-}
+.ui-input__helper { font-size: var(--text-xs); color: var(--clr-stone-500); }
+.ui-input__helper--error { color: var(--clr-clay-400); }
 
-/* Error State */
-.ui-input--error {
-  border-color: var(--color-error);
-}
-
-.ui-input--error:focus {
-  border-color: var(--color-error);
-  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
-}
-
-/* Icons */
-.ui-input__icon {
-  position: absolute;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--color-text-muted);
-  pointer-events: none;
-}
-
-.ui-input__icon svg {
-  width: 20px;
-  height: 20px;
-}
-
-.ui-input__icon--left {
-  left: 12px;
-}
-
-.ui-input__icon--right {
-  right: 12px;
-}
-
-.ui-input--with-left-icon {
-  padding-left: 40px;
-}
-
-.ui-input--with-right-icon {
-  padding-right: 40px;
-}
-
-/* Helper Text */
-.ui-input__helper {
-  font-size: 0.75rem;
-  color: var(--color-text-muted);
-}
-
-.ui-input__helper--error {
-  color: var(--color-error);
-}
-
-/* Textarea variant */
-textarea.ui-input {
-  min-height: 100px;
-  resize: vertical;
-}
-
+textarea.ui-input { min-height: 100px; resize: vertical; }

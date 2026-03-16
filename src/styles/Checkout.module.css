@@ -26,7 +26,7 @@
 }
 
 .checkoutHeader p {
-  color: #666;
+  color: var(--clr-stone-500);
   margin: 0;
 }
 
@@ -50,8 +50,8 @@
 }
 
 .checkoutMain {
-  background: white;
-  border-radius: 16px;
+  background: var(--color-bg-card);
+  border-radius: var(--o-radius-xl);
   padding: 2rem;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
@@ -77,9 +77,9 @@
 
 .sectionTitle {
   font-size: 1.1rem;
-  color: #333;
+  color: var(--clr-stone-800);
   margin: 0 0 1rem 0;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 /* ============================================
@@ -98,7 +98,7 @@
 .label {
   display: block;
   font-size: 0.85rem;
-  color: #555;
+  color: var(--clr-stone-600);
   margin-bottom: 0.4rem;
   font-weight: 500;
 }
@@ -108,10 +108,10 @@
   width: 100%;
   padding: 0.75rem 1rem;
   border: 2px dashed #ccc;
-  border-radius: 8px;
+  border-radius: var(--o-radius-md);
   font-size: 1rem;
   transition: all 0.2s;
-  background: white;
+  background: var(--color-bg-card);
 }
 
 .input:focus,
@@ -157,8 +157,8 @@
   display: flex;
   align-items: flex-start;
   padding: 1rem;
-  border: 2px solid #e5e5e5;
-  border-radius: 12px;
+  border: 2px solid var(--clr-stone-200);
+  border-radius: var(--o-radius-lg);
   cursor: pointer;
   transition: all 0.2s;
 }
@@ -186,7 +186,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .methodIcon {
@@ -195,23 +195,23 @@
 
 .methodDetails {
   font-size: 0.85rem;
-  color: #666;
+  color: var(--clr-stone-500);
   margin-top: 0.25rem;
 }
 
 .methodPrice {
-  font-weight: 600;
+  font-weight: 500;
   color: var(--color-brand-orange);
 }
 
 .methodZone,
 .methodDays,
 .methodHint {
-  color: #888;
+  color: var(--clr-stone-400);
 }
 
 .loadingText {
-  color: #888;
+  color: var(--clr-stone-400);
   font-style: italic;
 }
 
@@ -228,8 +228,8 @@
   display: flex;
   align-items: flex-start;
   padding: 1rem;
-  border: 2px solid #e5e5e5;
-  border-radius: 12px;
+  border: 2px solid var(--clr-stone-200);
+  border-radius: var(--o-radius-lg);
   cursor: pointer;
   transition: all 0.2s;
 }
@@ -253,7 +253,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .paymentIcon {
@@ -262,7 +262,7 @@
 
 .paymentDescription {
   font-size: 0.85rem;
-  color: #666;
+  color: var(--clr-stone-500);
   margin-top: 0.25rem;
 }
 
@@ -270,7 +270,7 @@
   margin-top: 1.5rem;
   padding: 1.5rem;
   background: #f8fbf1;
-  border-radius: 12px;
+  border-radius: var(--o-radius-lg);
 }
 
 /* ============================================
@@ -286,7 +286,7 @@
 .savedCustomerInfo {
   background: #f0fdf4;
   border: 1px solid #86efac;
-  border-radius: 12px;
+  border-radius: var(--o-radius-lg);
   padding: 1rem;
 }
 
@@ -295,7 +295,7 @@
   align-items: center;
   gap: 0.5rem;
   color: #16a34a;
-  font-weight: 600;
+  font-weight: 500;
   margin-bottom: 0.5rem;
 }
 
@@ -305,7 +305,7 @@
 
 .savedInfoDetails p {
   margin: 0.25rem 0;
-  color: #333;
+  color: var(--clr-stone-800);
 }
 
 .savedFieldHint {
@@ -320,13 +320,13 @@
   flex-direction: column;
   gap: 1rem;
   padding: 1rem;
-  border-radius: 14px;
+  border-radius: var(--o-radius-lg);
   border: 1px solid #eadfd5;
   background: linear-gradient(135deg, #fffdfa 0%, #f9f4ee 100%);
 }
 
 .personalDataCard {
-  background: white;
+  background: var(--color-bg-card);
   border-color: #ece7df;
 }
 
@@ -338,7 +338,7 @@
 
 .formSectionEyebrow {
   font-size: 0.78rem;
-  font-weight: 700;
+  font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--color-brand-green-dark);
@@ -348,7 +348,7 @@
   margin: 0;
   font-size: 0.9rem;
   line-height: 1.5;
-  color: #6b6b6b;
+  color: var(--clr-stone-600);
 }
 
 .identificationButton {
@@ -356,10 +356,10 @@
   min-width: 160px;
   padding: 0.8rem 1.2rem;
   border: none;
-  border-radius: 10px;
+  border-radius: var(--o-radius-md);
   background: linear-gradient(135deg, var(--color-brand-orange) 0%, var(--color-brand-orange-dark) 100%);
   color: white;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   box-shadow: 0 8px 20px rgba(var(--color-brand-orange-rgb), 0.18);
@@ -385,8 +385,8 @@
 
 .identificationError {
   padding: 0.8rem 0.95rem;
-  border-radius: 10px;
-  background: #fff1f2;
+  border-radius: var(--o-radius-md);
+  background: var(--color-bg-card)1f2;
   color: #be123c;
   border: 1px solid #fecdd3;
   font-size: 0.85rem;
@@ -416,7 +416,7 @@
   border: none;
   background: none;
   color: var(--color-brand-orange);
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
 }
 
@@ -442,9 +442,9 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1.25rem;
-  background: white;
+  background: var(--color-bg-card);
   border: 2px dashed var(--color-brand-green);
-  border-radius: 8px;
+  border-radius: var(--o-radius-md);
   color: var(--color-marsala);
   font-weight: 500;
   cursor: pointer;
@@ -462,8 +462,8 @@
 .gpsLoading {
   text-align: center;
   padding: 3rem 2rem;
-  background: #f9f9f9;
-  border-radius: 12px;
+  background: var(--clr-stone-50);
+  border-radius: var(--o-radius-lg);
 }
 
 .gpsLoadingSpinner {
@@ -486,13 +486,13 @@
 
 .gpsLoadingText {
   font-size: 1.1rem;
-  color: #333;
+  color: var(--clr-stone-800);
   margin: 0 0 0.5rem 0;
 }
 
 .gpsLoadingHint {
   font-size: 0.9rem;
-  color: #666;
+  color: var(--clr-stone-500);
   margin: 0 0 1.5rem 0;
 }
 
@@ -501,13 +501,13 @@
   background: transparent;
   border: 1px solid #ccc;
   border-radius: 6px;
-  color: #666;
+  color: var(--clr-stone-500);
   cursor: pointer;
   font-size: 0.9rem;
 }
 
 .skipGpsButton:hover {
-  background: #f5f5f5;
+  background: var(--clr-stone-100);
 }
 
 .gpsError {
@@ -515,7 +515,7 @@
   padding: 2rem;
   background: #fef2f2;
   border: 1px solid #fecaca;
-  border-radius: 12px;
+  border-radius: var(--o-radius-lg);
 }
 
 .gpsErrorIcon {
@@ -538,7 +538,7 @@
 .retryButton,
 .manualEntryButton {
   padding: 0.75rem 1.25rem;
-  border-radius: 8px;
+  border-radius: var(--o-radius-md);
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s;
@@ -555,21 +555,21 @@
 }
 
 .manualEntryButton {
-  background: white;
-  color: #333;
+  background: var(--color-bg-card);
+  color: var(--clr-stone-800);
   border: 1px solid #ccc;
 }
 
 .manualEntryButton:hover {
-  background: #f5f5f5;
+  background: var(--clr-stone-100);
 }
 
 /* ============================================
    Address Confirmation
    ============================================ */
 .addressConfirmation {
-  background: #f9f9f9;
-  border-radius: 12px;
+  background: var(--clr-stone-50);
+  border-radius: var(--o-radius-lg);
   padding: 1.5rem;
 }
 
@@ -583,7 +583,7 @@
 .confirmationHeader h3 {
   margin: 0;
   font-size: 1.1rem;
-  color: #333;
+  color: var(--clr-stone-800);
 }
 
 .locationIcon {
@@ -591,8 +591,8 @@
 }
 
 .detectedAddressCard {
-  background: white;
-  border-radius: 10px;
+  background: var(--color-bg-card);
+  border-radius: var(--o-radius-md);
   padding: 1.25rem;
   margin-bottom: 1rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
@@ -604,18 +604,18 @@
 
 .streetAddress {
   font-size: 1.1rem;
-  font-weight: 600;
-  color: #333;
+  font-weight: 500;
+  color: var(--clr-stone-800);
   margin: 0 0 0.25rem 0;
 }
 
 .neighborhood {
-  color: #666;
+  color: var(--clr-stone-500);
   margin: 0 0 0.25rem 0;
 }
 
 .cityState {
-  color: #888;
+  color: var(--clr-stone-400);
   font-size: 0.9rem;
   margin: 0;
 }
@@ -630,7 +630,7 @@
   align-items: center;
   gap: 0.5rem;
   margin-bottom: 0.5rem;
-  color: #666;
+  color: var(--clr-stone-500);
 }
 
 .routeIcon {
@@ -638,7 +638,7 @@
 }
 
 .routeDuration {
-  color: #888;
+  color: var(--clr-stone-400);
 }
 
 .feeInfo {
@@ -649,11 +649,11 @@
 }
 
 .feeLabel {
-  color: #666;
+  color: var(--clr-stone-500);
 }
 
 .feeValue {
-  font-weight: 600;
+  font-weight: 500;
   color: var(--color-brand-orange);
 }
 
@@ -662,7 +662,7 @@
 }
 
 .zoneName {
-  color: #888;
+  color: var(--clr-stone-400);
   font-size: 0.85rem;
 }
 
@@ -671,14 +671,14 @@
 }
 
 .questionLabel {
-  font-weight: 600;
-  color: #333;
+  font-weight: 500;
+  color: var(--clr-stone-800);
   display: block;
   margin-bottom: 0.25rem;
 }
 
 .questionHint {
-  color: #666;
+  color: var(--clr-stone-500);
   font-size: 0.9rem;
   margin: 0;
 }
@@ -693,7 +693,7 @@
 .editButton,
 .manualButton {
   padding: 0.875rem 1.25rem;
-  border-radius: 8px;
+  border-radius: var(--o-radius-md);
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s;
@@ -711,7 +711,7 @@
 }
 
 .editButton {
-  background: white;
+  background: var(--color-bg-card);
   color: var(--color-marsala);
   border: 1px solid rgba(var(--color-brand-green-rgb), 0.28);
 }
@@ -722,7 +722,7 @@
 
 .manualButton {
   background: transparent;
-  color: #666;
+  color: var(--clr-stone-500);
   border: 1px dashed rgba(var(--color-brand-green-rgb), 0.32);
 }
 
@@ -737,12 +737,12 @@
 .deliveryMapContainer {
   position: relative;
   margin-top: 1rem;
-  border-radius: 12px;
+  border-radius: var(--o-radius-lg);
   overflow: hidden;
 }
 
 .mapWrapper {
-  border-radius: 12px;
+  border-radius: var(--o-radius-lg);
   overflow: hidden;
 }
 
@@ -751,8 +751,8 @@
   align-items: center;
   justify-content: center;
   height: 300px;
-  background: #f5f5f5;
-  color: #666;
+  background: var(--clr-stone-100);
+  color: var(--clr-stone-500);
 }
 
 .mapInfoOverlay {
@@ -761,7 +761,7 @@
   left: 1rem;
   right: 1rem;
   background: rgba(255, 255, 255, 0.95);
-  border-radius: 10px;
+  border-radius: var(--o-radius-md);
   padding: 1rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
@@ -785,14 +785,14 @@
 }
 
 .metricValue {
-  font-weight: 700;
+  font-weight: 500;
   color: var(--color-brand-orange);
   font-size: 1.1rem;
 }
 
 .metricLabel {
   font-size: 0.75rem;
-  color: #888;
+  color: var(--clr-stone-400);
 }
 
 .zoneInfo {
@@ -801,7 +801,7 @@
   padding-top: 0.75rem;
   border-top: 1px solid #eee;
   font-size: 0.85rem;
-  color: #666;
+  color: var(--clr-stone-500);
 }
 
 /* ============================================
@@ -825,7 +825,7 @@
   background: var(--color-brand-orange);
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--o-radius-md);
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s;
@@ -848,7 +848,7 @@
   padding: 1rem;
   background: #f0fdf4;
   border: 1px solid #86efac;
-  border-radius: 10px;
+  border-radius: var(--o-radius-md);
 }
 
 .couponInfo {
@@ -867,17 +867,17 @@
 }
 
 .couponCode {
-  font-weight: 600;
+  font-weight: 500;
   color: #16a34a;
 }
 
 .couponDescription {
   font-size: 0.85rem;
-  color: #666;
+  color: var(--clr-stone-500);
 }
 
 .couponDiscount {
-  font-weight: 600;
+  font-weight: 500;
   color: #16a34a;
 }
 
@@ -934,8 +934,8 @@
   gap: 1rem;
   margin-top: 1rem;
   padding: 1rem;
-  background: #f9f9f9;
-  border-radius: 10px;
+  background: var(--clr-stone-50);
+  border-radius: var(--o-radius-md);
 }
 
 .schedulingOptions .formGroup {
@@ -947,15 +947,15 @@
    Order Summary
    ============================================ */
 .orderSummary {
-  background: white;
-  border-radius: 16px;
+  background: var(--color-bg-card);
+  border-radius: var(--o-radius-xl);
   padding: 1.5rem;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
 .summaryTitle {
   font-size: 1.1rem;
-  color: #333;
+  color: var(--clr-stone-800);
   margin: 0 0 1rem 0;
   padding-bottom: 0.75rem;
   border-bottom: 1px solid #eee;
@@ -983,25 +983,25 @@
 
 .itemName {
   font-size: 0.95rem;
-  font-weight: 600;
-  color: #333;
+  font-weight: 500;
+  color: var(--clr-stone-800);
   margin: 0 0 0.25rem 0;
 }
 
 .itemQty {
   font-size: 0.85rem;
-  color: #666;
+  color: var(--clr-stone-500);
   margin: 0;
 }
 
 .itemOptions {
   font-size: 0.8rem;
-  color: #888;
+  color: var(--clr-stone-400);
   margin: 0.25rem 0 0 0;
 }
 
 .itemPrice {
-  font-weight: 600;
+  font-weight: 500;
   color: var(--color-brand-orange);
 }
 
@@ -1022,12 +1022,12 @@
 }
 
 .discountValue {
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .couponTag {
   font-size: 0.8rem;
-  color: #888;
+  color: var(--clr-stone-400);
 }
 
 .totalRow {
@@ -1035,7 +1035,7 @@
   margin-top: 0.5rem;
   border-top: 2px solid var(--color-brand-orange);
   font-size: 1.1rem;
-  font-weight: 700;
+  font-weight: 500;
 }
 
 .totalRow span:first-child {
@@ -1049,7 +1049,7 @@
 
 .freeShipping {
   color: #16a34a;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .securePayment {
@@ -1059,10 +1059,10 @@
   gap: 0.5rem;
   margin-top: 1.5rem;
   padding: 1rem;
-  background: #f9f9f9;
-  border-radius: 8px;
+  background: var(--clr-stone-50);
+  border-radius: var(--o-radius-md);
   font-size: 0.85rem;
-  color: #666;
+  color: var(--clr-stone-500);
 }
 
 .secureIcon {
@@ -1078,9 +1078,9 @@
   background: var(--color-brand-orange);
   color: white;
   border: none;
-  border-radius: 10px;
+  border-radius: var(--o-radius-md);
   font-size: 1.1rem;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
   transition: all 0.2s;
   margin-top: 1rem;
@@ -1118,7 +1118,7 @@
   background: #fee2e2;
   color: #dc2626;
   padding: 1rem;
-  border-radius: 8px;
+  border-radius: var(--o-radius-md);
   margin-top: 1rem;
   border: 1px solid #fecaca;
 }
@@ -1132,12 +1132,12 @@
 }
 
 .emptyCart h2 {
-  color: #333;
+  color: var(--clr-stone-800);
   margin-bottom: 0.5rem;
 }
 
 .emptyCart p {
-  color: #666;
+  color: var(--clr-stone-500);
   margin-bottom: 1.5rem;
 }
 
@@ -1147,7 +1147,7 @@
   background: var(--color-brand-orange);
   color: white;
   text-decoration: none;
-  border-radius: 8px;
+  border-radius: var(--o-radius-md);
   font-weight: 500;
 }
 

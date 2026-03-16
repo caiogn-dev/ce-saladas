@@ -1,154 +1,86 @@
+/* LoginModal · Minimalismo Orgânico */
 .login-modal-overlay {
   position: fixed;
   inset: 0;
-  background-color: rgba(0, 0, 0, 0.6);
+  background: rgba(20,18,14,.55);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
   padding: 20px;
-  animation: fadeIn 0.2s ease-out;
+  backdrop-filter: blur(6px);
+  animation: fadeIn var(--dur-base) var(--ease-out);
 }
-
 .login-modal {
-  background: #fff;
-  border-radius: 16px;
+  background: var(--color-bg-card);
+  border-radius: var(--o-radius-xl);
   width: 100%;
   max-width: 400px;
-  padding: 32px;
+  padding: var(--space-8);
   position: relative;
-  animation: slideUp 0.3s ease-out;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideUp var(--dur-base) var(--ease-organic);
+  box-shadow: var(--o-shadow-xl);
+  border: 1px solid var(--clr-stone-200);
 }
-
 .login-modal-close {
   position: absolute;
   top: 16px;
   right: 16px;
-  background: none;
+  background: var(--clr-stone-100);
   border: none;
-  font-size: 24px;
+  font-size: 20px;
   cursor: pointer;
-  color: #666;
+  color: var(--clr-stone-500);
   width: 32px;
   height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
-  transition: all 0.2s;
+  border-radius: var(--o-radius-full);
+  transition: all var(--dur-fast) var(--ease-organic);
 }
-
-.login-modal-close:hover {
-  background: #f0f0f0;
-  color: #333;
-}
-
-.login-modal-header {
-  text-align: center;
-  margin-bottom: 24px;
-}
-
+.login-modal-close:hover { background: var(--clr-stone-200); color: var(--clr-stone-800); transform: rotate(90deg); }
+.login-modal-header { text-align: center; margin-bottom: var(--space-6); }
 .login-modal-header h2 {
-  color: var(--color-marsala);
-  margin: 0 0 8px 0;
-  font-size: 1.5rem;
+  font-family: var(--font-display);
+  color: var(--clr-leaf-700);
+  margin: 0 0 8px;
+  font-size: var(--text-xl);
+  font-weight: 400;
+  font-style: italic;
 }
-
-.login-modal-header p {
-  color: #666;
-  margin: 0;
-  font-size: 0.95rem;
-}
-
+.login-modal-header p { color: var(--color-text-muted); margin: 0; font-size: var(--text-sm); }
 .login-modal-error {
-  background-color: #fee2e2;
-  color: #dc2626;
-  padding: 12px;
-  border-radius: 8px;
-  margin-bottom: 20px;
-  font-size: 0.9rem;
+  background: var(--clr-clay-50);
+  color: var(--clr-clay-600);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--o-radius-md);
+  margin-bottom: var(--space-5);
+  font-size: var(--text-sm);
   text-align: center;
+  border: 1px solid rgba(217,79,61,.2);
 }
-
-.login-modal-form {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.login-modal-field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.login-modal-field label {
-  font-size: 0.9rem;
-  color: #444;
-  font-weight: 500;
-}
-
+.login-modal-form { display: flex; flex-direction: column; gap: var(--space-4); }
+.login-modal-field { display: flex; flex-direction: column; gap: 6px; }
+.login-modal-field label { font-size: var(--text-sm); color: var(--clr-stone-700); font-weight: 500; }
 .login-modal-field input {
   width: 100%;
-  padding: 12px 14px;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  font-size: 1rem;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--o-radius-md);
+  border: 1.5px solid var(--clr-stone-200);
+  font-size: var(--text-base);
+  font-family: var(--font-body);
+  font-weight: 300;
   outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: all var(--dur-fast) var(--ease-organic);
+  background: rgba(255,255,255,.88);
 }
-
-.login-modal-field input:focus {
-  border-color: var(--color-marsala);
-  box-shadow: 0 0 0 3px rgba(114, 47, 55, 0.1);
-}
-
-.login-modal-submit {
-  width: 100%;
-  margin-top: 8px;
-  padding: 14px;
-  border-radius: 8px;
-}
-
-.login-modal-submit:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
-.login-modal-footer {
-  margin-top: 20px;
-  text-align: center;
-  font-size: 0.9rem;
-}
-
-.login-modal-footer p {
-  margin: 0;
-  color: #666;
-}
-
-.login-modal-footer a {
-  color: var(--color-marsala);
-  font-weight: bold;
-  text-decoration: none;
-}
-
-.login-modal-footer a:hover {
-  text-decoration: underline;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes slideUp {
-  from { 
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to { 
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+.login-modal-field input:focus { border-color: var(--clr-leaf-500); box-shadow: 0 0 0 3px rgba(var(--clr-leaf-rgb), .12); background: #fff; }
+.login-modal-submit { width: 100%; margin-top: var(--space-2); padding: var(--space-4); border-radius: var(--o-radius-full); }
+.login-modal-submit:disabled { opacity: .6; cursor: not-allowed; }
+.login-modal-footer { margin-top: var(--space-5); text-align: center; font-size: var(--text-sm); }
+.login-modal-footer p { margin: 0; color: var(--color-text-muted); }
+.login-modal-footer a { color: var(--clr-leaf-700); font-weight: 500; text-decoration: none; }
+.login-modal-footer a:hover { text-decoration: underline; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }

@@ -1,98 +1,24 @@
-/* Badge Component Styles */
-
+/* Badge Component · Minimalismo Orgânico */
 .ui-badge {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-xs);
+  gap: var(--space-1);
   font-weight: 500;
   white-space: nowrap;
-  border-radius: var(--radius-sm);
+  border-radius: var(--o-radius-sm);
+  letter-spacing: var(--tracking-wide);
 }
-
-.ui-badge--pill {
-  border-radius: var(--radius-full);
-}
-
-/* Sizes */
-.ui-badge--sm {
-  padding: 2px 8px;
-  font-size: 0.625rem;
-}
-
-.ui-badge--md {
-  padding: 4px 10px;
-  font-size: 0.75rem;
-}
-
-.ui-badge--lg {
-  padding: 6px 14px;
-  font-size: 0.875rem;
-}
-
-/* Variants */
-.ui-badge--default {
-  background-color: var(--color-surface-muted);
-  color: var(--color-text-light);
-}
-
-.ui-badge--success {
-  background-color: #dcfce7;
-  color: #166534;
-}
-
-.ui-badge--warning {
-  background-color: #fef3c7;
-  color: #92400e;
-}
-
-.ui-badge--error {
-  background-color: #fee2e2;
-  color: #991b1b;
-}
-
-.ui-badge--info {
-  background-color: #dbeafe;
-  color: #1e40af;
-}
-
-.ui-badge--marsala {
-  background-color: rgba(var(--color-brand-green-rgb), 0.12);
-  color: var(--color-brand-green-dark);
-}
-
-.ui-badge--outline {
-  background-color: rgba(255, 255, 255, 0.82);
-  color: var(--color-brand-green-dark);
-  border: 1px solid rgba(var(--color-brand-green-rgb), 0.2);
-}
-
-/* Dot indicator */
-.ui-badge__dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background-color: currentColor;
-  flex-shrink: 0;
-}
-
-.ui-badge--sm .ui-badge__dot {
-  width: 5px;
-  height: 5px;
-}
-
-.ui-badge--lg .ui-badge__dot {
-  width: 8px;
-  height: 8px;
-}
-
-/* Dot only badge */
-.ui-badge--dot:empty {
-  padding: 0;
-  width: auto;
-  height: auto;
-}
-
-.ui-badge--dot:empty .ui-badge__dot {
-  width: 8px;
-  height: 8px;
-}
+.ui-badge--pill { border-radius: var(--o-radius-full); }
+.ui-badge--sm { padding: 2px 8px; font-size: var(--text-xs); }
+.ui-badge--md { padding: 4px 10px; font-size: var(--text-sm); }
+.ui-badge--lg { padding: 6px 14px; font-size: var(--text-base); }
+.ui-badge--default { background: var(--clr-stone-100); color: var(--clr-stone-600); }
+.ui-badge--success { background: var(--clr-moss-50); color: var(--clr-moss-600); }
+.ui-badge--warning { background: var(--clr-amber-50); color: #92400e; }
+.ui-badge--error   { background: var(--clr-clay-50); color: var(--clr-clay-600); }
+.ui-badge--info    { background: #dbeafe; color: #1e40af; }
+.ui-badge--marsala { background: rgba(var(--clr-leaf-rgb), .12); color: var(--clr-leaf-700); }
+.ui-badge--outline { background: rgba(255,255,255,.82); color: var(--clr-leaf-700); border: 1px solid rgba(var(--clr-leaf-rgb), .2); }
+.ui-badge__dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+.ui-badge--sm .ui-badge__dot { width: 5px; height: 5px; }
+.ui-badge--lg .ui-badge__dot { width: 8px; height: 8px; }

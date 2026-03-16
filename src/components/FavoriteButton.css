@@ -1,115 +1,43 @@
-.favorite-button-wrapper {
-  position: relative;
-  display: inline-block;
-}
-
+/* FavoriteButton · Minimalismo Orgânico */
+.favorite-button-wrapper { position: relative; display: inline-block; }
 .favorite-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
-  background: rgba(255, 253, 247, 0.96);
-  border: 1px solid rgba(var(--color-brand-green-rgb), 0.16);
+  background: rgba(253,251,247,.96);
+  border: 1px solid rgba(var(--clr-leaf-rgb), .16);
   border-radius: 50%;
   cursor: pointer;
-  transition: all 0.2s ease;
-  color: var(--color-text-muted);
-  box-shadow: 0 12px 22px rgba(var(--color-brand-green-rgb), 0.08);
+  transition: all var(--dur-fast) var(--ease-organic);
+  color: var(--clr-stone-500);
+  box-shadow: var(--o-shadow-sm);
 }
-
-.favorite-button:hover {
-  background: var(--color-surface-card);
-  color: var(--color-brand-green-dark);
-  transform: scale(1.1);
-}
-
-.favorite-button.favorited {
-  color: #e11d48;
-}
-
-.favorite-button.favorited:hover {
-  color: #be123c;
-}
-
-.favorite-button.loading {
-  opacity: 0.6;
-  cursor: wait;
-}
-
-/* Sizes */
-.favorite-button-small {
-  width: 28px;
-  height: 28px;
-  padding: 4px;
-}
-
-.favorite-button-small .favorite-icon {
-  width: 16px;
-  height: 16px;
-}
-
-.favorite-button-medium {
-  width: 36px;
-  height: 36px;
-  padding: 6px;
-}
-
-.favorite-button-medium .favorite-icon {
-  width: 20px;
-  height: 20px;
-}
-
-.favorite-button-large {
-  width: 44px;
-  height: 44px;
-  padding: 8px;
-}
-
-.favorite-button-large .favorite-icon {
-  width: 24px;
-  height: 24px;
-}
-
-/* With label */
-.favorite-button:has(.favorite-label) {
-  border-radius: 20px;
-  width: auto;
-  padding: 8px 16px;
-}
-
-.favorite-label {
-  font-size: 0.85rem;
-  font-weight: 500;
-}
-
-/* Login hint */
+.favorite-button:hover { background: var(--color-bg-card); color: var(--clr-leaf-700); transform: scale(1.1); }
+.favorite-button.favorited { color: #e11d48; }
+.favorite-button.favorited:hover { color: #be123c; }
+.favorite-button.loading { opacity: .6; cursor: wait; }
+.favorite-button-small { width: 28px; height: 28px; padding: 4px; }
+.favorite-button-small .favorite-icon { width: 16px; height: 16px; }
+.favorite-button-medium { width: 36px; height: 36px; padding: 6px; }
+.favorite-button-medium .favorite-icon { width: 20px; height: 20px; }
+.favorite-button-large { width: 44px; height: 44px; padding: 8px; }
+.favorite-button-large .favorite-icon { width: 24px; height: 24px; }
+.favorite-button:has(.favorite-label) { border-radius: var(--o-radius-full); width: auto; padding: 8px 16px; }
+.favorite-label { font-size: var(--text-sm); font-weight: 500; }
 .favorite-login-hint {
   position: absolute;
   bottom: 100%;
   left: 50%;
   transform: translateX(-50%);
-  background: var(--color-text-strong);
-  color: var(--color-white);
+  background: var(--clr-stone-900);
+  color: #fff;
   padding: 6px 12px;
-  border-radius: 6px;
-  font-size: 0.75rem;
+  border-radius: var(--o-radius-md);
+  font-size: var(--text-xs);
   white-space: nowrap;
   margin-bottom: 8px;
-  animation: fadeIn 0.2s ease;
+  animation: fadeIn var(--dur-fast) ease;
 }
-
-.favorite-login-hint::after {
-  content: '';
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  border: 6px solid transparent;
-  border-top-color: var(--color-text-strong);
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateX(-50%) translateY(4px); }
-  to { opacity: 1; transform: translateX(-50%) translateY(0); }
-}
-
+.favorite-login-hint::after { content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 6px solid transparent; border-top-color: var(--clr-stone-900); }
+@keyframes fadeIn { from { opacity: 0; transform: translateX(-50%) translateY(4px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }

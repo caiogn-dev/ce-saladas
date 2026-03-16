@@ -72,9 +72,9 @@
   align-items: center;
   min-height: 38px;
   padding: 0 16px;
-  border-radius: 999px;
+  border-radius: var(--o-radius-full);
   font-size: 0.78rem;
-  font-weight: 800;
+  font-weight: 400;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -137,10 +137,10 @@
   align-items: center;
   gap: 8px;
   padding: 10px 14px;
-  border-radius: 999px;
+  border-radius: var(--o-radius-full);
   background: rgba(255, 253, 247, 0.94);
   color: var(--color-brand-green-dark);
-  font-weight: 700;
+  font-weight: 500;
   border: 1px solid rgba(var(--color-brand-green-rgb), 0.16);
   box-shadow: 0 16px 28px rgba(var(--color-brand-green-rgb), 0.12);
 }
@@ -160,7 +160,7 @@
 .hero-placeholder {
   width: 100%;
   min-height: 480px;
-  border-radius: 26px;
+  border-radius: var(--o-radius-2xl);
 }
 
 .hero-image {
@@ -181,14 +181,14 @@
 }
 
 .hero-placeholder span {
-  font-family: var(--font-serif);
+  font-family: var(--font-display);
   font-size: clamp(4rem, 10vw, 6rem);
   line-height: 0.9;
 }
 
 .hero-placeholder small {
   font-size: 1.3rem;
-  font-weight: 800;
+  font-weight: 400;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -211,10 +211,10 @@
   justify-content: center;
   gap: 10px;
   padding: 18px 20px;
-  border-radius: 22px;
+  border-radius: var(--o-radius-xl);
   background: rgba(255, 253, 247, 0.94);
   color: var(--color-text-light);
-  font-weight: 700;
+  font-weight: 500;
   text-align: center;
   border: 1px solid rgba(var(--color-brand-green-rgb), 0.12);
   box-shadow: 0 16px 34px rgba(var(--color-brand-green-rgb), 0.08);
@@ -234,7 +234,7 @@
   margin-bottom: 12px;
   color: var(--color-brand-green-dark);
   font-size: 0.78rem;
-  font-weight: 800;
+  font-weight: 400;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -266,7 +266,7 @@
 .step-card,
 .feature-card {
   padding: 28px;
-  border-radius: 26px;
+  border-radius: var(--o-radius-2xl);
   background: linear-gradient(180deg, rgba(255, 253, 247, 0.96), rgba(255, 249, 238, 0.92));
   border: 1px solid rgba(var(--color-brand-green-rgb), 0.14);
   box-shadow: 0 20px 40px rgba(var(--color-brand-green-rgb), 0.08);
@@ -384,7 +384,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 999px;
+  border-radius: var(--o-radius-full);
   background: rgba(255, 255, 255, 0.08);
   color: #fff8f0;
   transition: transform var(--transition-base), background-color var(--transition-base);
@@ -446,11 +446,11 @@
   align-items: center;
   min-height: 34px;
   padding: 0 14px;
-  border-radius: 999px;
+  border-radius: var(--o-radius-full);
   background: rgba(var(--color-brand-green-rgb), 0.16);
   color: var(--color-brand-green-dark);
   font-size: 0.78rem;
-  font-weight: 800;
+  font-weight: 400;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   margin-bottom: 14px;
@@ -594,13 +594,13 @@
 
   .hero-brand-surface {
     padding: 12px;
-    border-radius: 26px;
+    border-radius: var(--o-radius-2xl);
   }
 
   .hero-image,
   .hero-placeholder {
     min-height: 300px;
-    border-radius: 22px;
+    border-radius: var(--o-radius-xl);
   }
 
   .step-card,
