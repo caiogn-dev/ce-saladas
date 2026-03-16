@@ -9,7 +9,7 @@
 .hero-section {
   position: relative;
   min-height: calc(100vh - var(--header-height));
-  overflow: hidden;
+  overflow-x: clip;
   padding: 52px 0 72px;
   isolation: isolate;
 }
@@ -36,7 +36,7 @@
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
   align-items: center;
   gap: 48px;
 }
@@ -46,6 +46,7 @@
   opacity: 0;
   transform: translateY(24px);
   transition: opacity 0.6s ease, transform 0.6s ease;
+  min-width: 0;
 }
 
 .hero-copy.is-visible,
@@ -54,8 +55,13 @@
   transform: translateY(0);
 }
 
-.hero-visual.is-visible {
-  transition-delay: 0.1s;
+/* Fallback: show if JS animation class never fires */
+@media (prefers-reduced-motion: reduce) {
+  .hero-copy,
+  .hero-visual {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 .hero-kicker-row {
@@ -125,7 +131,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 540px;
+  min-height: 480px;
+  width: 100%;
 }
 
 .hero-brand-badge {
@@ -490,6 +497,7 @@
   cursor: pointer;
 }
 
+/* ─── 1100px: collapse hero to single column ─── */
 @media (max-width: 1100px) {
   .hero-container {
     grid-template-columns: 1fr;
@@ -512,15 +520,20 @@
   }
 }
 
+/* ─── 768px: full single-column layout ─── */
 @media (max-width: 768px) {
   .hero-section,
   .how-it-works,
   .why-ce-saladas,
   .cta-section {
-    padding: 64px 0;
+    padding: 48px 0;
   }
 
-  .hero-container,
+  .hero-container {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
   .brand-strip__inner,
   .steps-grid,
   .features-grid,
@@ -535,12 +548,12 @@
   }
 
   .hero-brand-panel {
-    min-height: 380px;
+    min-height: 320px;
   }
 
   .hero-image,
   .hero-placeholder {
-    min-height: 360px;
+    min-height: 300px;
   }
 
   .cta-shell,
@@ -554,14 +567,25 @@
   }
 }
 
+/* ─── 560px: compact mobile ─── */
 @media (max-width: 560px) {
   .hero-section {
-    padding: 32px 0 54px;
+    padding: 28px 0 40px;
+  }
+
+  .hero-copy {
+    text-align: center;
+  }
+
+  /* Hide the visual panel on small phones to avoid layout issues */
+  .hero-visual {
+    display: none;
   }
 
   .hero-actions,
   .promo-actions {
     flex-direction: column;
+    align-items: center;
   }
 
   .hero-actions .btn-primary,
@@ -570,11 +594,14 @@
   .promo-actions .btn-secondary,
   .btn-large {
     width: 100%;
+    text-align: center;
+    justify-content: center;
   }
 
   .hero-kicker-row {
-    gap: 10px;
-    margin-bottom: 18px;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 16px;
   }
 
   .hero-kicker,
@@ -599,7 +626,7 @@
 
   .hero-image,
   .hero-placeholder {
-    min-height: 300px;
+    min-height: 260px;
     border-radius: var(--o-radius-xl);
   }
 
@@ -613,3 +640,16 @@
     padding-top: 42px;
   }
 }
+
+/* ─── 400px: very small phones ─── */
+@media (max-width: 400px) {
+  .hero-section {
+    padding: 24px 0 32px;
+  }
+
+  .hero-kicker-row {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
