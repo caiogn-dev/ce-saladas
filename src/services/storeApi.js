@@ -79,7 +79,7 @@ export const getStoreSlug = () => {
   return process.env.NEXT_PUBLIC_STORE_SLUG || 'ce-saladas';
 };
 
-const STORE_SLUG = getStoreSlug();
+const STORE_SLUG = 'ce-saladas';
 
 // API base URL
 // Priority: Environment Variable > Local Development > Production Fallback
