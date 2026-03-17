@@ -61,7 +61,7 @@ export const getStoreSlug = () => {
     const hostname = window.location.hostname;
 
     // Specific domain mapping
-    if (hostname.includes('ce-saladas')) return 'ce-saladas';
+    if (hostname.includes('cesaladas')) return 'ce-saladas';
     if (hostname.includes('pastita')) return 'pastita';
 
     // Subdomain check (e.g. pastita.mysaas.com)
@@ -83,7 +83,7 @@ const STORE_SLUG = getStoreSlug();
 
 // API base URL
 // Priority: Environment Variable > Local Development > Production Fallback
-const DEFAULT_API_URL = 'https://web-production-3e83a.up.railway.app/api/v1';
+const DEFAULT_API_URL = 'https://backend.pastita.com.br/api/v1';
 const API_ROOT = (process.env.NEXT_PUBLIC_API_URL || DEFAULT_API_URL).replace(/\/+$/, '');
 const STORES_API_URL = `${API_ROOT}/stores`;
 const STORE_API_URL = `${STORES_API_URL}/${STORE_SLUG}`;
