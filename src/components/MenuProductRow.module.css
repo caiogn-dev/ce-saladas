@@ -1,0 +1,231 @@
+/* MenuProductRow — Cê Saladas
+   iFood / Anotaai inspired vertical list item */
+
+.row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--color-border);
+  cursor: pointer;
+  transition: background-color 0.12s ease, margin 0.12s ease, padding 0.12s ease;
+  border-radius: 0;
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+.row:hover {
+  background: rgba(var(--clr-leaf-rgb, 100, 158, 32), 0.03);
+  border-radius: var(--o-radius-xl, 12px);
+  margin: 0 -14px;
+  padding-left: 14px;
+  padding-right: 14px;
+}
+
+.unavailable {
+  opacity: 0.55;
+}
+
+/* ─── Left: content ─── */
+
+.content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.header {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.name {
+  margin: 0;
+  font-family: var(--font-body, sans-serif);
+  font-size: 1.01rem;
+  font-weight: 500;
+  color: var(--color-text-base);
+  line-height: 1.3;
+}
+
+.comboTag {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  background: rgba(var(--clr-terra-rgb, 222, 107, 54), 0.12);
+  color: var(--clr-terra-600, #a04018);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.description {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+
+.pricing {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+
+.originalPrice {
+  font-size: 0.82rem;
+  color: var(--color-text-hint);
+  text-decoration: line-through;
+}
+
+.price {
+  font-size: 1.08rem;
+  font-weight: 700;
+  color: var(--clr-leaf-700, #375a0d);
+  line-height: 1;
+}
+
+.discount {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 7px;
+  border-radius: 9999px;
+  background: var(--clr-leaf-50, #f0f7e6);
+  color: var(--clr-leaf-600, #4c7c14);
+  font-size: 0.73rem;
+  font-weight: 600;
+}
+
+.addBtn {
+  flex-shrink: 0;
+  min-height: 36px;
+  padding: 0 16px;
+  border-radius: 9999px;
+  border: 1.5px solid var(--color-primary, #649e20);
+  background: transparent;
+  color: var(--color-primary, #649e20);
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
+  white-space: nowrap;
+}
+
+.addBtn:hover:not(:disabled) {
+  background: var(--color-primary, #649e20);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.addBtn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.addBtnDisabled {
+  border-color: var(--color-border);
+  color: var(--color-text-hint);
+  cursor: not-allowed;
+}
+
+/* ─── Right: image ─── */
+
+.imageWrapper {
+  flex: 0 0 112px;
+  width: 112px;
+  height: 112px;
+  position: relative;
+  border-radius: var(--o-radius-xl, 12px);
+  overflow: hidden;
+  background: var(--clr-sand-100, #f8f3eb);
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.row:hover .image {
+  transform: scale(1.04);
+}
+
+.imageFallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-hint);
+}
+
+.outOfStockOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fff;
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+.favoriteSlot {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+}
+
+/* ─── Mobile ─── */
+
+@media (max-width: 640px) {
+  .row {
+    padding: 14px 0;
+    gap: 12px;
+  }
+
+  .imageWrapper {
+    flex: 0 0 88px;
+    width: 88px;
+    height: 88px;
+    border-radius: var(--o-radius-lg, 8px);
+  }
+
+  .name {
+    font-size: 0.95rem;
+  }
+
+  .addBtn {
+    display: none;
+  }
+
+  .price {
+    font-size: 1rem;
+  }
+}

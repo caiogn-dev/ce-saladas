@@ -1,20 +1,28 @@
-﻿import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useRef, useEffect, useCallback } from 'react';
 import { ArrowRight, Clock3, MapPin, ShoppingBag } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import FavoriteButton from '../components/FavoriteButton';
 import StockBadge from '../components/StockBadge';
 import ProductDetailModal from '../components/ProductDetailModal';
+import MenuProductRow from '../components/MenuProductRow';
+import SaladBuilder from '../components/SaladBuilder';
 import Input from '../components/ui/Input';
 import Skeleton from '../components/ui/Skeleton';
 import EmptyState from '../components/ui/EmptyState';
-import ProductCard from '../components/ui/ProductCard';
 import CarouselCard from '../components/ui/CarouselCard';
+import ProductCard from '../components/ui/ProductCard';
 import PageTransition from '../components/ui/PageTransition';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useStore } from '../context/StoreContext';
 
 const MENU_SECTIONS = [
+  {
+    key: 'destaques',
+    title: 'Destaques',
+    description: 'Favoritos da casa e escolhas certeiras para começar.',
+    featuredOnly: true,
+  },
   {
     key: 'saladas',
     title: 'Saladas',
@@ -26,9 +34,15 @@ const MENU_SECTIONS = [
     description: 'Complementos para ajustar o sabor e finalizar o pedido do seu jeito.',
   },
   {
+    key: 'ingredientes',
+    title: 'Ingredientes',
+    description: 'Ingredientes individuais — use o builder para montar sua salada.',
+  },
+  {
     key: 'monte-sua-salada',
     title: 'Monte sua Salada',
-    description: 'Bases, extras e acompanhamentos para montar a combinação ideal.',
+    description: 'Combos prontos ou monte do zero com seus ingredientes favoritos.',
+    isBuilder: true,
   },
 ];
 
@@ -59,6 +73,15 @@ const inferCatalogSection = (item) => {
   }
 
   if (
+    haystack.includes('ingrediente')
+    || haystack.includes('base')
+    || haystack.includes('complemento')
+    || haystack.includes('proteina')
+  ) {
+    return 'ingredientes';
+  }
+
+  if (
     haystack.includes('monte sua salada')
     || haystack.includes('monte')
     || haystack.includes('personaliz')
@@ -79,11 +102,10 @@ const ProductsSkeleton = () => (
   <div className="catalog-main">
     <div className="catalog-toolbar catalog-toolbar--skeleton">
       <Skeleton variant="rect" height={52} style={{ borderRadius: '999px' }} />
-      <Skeleton variant="rect" height={52} style={{ borderRadius: '999px' }} />
     </div>
 
     <div className="catalog-sections">
-      {MENU_SECTIONS.map((section, sectionIndex) => (
+      {MENU_SECTIONS.filter((s) => !s.featuredOnly && !s.isBuilder).slice(0, 3).map((section, sectionIndex) => (
         <section key={section.key} className="catalog-section catalog-section--skeleton">
           <div className="catalog-section__header">
             <div>
@@ -91,8 +113,8 @@ const ProductsSkeleton = () => (
               <p className="catalog-section__description">{section.description}</p>
             </div>
           </div>
-          <div className="catalog-skeleton-grid">
-            {Array.from({ length: 4 }, (_, index) => (
+          <div className="catalog-skeleton-rows">
+            {Array.from({ length: 3 }, (_, index) => (
               <Skeleton.ProductCard key={`${sectionIndex}-${index}`} index={index} />
             ))}
           </div>
@@ -105,7 +127,10 @@ const ProductsSkeleton = () => (
 const Cardapio = () => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [query, setQuery] = useState('');
+  const [activeSection, setActiveSection] = useState(null);
   const { isAuthenticated } = useAuth();
+  const sectionRefs = useRef({});
+  const navRef = useRef(null);
 
   const {
     addToCart,
@@ -188,108 +213,103 @@ const Cardapio = () => {
 
   const filteredItems = useMemo(() => {
     const normalizedQuery = normalizeText(query);
-
-    if (!normalizedQuery) {
-      return catalogItems;
-    }
-
+    if (!normalizedQuery) return catalogItems;
     return catalogItems.filter((item) => {
-      const haystack = normalizeText([
-        item.name,
-        item.description,
-        item.categoryLabel,
-        item.productTypeName,
-      ].join(' '));
-
+      const haystack = normalizeText([item.name, item.description, item.categoryLabel, item.productTypeName].join(' '));
       return haystack.includes(normalizedQuery);
     });
   }, [catalogItems, query]);
 
-  const groupedSections = useMemo(() => (
-    MENU_SECTIONS
-      .map((section) => ({
-        ...section,
-        items: filteredItems.filter((item) => item.catalogSection === section.key),
-      }))
-      .filter((section) => section.items.length > 0)
-  ), [filteredItems]);
-
   const featuredIds = useMemo(
-    () => new Set((featuredProducts || []).map((product) => product.id)),
+    () => new Set((featuredProducts || []).map((p) => p.id)),
     [featuredProducts]
   );
 
   const featuredItems = useMemo(() => {
-    const taggedHighlights = filteredItems.filter((item) => {
-      const tagStack = normalizeText((item.tags || []).join(' '));
-      return (
-        featuredIds.has(item.id)
-        || tagStack.includes('mais pedido')
-        || tagStack.includes('novidade')
-        || tagStack.includes('destaque')
-      );
+    const tagged = filteredItems.filter((item) => {
+      const tags = normalizeText((item.tags || []).join(' '));
+      return featuredIds.has(item.id) || tags.includes('mais pedido') || tags.includes('novidade') || tags.includes('destaque');
     });
-
-    if (taggedHighlights.length > 0) {
-      return taggedHighlights.slice(0, 6);
-    }
-
-    return filteredItems
-      .filter((item) => item.catalogSection === 'saladas')
-      .slice(0, 6);
+    if (tagged.length > 0) return tagged.slice(0, 8);
+    return filteredItems.filter((item) => item.catalogSection === 'saladas').slice(0, 8);
   }, [featuredIds, filteredItems]);
 
+  const ingredientItems = useMemo(
+    () => filteredItems.filter((item) => item.catalogSection === 'ingredientes'),
+    [filteredItems]
+  );
+
+  const groupedSections = useMemo(() => {
+    return MENU_SECTIONS.map((section) => {
+      if (section.featuredOnly) {
+        return { ...section, items: featuredItems };
+      }
+      return {
+        ...section,
+        items: filteredItems.filter((item) => item.catalogSection === section.key),
+      };
+    }).filter((section) => section.items.length > 0 || section.isBuilder);
+  }, [filteredItems, featuredItems]);
+
+  // Intersection observer for active nav tab
+  useEffect(() => {
+    if (typeof IntersectionObserver === 'undefined') return undefined;
+
+    const observers = [];
+    const visible = new Map();
+
+    groupedSections.forEach(({ key }) => {
+      const el = sectionRefs.current[key];
+      if (!el) return;
+
+      const obs = new IntersectionObserver(
+        ([entry]) => {
+          visible.set(key, entry.intersectionRatio);
+          const best = [...visible.entries()].reduce((a, b) => (b[1] > a[1] ? b : a), ['', 0]);
+          if (best[1] > 0) setActiveSection(best[0]);
+        },
+        { rootMargin: '-20% 0px -60% 0px', threshold: [0, 0.1, 0.5, 1] }
+      );
+
+      obs.observe(el);
+      observers.push(obs);
+    });
+
+    return () => observers.forEach((o) => o.disconnect());
+  }, [groupedSections]);
+
+  // Scroll active nav chip into view
+  useEffect(() => {
+    if (!activeSection || !navRef.current) return;
+    const chip = navRef.current.querySelector(`[data-section="${activeSection}"]`);
+    if (chip) chip.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  }, [activeSection]);
+
+  const handleAddToCart = useCallback((item) => {
+    if ((item.stock_quantity ?? 0) <= 0) return;
+    if (item.itemType === 'combo' || item.isCombo) {
+      addComboToCart(item);
+    } else {
+      addToCart(item);
+    }
+  }, [addToCart, addComboToCart]);
+
+  const handleJumpToSection = (sectionKey) => {
+    const el = sectionRefs.current[sectionKey];
+    if (!el) return;
+    const offset = (navRef.current?.offsetHeight || 0) + 80;
+    const top = el.getBoundingClientRect().top + window.scrollY - offset;
+    window.scrollTo({ top, behavior: 'smooth' });
+  };
+
   const storeLocation = useMemo(() => {
-    const metadataLocation = store?.metadata?.city && store?.metadata?.state
-      ? `${store.metadata.city} • ${store.metadata.state}`
-      : null;
-
-    if (metadataLocation) {
-      return metadataLocation;
-    }
-
-    if (store?.city && store?.state) {
-      return `${store.city} • ${store.state}`;
-    }
-
+    if (store?.metadata?.city && store?.metadata?.state) return `${store.metadata.city} • ${store.metadata.state}`;
+    if (store?.city && store?.state) return `${store.city} • ${store.state}`;
     return store?.address || 'Retirada e entrega disponíveis';
   }, [store]);
 
-  const storeHoursLabel = store?.metadata?.business_hours_label
-    || store?.metadata?.opening_hours
-    || 'Pedido simples, rápido e sem cadastro obrigatório';
-
-  const heroDescription = store?.metadata?.catalog_pitch
-    || 'Escolha sua refeição, ajuste os sabores e finalize em poucos toques.';
-
-  const handleAddToCart = (item) => {
-    if ((item.stock_quantity ?? 0) <= 0) {
-      return;
-    }
-
-    if (item.itemType === 'combo' || item.isCombo) {
-      addComboToCart(item);
-      return;
-    }
-
-    addToCart(item);
-  };
-
-  const handleClearSearch = () => {
-    setQuery('');
-  };
-
-  const handleJumpToSection = (sectionKey) => {
-    const sectionElement = document.getElementById(`catalog-section-${sectionKey}`);
-    if (!sectionElement) {
-      return;
-    }
-
-    sectionElement.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start',
-    });
-  };
+  const storeHoursLabel = store?.metadata?.business_hours_label || store?.metadata?.opening_hours || 'Pedido simples, rápido e sem cadastro obrigatório';
+  const heroDescription = store?.metadata?.catalog_pitch || 'Escolha sua refeição, ajuste os sabores e finalize em poucos toques.';
 
   return (
     <div className="cardapio-page">
@@ -320,7 +340,6 @@ const Cardapio = () => {
                       <span className="cardapio-hero__logo-placeholder">Cê</span>
                     )}
                   </div>
-
                   <div className="cardapio-hero__copy">
                     <span className="cardapio-hero__eyebrow">Cardápio</span>
                     <h1 className="cardapio-hero__title">{store?.name || 'Cê Saladas'}</h1>
@@ -336,14 +355,8 @@ const Cardapio = () => {
               </div>
 
               <div className="cardapio-hero__meta">
-                <span>
-                  <MapPin size={16} />
-                  {storeLocation}
-                </span>
-                <span>
-                  <Clock3 size={16} />
-                  {storeHoursLabel}
-                </span>
+                <span><MapPin size={16} />{storeLocation}</span>
+                <span><Clock3 size={16} />{storeHoursLabel}</span>
               </div>
 
               <div className="cardapio-hero__search-row">
@@ -352,7 +365,7 @@ const Cardapio = () => {
                     type="text"
                     placeholder="Buscar saladas, molhos ou montagens"
                     value={query}
-                    onChange={(event) => setQuery(event.target.value)}
+                    onChange={(e) => setQuery(e.target.value)}
                     fullWidth
                     leftIcon={(
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -362,9 +375,8 @@ const Cardapio = () => {
                     )}
                   />
                 </div>
-
                 {query && (
-                  <button type="button" className="cardapio-hero__clear" onClick={handleClearSearch}>
+                  <button type="button" className="cardapio-hero__clear" onClick={() => setQuery('')}>
                     Limpar busca
                   </button>
                 )}
@@ -375,16 +387,12 @@ const Cardapio = () => {
       </PageTransition>
 
       {loading && (
-        <div className="container">
-          <ProductsSkeleton />
-        </div>
+        <div className="container"><ProductsSkeleton /></div>
       )}
 
       {error && !loading && (
         <PageTransition animation="fadeIn" delay={100}>
-          <div className="container">
-            <EmptyState.Error onAction={() => refreshCatalog()} />
-          </div>
+          <div className="container"><EmptyState.Error onAction={() => refreshCatalog()} /></div>
         </PageTransition>
       )}
 
@@ -398,94 +406,71 @@ const Cardapio = () => {
 
       {!loading && !error && catalogItems.length > 0 && (
         <div className="container">
-          <div className="catalog-toolbar">
+          {/* Sticky category nav */}
+          <div className="catalog-toolbar" ref={navRef}>
             <div className="catalog-quick-nav">
               {groupedSections.map((section) => (
                 <button
                   key={section.key}
                   type="button"
-                  className="catalog-quick-nav__chip"
+                  data-section={section.key}
+                  className={`catalog-quick-nav__chip ${activeSection === section.key ? 'catalog-quick-nav__chip--active' : ''}`}
                   onClick={() => handleJumpToSection(section.key)}
                 >
                   <span>{section.title}</span>
-                  <strong>{section.items.length}</strong>
+                  {!section.featuredOnly && !section.isBuilder && (
+                    <strong>{section.items.length}</strong>
+                  )}
                 </button>
               ))}
             </div>
 
             <button type="button" className="catalog-toolbar__cart" onClick={openCart}>
               <ShoppingBag size={18} />
-              <span>{hasItems ? `${cartCount} item(ns) - ${formatMoney(cartTotal)}` : 'Sacola vazia'}</span>
+              <span>{hasItems ? `${cartCount} item(ns) — ${formatMoney(cartTotal)}` : 'Sacola vazia'}</span>
             </button>
           </div>
 
           {filteredItems.length === 0 && query && (
             <PageTransition animation="fadeIn" delay={150}>
-              <EmptyState.Search query={query} onAction={handleClearSearch} />
+              <EmptyState.Search query={query} onAction={() => setQuery('')} />
             </PageTransition>
           )}
 
           {groupedSections.length > 0 && (
             <main className="catalog-main">
-              {!query && featuredItems.length > 0 && (
-                <PageTransition animation="fadeUp" delay={50}>
-                  <section className="catalog-featured">
-                    <div className="catalog-featured__header">
+              {groupedSections.map((section, sectionIndex) => (
+                <PageTransition key={section.key} animation="fadeUp" delay={sectionIndex * 55}>
+                  <section
+                    id={`catalog-section-${section.key}`}
+                    ref={(el) => { sectionRefs.current[section.key] = el; }}
+                    className={`catalog-section ${section.featuredOnly ? 'catalog-section--featured' : ''}`}
+                  >
+                    <div className="catalog-section__header">
                       <div>
-                        <span className="catalog-featured__eyebrow">Mais pedidos</span>
-                        <h2 className="catalog-featured__title">Comece pelos favoritos da casa</h2>
+                        <h2 className="catalog-section__title">{section.title}</h2>
+                        <p className="catalog-section__description">{section.description}</p>
                       </div>
-                      <p className="catalog-featured__description">
-                        Uma seleção objetiva para decidir rápido, sem poluir a experiência.
-                      </p>
-                    </div>
-
-                    <CarouselCard
-                      items={featuredItems}
-                      mobileCardsPerView={1.18}
-                      tabletCardsPerView={2.2}
-                      desktopCardsPerView={3.35}
-                      trackClassName="catalog-featured__track"
-                      renderItem={(product, index) => (
-                        <ProductCard
-                          product={product}
-                          index={index}
-                          className="catalog-product-card catalog-product-card--featured"
-                          onAddToCart={handleAddToCart}
-                          onOpenDetails={setSelectedItem}
-                          favoriteButton={product.itemType === 'product' && isAuthenticated ? <FavoriteButton productId={product.id} size="small" /> : null}
-                          stockBadge={<StockBadge quantity={product.stock_quantity} />}
-                        />
-                      )}
-                    />
-                  </section>
-                </PageTransition>
-              )}
-
-              <div className="catalog-sections">
-                {groupedSections.map((section, sectionIndex) => (
-                  <PageTransition key={section.key} animation="fadeUp" delay={sectionIndex * 70}>
-                    <section id={`catalog-section-${section.key}`} className="catalog-section">
-                      <div className="catalog-section__header">
-                        <div>
-                          <h2 className="catalog-section__title">{section.title}</h2>
-                          <p className="catalog-section__description">{section.description}</p>
-                        </div>
+                      {!section.featuredOnly && !section.isBuilder && section.items.length > 0 && (
                         <span className="catalog-section__count">
                           {section.items.length} {section.items.length === 1 ? 'item' : 'itens'}
                         </span>
-                      </div>
+                      )}
+                    </div>
 
+                    {/* Featured section — keep carousel */}
+                    {section.featuredOnly && section.items.length > 0 && (
                       <CarouselCard
                         items={section.items}
                         mobileCardsPerView={1.18}
                         tabletCardsPerView={2.2}
                         desktopCardsPerView={3.35}
+                        trackClassName="catalog-featured__track"
                         renderItem={(product, index) => (
                           <ProductCard
                             product={product}
                             index={index}
-                            className="catalog-product-card"
+                            className="catalog-product-card catalog-product-card--featured"
                             onAddToCart={handleAddToCart}
                             onOpenDetails={setSelectedItem}
                             favoriteButton={product.itemType === 'product' && isAuthenticated ? <FavoriteButton productId={product.id} size="small" /> : null}
@@ -493,10 +478,41 @@ const Cardapio = () => {
                           />
                         )}
                       />
-                    </section>
-                  </PageTransition>
-                ))}
-              </div>
+                    )}
+
+                    {/* Builder section (Monte sua Salada) */}
+                    {section.isBuilder && (
+                      <>
+                        <SaladBuilder
+                          ingredients={ingredientItems}
+                          onAddToCart={handleAddToCart}
+                        />
+                        {section.items.length > 0 && (
+                          <div className="catalog-section__subheader">
+                            <span>Combos prontos</span>
+                            <span>{section.items.length} {section.items.length === 1 ? 'combo' : 'combos'}</span>
+                          </div>
+                        )}
+                      </>
+                    )}
+
+                    {/* Regular vertical list */}
+                    {!section.featuredOnly && section.items.length > 0 && (
+                      <div className="catalog-row-list">
+                        {section.items.map((product) => (
+                          <MenuProductRow
+                            key={product.id}
+                            product={product}
+                            onAddToCart={handleAddToCart}
+                            onOpenDetails={setSelectedItem}
+                            favoriteButton={product.itemType === 'product' && isAuthenticated ? <FavoriteButton productId={product.id} size="small" /> : null}
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </section>
+                </PageTransition>
+              ))}
             </main>
           )}
         </div>

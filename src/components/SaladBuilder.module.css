@@ -1,0 +1,332 @@
+/* SaladBuilder — Cê Saladas */
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-bottom: 24px;
+  border-radius: var(--o-radius-xl, 12px);
+  overflow: hidden;
+  border: 1px solid rgba(var(--clr-leaf-rgb, 100, 158, 32), 0.16);
+  box-shadow: 0 8px 24px rgba(74, 89, 18, 0.07);
+}
+
+/* ─── CTA button ─── */
+
+.cta {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 18px 20px;
+  background: linear-gradient(135deg, #f6faef 0%, rgba(255, 253, 247, 0.94) 100%);
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.15s ease;
+}
+
+.cta:hover {
+  background: linear-gradient(135deg, #edf7e0 0%, #f8fdf2 100%);
+}
+
+.ctaLeft {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.ctaEmoji {
+  font-size: 2.2rem;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.ctaTitle {
+  margin: 0 0 4px;
+  font-family: var(--font-display, serif);
+  font-size: 1.12rem;
+  font-weight: 400;
+  color: var(--clr-leaf-700, #375a0d);
+  line-height: 1.2;
+}
+
+.ctaDesc {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  line-height: 1.45;
+}
+
+.ctaArrow {
+  flex-shrink: 0;
+  font-size: 1.2rem;
+  color: var(--clr-leaf-500, #649e20);
+  transition: transform 0.2s ease;
+}
+
+.ctaArrowOpen {
+  transform: rotate(180deg);
+}
+
+/* ─── Panel ─── */
+
+.panel {
+  background: #fff;
+  border-top: 1px solid rgba(var(--clr-leaf-rgb, 100, 158, 32), 0.1);
+}
+
+.panelEmpty {
+  background: #fff;
+  border-top: 1px solid rgba(var(--clr-leaf-rgb, 100, 158, 32), 0.1);
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: 0.92rem;
+}
+
+.panelEmpty span {
+  font-size: 2rem;
+}
+
+/* ─── Step tabs ─── */
+
+.stepTabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--color-border);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.stepTabs::-webkit-scrollbar {
+  display: none;
+}
+
+.stepTab {
+  flex: 1;
+  min-width: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 12px 8px;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: var(--color-text-muted);
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+  position: relative;
+}
+
+.stepTab:hover {
+  background: rgba(var(--clr-leaf-rgb, 100, 158, 32), 0.04);
+  color: var(--clr-leaf-700, #375a0d);
+}
+
+.stepTabActive {
+  color: var(--clr-leaf-700, #375a0d);
+  border-bottom-color: var(--color-primary, #649e20);
+  background: rgba(var(--clr-leaf-rgb, 100, 158, 32), 0.04);
+}
+
+.stepTabDone {
+  color: var(--color-primary, #649e20);
+}
+
+.stepNumber {
+  display: none;
+}
+
+.stepEmoji {
+  font-size: 1rem;
+}
+
+.stepLabel {
+  white-space: nowrap;
+}
+
+.stepBadge {
+  min-width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5px;
+  border-radius: 9999px;
+  background: var(--color-primary, #649e20);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+/* ─── Step content ─── */
+
+.stepContent {
+  padding: 16px 20px 20px;
+}
+
+.stepHint {
+  margin: 0 0 12px;
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+}
+
+.required {
+  color: var(--clr-terra-500, #c75522);
+  font-weight: 500;
+}
+
+.emptyStep {
+  color: var(--color-text-hint);
+  font-size: 0.875rem;
+  margin: 8px 0;
+}
+
+/* ─── Chips ─── */
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 10px 14px;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--o-radius-lg, 8px);
+  background: #fff;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: left;
+}
+
+.chip:hover:not(.chipDisabled) {
+  border-color: var(--color-primary, #649e20);
+  background: rgba(var(--clr-leaf-rgb, 100, 158, 32), 0.04);
+}
+
+.chipSelected {
+  border-color: var(--color-primary, #649e20);
+  background: rgba(var(--clr-leaf-rgb, 100, 158, 32), 0.08);
+  box-shadow: 0 0 0 1px var(--color-primary, #649e20);
+}
+
+.chipDisabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.chipName {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--color-text-base);
+}
+
+.chipPrice {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--clr-leaf-600, #4c7c14);
+}
+
+/* ─── Summary bar ─── */
+
+.summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px 20px;
+  border-top: 1px solid var(--color-border);
+  background: rgba(var(--clr-leaf-rgb, 100, 158, 32), 0.03);
+}
+
+.summaryLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.summaryCount {
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+}
+
+.summaryTotal {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--clr-leaf-700, #375a0d);
+}
+
+.confirmBtn {
+  flex-shrink: 0;
+  min-height: 44px;
+  padding: 0 22px;
+  border-radius: 9999px;
+  border: none;
+  background: var(--color-primary, #649e20);
+  color: #fff;
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 4px 14px rgba(var(--clr-leaf-rgb, 100, 158, 32), 0.28);
+}
+
+.confirmBtn:hover:not(:disabled) {
+  background: var(--color-primary-hover, #4c7c14);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(var(--clr-leaf-rgb, 100, 158, 32), 0.34);
+}
+
+.confirmBtn:disabled {
+  background: var(--color-border);
+  color: var(--color-text-hint);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+@media (max-width: 640px) {
+  .cta {
+    padding: 16px;
+  }
+
+  .ctaTitle {
+    font-size: 1rem;
+  }
+
+  .ctaEmoji {
+    font-size: 1.8rem;
+  }
+
+  .summary {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .confirmBtn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .stepTab {
+    padding: 10px 6px;
+    font-size: 0.78rem;
+  }
+}
