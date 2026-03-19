@@ -250,21 +250,6 @@ const SaladBuilder = ({ ingredients, onAddToCart }) => {
               </button>
             </div>
 
-            {/* Step progress bar */}
-            <div className={styles.stepProgress}>
-              {STEPS.map((step) => {
-                const count = selections[step.key].length;
-                const done = step.required ? count > 0 : count > 0;
-                return (
-                  <div key={step.key} className={`${styles.progressStep} ${done ? styles.progressStepDone : ''}`}>
-                    <span className={styles.progressEmoji}>{step.emoji}</span>
-                    <span className={styles.progressLabel}>{step.label}</span>
-                    {count > 0 && <span className={styles.progressBadge}>{count}</span>}
-                  </div>
-                );
-              })}
-            </div>
-
             {/* Modal body — scrollable */}
             <div className={styles.modalBody} ref={bodyRef}>
               {!hasIngredients ? (
