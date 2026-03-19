@@ -408,7 +408,8 @@
 }
 
 .catalog-section {
-  scroll-margin-top: calc(var(--header-height) + 96px);
+  /* Accounts for Navbar (--header-height) + sticky catalog-toolbar height (~120px) + breathing room */
+  scroll-margin-top: calc(var(--header-height) + 140px);
 }
 
 .catalog-section__count {

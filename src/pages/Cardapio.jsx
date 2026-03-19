@@ -297,9 +297,10 @@ const Cardapio = () => {
   const handleJumpToSection = (sectionKey) => {
     const el = sectionRefs.current[sectionKey];
     if (!el) return;
-    const offset = (navRef.current?.offsetHeight || 0) + 80;
-    const top = el.getBoundingClientRect().top + window.scrollY - offset;
-    window.scrollTo({ top, behavior: 'smooth' });
+    // scroll-margin-top on .catalog-section already accounts for the sticky nav height.
+    // scrollIntoView uses it natively — getBoundingClientRect() would be affected by
+    // the PageTransition translateY transform and produce the wrong offset.
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   const storeLocation = useMemo(() => {
