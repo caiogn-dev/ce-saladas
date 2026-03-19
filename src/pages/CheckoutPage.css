@@ -262,7 +262,7 @@
   border: 1px solid #e7ded5;
   border-radius: var(--o-radius-md);
   cursor: pointer;
-  background-color: var(--color-bg-card)af6;
+  background-color: var(--color-bg-card);
   box-shadow: 0 6px 14px rgba(30, 20, 15, 0.06);
 }
 
@@ -283,7 +283,7 @@
 }
 
 .checkout-payment-note {
-  background-color: var(--color-bg-card)7ed;
+  background-color: #fef3e8;
   border: 1px dashed #f1c89b;
   border-radius: var(--o-radius-md);
   padding: 12px;
@@ -295,7 +295,7 @@
 .checkout-payment-card {
   display: grid;
   gap: 12px;
-  background-color: var(--color-bg-card)af6;
+  background-color: var(--color-bg-card);
   border: 1px solid #ecdccc;
   border-radius: var(--o-radius-lg);
   padding: 16px;
@@ -308,7 +308,7 @@
 }
 
 .checkout-payment-warning {
-  background-color: var(--color-bg-card)7ed;
+  background-color: #fff7ed;
   border: 1px solid #fed7aa;
   color: #9a3412;
   padding: 10px 12px;

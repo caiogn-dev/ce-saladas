@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowUpRight, Minus, Plus } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import styles from './MenuProductRow.module.css';
 
@@ -12,12 +12,11 @@ const formatMoney = (value) => currencyFormatter.format(Number(value || 0));
 
 const MenuProductRow = ({
   product,
-  onAddToCart,
   onOpenDetails,
   favoriteButton,
 }) => {
   const [imageError, setImageError] = useState(false);
-  const { cart, updateQuantity } = useCart();
+  const { cart } = useCart();
 
   const cartItem = cart.find((item) => item.id === product.id);
   const quantity = cartItem?.quantity || 0;
@@ -44,12 +43,6 @@ const MenuProductRow = ({
     ? product.tags.filter(Boolean).slice(0, 3)
     : [];
 
-  const helperText = quantity > 0
-    ? `${quantity} ${quantity === 1 ? 'item na sacola' : 'itens na sacola'}`
-    : inStock
-      ? 'Toque para ver detalhes e ajustar o pedido'
-      : 'Indisponível no momento';
-
   const handleRowClick = () => onOpenDetails?.(product);
 
   const handleKeyDown = (e) => {
@@ -58,25 +51,6 @@ const MenuProductRow = ({
       e.preventDefault();
       handleRowClick();
     }
-  };
-
-  const handleAdd = (e) => {
-    e.stopPropagation();
-    if (inStock) onAddToCart?.(product);
-  };
-
-  const handleIncrement = (e) => {
-    e.stopPropagation();
-    if (quantity > 0) {
-      updateQuantity(product.id, 1);
-    } else {
-      onAddToCart?.(product);
-    }
-  };
-
-  const handleDecrement = (e) => {
-    e.stopPropagation();
-    if (quantity > 0) updateQuantity(product.id, -1);
   };
 
   return (
@@ -119,52 +93,22 @@ const MenuProductRow = ({
         )}
 
         <div className={styles.footer}>
-          <div className={styles.pricingBlock}>
-            <div className={styles.pricing}>
-              {originalPrice && (
-                <span className={styles.originalPrice}>{originalPrice}</span>
-              )}
-              <span className={styles.price}>{price}</span>
-              {hasDiscount && (
-                <span className={styles.discount}>
-                  -{discountPercentage}%
-                </span>
-              )}
-            </div>
-            <span className={styles.helperText}>{helperText}</span>
+          <div className={styles.pricing}>
+            {originalPrice && (
+              <span className={styles.originalPrice}>{originalPrice}</span>
+            )}
+            <span className={styles.price}>{price}</span>
+            {hasDiscount && (
+              <span className={styles.discount}>-{discountPercentage}%</span>
+            )}
           </div>
-
-          {quantity > 0 ? (
-            <div className={styles.qtyControl} onClick={(e) => e.stopPropagation()}>
-              <button
-                type="button"
-                className={styles.qtyBtn}
-                onClick={handleDecrement}
-                aria-label="Remover um"
-              >
-                <Minus size={15} />
-              </button>
-              <span className={styles.qtyNum}>{quantity}</span>
-              <button
-                type="button"
-                className={styles.qtyBtn}
-                onClick={handleIncrement}
-                aria-label="Adicionar mais um"
-              >
-                <Plus size={15} />
-              </button>
-            </div>
-          ) : (
-            <button
-              type="button"
-              className={`${styles.addBtn} ${!inStock ? styles.addBtnDisabled : ''}`}
-              onClick={handleAdd}
-              disabled={!inStock}
-              aria-label={inStock ? `Adicionar ${product.name}` : 'Produto indisponível'}
-            >
-              <span>{inStock ? 'Adicionar' : 'Esgotado'}</span>
-              {inStock && <Plus size={15} />}
-            </button>
+          {quantity > 0 && (
+            <span className={styles.cartBadge}>
+              {quantity} na sacola
+            </span>
+          )}
+          {!inStock && (
+            <span className={styles.outOfStockLabel}>Indisponível</span>
           )}
         </div>
       </div>

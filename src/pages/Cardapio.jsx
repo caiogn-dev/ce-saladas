@@ -546,7 +546,6 @@ const Cardapio = () => {
                           <MenuProductRow
                             key={product.id}
                             product={product}
-                            onAddToCart={handleAddToCart}
                             onOpenDetails={setSelectedItem}
                             favoriteButton={product.itemType === 'product' && isAuthenticated ? <FavoriteButton productId={product.id} size="small" /> : null}
                           />
