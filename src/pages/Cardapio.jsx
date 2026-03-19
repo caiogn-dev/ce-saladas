@@ -281,11 +281,17 @@ const Cardapio = () => {
     return () => observers.forEach((o) => o.disconnect());
   }, [groupedSections]);
 
-  // Scroll active nav chip into view
+  // Scroll active nav chip into view — horizontal only.
+  // NEVER use chip.scrollIntoView(): elements inside position:sticky containers
+  // cause the browser to scroll the page to the element's natural (pre-sticky)
+  // position, yanking the page back to the top on every section change.
   useEffect(() => {
     if (!activeSection || !navRef.current) return;
+    const nav = navRef.current.querySelector('.catalog-quick-nav');
     const chip = navRef.current.querySelector(`[data-section="${activeSection}"]`);
-    if (chip) chip.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    if (!nav || !chip) return;
+    const scrollTarget = chip.offsetLeft - nav.offsetWidth / 2 + chip.offsetWidth / 2;
+    nav.scrollTo({ left: Math.max(0, scrollTarget), behavior: 'smooth' });
   }, [activeSection]);
 
   const handleAddToCart = useCallback((item) => {
