@@ -248,6 +248,25 @@
 
   --clr-leaf-50:   rgba(100, 158, 32, 0.12);
 
+  /* Leaf palette — inverted scale for dark (700 becomes light, 600 slightly lighter) */
+  --clr-leaf-100: rgba(100, 158, 32, 0.20);
+  --clr-leaf-200: rgba(100, 158, 32, 0.28);
+  --clr-leaf-300: #a8c85a;
+  --clr-leaf-400: #9ac749;
+  --clr-leaf-500: #7fb52e;
+  --clr-leaf-600: #9ac749;
+  --clr-leaf-700: #b8d87a;
+  --clr-leaf-800: #d0e8a8;
+  --clr-leaf-900: #edf7e0;
+
+  /* Terra palette — brighter on dark */
+  --clr-terra-100: rgba(222, 107, 54, 0.14);
+  --clr-terra-200: rgba(222, 107, 54, 0.22);
+  --clr-terra-300: #eb9161;
+  --clr-terra-400: #e8804a;
+  --clr-terra-500: #e8804a;
+  --clr-terra-600: #de6b36;
+
   /* Retrocompat aliases */
   --color-surface-page:       #0d1a06;
   --color-surface-page-alt:   #142108;

@@ -257,6 +257,38 @@
   padding-top: 8px;
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   DARK MODE OVERRIDES — ProductDetailModal
+   ═══════════════════════════════════════════════════════════════ */
+
+:global(.dark) .modal :global(.ui-modal__header) {
+  background: var(--color-bg-muted);
+  border-bottom-color: var(--color-border);
+}
+
+:global(.dark) .summaryCard,
+:global(.dark) .section {
+  background: linear-gradient(180deg, var(--color-bg-card), var(--color-bg-muted));
+  border-color: rgba(var(--clr-leaf-rgb), 0.18);
+  box-shadow: 0 18px 32px rgba(0, 0, 0, 0.3);
+}
+
+:global(.dark) .summaryFact {
+  background: rgba(var(--clr-leaf-rgb), 0.06);
+  border-color: rgba(var(--clr-leaf-rgb), 0.16);
+}
+
+:global(.dark) .detailCard {
+  background: rgba(var(--clr-leaf-rgb), 0.06);
+  border-color: rgba(var(--clr-leaf-rgb), 0.16);
+}
+
+:global(.dark) .heroImage {
+  background:
+    radial-gradient(circle at top left, rgba(var(--clr-leaf-rgb), 0.12), transparent 45%),
+    linear-gradient(135deg, var(--clr-sand-50) 0%, var(--clr-sand-200) 100%);
+}
+
 @media (max-width: 900px) {
   .layout {
     grid-template-columns: 1fr;

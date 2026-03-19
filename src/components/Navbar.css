@@ -321,6 +321,12 @@
   color: var(--color-primary);
 }
 
+/* dark mode logo */
+.dark .navbar-logo,
+.dark .navbar-logo-text {
+  color: var(--color-primary);
+}
+
 /* dark mode mobile menu */
 .dark .navbar-mobile-menu {
   background: var(--color-bg-card);

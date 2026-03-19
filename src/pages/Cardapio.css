@@ -730,3 +730,67 @@
     font-size: 0.84rem;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   DARK MODE OVERRIDES — Cardápio page
+   ═══════════════════════════════════════════════════════════════ */
+
+.dark .cardapio-page {
+  background:
+    radial-gradient(circle at top left, rgba(var(--clr-leaf-rgb), 0.08), transparent 26%),
+    radial-gradient(circle at top right, rgba(var(--clr-terra-rgb), 0.04), transparent 18%),
+    linear-gradient(180deg, var(--color-bg) 0%, var(--color-bg-muted) 54%, var(--color-bg) 100%);
+}
+
+.dark .cardapio-hero__panel {
+  background: linear-gradient(180deg, var(--color-bg-card), var(--color-bg-muted));
+  border-color: rgba(var(--clr-leaf-rgb), 0.18);
+  box-shadow: 0 22px 50px rgba(0, 0, 0, 0.4);
+}
+
+.dark .cardapio-hero__logo-shell {
+  background: linear-gradient(180deg, var(--color-bg-muted), var(--color-bg));
+  border-color: rgba(var(--clr-leaf-rgb), 0.20);
+}
+
+.dark .cardapio-hero__meta span {
+  background: rgba(var(--clr-leaf-rgb), 0.08);
+  border-color: rgba(var(--clr-leaf-rgb), 0.16);
+  color: var(--color-text-base);
+}
+
+.dark .cardapio-hero__search .ui-input {
+  background: rgba(var(--clr-leaf-rgb), 0.06);
+  border-color: rgba(var(--clr-leaf-rgb), 0.20);
+}
+
+.dark .catalog-toolbar {
+  background: rgba(13, 26, 6, 0.88);
+  border-color: rgba(var(--clr-leaf-rgb), 0.16);
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.35);
+}
+
+.dark .catalog-quick-nav__chip {
+  background: rgba(var(--clr-leaf-rgb), 0.08);
+  border-color: rgba(var(--clr-leaf-rgb), 0.18);
+  color: var(--color-text-muted);
+}
+
+.dark .catalog-quick-nav__chip:hover {
+  background: rgba(var(--clr-leaf-rgb), 0.14);
+  border-color: rgba(var(--clr-leaf-rgb), 0.28);
+  color: var(--color-text-base);
+}
+
+.dark .catalog-quick-nav__chip--active {
+  background: rgba(var(--clr-leaf-rgb), 0.18);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.dark .catalog-featured,
+.dark .catalog-section {
+  background: linear-gradient(180deg, var(--color-bg-card), var(--color-bg-muted));
+  border-color: rgba(var(--clr-leaf-rgb), 0.14);
+  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.3);
+}

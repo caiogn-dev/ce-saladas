@@ -522,6 +522,32 @@
   font-size: 0.94rem;
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   DARK MODE OVERRIDES — SaladBuilder
+   ═══════════════════════════════════════════════════════════════ */
+
+:global(.dark) .cta {
+  background: linear-gradient(135deg, var(--color-bg-card) 0%, var(--color-bg-muted) 100%);
+  border-color: rgba(var(--clr-leaf-rgb), 0.28);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+:global(.dark) .cta:hover {
+  background: linear-gradient(135deg, var(--color-bg-muted) 0%, rgba(var(--clr-leaf-rgb), 0.10) 100%);
+  border-color: rgba(var(--clr-leaf-rgb), 0.42);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+:global(.dark) .sectionHeader {
+  background: var(--color-bg-muted);
+  border-bottom-color: var(--color-border);
+}
+
+:global(.dark) .modalFooter {
+  background: var(--color-bg-muted);
+  border-top-color: var(--color-border);
+}
+
 /* ── Mobile tweaks ─────────────────────────────────────────── */
 
 @media (max-width: 480px) {
