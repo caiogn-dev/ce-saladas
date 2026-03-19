@@ -96,7 +96,16 @@ const ShaderBackground = ({ className = '' }) => {
     const canvas = canvasRef.current;
     if (!canvas) return undefined;
 
-    const gl = canvas.getContext('webgl', { alpha: true, antialias: true });
+    // Skip heavy animation if user prefers reduced motion
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Use lower quality on mobile for performance
+    const isMobile = window.innerWidth < 768;
+    const gl = canvas.getContext('webgl', {
+      alpha: true,
+      antialias: !isMobile, // skip antialiasing on mobile
+      powerPreference: isMobile ? 'low-power' : 'default',
+    });
     if (!gl) {
       return undefined;
     }
@@ -162,15 +171,24 @@ const ShaderBackground = ({ className = '' }) => {
 
     let frameId = 0;
     const startedAt = performance.now();
+    let lastFrame = 0;
+    // Throttle to ~20fps on mobile (saves battery), full 60fps on desktop
+    const minInterval = isMobile ? 50 : 0;
 
     const render = (now) => {
+      if (now - lastFrame < minInterval) {
+        frameId = window.requestAnimationFrame(render);
+        return;
+      }
+      lastFrame = now;
       const elapsed = (now - startedAt) / 1000;
 
       gl.clearColor(0.0, 0.0, 0.0, 0.0);
       gl.clear(gl.COLOR_BUFFER_BIT);
       gl.useProgram(shaderProgram);
       gl.uniform2f(resolution, canvas.width, canvas.height);
-      gl.uniform1f(time, elapsed);
+      // Slow down animation on reduced-motion
+      gl.uniform1f(time, prefersReducedMotion ? 0 : elapsed);
 
       gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
       gl.vertexAttribPointer(vertexPosition, 2, gl.FLOAT, false, 0, 0);
@@ -182,9 +200,20 @@ const ShaderBackground = ({ className = '' }) => {
 
     frameId = window.requestAnimationFrame(render);
 
+    // Pause rendering when page is not visible (saves battery on mobile)
+    const handleVisibility = () => {
+      if (document.hidden) {
+        window.cancelAnimationFrame(frameId);
+      } else {
+        frameId = window.requestAnimationFrame(render);
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+
     return () => {
       window.cancelAnimationFrame(frameId);
       window.removeEventListener('resize', resizeCanvas);
+      document.removeEventListener('visibilitychange', handleVisibility);
       gl.deleteBuffer(positionBuffer);
       gl.deleteProgram(shaderProgram);
       gl.deleteShader(vertexShader);

@@ -373,7 +373,64 @@
   .cart-sidebar  { max-width: 100%; }
   .cart-header   { padding: var(--space-4) var(--space-5); }
   .cart-items    { padding: var(--space-3); }
-  .cart-footer   { padding: var(--space-4) var(--space-5); }
+  .cart-footer   { padding: var(--space-4) var(--space-5) max(var(--space-4), env(safe-area-inset-bottom)); }
   .cart-item     { padding: var(--space-2); gap: var(--space-2); }
   .cart-item-image { width: 60px; height: 60px; }
+  .cart-checkout-btn { min-height: 52px; font-size: 1rem; }
+}
+
+/* ─── Dark mode ─── */
+.dark .cart-sidebar {
+  background: var(--color-bg-card);
+  border-left-color: var(--color-border);
+}
+.dark .cart-header {
+  background: var(--color-bg-card);
+  border-bottom-color: var(--color-border);
+}
+.dark .cart-header h2 { color: var(--color-text-base); }
+.dark .cart-close-btn {
+  background: var(--color-bg-muted);
+  color: var(--color-text-muted);
+}
+.dark .cart-close-btn:hover {
+  background: var(--color-border);
+  color: var(--color-text-base);
+}
+.dark .cart-item {
+  background: var(--color-bg-muted);
+  border-color: var(--color-border);
+}
+.dark .cart-item:hover {
+  background: rgba(var(--clr-leaf-rgb), .06);
+  border-color: rgba(var(--clr-leaf-rgb), .2);
+}
+.dark .cart-item-name { color: var(--color-text-base); }
+.dark .cart-item-price { color: var(--clr-terra-300); }
+.dark .cart-item-image { border-color: var(--color-border); }
+.dark .quantity-control {
+  background: var(--color-bg-card);
+  border-color: var(--color-border);
+}
+.dark .quantity-control button { color: var(--color-primary); }
+.dark .quantity-control button:hover { background: rgba(var(--clr-leaf-rgb), .1); }
+.dark .quantity-control span { color: var(--color-text-base); }
+.dark .cart-section { border-bottom-color: var(--color-border); }
+.dark .cart-section-title { color: var(--color-text-muted); }
+.dark .cart-section-subtotal {
+  background: var(--color-bg-muted);
+}
+.dark .cart-section-subtotal span:last-child { color: var(--color-text-base); }
+.dark .cart-footer {
+  background: var(--color-bg-muted);
+  border-top-color: var(--color-border);
+}
+.dark .cart-total span:last-child { color: var(--clr-terra-300); }
+.dark .cart-section-combos {
+  background: linear-gradient(135deg, rgba(var(--clr-leaf-rgb), .08) 0%, rgba(var(--clr-leaf-rgb), .04) 100%);
+  border-color: rgba(var(--clr-leaf-rgb), .16);
+}
+.dark .cart-item-combo {
+  background: rgba(var(--color-bg-card), .85);
+  border-color: rgba(var(--clr-leaf-rgb), .2);
 }

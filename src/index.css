@@ -396,7 +396,32 @@ p { color: var(--color-text-muted); line-height: var(--leading-loose); margin: 0
 .btn-secondary:active { transform: scale(.97); }
 
 .container { width: 100%; max-width: var(--container-width); margin: 0 auto; padding: 0 var(--space-6); }
-@media (max-width: 768px) { .container { padding: 0 var(--space-4); } }
+@media (max-width: 768px) {
+  .container { padding: 0 var(--space-4); }
+}
+
+/* ── Mobile CSS custom property overrides ─────────────────────────────── */
+@media (max-width: 480px) {
+  :root {
+    --header-height: 56px;
+    /* Tighter type scale on phones */
+    --text-2xl: 1.9rem;
+    --text-3xl: 2.4rem;
+  }
+}
+
+/* ── Mobile touch UX enhancements ─────────────────────────────────────── */
+@media (hover: none) and (pointer: coarse) {
+  /* Remove hover transforms on touch devices — they get "stuck" */
+  .btn-primary:hover,
+  .btn-secondary:hover {
+    transform: none;
+  }
+  /* Ensure adequate touch targets */
+  button, a, [role="button"] {
+    min-height: 44px;
+  }
+}
 
 input, textarea, select { font-family: var(--font-body); font-size: var(--text-base); font-weight: 300; color: var(--color-text-base); caret-color: var(--clr-leaf-500); }
 input:focus, textarea:focus, select:focus { outline: none; }

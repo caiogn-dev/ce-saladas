@@ -281,10 +281,18 @@
 }
 
 @media (max-width: 480px) {
-  .navbar-container     { height: 60px; padding: 0 var(--space-4); }
-  .navbar-logo-image    { height: 34px; }
-  .navbar-mobile-menu   { top: 60px; height: calc(100vh - 60px); }
-  .navbar-overlay       { top: 60px; }
+  .navbar-container     { height: 56px; padding: 0 var(--space-3); gap: var(--space-2); }
+  .navbar-logo-image    { height: 32px; }
+  .navbar-mobile-menu   { top: 56px; height: calc(100dvh - 56px); }
+  .navbar-overlay       { top: 56px; }
+  .navbar-cart-btn      { padding: var(--space-2) var(--space-2); gap: 5px; border-radius: var(--o-radius-full); }
+  .cart-badge           { min-width: 18px; font-size: 0.65rem; padding: 1px 5px; }
+}
+
+/* ─── Very small phones (360px) ─── */
+@media (max-width: 360px) {
+  .navbar-container     { padding: 0 var(--space-2); }
+  .navbar-logo-text     { font-size: var(--text-base); max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 }
 
 /* ─── Theme toggle ─── */
@@ -325,6 +333,16 @@
 .dark .navbar-logo,
 .dark .navbar-logo-text {
   color: var(--color-primary);
+}
+
+/* dark mode cart button */
+.dark .navbar-cart-btn {
+  background: var(--color-accent);
+  box-shadow: 0 4px 16px rgba(var(--clr-terra-rgb), .30);
+}
+.dark .navbar-cart-btn:hover {
+  background: var(--color-accent-hover);
+  box-shadow: 0 6px 20px rgba(var(--clr-terra-rgb), .40);
 }
 
 /* dark mode mobile menu */
