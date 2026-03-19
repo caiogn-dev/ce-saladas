@@ -395,6 +395,20 @@ p { color: var(--color-text-muted); line-height: var(--leading-loose); margin: 0
 .btn-secondary:hover { background: var(--clr-leaf-50); border-color: rgba(var(--clr-leaf-rgb), .5); transform: translateY(-2px); box-shadow: var(--o-shadow-md); }
 .btn-secondary:active { transform: scale(.97); }
 
+/* Dark mode: lime-green text on white = near-zero contrast — fix it */
+.dark .btn-secondary {
+  background: rgba(var(--clr-leaf-rgb), .12);
+  color: #c8e89e;
+  border-color: rgba(var(--clr-leaf-rgb), .35);
+  backdrop-filter: none;
+}
+.dark .btn-secondary:hover {
+  background: rgba(var(--clr-leaf-rgb), .22);
+  color: #edf7e0;
+  border-color: rgba(var(--clr-leaf-rgb), .55);
+  box-shadow: 0 4px 16px rgba(var(--clr-leaf-rgb), .2);
+}
+
 .container { width: 100%; max-width: var(--container-width); margin: 0 auto; padding: 0 var(--space-6); }
 @media (max-width: 768px) {
   .container { padding: 0 var(--space-4); }
