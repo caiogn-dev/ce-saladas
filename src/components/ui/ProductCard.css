@@ -27,7 +27,7 @@
 .product-card__image-wrapper {
   position: relative;
   overflow: hidden;
-  padding: var(--space-3) var(--space-3) 0;
+  padding: 0;
 }
 
 .product-card__image-wrapper--interactive { cursor: pointer; }
@@ -36,7 +36,7 @@
   position: relative;
   aspect-ratio: 5 / 4;
   overflow: hidden;
-  border-radius: var(--o-radius-lg);
+  border-radius: 0;
   background: var(--clr-sand-100);
 }
 
@@ -71,6 +71,19 @@
 .product-card__image.loaded img { opacity: 1; }
 .product-card:hover .product-card__image img { transform: scale(1.05); }
 
+/* gradient scrim so bottom-left badge stays readable */
+.product-card__image::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0;
+  height: 50%;
+  background: linear-gradient(to top, rgba(0,0,0,.38) 0%, transparent 100%);
+  pointer-events: none;
+  z-index: 1;
+  transition: opacity var(--dur-base);
+}
+.product-card__image.error::after { display: none; }
+
 /* ─── Fallback ─── */
 .product-card__image-fallback {
   position: absolute;
@@ -87,23 +100,23 @@
 .product-card__image-fallback svg  { width: 44px; height: 44px; color: rgba(var(--clr-leaf-rgb), .4); }
 .product-card__image-fallback span { font-size: var(--text-xs); font-weight: 400; }
 
-/* ─── Eyebrow ─── */
+/* ─── Eyebrow — pinned to bottom-left of image ─── */
 .product-card__eyebrow {
   position: absolute;
-  top: calc(var(--space-3) + var(--space-3));
-  left: calc(var(--space-3) + var(--space-3));
+  bottom: var(--space-3);
+  left: var(--space-3);
   z-index: 2;
   display: inline-flex;
   align-items: center;
-  max-width: calc(100% - 100px);
-  min-height: 28px;
+  max-width: calc(100% - 52px);
+  min-height: 26px;
   padding: 0 var(--space-3);
-  border-radius: 10px;
+  border-radius: 8px;
   background: rgba(255,255,255,.92);
   border: 1px solid rgba(var(--clr-leaf-rgb), .14);
   color: var(--clr-leaf-700);
   font-size: var(--text-xs);
-  font-weight: 500;
+  font-weight: 700;
   letter-spacing: var(--tracking-wider);
   text-transform: uppercase;
   backdrop-filter: blur(8px);
@@ -117,8 +130,8 @@
 }
 
 /* ─── Favorite + Stock ─── */
-.product-card__favorite { position: absolute; top: calc(var(--space-3)*2); right: calc(var(--space-3)*2); z-index: 2; }
-.product-card__stock    { position: absolute; left: calc(var(--space-3)*2); bottom: var(--space-3); z-index: 2; }
+.product-card__favorite { position: absolute; top: var(--space-3); right: var(--space-3); z-index: 2; }
+.product-card__stock    { position: absolute; top: var(--space-3); left: var(--space-3); z-index: 2; }
 .product-card__stock .stock-badge.in-stock { display: none; }
 
 /* ─── Content ─── */
@@ -183,7 +196,7 @@
 
 .product-card__pricing {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
   gap: var(--space-3);
 }
@@ -203,7 +216,7 @@
   font-family: var(--font-display);
   color: var(--clr-terra-500);
   font-size: var(--text-xl);
-  font-weight: 400;
+  font-weight: 600;
   font-style: italic;
   line-height: 1;
   letter-spacing: var(--tracking-tight);
@@ -262,26 +275,21 @@
     box-shadow: 0 12px 24px rgba(74, 89, 18, 0.08);
   }
 
-  .product-card__image-wrapper {
-    padding: 10px 10px 0;
-  }
-
   .product-card__image {
-    aspect-ratio: 1 / 1;
-    border-radius: 14px;
+    aspect-ratio: 4 / 3;
   }
 
   .product-card__eyebrow {
-    top: 20px;
-    left: 20px;
+    bottom: 10px;
+    left: 10px;
     min-height: 24px;
     padding: 0 8px;
     font-size: 0.66rem;
   }
 
   .product-card__favorite {
-    top: 20px;
-    right: 20px;
+    top: 10px;
+    right: 10px;
   }
 
   .product-card__content {
@@ -303,19 +311,21 @@
   }
 
   .product-card__pricing {
-    flex-direction: column;
-    align-items: flex-start;
+    flex-direction: row;
+    align-items: center;
     gap: 6px;
   }
 
+  /* Hide "Ver detalhes" on mobile — tap card opens modal */
+  .product-card__details { display: none; }
+
   .product-card__actions {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: 1fr;
   }
 
-  .product-card__details,
   .product-card__actions .ui-btn {
-    min-height: 42px;
-    font-size: 0.74rem;
+    min-height: 44px;
+    font-size: 0.84rem;
   }
 }
 

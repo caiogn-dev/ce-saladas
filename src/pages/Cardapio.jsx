@@ -24,6 +24,12 @@ const MENU_SECTIONS = [
     featuredOnly: true,
   },
   {
+    key: 'monte-sua-salada',
+    title: 'Monte sua Salada',
+    description: 'Monte do zero ou escolha um combo pronto — do seu jeito.',
+    isBuilder: true,
+  },
+  {
     key: 'saladas',
     title: 'Saladas',
     description: 'Combinações frescas para almoço, jantar ou uma pausa leve no dia.',
@@ -37,12 +43,6 @@ const MENU_SECTIONS = [
     key: 'ingredientes',
     title: 'Ingredientes',
     description: 'Ingredientes individuais — use o builder para montar sua salada.',
-  },
-  {
-    key: 'monte-sua-salada',
-    title: 'Monte sua Salada',
-    description: 'Combos prontos ou monte do zero com seus ingredientes favoritos.',
-    isBuilder: true,
   },
 ];
 
