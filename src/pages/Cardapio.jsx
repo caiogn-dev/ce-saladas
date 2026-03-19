@@ -325,6 +325,15 @@ const Cardapio = () => {
     <div className="cardapio-page">
       <Navbar />
 
+      {/* Floating cart button — always visible while scrolling */}
+      {hasItems && (
+        <button type="button" className="cart-fab" onClick={openCart} aria-label="Abrir sacola">
+          <ShoppingBag size={20} />
+          <span className="cart-fab__count">{cartCount}</span>
+          <span className="cart-fab__total">{formatMoney(cartTotal)}</span>
+        </button>
+      )}
+
       <ProductDetailModal
         isOpen={Boolean(selectedItem)}
         item={selectedItem}

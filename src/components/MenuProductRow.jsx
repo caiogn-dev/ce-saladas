@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useCart } from '../context/CartContext';
 import styles from './MenuProductRow.module.css';
 
 const currencyFormatter = new Intl.NumberFormat('pt-BR', {
@@ -15,6 +16,11 @@ const MenuProductRow = ({
   favoriteButton,
 }) => {
   const [imageError, setImageError] = useState(false);
+  const { cart, updateQuantity } = useCart();
+
+  // Derive current quantity from cart state
+  const cartItem = cart.find((item) => item.id === product.id);
+  const quantity = cartItem?.quantity || 0;
 
   const imageSrc = product.image_url || product.image || product.main_image_url;
   const inStock = (product.is_in_stock ?? true) || (product.stock_quantity ?? 1) > 0;
@@ -24,9 +30,24 @@ const MenuProductRow = ({
   const description = product.shortDescription || product.description;
 
   const handleRowClick = () => onOpenDetails?.(product);
+
   const handleAdd = (e) => {
     e.stopPropagation();
     if (inStock) onAddToCart?.(product);
+  };
+
+  const handleIncrement = (e) => {
+    e.stopPropagation();
+    if (quantity > 0) {
+      updateQuantity(product.id, 1);
+    } else {
+      onAddToCart?.(product);
+    }
+  };
+
+  const handleDecrement = (e) => {
+    e.stopPropagation();
+    if (quantity > 0) updateQuantity(product.id, -1);
   };
 
   return (
@@ -59,15 +80,38 @@ const MenuProductRow = ({
             )}
           </div>
 
-          <button
-            type="button"
-            className={`${styles.addBtn} ${!inStock ? styles.addBtnDisabled : ''}`}
-            onClick={handleAdd}
-            disabled={!inStock}
-            aria-label={inStock ? `Adicionar ${product.name}` : 'Produto indisponível'}
-          >
-            {inStock ? '+ Adicionar' : 'Esgotado'}
-          </button>
+          {/* Quantity control or add button */}
+          {quantity > 0 ? (
+            <div className={styles.qtyControl} onClick={(e) => e.stopPropagation()}>
+              <button
+                type="button"
+                className={styles.qtyBtn}
+                onClick={handleDecrement}
+                aria-label="Remover um"
+              >
+                −
+              </button>
+              <span className={styles.qtyNum}>{quantity}</span>
+              <button
+                type="button"
+                className={styles.qtyBtn}
+                onClick={handleIncrement}
+                aria-label="Adicionar mais um"
+              >
+                +
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              className={`${styles.addBtn} ${!inStock ? styles.addBtnDisabled : ''}`}
+              onClick={handleAdd}
+              disabled={!inStock}
+              aria-label={inStock ? `Adicionar ${product.name}` : 'Produto indisponível'}
+            >
+              {inStock ? '+ Adicionar' : 'Esgotado'}
+            </button>
+          )}
         </div>
       </div>
 

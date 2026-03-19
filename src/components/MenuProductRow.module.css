@@ -150,6 +150,46 @@
   cursor: not-allowed;
 }
 
+/* ─── Inline quantity control (after adding) ─── */
+
+.qtyControl {
+  display: flex;
+  align-items: center;
+  background: var(--color-bg-card, #fff);
+  border: 2px solid var(--color-primary, #649e20);
+  border-radius: 999px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.qtyBtn {
+  width: 36px;
+  height: 36px;
+  background: none;
+  border: none;
+  color: var(--color-primary, #649e20);
+  font-size: 1.1rem;
+  font-weight: 400;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.12s ease;
+}
+
+.qtyBtn:hover { background: rgba(var(--clr-leaf-rgb, 100, 158, 32), 0.08); }
+.qtyBtn:active { transform: scale(0.88); }
+
+.qtyNum {
+  min-width: 28px;
+  text-align: center;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text-base, #1a1a14);
+  padding: 0 2px;
+}
+
 /* ─── Right: image ─── */
 
 .imageWrapper {
@@ -222,7 +262,13 @@
   }
 
   .addBtn {
+    /* Hidden on mobile — open modal by tapping the row */
     display: none;
+  }
+
+  /* But show inline qty control if item is already in cart */
+  .qtyControl {
+    display: flex;
   }
 
   .price {
