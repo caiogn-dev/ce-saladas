@@ -85,16 +85,17 @@
 }
 
 .step.active .stepNumber {
-  background: linear-gradient(135deg, #2D6A4F 0%, #8B3A44 100%);
+  background: var(--color-primary);
   color: white;
-  box-shadow: 0 4px 16px rgba(114, 47, 55, 0.35);
+  box-shadow: 0 4px 16px rgba(var(--clr-leaf-rgb), 0.32);
   transform: scale(1.05);
 }
 
 .step.completed .stepNumber {
-  background: linear-gradient(135deg, #16a34a 0%, #22c55e 100%);
+  background: var(--color-primary);
   color: white;
-  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
+  box-shadow: 0 4px 12px rgba(var(--clr-leaf-rgb), 0.24);
+  opacity: 0.7;
 }
 
 .stepLabel {
@@ -107,11 +108,12 @@
 }
 
 .step.active .stepLabel {
-  color: var(--clr-leaf-700);
+  color: var(--color-primary);
 }
 
 .step.completed .stepLabel {
-  color: #16a34a;
+  color: var(--color-primary);
+  opacity: 0.7;
 }
 
 .stepLine {
@@ -132,7 +134,7 @@
   left: 0;
   height: 100%;
   width: 0;
-  background: linear-gradient(90deg, #2D6A4F 0%, #8B3A44 100%);
+  background: var(--color-primary);
   transition: width 0.5s ease;
 }
 
@@ -199,24 +201,25 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 1rem 2.5rem;
-  background: linear-gradient(135deg, #2D6A4F 0%, #8B3A44 100%);
+  padding: 0.875rem 2.5rem;
+  background: var(--color-accent);
   color: white;
   text-decoration: none;
-  border-radius: var(--o-radius-lg);
+  border-radius: var(--o-radius-full);
   font-weight: 500;
   font-size: 1rem;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 16px rgba(114, 47, 55, 0.3);
+  transition: background var(--dur-fast) var(--ease-organic), transform var(--dur-fast) var(--ease-spring), box-shadow var(--dur-fast) var(--ease-organic);
+  box-shadow: 0 4px 16px rgba(var(--clr-terra-rgb), 0.28);
 }
 
 .backButton:hover {
+  background: var(--color-accent-hover);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(114, 47, 55, 0.4);
+  box-shadow: 0 6px 20px rgba(var(--clr-terra-rgb), 0.36);
 }
 
 .backButton:active {
-  transform: translateY(0);
+  transform: scale(0.97);
 }
 
 /* ============================================
@@ -285,5 +288,12 @@
 
   .checkoutContainer {
     max-width: 600px;
+  }
+}
+
+/* Touch devices — disable hover transforms that get "stuck" */
+@media (hover: none) and (pointer: coarse) {
+  .backButton:hover {
+    transform: none;
   }
 }

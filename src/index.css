@@ -4,7 +4,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300;1,9..144,400&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap');
 
 :root {
   color-scheme: light;
@@ -74,8 +74,8 @@
   --color-accent-fg:     #ffffff;
   --color-accent-hover:  var(--clr-terra-500);
 
-  --font-display: 'Merriweather', Georgia, serif;
-  --font-body:    'Montserrat', system-ui, sans-serif;
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body:    'Plus Jakarta Sans', system-ui, sans-serif;
   --font-mono:    'Fira Code', 'Courier New', monospace;
 
   --text-xs:   0.694rem;
@@ -197,69 +197,72 @@
   --font-serif: var(--font-display);
 }
 
-/* ── Dark mode — Nature theme ──────────────────────────────────────────── */
+/* ── Dark mode — Clean Neutral ──────────────────────────────────────────── */
+/* Design: Vercel/Linear-inspired near-black, no colored surfaces.           */
+/* Colorblind-safe: meaning never conveyed by green/red alone.               */
 
 .dark {
   color-scheme: dark;
 
-  /* Backgrounds — deep forest */
-  --color-bg:           #0d1a06;
-  --color-bg-card:      #142108;
-  --color-bg-muted:     #1c2e0e;
+  /* Surfaces — neutral near-black */
+  --color-bg:           #111111;
+  --color-bg-card:      #1c1c1c;
+  --color-bg-muted:     #242424;
 
-  /* Text */
-  --color-text-base:    #edf7e0;
-  --color-text-muted:   #8db870;
-  --color-text-hint:    #567040;
-  --color-text-inverse: #0d1a06;
+  /* Text — high contrast (WCAG AA ≥4.5:1) */
+  --color-text-base:    #f0f0f0;
+  --color-text-muted:   #a0a0a0;
+  --color-text-hint:    #666666;
+  --color-text-inverse: #111111;
 
   /* Borders */
-  --color-border:       #2a4018;
-  --color-border-focus: #7fb52e;
+  --color-border:       #2e2e2e;
+  --color-border-focus: #82cc2a;
 
-  /* Primary (leaf green — brighter on dark) */
-  --color-primary:       #7fb52e;
-  --color-primary-hover: #9ac749;
-  --color-primary-light: rgba(100, 158, 32, 0.15);
+  /* Primary — brand green, slightly brighter for dark bg contrast */
+  --color-primary:       #82cc2a;
+  --color-primary-hover: #9adc3a;
+  --color-primary-light: rgba(100, 158, 32, 0.14);
 
-  /* Accent (terra orange) */
+  /* Accent — terra orange unchanged */
   --color-accent:        #e8804a;
   --color-accent-fg:     #ffffff;
   --color-accent-hover:  #de6b36;
 
-  /* Palette overrides for components that use raw palette tokens */
-  --clr-stone-50:  #141f0a;
-  --clr-stone-100: #1c2e10;
-  --clr-stone-200: #2a4018;
-  --clr-stone-300: #3d5a28;
-  --clr-stone-400: #567040;
-  --clr-stone-500: #7a9460;
-  --clr-stone-600: #a0b888;
-  --clr-stone-700: #c4d4b0;
-  --clr-stone-800: #ddeacc;
-  --clr-stone-900: #edf7e0;
+  /* Stone palette → true neutral grays (no green tint) */
+  --clr-stone-50:  #1a1a1a;
+  --clr-stone-100: #222222;
+  --clr-stone-200: #2e2e2e;
+  --clr-stone-300: #404040;
+  --clr-stone-400: #5a5a5a;
+  --clr-stone-500: #787878;
+  --clr-stone-600: #9a9a9a;
+  --clr-stone-700: #bebebe;
+  --clr-stone-800: #dedede;
+  --clr-stone-900: #f0f0f0;
 
-  --clr-sand-50:   #0f1a06;
-  --clr-sand-100:  #142108;
-  --clr-sand-200:  #1c2e0e;
-  --clr-sand-300:  #2a4018;
-  --clr-sand-400:  #3d5a28;
-  --clr-sand-500:  #567040;
+  /* Sand palette → dark neutrals */
+  --clr-sand-50:   #131313;
+  --clr-sand-100:  #1c1c1c;
+  --clr-sand-200:  #252525;
+  --clr-sand-300:  #333333;
+  --clr-sand-400:  #484848;
+  --clr-sand-500:  #626262;
 
-  --clr-leaf-50:   rgba(100, 158, 32, 0.12);
+  /* Leaf — kept as brand color, NOT used for surfaces */
+  --clr-leaf-50:   rgba(130, 204, 42, 0.10);
+  --clr-leaf-100:  rgba(130, 204, 42, 0.16);
+  --clr-leaf-200:  rgba(130, 204, 42, 0.24);
+  --clr-leaf-300:  #b2dc6a;
+  --clr-leaf-400:  #9adc3a;
+  --clr-leaf-500:  #82cc2a;
+  --clr-leaf-600:  #9adc3a;
+  --clr-leaf-700:  #b2dc6a;
+  --clr-leaf-800:  #ceeaa0;
+  --clr-leaf-900:  #e8f7cc;
+  --clr-leaf-rgb:  130, 204, 42;
 
-  /* Leaf palette — inverted scale for dark (700 becomes light, 600 slightly lighter) */
-  --clr-leaf-100: rgba(100, 158, 32, 0.20);
-  --clr-leaf-200: rgba(100, 158, 32, 0.28);
-  --clr-leaf-300: #a8c85a;
-  --clr-leaf-400: #9ac749;
-  --clr-leaf-500: #7fb52e;
-  --clr-leaf-600: #9ac749;
-  --clr-leaf-700: #b8d87a;
-  --clr-leaf-800: #d0e8a8;
-  --clr-leaf-900: #edf7e0;
-
-  /* Terra palette — brighter on dark */
+  /* Terra — brighter on dark */
   --clr-terra-100: rgba(222, 107, 54, 0.14);
   --clr-terra-200: rgba(222, 107, 54, 0.22);
   --clr-terra-300: #eb9161;
@@ -268,23 +271,23 @@
   --clr-terra-600: #de6b36;
 
   /* Retrocompat aliases */
-  --color-surface-page:       #0d1a06;
-  --color-surface-page-alt:   #142108;
-  --color-surface-card:       #142108;
-  --color-surface-card-strong: #1c2e0e;
-  --color-surface-muted:      #1c2e0e;
-  --color-border-soft:   rgba(100, 158, 32, 0.18);
-  --color-border-strong: rgba(100, 158, 32, 0.30);
-  --color-gray-50:  #0f1a06;
-  --color-gray-100: #1c2e10;
-  --color-gray-200: #2a4018;
-  --color-gray-300: #3d5a28;
-  --color-gray-400: #567040;
-  --color-gray-500: #7a9460;
-  --color-gray-600: #a0b888;
-  --color-gray-700: #c4d4b0;
-  --color-gray-800: #ddeacc;
-  --color-gray-900: #edf7e0;
+  --color-surface-page:        #111111;
+  --color-surface-page-alt:    #1c1c1c;
+  --color-surface-card:        #1c1c1c;
+  --color-surface-card-strong: #242424;
+  --color-surface-muted:       #242424;
+  --color-border-soft:   rgba(130, 204, 42, 0.16);
+  --color-border-strong: rgba(130, 204, 42, 0.28);
+  --color-gray-50:  #1a1a1a;
+  --color-gray-100: #222222;
+  --color-gray-200: #2e2e2e;
+  --color-gray-300: #404040;
+  --color-gray-400: #5a5a5a;
+  --color-gray-500: #787878;
+  --color-gray-600: #9a9a9a;
+  --color-gray-700: #bebebe;
+  --color-gray-800: #dedede;
+  --color-gray-900: #f0f0f0;
 }
 
 /* ── Smooth theme transition ───────────────────────────────────────────── */
@@ -296,7 +299,6 @@ html {
 *, *::before, *::after { box-sizing: border-box; }
 
 html {
-  color-scheme: light dark;
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -313,10 +315,6 @@ body {
   line-height: var(--leading-base);
   color: var(--color-text-base);
   background-color: var(--color-bg);
-  background-image:
-    radial-gradient(ellipse 80% 50% at 10% -5%, rgba(var(--clr-leaf-rgb), .07) 0%, transparent 55%),
-    radial-gradient(ellipse 60% 40% at 90% 100%, rgba(var(--clr-terra-rgb), .05) 0%, transparent 50%);
-  background-attachment: fixed;
   overflow-x: hidden;
 }
 
@@ -395,18 +393,17 @@ p { color: var(--color-text-muted); line-height: var(--leading-loose); margin: 0
 .btn-secondary:hover { background: var(--clr-leaf-50); border-color: rgba(var(--clr-leaf-rgb), .5); transform: translateY(-2px); box-shadow: var(--o-shadow-md); }
 .btn-secondary:active { transform: scale(.97); }
 
-/* Dark mode: lime-green text on white = near-zero contrast — fix it */
 .dark .btn-secondary {
-  background: rgba(var(--clr-leaf-rgb), .12);
-  color: #c8e89e;
-  border-color: rgba(var(--clr-leaf-rgb), .35);
+  background: rgba(255, 255, 255, .06);
+  color: var(--color-text-base);
+  border-color: var(--color-border);
   backdrop-filter: none;
 }
 .dark .btn-secondary:hover {
-  background: rgba(var(--clr-leaf-rgb), .22);
-  color: #edf7e0;
-  border-color: rgba(var(--clr-leaf-rgb), .55);
-  box-shadow: 0 4px 16px rgba(var(--clr-leaf-rgb), .2);
+  background: rgba(255, 255, 255, .10);
+  color: #fff;
+  border-color: var(--clr-stone-400);
+  box-shadow: none;
 }
 
 .container { width: 100%; max-width: var(--container-width); margin: 0 auto; padding: 0 var(--space-6); }
