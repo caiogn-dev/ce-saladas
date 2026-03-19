@@ -70,6 +70,15 @@
   color: var(--clr-terra-600, #a04018);
 }
 
+.badgeTag {
+  border-color: rgba(var(--clr-leaf-rgb, 100, 158, 32), 0.08);
+  background: transparent;
+  color: var(--color-text-hint);
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
 .header {
   display: flex;
   align-items: flex-start;
@@ -93,9 +102,9 @@
   margin: 0;
   color: var(--color-text-muted);
   font-size: 0.84rem;
-  line-height: 1.48;
+  line-height: 1.52;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -331,6 +340,12 @@
   color: var(--clr-terra-300);
 }
 
+:global(.dark) .badgeTag {
+  color: var(--color-text-hint);
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
 :global(.dark) .price {
   color: var(--clr-leaf-300);
 }
@@ -400,6 +415,7 @@
   .description {
     font-size: 0.9rem;
     line-height: 1.58;
+    -webkit-line-clamp: 4;
   }
 
   .footer {

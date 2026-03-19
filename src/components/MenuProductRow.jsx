@@ -32,11 +32,17 @@ const MenuProductRow = ({
     ? Math.round((1 - Number(product.price) / Number(product.original_price)) * 100)
     : 0;
 
+  // Primary badges: category + combo
   const badges = [
     product.categoryLabel || product.category,
     product.isCombo ? 'Combo pronto' : null,
-    discountPercentage > 0 ? `Economize ${discountPercentage}%` : null,
+    discountPercentage > 0 ? `−${discountPercentage}%` : null,
   ].filter(Boolean).slice(0, 2);
+
+  // Tag pills from product.tags (dietary, highlights: "vegetariano", "sem glúten", "mais pedido", etc.)
+  const tagPills = Array.isArray(product.tags)
+    ? product.tags.filter(Boolean).slice(0, 3)
+    : [];
 
   const helperText = quantity > 0
     ? `${quantity} ${quantity === 1 ? 'item na sacola' : 'itens na sacola'}`
@@ -82,14 +88,19 @@ const MenuProductRow = ({
       aria-label={`Ver detalhes de ${product.name}`}
     >
       <div className={styles.content}>
-        {badges.length > 0 && (
+        {(badges.length > 0 || tagPills.length > 0) && (
           <div className={styles.badges}>
             {badges.map((badge) => (
               <span
                 key={badge}
-                className={`${styles.badge} ${badge.startsWith('Economize') ? styles.badgeAccent : ''}`}
+                className={`${styles.badge} ${badge.startsWith('−') ? styles.badgeAccent : ''}`}
               >
                 {badge}
+              </span>
+            ))}
+            {tagPills.map((tag) => (
+              <span key={tag} className={`${styles.badge} ${styles.badgeTag}`}>
+                {tag}
               </span>
             ))}
           </div>
