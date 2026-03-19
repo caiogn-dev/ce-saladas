@@ -68,10 +68,9 @@ const inferCatalogSection = (item) => {
     item.name,
   ].join(' '));
 
-  if (haystack.includes('molho')) {
-    return 'molhos';
-  }
-
+  // Ingredient-builder products first — a product tagged "ingrediente" goes to the
+  // builder section even when its name also contains "molho" (e.g. "Molho Caesar").
+  // Standalone molho products (only tagged "molho") go to the separate molhos section.
   if (
     haystack.includes('ingrediente')
     || haystack.includes('base')
@@ -79,6 +78,10 @@ const inferCatalogSection = (item) => {
     || haystack.includes('proteina')
   ) {
     return 'ingredientes';
+  }
+
+  if (haystack.includes('molho')) {
+    return 'molhos';
   }
 
   if (
