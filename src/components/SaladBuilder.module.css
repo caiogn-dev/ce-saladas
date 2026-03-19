@@ -210,21 +210,13 @@
 .stepSection:last-child { border-bottom: none; }
 
 .sectionHeader {
-  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 20px;
+  padding: 14px 20px 10px;
   background: var(--clr-stone-50, #faf8f4);
-  border: none;
-  cursor: pointer;
-  text-align: left;
-  transition: background 0.15s ease;
+  border-bottom: 1px solid var(--color-border, #e8e2d9);
   gap: 8px;
-}
-
-.sectionHeader:hover {
-  background: rgba(var(--clr-leaf-rgb, 100, 158, 32), 0.04);
 }
 
 .sectionHeaderDone {
@@ -278,7 +270,7 @@
 }
 
 .sectionBody {
-  padding: 4px 0;
+  padding: 0;
 }
 
 .emptySection {

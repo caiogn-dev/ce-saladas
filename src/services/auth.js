@@ -6,12 +6,13 @@
 import {
   setAuthToken,
   getAuthToken,
-  clearAuthToken,
+  refreshAuthHeaders,
   loginUser,
   logoutUser,
   registerUser,
   getProfile,
   updateProfile,
+  authApi,
 } from './storeApi';
 import { setTokens, getAccessToken, getRefreshToken, clearTokens, setUser, getUser } from './tokenStorage';
 
@@ -23,35 +24,23 @@ export const isAuthenticated = () => Boolean(getAuthToken() || getAccessToken())
 // ── Traditional auth ──────────────────────────────────────
 
 export const login = async (email, password) => {
-  const data = await loginUser(email, password);
-  if (data.token) {
-    setTokens(data.token, null);
-    if (typeof window !== 'undefined') {
-      window.dispatchEvent(new CustomEvent('auth:login', { detail: { token: data.token } }));
-    }
-  }
-  return data;
+  // loginUser already handles setTokens, refreshAuthHeaders, and auth:login dispatch
+  return loginUser(email, password);
 };
 
 export const register = async (userData) => registerUser(userData);
 
 export const logout = async () => {
-  await logoutUser();
-  clearTokens();
-  if (typeof window !== 'undefined') {
-    window.dispatchEvent(new CustomEvent('auth:logout'));
-  }
+  // logoutUser already handles clearAuthToken and auth:logout dispatch
+  return logoutUser();
 };
 
 // ── WhatsApp OTP authentication ───────────────────────────
 // These endpoints mirror what pastita-3d uses for WhatsApp OTP login.
-
-import axios from 'axios';
-
-const AUTH_BASE = (process.env.NEXT_PUBLIC_API_URL || '') + '/auth';
+// Uses authApi (configured axios instance) for proper CSRF and credential handling.
 
 export const sendWhatsAppCode = async (phoneNumber, whatsappAccountId) => {
-  const response = await axios.post(`${AUTH_BASE}/whatsapp/send/`, {
+  const response = await authApi.post('/auth/whatsapp/send/', {
     phone_number: phoneNumber,
     whatsapp_account_id: whatsappAccountId,
   });
@@ -59,7 +48,7 @@ export const sendWhatsAppCode = async (phoneNumber, whatsappAccountId) => {
 };
 
 export const verifyWhatsAppCode = async (phoneNumber, code) => {
-  const response = await axios.post(`${AUTH_BASE}/whatsapp/verify/`, {
+  const response = await authApi.post('/auth/whatsapp/verify/', {
     phone_number: phoneNumber,
     code,
   });
@@ -73,6 +62,7 @@ export const verifyWhatsAppCode = async (phoneNumber, code) => {
     if (accessToken) {
       setTokens(accessToken, jwtRefresh);
       setAuthToken(accessToken);
+      refreshAuthHeaders();
 
       if (typeof window !== 'undefined') {
         window.dispatchEvent(new CustomEvent('auth:login', { detail: { token: accessToken } }));
@@ -88,7 +78,7 @@ export const verifyWhatsAppCode = async (phoneNumber, code) => {
 };
 
 export const resendWhatsAppCode = async (phoneNumber, whatsappAccountId) => {
-  const response = await axios.post(`${AUTH_BASE}/whatsapp/resend/`, {
+  const response = await authApi.post('/auth/whatsapp/resend/', {
     phone_number: phoneNumber,
     whatsapp_account_id: whatsappAccountId,
   });
@@ -97,3 +87,11 @@ export const resendWhatsAppCode = async (phoneNumber, whatsappAccountId) => {
 
 // ── Profile ───────────────────────────────────────────────
 export { getProfile, updateProfile };
+
+export const changePassword = async (oldPassword, newPassword) => {
+  const response = await authApi.post('/auth/change-password/', {
+    old_password: oldPassword,
+    new_password: newPassword,
+  });
+  return response.data;
+};

@@ -11,6 +11,13 @@
   -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--clr-stone-200);
   box-shadow: 0 1px 0 rgba(0,0,0,.04), 0 4px 16px rgba(0,0,0,.05);
+  transition: background 300ms ease, border-color 300ms ease;
+}
+
+.dark .navbar {
+  background: rgba(13, 26, 6, 0.92);
+  border-bottom-color: var(--color-border);
+  box-shadow: 0 1px 0 rgba(0,0,0,.2), 0 4px 16px rgba(0,0,0,.3);
 }
 
 .navbar-container {
@@ -270,6 +277,7 @@
   .navbar-links         { display: none; }
   .navbar-mobile-menu   { display: flex; }
   .navbar-overlay       { display: block; }
+  .navbar-theme-toggle  { display: none; }
 }
 
 @media (max-width: 480px) {
@@ -277,4 +285,84 @@
   .navbar-logo-image    { height: 34px; }
   .navbar-mobile-menu   { top: 60px; height: calc(100vh - 60px); }
   .navbar-overlay       { top: 60px; }
+}
+
+/* ─── Theme toggle ─── */
+.navbar-theme-toggle {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--clr-stone-100);
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  cursor: pointer;
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+  transition: all var(--dur-fast) var(--ease-organic);
+}
+
+.navbar-theme-toggle:hover {
+  background: var(--clr-leaf-50);
+  color: var(--clr-leaf-600);
+  border-color: var(--color-primary);
+  transform: scale(1.08);
+}
+
+.dark .navbar-theme-toggle {
+  background: var(--color-bg-muted);
+  color: var(--color-text-muted);
+  border-color: var(--color-border);
+}
+
+.dark .navbar-theme-toggle:hover {
+  background: rgba(100, 158, 32, 0.15);
+  color: var(--color-primary);
+}
+
+/* dark mode mobile menu */
+.dark .navbar-mobile-menu {
+  background: var(--color-bg-card);
+  border-left-color: var(--color-border);
+}
+
+.dark .navbar-mobile-link:hover,
+.dark .navbar-mobile-link.active {
+  background: rgba(100, 158, 32, 0.12);
+  color: var(--color-primary);
+}
+
+.dark .navbar-mobile-toggle span {
+  background: var(--color-text-base);
+}
+
+/* theme toggle in mobile menu */
+.navbar-mobile-theme {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  margin-top: var(--space-4);
+  border-top: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  cursor: pointer;
+  background: none;
+  border-left: none;
+  border-right: none;
+  border-bottom: none;
+  border-radius: 0;
+  width: 100%;
+  text-align: left;
+  font-family: var(--font-body);
+}
+
+.navbar-mobile-theme:hover {
+  color: var(--color-primary);
+  background: var(--clr-leaf-50);
+}
+
+.dark .navbar-mobile-theme:hover {
+  background: rgba(100, 158, 32, 0.12);
 }

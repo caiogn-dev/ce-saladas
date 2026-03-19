@@ -4,7 +4,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap');
 
 :root {
   color-scheme: light;
@@ -74,8 +74,8 @@
   --color-accent-fg:     #ffffff;
   --color-accent-hover:  var(--clr-terra-500);
 
-  --font-display: 'DM Serif Display', Georgia, serif;
-  --font-body:    'DM Sans', 'Trebuchet MS', system-ui, sans-serif;
+  --font-display: 'Merriweather', Georgia, serif;
+  --font-body:    'Montserrat', system-ui, sans-serif;
   --font-mono:    'Fira Code', 'Courier New', monospace;
 
   --text-xs:   0.694rem;
@@ -197,10 +197,87 @@
   --font-serif: var(--font-display);
 }
 
+/* ── Dark mode — Nature theme ──────────────────────────────────────────── */
+
+.dark {
+  color-scheme: dark;
+
+  /* Backgrounds — deep forest */
+  --color-bg:           #0d1a06;
+  --color-bg-card:      #142108;
+  --color-bg-muted:     #1c2e0e;
+
+  /* Text */
+  --color-text-base:    #edf7e0;
+  --color-text-muted:   #8db870;
+  --color-text-hint:    #567040;
+  --color-text-inverse: #0d1a06;
+
+  /* Borders */
+  --color-border:       #2a4018;
+  --color-border-focus: #7fb52e;
+
+  /* Primary (leaf green — brighter on dark) */
+  --color-primary:       #7fb52e;
+  --color-primary-hover: #9ac749;
+  --color-primary-light: rgba(100, 158, 32, 0.15);
+
+  /* Accent (terra orange) */
+  --color-accent:        #e8804a;
+  --color-accent-fg:     #ffffff;
+  --color-accent-hover:  #de6b36;
+
+  /* Palette overrides for components that use raw palette tokens */
+  --clr-stone-50:  #141f0a;
+  --clr-stone-100: #1c2e10;
+  --clr-stone-200: #2a4018;
+  --clr-stone-300: #3d5a28;
+  --clr-stone-400: #567040;
+  --clr-stone-500: #7a9460;
+  --clr-stone-600: #a0b888;
+  --clr-stone-700: #c4d4b0;
+  --clr-stone-800: #ddeacc;
+  --clr-stone-900: #edf7e0;
+
+  --clr-sand-50:   #0f1a06;
+  --clr-sand-100:  #142108;
+  --clr-sand-200:  #1c2e0e;
+  --clr-sand-300:  #2a4018;
+  --clr-sand-400:  #3d5a28;
+  --clr-sand-500:  #567040;
+
+  --clr-leaf-50:   rgba(100, 158, 32, 0.12);
+
+  /* Retrocompat aliases */
+  --color-surface-page:       #0d1a06;
+  --color-surface-page-alt:   #142108;
+  --color-surface-card:       #142108;
+  --color-surface-card-strong: #1c2e0e;
+  --color-surface-muted:      #1c2e0e;
+  --color-border-soft:   rgba(100, 158, 32, 0.18);
+  --color-border-strong: rgba(100, 158, 32, 0.30);
+  --color-gray-50:  #0f1a06;
+  --color-gray-100: #1c2e10;
+  --color-gray-200: #2a4018;
+  --color-gray-300: #3d5a28;
+  --color-gray-400: #567040;
+  --color-gray-500: #7a9460;
+  --color-gray-600: #a0b888;
+  --color-gray-700: #c4d4b0;
+  --color-gray-800: #ddeacc;
+  --color-gray-900: #edf7e0;
+}
+
+/* ── Smooth theme transition ───────────────────────────────────────────── */
+
+html {
+  transition: background-color 300ms ease, color 200ms ease;
+}
+
 *, *::before, *::after { box-sizing: border-box; }
 
 html {
-  color-scheme: light;
+  color-scheme: light dark;
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -234,7 +311,7 @@ h1, h2, h3 {
   font-weight: 400;
   line-height: var(--leading-tight);
   letter-spacing: var(--tracking-tight);
-  color: var(--clr-stone-900);
+  color: var(--color-text-base);
   margin: 0;
 }
 
@@ -242,7 +319,7 @@ h4, h5, h6 {
   font-family: var(--font-body);
   font-weight: 500;
   line-height: var(--leading-snug);
-  color: var(--clr-stone-800);
+  color: var(--color-text-base);
   margin: 0;
 }
 

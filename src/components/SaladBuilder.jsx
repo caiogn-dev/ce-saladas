@@ -26,18 +26,6 @@ const STEPS = [
   { key: 'molho',       label: 'Molho',         emoji: '🫙', required: true,  max: 1,  hint: 'Escolha 1' },
 ];
 
-/* ── Chevron icon ─────────────────────────────────────────── */
-const ChevronIcon = ({ open }) => (
-  <svg
-    width="18" height="18" viewBox="0 0 24 24"
-    fill="none" stroke="currentColor" strokeWidth="2.2"
-    strokeLinecap="round" strokeLinejoin="round"
-    style={{ transition: 'transform .2s ease', transform: open ? 'rotate(180deg)' : 'rotate(0deg)' }}
-  >
-    <polyline points="6 9 12 15 18 9" />
-  </svg>
-);
-
 /* ── Ingredient image ─────────────────────────────────────── */
 const IngredientImage = ({ src, alt }) => {
   const [err, setErr] = useState(false);
@@ -128,7 +116,6 @@ const IngredientRow = ({ product, selected, onAdd, onRemove, disabled, singleSel
 const SaladBuilder = ({ ingredients, onAddToCart }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selections, setSelections] = useState({ base: [], proteina: [], complemento: [], molho: [] });
-  const [collapsed, setCollapsed] = useState({});
   const bodyRef = useRef(null);
 
   const grouped = useMemo(() => {
@@ -165,8 +152,6 @@ const SaladBuilder = ({ ingredients, onAddToCart }) => {
       [step]: prev[step].filter((p) => p.id !== product.id),
     }));
   }, []);
-
-  const toggleCollapse = (key) => setCollapsed((c) => ({ ...c, [key]: !c[key] }));
 
   const handleAddToCart = () => {
     if (!isValid) return;
@@ -262,61 +247,46 @@ const SaladBuilder = ({ ingredients, onAddToCart }) => {
                 STEPS.map((step) => {
                   const items = grouped[step.key];
                   const count = selections[step.key].length;
-                  const isCollapsed = !!collapsed[step.key];
                   const singleSelect = step.max === 1;
-                  const label = `${step.emoji} ${step.label}`;
-                  const meta = step.required ? `Obrigatório • ${step.hint}` : `Opcional • ${step.hint}`;
 
                   return (
                     <div key={step.key} className={styles.stepSection}>
-                      {/* Section header */}
-                      <button
-                        type="button"
-                        className={`${styles.sectionHeader} ${count > 0 ? styles.sectionHeaderDone : ''}`}
-                        onClick={() => toggleCollapse(step.key)}
-                      >
+                      {/* Section label */}
+                      <div className={`${styles.sectionHeader} ${count > 0 ? styles.sectionHeaderDone : ''}`}>
                         <div className={styles.sectionHeaderLeft}>
-                          <span className={styles.sectionTitle}>{label}</span>
-                          <span className={styles.sectionMeta}>{meta}</span>
+                          <span className={styles.sectionTitle}>{step.emoji} {step.label}</span>
+                          <span className={styles.sectionMeta}>
+                            {step.required ? `Obrigatório • ${step.hint}` : `Opcional • ${step.hint}`}
+                          </span>
                         </div>
                         <div className={styles.sectionHeaderRight}>
-                          {count > 0 && (
-                            <span className={styles.sectionCount}>{count}/{step.max}</span>
-                          )}
-                          {step.required && count === 0 && (
-                            <span className={styles.sectionRequired}>obrigatório</span>
-                          )}
-                          <ChevronIcon open={!isCollapsed} />
+                          {count > 0 && <span className={styles.sectionCount}>{count}/{step.max}</span>}
+                          {step.required && count === 0 && <span className={styles.sectionRequired}>obrigatório</span>}
                         </div>
-                      </button>
+                      </div>
 
-                      {/* Ingredient rows */}
-                      {!isCollapsed && (
-                        <div className={styles.sectionBody}>
-                          {items.length === 0 ? (
-                            <p className={styles.emptySection}>
-                              Nenhum ingrediente disponível nessa categoria.
-                            </p>
-                          ) : (
-                            items.map((product) => {
-                              const selected = selections[step.key].some((p) => p.id === product.id);
-                              const stepCount = selections[step.key].length;
-                              const disabled = !selected && stepCount >= step.max;
-                              return (
-                                <IngredientRow
-                                  key={product.id}
-                                  product={product}
-                                  selected={selected}
-                                  onAdd={(p) => addItem(step.key, p)}
-                                  onRemove={(p) => removeItem(step.key, p)}
-                                  disabled={disabled}
-                                  singleSelect={singleSelect}
-                                />
-                              );
-                            })
-                          )}
-                        </div>
-                      )}
+                      {/* Ingredient rows — always visible */}
+                      <div className={styles.sectionBody}>
+                        {items.length === 0 ? (
+                          <p className={styles.emptySection}>Nenhum ingrediente nessa categoria.</p>
+                        ) : (
+                          items.map((product) => {
+                            const selected = selections[step.key].some((p) => p.id === product.id);
+                            const disabled = !selected && selections[step.key].length >= step.max;
+                            return (
+                              <IngredientRow
+                                key={product.id}
+                                product={product}
+                                selected={selected}
+                                onAdd={(p) => addItem(step.key, p)}
+                                onRemove={(p) => removeItem(step.key, p)}
+                                disabled={disabled}
+                                singleSelect={singleSelect}
+                              />
+                            );
+                          })
+                        )}
+                      </div>
                     </div>
                   );
                 })

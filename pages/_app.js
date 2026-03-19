@@ -41,6 +41,7 @@ import { AuthProvider } from '../src/context/AuthContext';
 import { CartProvider } from '../src/context/CartContext';
 import { WishlistProvider } from '../src/context/WishlistContext';
 import { StoreProvider } from '../src/context/StoreContext';
+import { ThemeProvider } from '../src/context/ThemeContext';
 import ErrorBoundary from '../src/components/ErrorBoundary';
 import CartSidebar from '../src/components/CartSidebar';
 import { ToastProvider } from '../src/components/Toast';
@@ -65,19 +66,21 @@ gtag('config', '${GA_ID}');`}
       </Script>
 
       <ErrorBoundary>
-        <AuthProvider>
-          <StoreProvider>
-            <StoreHead />
-            <WishlistProvider>
-              <CartProvider>
-                <ToastProvider>
-                  <CartSidebar />
-                  <Component {...pageProps} />
-                </ToastProvider>
-              </CartProvider>
-            </WishlistProvider>
-          </StoreProvider>
-        </AuthProvider>
+        <ThemeProvider>
+          <AuthProvider>
+            <StoreProvider>
+              <StoreHead />
+              <WishlistProvider>
+                <CartProvider>
+                  <ToastProvider>
+                    <CartSidebar />
+                    <Component {...pageProps} />
+                  </ToastProvider>
+                </CartProvider>
+              </WishlistProvider>
+            </StoreProvider>
+          </AuthProvider>
+        </ThemeProvider>
       </ErrorBoundary>
     </>
   );

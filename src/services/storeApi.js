@@ -1,12 +1,17 @@
 /**
  * Unified Store API Service
- * 
+ *
  * This is the PRIMARY API service for the Cê Saladas frontend.
  * All API calls should go through this service.
  * Uses the unified /api/v1/stores/{store_slug}/ endpoints.
+ *
+ * IMPORTANT: Token synchronization
+ * This module uses the same token storage as auth.js to ensure
+ * that tokens set during WhatsApp login are immediately available.
  */
 import axios from 'axios';
 import logger from './logger';
+import { getAccessToken as getStoredAccessToken, setTokens, clearTokens as clearStoredTokens } from './tokenStorage';
 
 const GUEST_CART_KEY_STORAGE = 'guest_cart_key';
 
@@ -81,6 +86,16 @@ export const getStoreSlug = () => {
 
 const STORE_SLUG = 'ce-saladas';
 
+const isLikelyJwt = (token) => (
+  typeof token === 'string'
+  && token.split('.').length === 3
+);
+
+const buildAuthHeader = (token) => {
+  if (!token) return null;
+  return isLikelyJwt(token) ? `Bearer ${token}` : `Token ${token}`;
+};
+
 // API base URL
 // Priority: Environment Variable > Local Development > Production Fallback
 const DEFAULT_API_URL = 'https://backend.pastita.com.br/api/v1';
@@ -130,29 +145,44 @@ const authApi = axios.create({
   withCredentials: true,
 });
 
-// Auth token management
-let authToken = null;
-
-export const setAuthToken = (token) => {
-  authToken = token;
-  if (typeof window !== 'undefined' && token) {
-    localStorage.setItem('access_token', token);
+// Use central tokenStorage to read access token (keeps names consistent)
+// CRITICAL: Always read fresh from storage to capture tokens set by WhatsApp login
+export const getAuthToken = () => {
+  try {
+    return getStoredAccessToken();
+  } catch (e) {
+    return null;
   }
 };
 
-export const getAuthToken = () => {
-  if (authToken) return authToken;
-  if (typeof window !== 'undefined') {
-    return localStorage.getItem('access_token');
+export const setAuthToken = (token) => {
+  // Delegate to tokenStorage so the single source of truth is maintained
+  if (token) {
+    setTokens(token, null);
   }
-  return null;
 };
 
 export const clearAuthToken = () => {
-  authToken = null;
-  if (typeof window !== 'undefined') {
-    localStorage.removeItem('access_token');
+  clearStoredTokens();
+};
+
+/**
+ * Force refresh of auth header on both API instances.
+ * Call this after login to ensure token is applied immediately.
+ */
+export const refreshAuthHeaders = () => {
+  const token = getAuthToken();
+  const authHeader = buildAuthHeader(token);
+
+  if (authHeader) {
+    storeApi.defaults.headers.common['Authorization'] = authHeader;
+    authApi.defaults.headers.common['Authorization'] = authHeader;
+  } else {
+    delete storeApi.defaults.headers.common['Authorization'];
+    delete authApi.defaults.headers.common['Authorization'];
   }
+
+  return !!authHeader;
 };
 
 // Get CSRF token from cookie
@@ -170,8 +200,9 @@ const getCsrfToken = () => {
 storeApi.interceptors.request.use(
   (config) => {
     const token = getAuthToken();
-    if (token) {
-      config.headers.Authorization = `Token ${token}`;
+    const authHeader = buildAuthHeader(token);
+    if (authHeader) {
+      config.headers.Authorization = authHeader;
     }
 
     attachGuestCartKey(config);
@@ -192,8 +223,9 @@ storeApi.interceptors.request.use(
 authApi.interceptors.request.use(
   (config) => {
     const token = getAuthToken();
-    if (token) {
-      config.headers.Authorization = `Token ${token}`;
+    const authHeader = buildAuthHeader(token);
+    if (authHeader) {
+      config.headers.Authorization = authHeader;
     }
     if (config.method !== 'get') {
       const csrfToken = getCsrfToken();
@@ -226,6 +258,23 @@ authApi.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+// Listen for auth events to sync token across all API instances
+if (typeof window !== 'undefined') {
+  // Sync token when auth:login event is fired
+  window.addEventListener('auth:login', () => {
+    refreshAuthHeaders();
+  });
+
+  // Clear token when auth:logout event is fired
+  window.addEventListener('auth:logout', () => {
+    delete storeApi.defaults.headers.common['Authorization'];
+    delete authApi.defaults.headers.common['Authorization'];
+  });
+
+  // Initialize headers on load
+  refreshAuthHeaders();
+}
 
 // =============================================================================
 // CSRF TOKEN
@@ -511,12 +560,12 @@ export const getOrderByToken = async (accessToken) => {
  */
 export const getOrderStatus = async (orderIdOrNumber, token = null) => {
   const params = token ? { token } : {};
-  const authToken = getAuthToken();
-  const headers = authToken ? { Authorization: `Token ${authToken}` } : {};
+  const currentToken = getAuthToken();
+  const authHeader = buildAuthHeader(currentToken);
 
   const response = await axios.get(`${STORES_API_URL}/orders/${orderIdOrNumber}/payment-status/`, {
     params,
-    headers,
+    headers: authHeader ? { Authorization: authHeader } : {},
   });
   return response.data;
 };
@@ -526,8 +575,9 @@ export const getOrderStatus = async (orderIdOrNumber, token = null) => {
  */
 export const getUserOrders = async () => {
   const token = getAuthToken();
+  const authHeader = buildAuthHeader(token);
   const response = await axios.get(`${STORES_API_URL}/orders/`, {
-    headers: token ? { Authorization: `Token ${token}` } : {},
+    headers: authHeader ? { Authorization: authHeader } : {},
     params: { store: STORE_SLUG },
   });
   return response.data;
@@ -538,8 +588,9 @@ export const getUserOrders = async () => {
  */
 export const getOrder = async (orderId) => {
   const token = getAuthToken();
+  const authHeader = buildAuthHeader(token);
   const response = await axios.get(`${STORES_API_URL}/orders/${orderId}/`, {
-    headers: token ? { Authorization: `Token ${token}` } : {},
+    headers: authHeader ? { Authorization: authHeader } : {},
   });
   return response.data;
 };
@@ -549,8 +600,9 @@ export const getOrder = async (orderId) => {
  */
 export const getOrderWhatsApp = async (orderId) => {
   const token = getAuthToken();
+  const authHeader = buildAuthHeader(token);
   const response = await axios.get(`${STORES_API_URL}/orders/${orderId}/whatsapp/`, {
-    headers: token ? { Authorization: `Token ${token}` } : {},
+    headers: authHeader ? { Authorization: authHeader } : {},
   });
   return response.data;
 };
@@ -572,8 +624,16 @@ export const registerUser = async (data) => {
  */
 export const loginUser = async (email, password) => {
   const response = await authApi.post('/auth/login/', { email, password });
-  if (response.data.token) {
-    setAuthToken(response.data.token);
+  const token = response.data?.token || response.data?.access || response.data?.tokens?.access;
+  const refresh = response.data?.refresh || response.data?.tokens?.refresh || null;
+
+  if (token) {
+    setTokens(token, refresh);
+    refreshAuthHeaders();
+
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('auth:login', { detail: { token } }));
+    }
   }
   return response.data;
 };
@@ -586,6 +646,9 @@ export const logoutUser = async () => {
     await authApi.post('/auth/logout/');
   } finally {
     clearAuthToken();
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('auth:logout'));
+    }
   }
 };
 
