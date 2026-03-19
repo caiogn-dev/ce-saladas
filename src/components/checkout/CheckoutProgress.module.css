@@ -1,20 +1,20 @@
-/* CheckoutProgress · Minimalismo Orgânico */
+/* CheckoutProgress · Cê Saladas */
 .container { position: relative; padding: 1rem 0 2rem; margin-bottom: 1.5rem; }
-.progressBar { position: absolute; top: calc(1rem + 18px); left: 10%; right: 10%; height: 4px; background: var(--clr-stone-200); border-radius: 2px; z-index: 0; }
-.progressFill { height: 100%; background: linear-gradient(90deg, var(--clr-leaf-500), var(--clr-terra-400)); border-radius: 2px; transition: width .5s cubic-bezier(.4,0,.2,1); }
+.progressBar { position: absolute; top: calc(1rem + 18px); left: 10%; right: 10%; height: 3px; background: var(--color-border); border-radius: 2px; z-index: 0; }
+.progressFill { height: 100%; background: var(--color-primary); border-radius: 2px; transition: width .5s cubic-bezier(.4,0,.2,1); }
 .steps { display: flex; justify-content: space-between; position: relative; z-index: 1; }
 .step { display: flex; flex-direction: column; align-items: center; flex: 1; }
-.stepIndicator { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 500; font-size: .875rem; transition: all .3s cubic-bezier(.4,0,.2,1); background: var(--color-bg-card); border: 2px solid var(--clr-stone-200); color: var(--clr-stone-400); font-family: var(--font-body); }
-.stepLabel { margin-top: .75rem; font-size: .75rem; font-weight: 500; color: var(--clr-stone-400); text-align: center; transition: color .3s ease; font-family: var(--font-body); }
-.pending .stepIndicator { background: var(--color-bg-card); border-color: var(--clr-stone-200); color: var(--clr-stone-400); }
-.pending .stepLabel { color: var(--clr-stone-400); }
-.active .stepIndicator { background: var(--clr-leaf-700); border-color: var(--clr-leaf-700); color: #fff; box-shadow: 0 4px 14px rgba(var(--clr-leaf-rgb),.35); transform: scale(1.1); animation: pulse 2s infinite; }
-.active .stepLabel { color: var(--clr-leaf-700); font-weight: 600; }
-.completed .stepIndicator { background: var(--clr-moss-400); border-color: var(--clr-moss-400); color: #fff; }
-.completed .stepLabel { color: var(--clr-moss-400); }
+.stepIndicator { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 500; font-size: .875rem; transition: background .3s ease, border-color .3s ease, box-shadow .3s ease, transform .3s ease; background: var(--color-bg-card); border: 2px solid var(--color-border); color: var(--color-text-hint); font-family: var(--font-body); }
+.stepLabel { margin-top: .75rem; font-size: .75rem; font-weight: 500; color: var(--color-text-hint); text-align: center; transition: color .3s ease; font-family: var(--font-body); }
+.pending .stepIndicator { background: var(--color-bg-card); border-color: var(--color-border); color: var(--color-text-hint); }
+.pending .stepLabel { color: var(--color-text-hint); }
+.active .stepIndicator { background: var(--color-primary); border-color: var(--color-primary); color: #fff; box-shadow: 0 4px 14px rgba(var(--clr-leaf-rgb),.32); transform: scale(1.1); animation: pulse 2s infinite; }
+.active .stepLabel { color: var(--color-primary); font-weight: 600; }
+.completed .stepIndicator { background: var(--color-primary); border-color: var(--color-primary); color: #fff; opacity: 0.65; }
+.completed .stepLabel { color: var(--color-primary); opacity: 0.65; }
 .checkIcon { width: 20px; height: 20px; stroke-width: 3; }
 .stepNumber { font-size: .875rem; }
-@keyframes pulse { 0%,100% { box-shadow: 0 4px 14px rgba(var(--clr-leaf-rgb),.35); } 50% { box-shadow: 0 4px 20px rgba(var(--clr-leaf-rgb),.55); } }
+@keyframes pulse { 0%,100% { box-shadow: 0 4px 14px rgba(var(--clr-leaf-rgb),.32); } 50% { box-shadow: 0 4px 20px rgba(var(--clr-leaf-rgb),.52); } }
 @media (max-width: 480px) {
   .stepIndicator { width: 32px; height: 32px; font-size: .75rem; }
   .stepLabel { font-size: .65rem; }
