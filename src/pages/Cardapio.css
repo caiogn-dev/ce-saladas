@@ -3,6 +3,7 @@
   padding-bottom: 88px;
   color: var(--color-text);
   background:
+    radial-gradient(circle at 18% 0%, rgba(var(--color-brand-green-rgb), 0.08), transparent 22%),
     radial-gradient(circle at top left, rgba(var(--color-brand-green-rgb), 0.06), transparent 26%),
     radial-gradient(circle at top right, rgba(var(--color-brand-orange-rgb), 0.04), transparent 18%),
     linear-gradient(180deg, #fbf7ee 0%, var(--color-brand-cream) 54%, #fffaf3 100%);
@@ -35,6 +36,18 @@
   pointer-events: none;
 }
 
+.cardapio-hero__panel::after {
+  content: '';
+  position: absolute;
+  top: -92px;
+  right: -88px;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(var(--color-brand-orange-rgb), 0.14) 0%, rgba(var(--color-brand-orange-rgb), 0.02) 58%, transparent 74%);
+  pointer-events: none;
+}
+
 .cardapio-hero__accent {
   position: absolute;
   top: 0;
@@ -47,6 +60,7 @@
 
 .cardapio-hero__top,
 .cardapio-hero__meta,
+.cardapio-hero__stats,
 .cardapio-hero__search-row {
   position: relative;
   z-index: 1;
@@ -153,10 +167,41 @@
   color: var(--color-brand-green-dark);
 }
 
+.cardapio-hero__stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.cardapio-hero__stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.68);
+  border: 1px solid rgba(var(--color-brand-green-rgb), 0.12);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42);
+}
+
+.cardapio-hero__stat strong {
+  margin: 0;
+  color: var(--color-brand-green-dark);
+  font-size: clamp(1.04rem, 1.9vw, 1.28rem);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+}
+
+.cardapio-hero__stat span {
+  color: var(--color-text-light);
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
 .cardapio-hero__search-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 10px;
+  gap: 12px;
 }
 
 .cardapio-hero__search .ui-input {
@@ -164,7 +209,7 @@
   border-radius: 18px;
   border-color: rgba(var(--color-brand-green-rgb), 0.14);
   background: rgba(255, 255, 255, 0.84);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), 0 10px 24px rgba(74, 89, 18, 0.05);
 }
 
 .cardapio-hero__clear,
@@ -211,7 +256,7 @@
   padding: 0 18px;
   border: none;
   border-radius: var(--o-radius-full);
-  background: var(--color-brand-orange);
+  background: linear-gradient(135deg, var(--color-brand-orange) 0%, var(--color-brand-orange-dark) 100%);
   color: #fff;
   font-size: 0.92rem;
   font-weight: 400;
@@ -226,8 +271,20 @@
 .cardapio-hero__cart-btn:hover,
 .catalog-toolbar__cart:hover {
   transform: translateY(-1px);
-  background: var(--color-brand-orange-dark);
+  background: linear-gradient(135deg, var(--color-brand-orange-dark) 0%, #b44719 100%);
   box-shadow: 0 18px 32px rgba(var(--color-brand-orange-rgb), 0.24);
+}
+
+.cardapio-hero__cart-btn.is-pulsing,
+.catalog-toolbar__cart.is-pulsing,
+.cart-fab.is-pulsing {
+  animation: cartPulse 520ms var(--ease-spring);
+}
+
+@keyframes cartPulse {
+  0% { transform: scale(1); }
+  35% { transform: scale(1.04) translateY(-1px); }
+  100% { transform: scale(1); }
 }
 
 .catalog-toolbar {
@@ -239,11 +296,11 @@
   gap: 12px;
   margin-bottom: 20px;
   padding: 12px;
-  border-radius: var(--o-radius-xl);
-  background: rgba(255, 252, 246, 0.86);
-  border: 1px solid rgba(var(--color-brand-green-rgb), 0.1);
+  border-radius: 22px;
+  background: rgba(255, 252, 246, 0.84);
+  border: 1px solid rgba(var(--color-brand-green-rgb), 0.12);
   box-shadow: 0 16px 34px rgba(74, 89, 18, 0.06);
-  backdrop-filter: blur(16px);
+  backdrop-filter: blur(18px);
 }
 
 .catalog-toolbar--skeleton {
@@ -255,6 +312,7 @@
   gap: 10px;
   overflow-x: auto;
   padding-bottom: 2px;
+  scroll-padding-inline: 8px;
   scrollbar-width: none;
 }
 
@@ -271,7 +329,7 @@
   padding: 0 16px;
   border: 1px solid rgba(var(--color-brand-green-rgb), 0.14);
   border-radius: var(--o-radius-full);
-  background: rgba(255, 255, 255, 0.74);
+  background: rgba(255, 255, 255, 0.78);
   color: var(--color-brand-green-dark);
   font-size: 0.9rem;
   font-weight: 500;
@@ -280,7 +338,8 @@
     transform var(--transition-base),
     border-color var(--transition-base),
     background-color var(--transition-base),
-    box-shadow var(--transition-base);
+    box-shadow var(--transition-base),
+    color var(--transition-base);
 }
 
 .catalog-quick-nav__chip strong {
@@ -291,10 +350,11 @@
   justify-content: center;
   padding: 0 8px;
   border-radius: var(--o-radius-full);
-  background: rgba(var(--color-brand-orange-rgb), 0.12);
+  background: rgba(var(--color-brand-orange-rgb), 0.14);
   color: var(--color-brand-orange-dark);
   font-size: 0.74rem;
   font-weight: 400;
+  transition: inherit;
 }
 
 .catalog-quick-nav__chip:hover {
@@ -305,10 +365,15 @@
 }
 
 .catalog-quick-nav__chip--active {
-  background: rgba(var(--color-brand-green-rgb), 0.12);
+  background: linear-gradient(135deg, rgba(var(--color-brand-green-rgb), 0.16), rgba(var(--color-brand-green-rgb), 0.1));
   border-color: var(--color-brand-green);
   color: var(--color-brand-green-dark);
   font-weight: 600;
+  box-shadow: 0 12px 22px rgba(var(--color-brand-green-rgb), 0.1);
+}
+
+.catalog-quick-nav__chip--active strong {
+  background: rgba(var(--color-brand-orange-rgb), 0.18);
 }
 
 .catalog-toolbar__cart {
@@ -321,7 +386,7 @@
   padding: 0 16px;
   border: none;
   border-radius: var(--o-radius-full);
-  background: var(--color-brand-orange);
+  background: linear-gradient(135deg, var(--color-brand-orange) 0%, var(--color-brand-orange-dark) 100%);
   color: #fff;
   font-size: 0.9rem;
   font-weight: 400;
@@ -455,7 +520,7 @@
   z-index: 1;
   display: flex;
   flex-direction: column;
-  padding: 0 4px;
+  gap: 14px;
 }
 
 /* ─── Section subheader (e.g. "Combos prontos") ─── */
@@ -518,6 +583,11 @@
   .cardapio-hero__search-row {
     grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
+  }
+
+  .cardapio-hero__stats {
+    grid-template-columns: repeat(3, minmax(140px, 1fr));
+    max-width: 720px;
   }
 
   .cardapio-hero__cart-btn {
@@ -590,6 +660,14 @@
     justify-content: flex-start;
   }
 
+  .cardapio-hero__stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .cardapio-hero__stat:last-child {
+    grid-column: 1 / -1;
+  }
+
   .catalog-toolbar {
     top: calc(var(--header-height) + 6px);
   }
@@ -633,6 +711,19 @@
     font-size: 0.84rem;
   }
 
+  .cardapio-hero__stats {
+    grid-template-columns: 1fr;
+  }
+
+  .cardapio-hero__stat:last-child {
+    grid-column: auto;
+  }
+
+  .cardapio-hero__stat {
+    padding: 12px 14px;
+    border-radius: 16px;
+  }
+
   .catalog-toolbar {
     margin-bottom: 18px;
     padding: 10px;
@@ -673,7 +764,7 @@
   align-items: center;
   gap: 8px;
   padding: 12px 20px;
-  background: var(--color-accent, #c75522);
+  background: linear-gradient(135deg, var(--color-accent, #c75522) 0%, var(--color-brand-orange-dark, #b44719) 100%);
   color: #fff;
   border: none;
   border-radius: 999px;
@@ -706,6 +797,7 @@
   height: 22px;
   padding: 0 5px;
   background: rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.22);
   border-radius: 999px;
   font-size: 0.78rem;
   font-weight: 700;
@@ -759,6 +851,19 @@
   color: var(--color-text-base);
 }
 
+.dark .cardapio-hero__stat {
+  background: rgba(var(--clr-leaf-rgb), 0.09);
+  border-color: rgba(var(--clr-leaf-rgb), 0.16);
+}
+
+.dark .cardapio-hero__stat strong {
+  color: var(--clr-leaf-300);
+}
+
+.dark .cardapio-hero__stat span {
+  color: var(--color-text-muted);
+}
+
 .dark .cardapio-hero__search .ui-input {
   background: rgba(var(--clr-leaf-rgb), 0.06);
   border-color: rgba(var(--clr-leaf-rgb), 0.20);
@@ -788,6 +893,11 @@
   color: var(--color-primary);
 }
 
+.dark .catalog-quick-nav__chip--active strong {
+  background: rgba(var(--clr-terra-rgb), 0.18);
+  color: var(--clr-terra-300);
+}
+
 .dark .catalog-featured,
 .dark .catalog-section {
   background: linear-gradient(180deg, var(--color-bg-card), var(--color-bg-muted));
@@ -806,7 +916,7 @@
 
 /* Dark mode cart FAB */
 .dark .cart-fab {
-  background: var(--color-accent);
+  background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-hover) 100%);
   box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45), 0 2px 8px rgba(var(--clr-terra-rgb), 0.2);
 }
 
@@ -837,7 +947,7 @@
 /* Dark mode hero cart button */
 .dark .cardapio-hero__cart-btn,
 .dark .catalog-toolbar__cart {
-  background: var(--color-accent);
+  background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-hover) 100%);
   box-shadow: 0 14px 26px rgba(var(--clr-terra-rgb), 0.2);
 }
 

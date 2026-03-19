@@ -254,6 +254,21 @@ const Cardapio = () => {
     }).filter((section) => section.items.length > 0 || section.isBuilder);
   }, [filteredItems, featuredItems]);
 
+  const catalogHighlights = useMemo(() => ([
+    {
+      value: String(filteredItems.length).padStart(2, '0'),
+      label: 'opções no cardápio',
+    },
+    {
+      value: String(featuredItems.length).padStart(2, '0'),
+      label: 'mais pedidos',
+    },
+    {
+      value: hasItems ? formatMoney(cartTotal) : 'Pronta',
+      label: hasItems ? `${cartCount} item(ns) na sacola` : 'sua sacola para montar',
+    },
+  ]), [filteredItems.length, featuredItems.length, hasItems, cartCount, cartTotal]);
+
   // Intersection observer for active nav tab
   useEffect(() => {
     if (typeof IntersectionObserver === 'undefined') return undefined;
@@ -327,7 +342,7 @@ const Cardapio = () => {
 
       {/* Floating cart button — always visible while scrolling */}
       {hasItems && (
-        <button type="button" className="cart-fab" onClick={openCart} aria-label="Abrir sacola">
+        <button key={`cart-fab-${cartCount}`} type="button" className="cart-fab is-pulsing" onClick={openCart} aria-label="Abrir sacola">
           <ShoppingBag size={20} />
           <span className="cart-fab__count">{cartCount}</span>
           <span className="cart-fab__total">{formatMoney(cartTotal)}</span>
@@ -366,7 +381,7 @@ const Cardapio = () => {
                   </div>
                 </div>
 
-                <button type="button" className="cardapio-hero__cart-btn" onClick={openCart}>
+                <button key={cartCount > 0 ? `hero-cart-${cartCount}` : 'hero-cart-empty'} type="button" className={`cardapio-hero__cart-btn ${cartCount > 0 ? 'is-pulsing' : ''}`} onClick={openCart}>
                   <ShoppingBag size={18} />
                   <span>{hasItems ? `Sacola (${cartCount})` : 'Abrir sacola'}</span>
                   <ArrowRight size={16} />
@@ -376,6 +391,15 @@ const Cardapio = () => {
               <div className="cardapio-hero__meta">
                 <span><MapPin size={16} />{storeLocation}</span>
                 <span><Clock3 size={16} />{storeHoursLabel}</span>
+              </div>
+
+              <div className="cardapio-hero__stats" aria-label="Resumo do cardápio">
+                {catalogHighlights.map((highlight) => (
+                  <div key={highlight.label} className="cardapio-hero__stat">
+                    <strong>{highlight.value}</strong>
+                    <span>{highlight.label}</span>
+                  </div>
+                ))}
               </div>
 
               <div className="cardapio-hero__search-row">
@@ -444,7 +468,7 @@ const Cardapio = () => {
               ))}
             </div>
 
-            <button type="button" className="catalog-toolbar__cart" onClick={openCart}>
+            <button key={cartCount > 0 ? `toolbar-cart-${cartCount}` : 'toolbar-cart-empty'} type="button" className={`catalog-toolbar__cart ${cartCount > 0 ? 'is-pulsing' : ''}`} onClick={openCart}>
               <ShoppingBag size={18} />
               <span>{hasItems ? `${cartCount} item(ns) — ${formatMoney(cartTotal)}` : 'Sacola vazia'}</span>
             </button>

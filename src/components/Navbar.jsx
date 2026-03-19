@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useCart } from '../context/CartContext';
@@ -87,26 +87,33 @@ const Navbar = () => {
           </Link>
         </div>
 
-        <button
-          type="button"
-          className="navbar-theme-toggle"
-          onClick={toggleTheme}
-          aria-label={theme === 'dark' ? 'Ativar modo claro' : 'Ativar modo escuro'}
-        >
-          {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
-        </button>
+        <div className="navbar-actions">
+          <button
+            type="button"
+            className="navbar-theme-toggle"
+            onClick={toggleTheme}
+            aria-label={theme === 'dark' ? 'Ativar modo claro' : 'Ativar modo escuro'}
+          >
+            {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
+          </button>
 
-        <button onClick={openCart} className="navbar-cart-btn" aria-label="Abrir sacola">
-          <span className="cart-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" focusable="false">
-              <path d="M6 6h15l-1.5 9h-12zM6 6l-1.5-3h-3" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              <circle cx="9" cy="20" r="1.5" fill="currentColor" />
-              <circle cx="18" cy="20" r="1.5" fill="currentColor" />
-            </svg>
-          </span>
-          <span className="cart-text">Sacola</span>
-          {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
-        </button>
+          <button
+            key={cartCount > 0 ? `navbar-cart-${cartCount}` : 'navbar-cart-empty'}
+            onClick={openCart}
+            className={`navbar-cart-btn ${cartCount > 0 ? 'pulse' : ''}`}
+            aria-label="Abrir sacola"
+          >
+            <span className="cart-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" focusable="false">
+                <path d="M6 6h15l-1.5 9h-12zM6 6l-1.5-3h-3" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                <circle cx="9" cy="20" r="1.5" fill="currentColor" />
+                <circle cx="18" cy="20" r="1.5" fill="currentColor" />
+              </svg>
+            </span>
+            <span className="cart-text">Sacola</span>
+            {cartCount > 0 && <span className="cart-badge pulse">{cartCount}</span>}
+          </button>
+        </div>
       </div>
 
       <div className={`navbar-mobile-menu ${mobileMenuOpen ? 'open' : ''}`}>

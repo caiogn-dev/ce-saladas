@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { ArrowUpRight, Minus, Plus } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import styles from './MenuProductRow.module.css';
 
@@ -18,7 +19,6 @@ const MenuProductRow = ({
   const [imageError, setImageError] = useState(false);
   const { cart, updateQuantity } = useCart();
 
-  // Derive current quantity from cart state
   const cartItem = cart.find((item) => item.id === product.id);
   const quantity = cartItem?.quantity || 0;
 
@@ -28,8 +28,31 @@ const MenuProductRow = ({
   const hasDiscount = product.original_price && Number(product.original_price) > Number(product.price);
   const originalPrice = hasDiscount ? formatMoney(product.original_price) : null;
   const description = product.shortDescription || product.description;
+  const discountPercentage = hasDiscount
+    ? Math.round((1 - Number(product.price) / Number(product.original_price)) * 100)
+    : 0;
+
+  const badges = [
+    product.categoryLabel || product.category,
+    product.isCombo ? 'Combo pronto' : null,
+    discountPercentage > 0 ? `Economize ${discountPercentage}%` : null,
+  ].filter(Boolean).slice(0, 2);
+
+  const helperText = quantity > 0
+    ? `${quantity} ${quantity === 1 ? 'item na sacola' : 'itens na sacola'}`
+    : inStock
+      ? 'Toque para ver detalhes e ajustar o pedido'
+      : 'Indisponível no momento';
 
   const handleRowClick = () => onOpenDetails?.(product);
+
+  const handleKeyDown = (e) => {
+    if (e.target !== e.currentTarget) return;
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleRowClick();
+    }
+  };
 
   const handleAdd = (e) => {
     e.stopPropagation();
@@ -54,13 +77,30 @@ const MenuProductRow = ({
     <article
       className={`${styles.row} ${!inStock ? styles.unavailable : ''}`}
       onClick={handleRowClick}
+      onKeyDown={handleKeyDown}
+      tabIndex={0}
+      aria-label={`Ver detalhes de ${product.name}`}
     >
       <div className={styles.content}>
+        {badges.length > 0 && (
+          <div className={styles.badges}>
+            {badges.map((badge) => (
+              <span
+                key={badge}
+                className={`${styles.badge} ${badge.startsWith('Economize') ? styles.badgeAccent : ''}`}
+              >
+                {badge}
+              </span>
+            ))}
+          </div>
+        )}
+
         <div className={styles.header}>
           <h3 className={styles.name}>{product.name}</h3>
-          {product.isCombo && (
-            <span className={styles.comboTag}>Combo</span>
-          )}
+          <span className={styles.detailsHint}>
+            Ver detalhes
+            <ArrowUpRight size={14} />
+          </span>
         </div>
 
         {description && (
@@ -68,19 +108,21 @@ const MenuProductRow = ({
         )}
 
         <div className={styles.footer}>
-          <div className={styles.pricing}>
-            {originalPrice && (
-              <span className={styles.originalPrice}>{originalPrice}</span>
-            )}
-            <span className={styles.price}>{price}</span>
-            {hasDiscount && (
-              <span className={styles.discount}>
-                -{Math.round((1 - Number(product.price) / Number(product.original_price)) * 100)}%
-              </span>
-            )}
+          <div className={styles.pricingBlock}>
+            <div className={styles.pricing}>
+              {originalPrice && (
+                <span className={styles.originalPrice}>{originalPrice}</span>
+              )}
+              <span className={styles.price}>{price}</span>
+              {hasDiscount && (
+                <span className={styles.discount}>
+                  -{discountPercentage}%
+                </span>
+              )}
+            </div>
+            <span className={styles.helperText}>{helperText}</span>
           </div>
 
-          {/* Quantity control or add button */}
           {quantity > 0 ? (
             <div className={styles.qtyControl} onClick={(e) => e.stopPropagation()}>
               <button
@@ -89,7 +131,7 @@ const MenuProductRow = ({
                 onClick={handleDecrement}
                 aria-label="Remover um"
               >
-                −
+                <Minus size={15} />
               </button>
               <span className={styles.qtyNum}>{quantity}</span>
               <button
@@ -98,7 +140,7 @@ const MenuProductRow = ({
                 onClick={handleIncrement}
                 aria-label="Adicionar mais um"
               >
-                +
+                <Plus size={15} />
               </button>
             </div>
           ) : (
@@ -109,7 +151,8 @@ const MenuProductRow = ({
               disabled={!inStock}
               aria-label={inStock ? `Adicionar ${product.name}` : 'Produto indisponível'}
             >
-              {inStock ? '+ Adicionar' : 'Esgotado'}
+              <span>{inStock ? 'Adicionar' : 'Esgotado'}</span>
+              {inStock && <Plus size={15} />}
             </button>
           )}
         </div>
