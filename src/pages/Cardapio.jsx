@@ -381,7 +381,7 @@ const Cardapio = () => {
                   </div>
                 </div>
 
-                <button key={cartCount > 0 ? `hero-cart-${cartCount}` : 'hero-cart-empty'} type="button" className={`cardapio-hero__cart-btn ${cartCount > 0 ? 'is-pulsing' : ''}`} onClick={openCart}>
+                <button key={cartCount > 0 ? `hero-cart-${cartCount}` : 'hero-cart-empty'} type="button" className={`cardapio-hero__cart-btn${!hasItems ? ' cardapio-hero__cart-btn--empty' : ''}${cartCount > 0 ? ' is-pulsing' : ''}`} onClick={openCart}>
                   <ShoppingBag size={18} />
                   <span>{hasItems ? `Sacola (${cartCount})` : 'Abrir sacola'}</span>
                   <ArrowRight size={16} />
@@ -468,7 +468,7 @@ const Cardapio = () => {
               ))}
             </div>
 
-            <button key={cartCount > 0 ? `toolbar-cart-${cartCount}` : 'toolbar-cart-empty'} type="button" className={`catalog-toolbar__cart ${cartCount > 0 ? 'is-pulsing' : ''}`} onClick={openCart}>
+            <button key={cartCount > 0 ? `toolbar-cart-${cartCount}` : 'toolbar-cart-empty'} type="button" className={`catalog-toolbar__cart${!hasItems ? ' catalog-toolbar__cart--empty' : ''}${cartCount > 0 ? ' is-pulsing' : ''}`} onClick={openCart}>
               <ShoppingBag size={18} />
               <span>{hasItems ? `${cartCount} item(ns) — ${formatMoney(cartTotal)}` : 'Sacola vazia'}</span>
             </button>

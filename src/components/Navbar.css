@@ -298,24 +298,63 @@
     grid-template-columns: minmax(44px, 1fr) auto minmax(44px, 1fr);
     gap: var(--space-3);
   }
+
+  /* ── Hamburger: square pill — mirrors cart button visually ── */
   .navbar-mobile-toggle {
     display: flex;
     grid-column: 1;
     justify-self: start;
+    width: 44px;
+    height: 44px;
+    min-height: unset;
+    padding: 0;
+    justify-content: center;
+    align-items: center;
+    background: rgba(var(--clr-leaf-rgb), .08);
+    border: 1px solid rgba(var(--clr-leaf-rgb), .14);
+    border-radius: 12px;
+    transition: background var(--dur-fast) var(--ease-organic), transform var(--dur-fast) var(--ease-spring);
   }
+  .navbar-mobile-toggle:hover  { background: rgba(var(--clr-leaf-rgb), .15); }
+  .navbar-mobile-toggle:active { transform: scale(0.92); }
+
   .navbar-logo {
     grid-column: 2;
     justify-self: center;
   }
+
   .navbar-actions {
     grid-column: 3;
     width: 100%;
     justify-content: flex-end;
+    align-items: center;
   }
+
+  /* ── Cart: compact square pill — matches hamburger exactly ── */
   .navbar-cart-btn {
-    padding: var(--space-2) var(--space-3);
-    border-radius: 14px;
+    position: relative;
+    width: 44px;
+    height: 44px;
+    min-height: unset;
+    padding: 0;
+    border-radius: 12px;
+    justify-content: center;
+    gap: 0;
   }
+
+  /* Badge floats above the pill — separated by a white ring */
+  .cart-badge {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    font-size: 0.62rem;
+    border-radius: 9px;
+    border: 2px solid rgba(253, 251, 247, 1);
+  }
+
   .navbar-links { display: none; }
   .navbar-mobile-menu { display: flex; }
   .navbar-overlay { display: block; }
@@ -328,8 +367,9 @@
   .navbar-mobile-menu   { top: 56px; height: calc(100dvh - 56px); }
   .navbar-overlay       { top: 56px; }
   .navbar-actions       { gap: var(--space-2); }
-  .navbar-cart-btn      { min-height: 38px; padding: var(--space-2) var(--space-2); gap: 5px; border-radius: 12px; }
-  .cart-badge           { min-width: 18px; font-size: 0.65rem; padding: 1px 5px; border-radius: 8px; }
+  .navbar-mobile-toggle { width: 40px; height: 40px; border-radius: 10px; }
+  .navbar-cart-btn      { width: 40px; height: 40px; border-radius: 10px; }
+  .cart-badge           { top: -5px; right: -5px; min-width: 16px; height: 16px; font-size: 0.58rem; padding: 0 3px; border-radius: 8px; border-width: 1.5px; }
 }
 
 /* ─── Very small phones (360px) ─── */
@@ -403,6 +443,15 @@
 .dark .navbar-mobile-toggle span {
   background: var(--color-text-base);
 }
+
+.dark .navbar-mobile-toggle {
+  background: rgba(var(--clr-leaf-rgb), .12);
+  border-color: rgba(var(--clr-leaf-rgb), .22);
+}
+.dark .navbar-mobile-toggle:hover { background: rgba(var(--clr-leaf-rgb), .2); }
+
+/* Badge border matches dark navbar background */
+.dark .cart-badge { border-color: rgba(13, 26, 6, .95); }
 
 /* theme toggle in mobile menu */
 .navbar-mobile-theme {
