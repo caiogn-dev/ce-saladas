@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
+import { useCart } from '../context/CartContext';
 import styles from './SaladBuilder.module.css';
 
 const fmt = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -114,7 +115,8 @@ const IngredientRow = ({ product, selected, onAdd, onRemove, disabled, singleSel
 };
 
 /* ── Main SaladBuilder ────────────────────────────────────── */
-const SaladBuilder = ({ ingredients, onAddToCart }) => {
+const SaladBuilder = ({ ingredients }) => {
+  const { addSaladToCart, openCart } = useCart();
   const [isOpen, setIsOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [selections, setSelections] = useState({ base: [], proteina: [], complemento: [], molho: [] });
@@ -157,11 +159,12 @@ const SaladBuilder = ({ ingredients, onAddToCart }) => {
     }));
   }, []);
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     if (!isValid) return;
-    Object.values(selections).flat().forEach((item) => onAddToCart?.(item));
+    await addSaladToCart(selections);
     setSelections({ base: [], proteina: [], complemento: [], molho: [] });
     setIsOpen(false);
+    openCart();
   };
 
   const handleClose = () => setIsOpen(false);

@@ -60,15 +60,16 @@ export const CartProvider = ({ children }) => {
 
   // Normalize combo item from unified Store API response
   const normalizeComboItem = (item) => ({
-    id: item.combo,
+    id: item.combo || `virtual_${item.id}`,
     cart_item_id: item.id,
     name: item.combo_name,
     price: item.unit_price,
-    image: buildMediaUrl(item.combo_image),
+    image: item.combo_image ? buildMediaUrl(item.combo_image) : null,
     quantity: item.quantity,
     customizations: item.customizations || {},
     notes: item.notes || '',
     isCombo: true,
+    isSalad: !!(item.customizations && item.customizations.is_salad_builder),
   });
 
   const syncCartState = useCallback((data) => {
@@ -165,6 +166,65 @@ export const CartProvider = ({ children }) => {
       console.error('Error adding to cart:', error);
       setCart(previousCart);
       alert('Erro ao adicionar à sacola.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Add salad builder selections as a single virtual combo cart item
+  const addSaladToCart = async (selections) => {
+    // selections = { base: [product], proteina: [product], complemento: [product,...], molho: [product] }
+    const allIngredients = Object.entries(selections).flatMap(([role, items]) =>
+      items.map((p) => ({ id: p.id, name: p.name, price: Number(p.price || 0), role }))
+    );
+    if (allIngredients.length === 0) return;
+
+    const unitPrice = allIngredients.reduce((s, p) => s + p.price, 0);
+
+    // Human-readable notes for print/display
+    const roleLabels = { base: 'Base', proteina: 'Proteína', complemento: 'Complementos', molho: 'Molho' };
+    const notesParts = Object.entries(selections)
+      .filter(([, items]) => items.length > 0)
+      .map(([role, items]) => `${roleLabels[role] || role}: ${items.map((p) => p.name).join(', ')}`);
+    const notes = notesParts.join(' | ');
+
+    const customizations = {
+      is_salad_builder: true,
+      ingredients: allIngredients,
+    };
+
+    setIsLoading(true);
+    const previousCombos = cartRef.current.combos;
+
+    // Optimistic update
+    setCombos((prev) => [
+      ...prev,
+      {
+        id: `salad_temp_${Date.now()}`,
+        cart_item_id: `temp_salad_${Date.now()}`,
+        name: 'Monte sua Salada',
+        price: unitPrice,
+        image: null,
+        quantity: 1,
+        customizations,
+        notes,
+        isCombo: true,
+        isSalad: true,
+      },
+    ]);
+
+    try {
+      const data = await storeApi.addSaladToCart({
+        comboName: 'Monte sua Salada',
+        unitPrice,
+        customizations,
+        notes,
+      });
+      syncCartState(data);
+    } catch (error) {
+      console.error('Error adding salad to cart:', error);
+      setCombos(previousCombos);
+      alert('Erro ao adicionar salada à sacola.');
     } finally {
       setIsLoading(false);
     }
@@ -321,6 +381,7 @@ export const CartProvider = ({ children }) => {
       // Combos
       combos,
       addComboToCart,
+      addSaladToCart,
       removeComboFromCart,
       updateComboQuantity,
       

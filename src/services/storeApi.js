@@ -375,6 +375,25 @@ export const addComboToCart = async (comboId, quantity = 1, customizations = {},
 };
 
 /**
+ * Add a salad builder item to cart as a single virtual combo.
+ * @param {object} params
+ * @param {string} params.comboName    Display name, e.g. "Monte sua Salada"
+ * @param {number} params.unitPrice    Sum of all selected ingredient prices
+ * @param {object} params.customizations  Structured ingredient data
+ * @param {string} params.notes        Human-readable ingredient list for print/display
+ */
+export const addSaladToCart = async ({ comboName, unitPrice, customizations = {}, notes = '' }) => {
+  const response = await storeApi.post('/cart/add/', {
+    combo_name: comboName,
+    unit_price: unitPrice,
+    quantity: 1,
+    customizations,
+    notes,
+  });
+  return response.data;
+};
+
+/**
  * Update cart item quantity
  */
 export const updateCartItem = async (itemId, quantity) => {

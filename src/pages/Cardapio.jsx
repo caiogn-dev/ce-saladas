@@ -528,7 +528,6 @@ const Cardapio = () => {
                       <>
                         <SaladBuilder
                           ingredients={ingredientItems}
-                          onAddToCart={handleAddToCart}
                         />
                         {section.items.length > 0 && (
                           <div className="catalog-section__subheader">

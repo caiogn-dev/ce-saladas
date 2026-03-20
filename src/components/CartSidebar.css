@@ -310,6 +310,42 @@
   letter-spacing: var(--tracking-wide);
 }
 
+.salad-badge {
+  display: inline-block;
+  background: var(--clr-leaf-500, #649e20);
+  color: #fff;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  padding: 2px var(--space-2);
+  border-radius: var(--o-radius-sm);
+  margin-right: var(--space-1);
+  vertical-align: middle;
+  letter-spacing: var(--tracking-wide);
+}
+
+.cart-item-salad {
+  border-color: rgba(var(--clr-leaf-rgb, 100,158,32), 0.2);
+  background: rgba(var(--clr-leaf-rgb, 100,158,32), 0.03);
+}
+
+.cart-item-salad-emoji {
+  font-size: 2rem;
+  flex-shrink: 0;
+  line-height: 1;
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cart-item-salad-notes {
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+  margin: 2px 0 4px;
+  line-height: 1.4;
+}
+
 /* ─── Footer ─── */
 .cart-footer {
   padding: var(--space-5) var(--space-6);

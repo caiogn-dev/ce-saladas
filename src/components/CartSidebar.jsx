@@ -97,27 +97,26 @@ const CartSidebar = () => {
                     <span>Combos</span> Seleções
                   </h3>
                   {combos.map((item) => (
-                    <div key={`combo-${item.id}`} className="cart-item cart-item-combo">
+                    <div key={`combo-${item.cart_item_id || item.id}`} className={`cart-item cart-item-combo${item.isSalad ? ' cart-item-salad' : ''}`}>
                       {item.image && (
                         <img src={item.image} alt={item.name} className="cart-item-image" />
                       )}
+                      {item.isSalad && !item.image && (
+                        <span className="cart-item-salad-emoji" aria-hidden="true">🥗</span>
+                      )}
                       <div className="cart-item-details">
                         <h4 className="cart-item-name">
-                          <span className="combo-badge">COMBO</span>
+                          <span className={item.isSalad ? 'salad-badge' : 'combo-badge'}>
+                            {item.isSalad ? '🥗 SALADA' : 'COMBO'}
+                          </span>
                           {item.name}
                         </h4>
+                        {item.isSalad && item.notes && (
+                          <p className="cart-item-salad-notes">{item.notes}</p>
+                        )}
                         <p className="cart-item-price">R$ {Number(item.price).toFixed(2)}</p>
 
                         <div className="cart-item-actions">
-                          <div className="quantity-control">
-                            <button onClick={() => updateComboQuantity(item.id, -1)} aria-label="Diminuir quantidade">
-                              −
-                            </button>
-                            <span>{item.quantity}</span>
-                            <button onClick={() => updateComboQuantity(item.id, 1)} aria-label="Aumentar quantidade">
-                              +
-                            </button>
-                          </div>
                           <button onClick={() => removeComboFromCart(item.id)} className="cart-item-remove">
                             Remover
                           </button>
