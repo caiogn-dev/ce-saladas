@@ -12,6 +12,7 @@ import { useRouter } from 'next/router';
 import { initMercadoPago } from '@mercadopago/sdk-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import { useStore } from '../context/StoreContext';
 import * as storeApi from '../services/storeApi';
 import styles from '../styles/CheckoutFlow.module.css';
 
@@ -107,6 +108,7 @@ const CheckoutPage = () => {
   const router = useRouter();
   const { cart, combos, cartTotal, clearCart, hasItems } = useCart();
   const { updateProfile } = useAuth();
+  const { isStoreOpen, availability } = useStore();
   const mpPublicKey = process.env.NEXT_PUBLIC_MERCADO_PAGO_PUBLIC_KEY;
 
   // Custom hooks
@@ -359,6 +361,17 @@ const CheckoutPage = () => {
             completedSteps={completedSteps}
           />
         </div>
+
+        {/* Store closed banner */}
+        {availability && !isStoreOpen && (
+          <div style={{ background: '#fef2f2', border: '1px solid #fca5a5', borderRadius: 8, padding: '12px 16px', marginBottom: 16, color: '#991b1b', fontSize: 14 }}>
+            <strong>Loja fechada no momento.</strong>{' '}
+            {availability.hours
+              ? `Horário de hoje: ${availability.hours.open} – ${availability.hours.close}.`
+              : 'Verifique o horário de funcionamento.'}
+            {' '}Você pode fazer seu pedido mas ele será processado quando reabrirmos.
+          </div>
+        )}
 
         {/* Main Content */}
         <div className={styles.checkoutContent}>

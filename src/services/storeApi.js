@@ -102,6 +102,7 @@ const DEFAULT_API_URL = 'https://backend.pastita.com.br/api/v1';
 const API_ROOT = (process.env.NEXT_PUBLIC_API_URL || DEFAULT_API_URL).replace(/\/+$/, '');
 const STORES_API_URL = `${API_ROOT}/stores`;
 const STORE_API_URL = `${STORES_API_URL}/${STORE_SLUG}`;
+const PUBLIC_STORE_API_URL = `${API_ROOT}/public/${STORE_SLUG}`;
 const AUTH_API_URL = `${API_ROOT}`;
 
 // WebSocket URL
@@ -133,6 +134,13 @@ const storeApi = axios.create({
     'Content-Type': 'application/json',
   },
   withCredentials: true,
+});
+
+// Create axios instance for unauthenticated public endpoints
+const publicApi = axios.create({
+  baseURL: PUBLIC_STORE_API_URL,
+  timeout: 15000,
+  headers: { 'Content-Type': 'application/json' },
 });
 
 // Create axios instance for auth endpoints
@@ -302,6 +310,16 @@ export const fetchCsrfToken = async () => {
  */
 export const getStoreInfo = async () => {
   const response = await storeApi.get('/');
+  return response.data;
+};
+
+/**
+ * Get store availability (open/closed status + today's hours)
+ * Uses public endpoint — no auth required.
+ * Returns: { is_open, today, hours: { open, close } | null, operating_hours }
+ */
+export const getStoreAvailability = async () => {
+  const response = await publicApi.get('/availability/');
   return response.data;
 };
 

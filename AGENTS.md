@@ -163,9 +163,14 @@ Key behaviour:
 
 ### StoreContext (`src/context/StoreContext.jsx`)
 
-Fetches and caches the full store catalog from `GET /api/v1/stores/ce-saladas/catalog/`. Cache TTL is 10 minutes.
+Fetches and caches the full store catalog from `GET /api/v1/stores/ce-saladas/catalog/`. Cache TTL is 10 minutes. Also fetches store availability on mount from `GET /api/v1/public/ce-saladas/availability/`.
 
-Exported hook: `useStore()` → `{ store, categories, products, productsByCategory, combos, featuredProducts, productTypes, isLoading, error, getProductsByCategory, getProductsByType, getProductById, getComboById, searchProducts, refreshCatalog }`
+Exported hook: `useStore()` → `{ store, categories, products, productsByCategory, combos, featuredProducts, productTypes, availability, isStoreOpen, isLoading, error, getProductsByCategory, getProductsByType, getProductById, getComboById, searchProducts, refreshCatalog }`
+
+- `isStoreOpen` — boolean, defaults to `true` while availability loads (non-blocking)
+- `availability` — `{ is_open, today, hours: { open, close } | null, operating_hours }`
+
+The checkout page (`src/pages/CheckoutPage.jsx`) shows a "loja fechada" banner when `isStoreOpen` is `false`.
 
 Also applies store branding: when `store.primary_color` and `store.secondary_color` are set in the API response, they are written to CSS custom properties `--primary-color` and `--secondary-color` on `document.documentElement`.
 
@@ -332,9 +337,13 @@ Animation easings: `--ease-organic`, `--ease-spring`, `--ease-out`; durations `-
 
 ### Dark Mode
 
-Implemented via `ThemeContext`. The `ThemeProvider` adds `class="dark"` and `data-theme="dark"` to `<html>`. CSS components define dark-mode overrides using `[data-theme="dark"]` selectors.
+Implemented via `ThemeContext`. The `ThemeProvider` toggles `class="dark"` on `<html>`. All theme-sensitive CSS uses CSS custom properties that are overridden in the `.dark {}` block in `src/index.css`.
 
-Stored in `localStorage` key `ce-saladas-theme`. On first visit, respects `prefers-color-scheme`.
+Stored in `localStorage` key `ce-saladas-theme`. On first visit, respects `prefers-color-scheme`. Anti-FOUC inline script in `pages/_document.js` applies the `.dark` class before first paint.
+
+Tailwind `darkMode: 'class'` is set in `tailwind.config.js` — use `dark:` variants freely in JSX.
+
+Key dark palette: background `#0d1f14` (deep forest), card `#122a1a`, text `#e8f4ec`, primary `--clr-leaf-400`. Shadows are stronger (higher opacity).
 
 ### CSS File Conventions
 
@@ -540,17 +549,22 @@ Add to `:root` in `src/index.css`. Use the semantic naming convention (`--color-
 
 ### Dark Mode in a Component
 
-Use `[data-theme="dark"]` selector in component CSS:
+Prefer using CSS custom properties — they auto-adapt (no selector needed):
 ```css
 .myComponent {
-  background: var(--color-bg);
-  color: var(--color-text-base);
-}
-
-[data-theme="dark"] .myComponent {
-  /* dark overrides if needed */
+  background: var(--color-bg);        /* auto: white in light, #0d1f14 in dark */
+  color: var(--color-text-base);      /* auto: stone-800 in light, #e8f4ec in dark */
 }
 ```
+
+For cases where CSS variables aren't sufficient, use `.dark` class selector:
+```css
+.dark .myComponent {
+  /* overrides only needed if component has hardcoded values */
+}
+```
+
+Or use Tailwind dark variants: `className="bg-white dark:bg-gray-900"`
 
 ---
 

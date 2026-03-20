@@ -372,3 +372,14 @@
   .navbar-logo-text     { font-size: var(--text-base); max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 }
 
+/* ─── Dark Mode ─── */
+.dark .navbar {
+  background: rgba(13, 31, 20, 0.94);
+  border-bottom-color: var(--color-border);
+}
+.dark .navbar-link { color: var(--color-text-muted); }
+.dark .navbar-link:hover,
+.dark .navbar-link.active { color: var(--clr-leaf-300); }
+.dark .navbar-logo-text { color: var(--clr-leaf-300); }
+.dark .navbar-mobile-menu { background: var(--color-bg-card); border-top-color: var(--color-border); }
+

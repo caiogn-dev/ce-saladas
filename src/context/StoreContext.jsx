@@ -23,6 +23,7 @@ export const StoreProvider = ({ children }) => {
   const [productTypes, setProductTypes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [availability, setAvailability] = useState(null);
 
   // Fetch catalog from API
   const fetchCatalog = useCallback(async (force = false) => {
@@ -66,6 +67,13 @@ export const StoreProvider = ({ children }) => {
     } finally {
       setIsLoading(false);
     }
+  }, []);
+
+  // Fetch availability
+  useEffect(() => {
+    storeApi.getStoreAvailability()
+      .then(setAvailability)
+      .catch(() => { /* availability is non-critical */ });
   }, []);
 
   // Fetch on mount
@@ -152,6 +160,10 @@ export const StoreProvider = ({ children }) => {
       getProductById,
       getComboById,
       searchProducts,
+
+      // Availability
+      availability,
+      isStoreOpen: availability?.is_open ?? true,
 
       // State
       isLoading,

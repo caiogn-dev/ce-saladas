@@ -117,6 +117,15 @@ const CartSidebar = () => {
                         <p className="cart-item-price">R$ {Number(item.price).toFixed(2)}</p>
 
                         <div className="cart-item-actions">
+                          <div className="quantity-control">
+                            <button onClick={() => updateComboQuantity(item.id, -1)} aria-label="Diminuir quantidade">
+                              −
+                            </button>
+                            <span>{item.quantity}</span>
+                            <button onClick={() => updateComboQuantity(item.id, 1)} aria-label="Aumentar quantidade">
+                              +
+                            </button>
+                          </div>
                           <button onClick={() => removeComboFromCart(item.id)} className="cart-item-remove">
                             Remover
                           </button>
