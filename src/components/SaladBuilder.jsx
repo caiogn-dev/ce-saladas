@@ -216,11 +216,6 @@ const SaladBuilder = ({ ingredients, onAddToCart }) => {
 
             {/* Modal header */}
             <div className={styles.modalHeader}>
-              <button type="button" className={styles.closeBtn} onClick={handleClose} aria-label="Voltar">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="15 18 9 12 15 6" />
-                </svg>
-              </button>
               <div className={styles.modalHeaderCenter}>
                 <h2 className={styles.modalTitle}>Monte sua Salada</h2>
                 <p className={styles.modalSubtitle}>
@@ -229,7 +224,12 @@ const SaladBuilder = ({ ingredients, onAddToCart }) => {
                     : 'Escolha os ingredientes do seu jeito'}
                 </p>
               </div>
-              <span className={styles.modalHeaderEmoji} aria-hidden="true">🥗</span>
+              <button type="button" className={styles.closeBtn} onClick={handleClose} aria-label="Fechar">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
             </div>
 
             {/* Modal body — scrollable */}
