@@ -133,15 +133,6 @@ const DeliveryMapSimple = ({
   const searchTimeoutRef = useRef(null);
   const resultsRef = useRef(null);
   
-  // Debug props
-  useEffect(() => {
-    console.log('🗺️ DeliveryMapSimple props:', {
-      storeLocation,
-      customerLocation,
-      routePolyline: routePolyline ? 'present' : 'null',
-      enableSelection
-    });
-  }, [storeLocation, customerLocation, routePolyline, enableSelection]);
 
   // Initialize map
   useEffect(() => {
@@ -194,10 +185,8 @@ const DeliveryMapSimple = ({
           );
           map.addObject(storeMarker);
           storeMarkerRef.current = storeMarker;
-          console.log('✅ Store marker added:', storeLocation.latitude, storeLocation.longitude);
-        } else {
-          console.log('❌ No store location provided');
         }
+
         
         // Add click handler for selection
         if (enableSelection) {
@@ -241,22 +230,18 @@ const DeliveryMapSimple = ({
     
     // Only add marker if we have a valid customer location
     if (!customerLocation) {
-      console.log('❌ No customer location');
       return;
     }
-    
+
     const lat = customerLocation.lat || customerLocation.latitude;
     const lng = customerLocation.lng || customerLocation.longitude;
-    
+
     if (!lat || !lng || isNaN(Number(lat)) || isNaN(Number(lng))) {
-      console.log('❌ Invalid customer coordinates:', lat, lng);
       return;
     }
-    
+
     const latNum = Number(lat);
     const lngNum = Number(lng);
-    
-    console.log('✅ Adding customer marker at:', latNum, lngNum);
     
     // Create new marker with customer icon
     const customerIcon = createCustomerIcon(H);
@@ -339,7 +324,6 @@ const DeliveryMapSimple = ({
     // Add new route if polyline provided
     if (routePolyline && typeof routePolyline === 'string' && storeLocation) {
       try {
-        console.log('🛣️ Drawing route polyline');
         const lineString = H.geo.LineString.fromFlexiblePolyline(routePolyline);
         
         // Get the first point of the polyline
@@ -387,8 +371,7 @@ const DeliveryMapSimple = ({
         routeObjects.push(polyline);
         
         routeLineRef.current = routeObjects;
-        console.log('✅ Route drawn successfully');
-        
+
         // Fit map to show the route
         const bounds = polyline.getBoundingBox();
         if (bounds) {
@@ -397,8 +380,6 @@ const DeliveryMapSimple = ({
       } catch (err) {
         console.error('❌ Error creating route line:', err);
       }
-    } else {
-      console.log('ℹ️ No route polyline to draw');
     }
   }, [routePolyline, isReady, storeLocation]);
 
@@ -457,25 +438,22 @@ const DeliveryMapSimple = ({
       return;
     }
     
-    console.log('Location selected:', latitude, longitude);
-    
     setIsLoading(true);
     setError(null);
-    
+
     try {
       // Reverse geocode to get address
       const address = await reverseGeocodeHERE(latitude, longitude);
-      
+
       // Call parent callbacks with validated coordinates
-      const locationData = { 
-        lat: latitude, 
+      const locationData = {
+        lat: latitude,
         lng: longitude,
         latitude: latitude,
         longitude: longitude,
-        ...address 
+        ...address,
       };
-      
-      console.log('Calling onLocationSelect with:', locationData);
+
       onLocationSelect?.(locationData);
       onAddressFound?.(address);
     } catch (err) {
@@ -540,9 +518,7 @@ const DeliveryMapSimple = ({
       
       const lat = position.coords.latitude;
       const lng = position.coords.longitude;
-      
-      console.log('GPS coordinates obtained:', lat, lng);
-      
+
       if (!lat || !lng || isNaN(lat) || isNaN(lng)) {
         setError('Coordenadas inválidas recebidas do GPS');
         setIsLoading(false);

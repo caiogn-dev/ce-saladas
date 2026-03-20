@@ -6,6 +6,7 @@
 import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import * as storeApi from '../services/storeApi';
 import { buildMediaUrl } from '../utils/media';
+import { useToast } from '../components/Toast';
 
 const CartContext = createContext();
 
@@ -36,6 +37,7 @@ const clearCartCacheInternal = () => {
 };
 
 export const CartProvider = ({ children }) => {
+  const toast = useToast();
   const [cart, setCart] = useState([]);
   const [combos, setCombos] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -165,7 +167,7 @@ export const CartProvider = ({ children }) => {
     } catch (error) {
       console.error('Error adding to cart:', error);
       setCart(previousCart);
-      alert('Erro ao adicionar à sacola.');
+      toast.error('Erro ao adicionar à sacola.');
     } finally {
       setIsLoading(false);
     }
@@ -224,7 +226,7 @@ export const CartProvider = ({ children }) => {
     } catch (error) {
       console.error('Error adding salad to cart:', error);
       setCombos(previousCombos);
-      alert('Erro ao adicionar salada à sacola.');
+      toast.error('Erro ao adicionar salada à sacola.');
     } finally {
       setIsLoading(false);
     }
@@ -254,7 +256,7 @@ export const CartProvider = ({ children }) => {
     } catch (error) {
       console.error('Error adding combo to cart:', error);
       setCombos(previousCombos);
-      alert('Erro ao adicionar item à sacola.');
+      toast.error('Erro ao adicionar item à sacola.');
     } finally {
       setIsLoading(false);
     }

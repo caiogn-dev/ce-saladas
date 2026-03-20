@@ -136,16 +136,16 @@ ThemeProvider
   AuthProvider
     StoreProvider
       StoreHead            ← reads store metadata from StoreContext
-      WishlistProvider
-        CartProvider
-          ToastProvider
+      ToastProvider
+        WishlistProvider
+          CartProvider     ← can call useToast() since ToastProvider is above it
             CartSidebar    ← always-mounted slide-in panel
             <Page />
 ```
 
 ### ThemeContext (`src/context/ThemeContext.jsx`)
 
-Manages light/dark mode. Persists to `localStorage` under key `ces-theme`. On mount, checks stored preference then `prefers-color-scheme` media query. Applies `dark` class and `data-theme="dark"` attribute to `<html>`.
+Manages light/dark mode. `localStorage` key: `ce-saladas-theme`. On mount: reads stored preference, falls back to `prefers-color-scheme` system query. Applies `dark` class to `<html>` via `useEffect`. Uses `useState` lazy initialiser — safe for SSR (returns `'light'` on server).
 
 Exported hook: `useTheme()` → `{ theme, toggleTheme }`
 
@@ -178,7 +178,7 @@ Manages the cart using the backend cart API (`/api/v1/stores/ce-saladas/cart/`).
 Exported hook: `useCart()` → `{ cart, combos, cartCount, cartTotal, hasItems, isCartOpen, isLoading, addToCart, removeFromCart, updateQuantity, addComboToCart, removeComboFromCart, updateComboQuantity, clearCart, openCart, closeCart, toggleCart, fetchCart }`
 
 Key behaviours:
-- **Optimistic updates**: UI updates immediately; reverts on API error.
+- **Optimistic updates**: UI updates immediately; reverts on API error. Errors shown via `useToast()` (not `alert()`).
 - **Guest cart**: Works for unauthenticated users. A `guest_cart_key` is generated and stored in `localStorage`. Every request includes it as `X-Cart-Key` header, `cart_key` query param, and `cart_key` body field.
 - Cart items use `cart_item_id` (backend ID) for updates/deletes. Temp IDs (`temp_xxx`) are used during optimistic updates and skip the API call.
 
@@ -334,7 +334,7 @@ Animation easings: `--ease-organic`, `--ease-spring`, `--ease-out`; durations `-
 
 Implemented via `ThemeContext`. The `ThemeProvider` adds `class="dark"` and `data-theme="dark"` to `<html>`. CSS components define dark-mode overrides using `[data-theme="dark"]` selectors.
 
-Stored in `localStorage` key `ces-theme`. On first visit, respects `prefers-color-scheme`.
+Stored in `localStorage` key `ce-saladas-theme`. On first visit, respects `prefers-color-scheme`.
 
 ### CSS File Conventions
 
@@ -592,7 +592,7 @@ ce-saladas and pastita-3d share the same backend. Store isolation is done by `ST
 
 6. **Two CSS approaches coexist**: Most component styles are plain `.css` files (global scope, imported in `_app.js`). Checkout-specific components use CSS Modules (`.module.css`, imported directly). Do not mix them accidentally.
 
-7. **ThemeContext mounted guard**: `ThemeProvider` has a `mounted` state. Dark mode is only applied after the component mounts (client-side only) to avoid SSR hydration mismatches.
+7. **ThemeContext SSR safety**: `ThemeProvider` uses a lazy `useState` initialiser that reads `localStorage`. This runs only on the client — on the server it returns `'light'`, avoiding hydration mismatches. The `useEffect` applies the `dark` class to `<html>` after mount.
 
 8. **Guest cart key in all request methods**: The `attachGuestCartKey` function modifies headers, query params, AND body. If you add a new endpoint that should support guest carts, make sure it goes through the `storeApi` axios instance (not `authApi`).
 

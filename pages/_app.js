@@ -70,14 +70,14 @@ gtag('config', '${GA_ID}');`}
           <AuthProvider>
             <StoreProvider>
               <StoreHead />
-              <WishlistProvider>
-                <CartProvider>
-                  <ToastProvider>
+              <ToastProvider>
+                <WishlistProvider>
+                  <CartProvider>
                     <CartSidebar />
                     <Component {...pageProps} />
-                  </ToastProvider>
-                </CartProvider>
-              </WishlistProvider>
+                  </CartProvider>
+                </WishlistProvider>
+              </ToastProvider>
             </StoreProvider>
           </AuthProvider>
         </ThemeProvider>
