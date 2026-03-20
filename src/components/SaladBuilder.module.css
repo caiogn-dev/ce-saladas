@@ -117,6 +117,7 @@
 @media (min-width: 640px) {
   .overlay {
     align-items: center;
+    justify-content: center;
   }
 
   .modal {
