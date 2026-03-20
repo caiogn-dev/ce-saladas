@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import styles from './SaladBuilder.module.css';
 
 const fmt = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -115,8 +116,11 @@ const IngredientRow = ({ product, selected, onAdd, onRemove, disabled, singleSel
 /* ── Main SaladBuilder ────────────────────────────────────── */
 const SaladBuilder = ({ ingredients, onAddToCart }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const [selections, setSelections] = useState({ base: [], proteina: [], complemento: [], molho: [] });
   const bodyRef = useRef(null);
+
+  useEffect(() => { setMounted(true); }, []);
 
   const grouped = useMemo(() => {
     const groups = { base: [], proteina: [], complemento: [], molho: [] };
@@ -209,8 +213,8 @@ const SaladBuilder = ({ ingredients, onAddToCart }) => {
         </span>
       </button>
 
-      {/* ── Modal ── */}
-      {isOpen && (
+      {/* ── Modal — rendered via portal to escape PageTransition transforms ── */}
+      {isOpen && mounted && createPortal(
         <div className={styles.overlay} role="dialog" aria-modal="true" aria-label="Monte sua Salada" onClick={handleClose}>
           <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
 
@@ -318,7 +322,8 @@ const SaladBuilder = ({ ingredients, onAddToCart }) => {
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );
