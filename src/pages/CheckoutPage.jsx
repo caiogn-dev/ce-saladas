@@ -105,7 +105,7 @@ const hasDirectCardPayload = (paymentPayload = {}) => (
 
 const CheckoutPage = () => {
   const router = useRouter();
-  const { cart, cartTotal, clearCart } = useCart();
+  const { cart, combos, cartTotal, clearCart, hasItems } = useCart();
   const { updateProfile } = useAuth();
   const mpPublicKey = process.env.NEXT_PUBLIC_MERCADO_PAGO_PUBLIC_KEY;
 
@@ -323,7 +323,7 @@ const CheckoutPage = () => {
   };
 
   // Redirect if cart is empty
-  if (cart.length === 0) {
+  if (!hasItems) {
     return (
       <div className={styles.emptyCart}>
         <div className={styles.emptyCartContent}>
@@ -365,6 +365,7 @@ const CheckoutPage = () => {
           {currentStep === 'order' && (
             <OrderConfirmation
               cart={cart}
+              combos={combos}
               cartTotal={cartTotal}
               shippingMethod={delivery.shippingMethod}
               onShippingMethodChange={handleShippingMethodChange}

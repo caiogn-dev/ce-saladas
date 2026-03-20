@@ -4,6 +4,7 @@ import styles from '../../styles/CheckoutModal.module.css';
 
 const OrderConfirmation = ({
   cart,
+  combos = [],
   cartTotal,
   shippingMethod,
   onShippingMethodChange,
@@ -40,6 +41,25 @@ const OrderConfirmation = ({
                 {item.selectedOptions && Object.keys(item.selectedOptions).length > 0 && (
                   <p className={styles.itemOptions}>{Object.values(item.selectedOptions).join(', ')}</p>
                 )}
+              </div>
+              <div className={styles.itemPrice}>R$ {((item.price || 0) * (item.quantity || 1)).toFixed(2)}</div>
+            </div>
+          ))}
+          {combos.map((item, index) => (
+            <div key={item.cart_item_id || item.id || index} className={styles.cartItem}>
+              <div className={styles.itemImage}>
+                {item.isSalad ? (
+                  <div className={styles.itemPlaceholder}>🥗</div>
+                ) : item.image ? (
+                  <img src={item.image} alt={item.name} />
+                ) : (
+                  <div className={styles.itemPlaceholder}>Combo</div>
+                )}
+              </div>
+              <div className={styles.itemDetails}>
+                <h4>{item.name}</h4>
+                <p className={styles.itemQty}>Quantidade: {item.quantity}</p>
+                {item.notes && <p className={styles.itemOptions}>{item.notes}</p>}
               </div>
               <div className={styles.itemPrice}>R$ {((item.price || 0) * (item.quantity || 1)).toFixed(2)}</div>
             </div>
