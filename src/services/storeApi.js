@@ -84,7 +84,7 @@ export const getStoreSlug = () => {
   return process.env.NEXT_PUBLIC_STORE_SLUG || 'ce-saladas';
 };
 
-const STORE_SLUG = 'ce-saladas';
+const STORE_SLUG = getStoreSlug();
 
 const isLikelyJwt = (token) => (
   typeof token === 'string'
