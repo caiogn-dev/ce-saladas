@@ -1004,3 +1004,98 @@
   border-radius: 6px;
   border-left: 3px solid var(--color-gold, #C9A050);
 }
+
+/* ═══════════════════════════════
+   Dark Mode — Checkout overrides
+   ═══════════════════════════════ */
+.dark .checkout-page {
+  background: var(--color-bg);
+}
+
+.dark .checkout-card,
+.dark .checkout-payment-info,
+.dark .checkout-address-card,
+.dark .checkout-payment-card {
+  border-color: var(--color-border);
+}
+
+.dark .checkout-subsection-title {
+  color: var(--color-text-base);
+  border-top-color: var(--color-border);
+}
+
+.dark .checkout-payment-block,
+.dark .scheduling-fields {
+  background: var(--color-bg-muted);
+  border-color: var(--color-border);
+}
+
+.dark .checkout-address-option {
+  background: var(--color-bg-muted);
+}
+
+.dark .checkout-address-option.is-selected {
+  background: rgba(100, 158, 32, .15);
+  border-color: var(--clr-leaf-400);
+}
+
+.dark .checkout-payment-option {
+  background: var(--color-bg-muted);
+  border-color: var(--color-border);
+  box-shadow: none;
+}
+
+.dark .checkout-payment-option-label {
+  color: var(--color-text-base);
+}
+
+.dark .checkout-payment-note {
+  background: rgba(241, 200, 155, .12);
+  border-color: rgba(241, 200, 155, .3);
+  color: var(--clr-terra-200, #f4bb96);
+}
+
+.dark .checkout-payment-warning {
+  background: rgba(154, 52, 18, .2);
+  border-color: rgba(254, 215, 170, .3);
+  color: #fcd4b5;
+}
+
+.dark .checkout-alert {
+  background: rgba(185, 28, 28, .2);
+  border-color: rgba(185, 28, 28, .35);
+  color: #fca5a5;
+}
+
+.dark .checkout-status-badge {
+  background: rgba(146, 64, 14, .35);
+  color: #fcd34d;
+}
+
+.dark .checkout-qr-text {
+  background: var(--color-bg-muted);
+  border-color: var(--color-border);
+  color: var(--color-text-base);
+}
+
+.dark .checkout-save-address {
+  color: var(--color-text-muted);
+}
+
+.dark .scheduling-note {
+  color: var(--color-text-muted);
+  background: var(--color-bg-muted);
+}
+
+.dark .checkout-section-title,
+.dark .checkout-address-title {
+  color: var(--color-marsala);
+}
+
+.dark .checkout-empty {
+  background: var(--color-bg);
+}
+
+.dark .checkout-header h1 {
+  color: var(--color-text-base);
+}

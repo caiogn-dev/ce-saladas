@@ -297,3 +297,43 @@
     transform: none;
   }
 }
+
+/* ═══════════════════════════════
+   Dark Mode
+   ═══════════════════════════════ */
+:global(.dark) .checkoutPage,
+:global(.dark) .emptyCart {
+  background: var(--color-bg);
+}
+
+:global(.dark) .checkoutHeader h1 {
+  color: var(--color-text-base);
+}
+
+:global(.dark) .backLink {
+  color: var(--color-marsala);
+}
+:global(.dark) .backLink:hover {
+  background: rgba(100, 158, 32, .12);
+}
+
+:global(.dark) .stepNumber {
+  background: var(--color-bg-muted);
+  color: var(--color-text-muted);
+}
+
+:global(.dark) .stepLabel {
+  color: var(--color-text-muted);
+}
+
+:global(.dark) .stepLine {
+  background: var(--color-bg-muted);
+}
+
+:global(.dark) .emptyCartContent h2 {
+  color: var(--color-text-base);
+}
+
+:global(.dark) .emptyCartContent p {
+  color: var(--color-text-muted);
+}

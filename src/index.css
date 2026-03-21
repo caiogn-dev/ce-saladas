@@ -244,6 +244,18 @@
   --o-shadow-md: 0 4px 16px rgba(0,0,0,.4), 0 2px 6px rgba(0,0,0,.25);
   --o-shadow-lg: 0 8px 32px rgba(0,0,0,.5), 0 4px 12px rgba(0,0,0,.3);
   --o-shadow-xl: 0 20px 60px rgba(0,0,0,.6), 0 8px 24px rgba(0,0,0,.35);
+
+  /* Compat aliases — adaptados ao tema escuro */
+  --color-accent-fg:     #ffffff;
+  --color-marsala:       var(--clr-leaf-400);
+  --color-marsala-dark:  var(--clr-leaf-300);
+  --color-marsala-light: var(--clr-leaf-500);
+  --color-cream:         var(--color-bg);
+  --color-surface-page:      var(--color-bg);
+  --color-surface-page-alt:  var(--color-bg-card);
+  --color-surface-card:      var(--color-bg-card);
+  --color-surface-card-strong: var(--color-bg-muted);
+  --color-surface-muted:     var(--color-bg-muted);
 }
 
 *, *::before, *::after { box-sizing: border-box; }
