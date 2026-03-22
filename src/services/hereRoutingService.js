@@ -103,6 +103,7 @@ export async function calculateMatrix(origins, destinations) {
 
   try {
     const response = await fetch(url);
+    if (!response.ok) throw new Error(`HERE matrix API error: ${response.status}`);
     const data = await response.json();
 
     if (data.matrix) {

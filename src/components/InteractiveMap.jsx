@@ -543,6 +543,7 @@ export default function InteractiveMap({
         const response = await fetch(
           `https://revgeocode.search.hereapi.com/v1/revgeocode?at=${latitude},${longitude}&apikey=${process.env.NEXT_PUBLIC_HERE_API_KEY}`
         );
+        if (!response.ok) throw new Error(`HERE reverse geocode error: ${response.status}`);
         const data = await response.json();
         
         if (data.items && data.items.length > 0) {
@@ -696,6 +697,7 @@ export default function InteractiveMap({
         const response = await fetch(
           `https://autosuggest.search.hereapi.com/v1/autosuggest?q=${encodeURIComponent(query)}&at=${storeAt}&in=countryCode:BRA&limit=5&apikey=${process.env.NEXT_PUBLIC_HERE_API_KEY}`
         );
+        if (!response.ok) throw new Error(`HERE autosuggest error: ${response.status}`);
         const data = await response.json();
         
         if (data.items && data.items.length > 0) {
@@ -818,6 +820,7 @@ export default function InteractiveMap({
         const response = await fetch(
           `https://geocode.search.hereapi.com/v1/geocode?q=${encodeURIComponent(searchQuery)}&in=countryCode:BRA&limit=1&apikey=${process.env.NEXT_PUBLIC_HERE_API_KEY}`
         );
+        if (!response.ok) throw new Error(`HERE geocode error: ${response.status}`);
         const data = await response.json();
         
         if (data.items && data.items.length > 0) {

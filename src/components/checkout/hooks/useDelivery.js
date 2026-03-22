@@ -36,6 +36,7 @@ export const useDelivery = () => {
     setLoadingCEP(true);
     try {
       const response = await fetch(`https://viacep.com.br/ws/${cleanCEP}/json/`);
+      if (!response.ok) throw new Error(`ViaCEP error: ${response.status}`);
       const data = await response.json();
       
       if (!data.erro) {
