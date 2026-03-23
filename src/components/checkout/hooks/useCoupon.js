@@ -37,12 +37,13 @@ export const useCoupon = () => {
       const data = await storeApi.validateCoupon(code, totalAmount);
 
       if (data.valid) {
+        const c = data.coupon;
         setAppliedCoupon({
-          code: data.code,
-          description: data.description,
-          discount_type: data.discount_type,
-          discount_value: Number(data.discount_value) || 0,
-          discount_amount: Number(data.discount) || 0
+          code: c.code,
+          description: c.description || '',
+          discount_type: c.discount_type,
+          discount_value: Number(c.discount_value) || 0,
+          discount_amount: Number(c.calculated_discount) || 0
         });
         setCouponError('');
         setLoadingCoupon(false);
