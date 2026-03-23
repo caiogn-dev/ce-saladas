@@ -39,11 +39,9 @@ const MENU_SECTIONS = [
     title: 'Molhos',
     description: 'Complementos para ajustar o sabor e finalizar o pedido do seu jeito.',
   },
-  {
-    key: 'ingredientes',
-    title: 'Ingredientes',
-    description: 'Ingredientes individuais — use o builder para montar sua salada.',
-  },
+  // 'ingredientes' is intentionally omitted: those products feed the SaladBuilder
+  // internally (see ingredientItems below) but are NOT displayed as a standalone
+  // section in the cardápio. Only Saladas and Molhos are shown as product lists.
 ];
 
 const normalizeText = (value) => (value || '')
