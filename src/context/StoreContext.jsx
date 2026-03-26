@@ -13,17 +13,25 @@ const CATALOG_CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutes
 let catalogCache = null;
 let catalogCacheTs = 0;
 
-export const StoreProvider = ({ children }) => {
-  const [store, setStore] = useState(null);
-  const [categories, setCategories] = useState([]);
-  const [products, setProducts] = useState([]);
-  const [productsByCategory, setProductsByCategory] = useState({});
-  const [combos, setCombos] = useState([]);
-  const [featuredProducts, setFeaturedProducts] = useState([]);
-  const [productTypes, setProductTypes] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+export const StoreProvider = ({ children, initialCatalog = null }) => {
+  const [store, setStore] = useState(initialCatalog?.store || null);
+  const [categories, setCategories] = useState(initialCatalog?.categories || []);
+  const [products, setProducts] = useState(initialCatalog?.products || []);
+  const [productsByCategory, setProductsByCategory] = useState(initialCatalog?.products_by_category || {});
+  const [combos, setCombos] = useState(initialCatalog?.combos || []);
+  const [featuredProducts, setFeaturedProducts] = useState(initialCatalog?.featured_products || []);
+  const [productTypes, setProductTypes] = useState(initialCatalog?.product_types || []);
+  const [isLoading, setIsLoading] = useState(!initialCatalog);
   const [error, setError] = useState(null);
   const [availability, setAvailability] = useState(null);
+
+  // Pre-populate cache with SSR data to avoid double-fetch on client
+  useEffect(() => {
+    if (initialCatalog && !catalogCache) {
+      catalogCache = initialCatalog;
+      catalogCacheTs = Date.now();
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Fetch catalog from API
   const fetchCatalog = useCallback(async (force = false) => {

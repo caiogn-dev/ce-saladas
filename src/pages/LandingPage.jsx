@@ -57,7 +57,7 @@ const LandingPage = () => {
     ? `https://api.whatsapp.com/send?phone=${whatsappNumber}`
     : '#';
   const instagramUrl = store.metadata?.instagram_url || '#';
-  const heroTitle = store.metadata?.hero_title || 'Seu pedido saudável, bonito e rápido.';
+  const heroTitle = store.metadata?.hero_title || 'Saladas frescas e comida saudável entregues para você.';
   const heroDescription = store.description || 'Saladas, pratos leves e combinações frescas para quem quer comer bem sem complicação.';
 
   const handleClosePromo = () => {
@@ -150,34 +150,34 @@ const LandingPage = () => {
 
       <section className="brand-strip">
         <div className="container brand-strip__inner">
-          <div className="brand-strip__item"><Leaf size={18} /> Preparação cuidadosa</div>
-          <div className="brand-strip__item"><Clock3 size={18} /> Pedido com menos burocracia</div>
-          <div className="brand-strip__item"><Zap size={18} /> Checkout rápido e objetivo</div>
+          <div className="brand-strip__item"><Leaf size={18} /> Saladas frescas todo dia</div>
+          <div className="brand-strip__item"><Clock3 size={18} /> Ingredientes naturais e saudáveis</div>
+          <div className="brand-strip__item"><Zap size={18} /> Delivery e retirada disponíveis</div>
         </div>
       </section>
 
       <section id="como-funciona" className="how-it-works">
         <div className="container">
           <div className="section-header">
-            <span className="section-eyebrow">Fluxo de compra</span>
-            <h2 className="section-title">Como o pedido funciona</h2>
+            <span className="section-eyebrow">Como pedir</span>
+            <h2 className="section-title">Salada fresca em poucos passos</h2>
           </div>
 
           <div className="steps-grid">
             <div className="step-card">
               <div className="step-number">01</div>
-              <h3>Escolha com contexto</h3>
-              <p>O cliente navega por categoria, abre o detalhe do produto e decide com mais segurança.</p>
+              <h3>Escolha sua salada</h3>
+              <p>Navegue pelo cardápio de saladas, bowls e pratos fit. Veja ingredientes, calorias e preço antes de decidir.</p>
             </div>
             <div className="step-card">
               <div className="step-number">02</div>
-              <h3>Identifique sem excesso</h3>
-              <p>Na finalização, basta informar e-mail e celular para liberar o restante do checkout.</p>
+              <h3>Monte do seu jeito</h3>
+              <p>Personalize com ingredientes frescos, proteínas, toppings e molhos saudáveis — tudo feito para você.</p>
             </div>
             <div className="step-card">
               <div className="step-number">03</div>
-              <h3>Confirme entrega e pagamento</h3>
-              <p>Entrega, retirada, cupom e forma de pagamento aparecem em uma sequência clara.</p>
+              <h3>Receba em casa</h3>
+              <p>Sem cadastro obrigatório. Pague com PIX, cartão ou dinheiro e aguarde a entrega da sua salada.</p>
             </div>
           </div>
         </div>
@@ -186,30 +186,30 @@ const LandingPage = () => {
       <section className="why-ce-saladas">
         <div className="container">
           <div className="section-header">
-            <span className="section-eyebrow">Diferenciais</span>
-            <h2 className="section-title">Uma vitrine pensada para vender melhor</h2>
+            <span className="section-eyebrow">Por que escolher</span>
+            <h2 className="section-title">Por que escolher o Cê Saladas</h2>
           </div>
 
           <div className="features-grid">
             <article className="feature-card">
               <span className="feature-icon"><Leaf size={22} /></span>
-              <h3>Visual coerente com a marca</h3>
-              <p>O laranja e o verde agora conduzem a experiência inteira, sem ruído de identidade.</p>
+              <h3>Ingredientes sempre frescos</h3>
+              <p>Selecionados diariamente para garantir sabor, qualidade e frescor em cada salada preparada.</p>
             </article>
             <article className="feature-card">
               <span className="feature-icon"><Sparkles size={22} /></span>
-              <h3>Produtos com mais contexto</h3>
-              <p>O detalhe do item mostra preço, descrição, composição e sinais visuais mais úteis.</p>
+              <h3>Comida fit e saudável</h3>
+              <p>Do low carb ao proteico: opções balanceadas para quem cuida da alimentação sem abrir mão do sabor.</p>
             </article>
             <article className="feature-card">
               <span className="feature-icon"><Zap size={22} /></span>
-              <h3>Catálogo mais escaneável</h3>
-              <p>Cada categoria ocupa sua própria faixa horizontal, o que melhora leitura e navegação.</p>
+              <h3>Monte sua salada</h3>
+              <p>Escolha base, proteína, toppings e molho. Crie a salada perfeita com os ingredientes que você quer.</p>
             </article>
             <article className="feature-card">
               <span className="feature-icon"><ShieldCheck size={22} /></span>
-              <h3>Checkout mais direto</h3>
-              <p>O pedido continua sem cadastro obrigatório e o pagamento se encaixa melhor no fluxo.</p>
+              <h3>Delivery e retirada</h3>
+              <p>Peça pelo cardápio digital e receba em casa ou retire na loja — rápido, fácil e sem complicação.</p>
             </article>
           </div>
         </div>
@@ -218,11 +218,11 @@ const LandingPage = () => {
       <section className="cta-section">
         <div className="container cta-shell">
           <div className="cta-copy">
-            <span className="section-eyebrow section-eyebrow--light">Pronto para testar</span>
-            <h2>Explore o cardápio e valide o novo checkout.</h2>
+            <span className="section-eyebrow section-eyebrow--light">Peça agora</span>
+            <h2>Monte sua salada agora mesmo.</h2>
             <p>
-              O próximo passo natural agora é testar navegação por categoria, detalhe do produto,
-              sacola e finalização com PIX, cartão ou dinheiro.
+              Saladas frescas, bowls proteicos e opções fit prontos para você. Monte seu pedido
+              em poucos toques e receba em casa ou retire na loja.
             </p>
           </div>
           <div className="cta-actions">
@@ -267,7 +267,7 @@ const LandingPage = () => {
 
         <div className="container footer-bottom">
           <p>© {new Date().getFullYear()} {store.name}. Todos os direitos reservados.</p>
-          <p className="footer-made">Experiência digital alinhada à marca.</p>
+          <p className="footer-made">Saladas frescas, comida fit e confeitaria artesanal.</p>
         </div>
       </footer>
     </div>
