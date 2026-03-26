@@ -1,11 +1,14 @@
 import React, { useMemo, useState, useRef, useEffect, useCallback } from 'react';
+import dynamic from 'next/dynamic';
 import { ArrowRight, Clock3, MapPin, ShoppingBag } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import FavoriteButton from '../components/FavoriteButton';
 import StockBadge from '../components/StockBadge';
-import ProductDetailModal from '../components/ProductDetailModal';
 import MenuProductRow from '../components/MenuProductRow';
-import SaladBuilder from '../components/SaladBuilder';
+
+// Heavy modals — loaded only when the user opens them
+const ProductDetailModal = dynamic(() => import('../components/ProductDetailModal'), { ssr: false });
+const SaladBuilder = dynamic(() => import('../components/SaladBuilder'), { ssr: false });
 import Input from '../components/ui/Input';
 import Skeleton from '../components/ui/Skeleton';
 import EmptyState from '../components/ui/EmptyState';

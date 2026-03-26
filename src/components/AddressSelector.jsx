@@ -1,8 +1,11 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
-import InteractiveMap from './InteractiveMap';
+import dynamic from 'next/dynamic';
 import { lookupCEP, geocodeBrazilianAddress } from '../services/hereMapService';
+
+// HERE Maps uses browser-only APIs — must be loaded client-side only
+const InteractiveMap = dynamic(() => import('./InteractiveMap'), { ssr: false });
 import { BRAZILIAN_STATES, formatCEP } from '../utils/brazil';
 
 /**

@@ -3,10 +3,13 @@
  */
 'use client';
 import React, { useState, useEffect, useCallback } from 'react';
+import dynamic from 'next/dynamic';
 import { Clock3, Hand, Hash, Home, MapPin, MapPinned, Navigation, Route, Wallet } from 'lucide-react';
 import styles from '../../styles/CheckoutModal.module.css';
 import { STORE_LOCATION } from './utils';
-import InteractiveMap from '../InteractiveMap';
+
+// HERE Maps uses browser-only APIs — must be loaded client-side only
+const InteractiveMap = dynamic(() => import('../InteractiveMap'), { ssr: false });
 
 const resolveDetectedNumber = (value) => value?.address?.number || value?.number || '';
 
