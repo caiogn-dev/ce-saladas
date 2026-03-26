@@ -126,9 +126,9 @@ export const useCheckoutForm = () => {
         phone: currentProfile?.phone ? formatPhone(currentProfile.phone) : draftData.phone || '',
         cpf: currentProfile?.cpf ? formatCPF(currentProfile.cpf) : draftData.cpf || '',
         address: currentProfile?.address || draftData.address || '',
-        number: draftData.number || '',
-        complement: draftData.complement || '',
-        neighborhood: draftData.neighborhood || '',
+        number: currentProfile?.number || draftData.number || '',
+        complement: currentProfile?.complement || draftData.complement || '',
+        neighborhood: currentProfile?.neighborhood || draftData.neighborhood || '',
         city: currentProfile?.city || draftData.city || '',
         state: currentProfile?.state || draftData.state || '',
         zip_code: currentProfile?.zip_code ? formatCEP(currentProfile.zip_code) : draftData.zip_code || '',
@@ -346,10 +346,10 @@ export const useCheckoutForm = () => {
     if (!profile?.cpf && normalizedCpf) payload.cpf = normalizedCpf;
 
     if (saveAddress && shippingMethod === 'delivery') {
-      const fullAddress = formData.number
-        ? `${formData.address}, ${formData.number}${formData.complement ? ` - ${formData.complement}` : ''}`
-        : formData.address;
-      payload.address = fullAddress;
+      payload.address = formData.address;
+      payload.number = formData.number;
+      payload.complement = formData.complement;
+      payload.neighborhood = formData.neighborhood;
       payload.city = formData.city;
       payload.state = formData.state;
       payload.zip_code = onlyDigits(formData.zip_code);

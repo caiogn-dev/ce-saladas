@@ -48,7 +48,7 @@ import { ToastProvider } from '../src/components/Toast';
 import { fetchCsrfToken } from '../src/services/storeApi';
 import StoreHead from '../src/components/StoreHead';
 
-const GA_ID = 'G-F6RDSM45Q0';
+const GA_ID = 'G-HYLXDEXLMC';
 
 export default function App({ Component, pageProps }) {
   useEffect(() => {

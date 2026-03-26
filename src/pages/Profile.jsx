@@ -22,6 +22,9 @@ const buildFormData = (profile) => ({
   phone: profile?.phone ? formatPhone(profile.phone) : '',
   cpf: profile?.cpf ? formatCPF(profile.cpf) : '',
   address: profile?.address || '',
+  number: profile?.number || '',
+  complement: profile?.complement || '',
+  neighborhood: profile?.neighborhood || '',
   city: profile?.city || '',
   state: profile?.state || '',
   zip_code: profile?.zip_code ? formatCEP(profile.zip_code) : ''
@@ -438,11 +441,14 @@ const Profile = () => {
 
   const formattedAddress = useMemo(() => {
     if (!profile) return 'Não informado';
+    const street = [profile.address, profile.number].filter(Boolean).join(', ');
+    const streetWithComplement = profile.complement ? `${street} - ${profile.complement}` : street;
     const parts = [
-      profile.address,
+      streetWithComplement || null,
+      profile.neighborhood,
       profile.city,
       profile.state,
-      profile.zip_code ? formatCEP(profile.zip_code) : null
+      profile.zip_code ? formatCEP(profile.zip_code) : null,
     ].filter(Boolean);
     return parts.length ? parts.join(', ') : 'Não informado';
   }, [profile]);
@@ -479,6 +485,9 @@ const Profile = () => {
         phone: formData.phone.replace(/\D/g, ''),
         cpf: formData.cpf.replace(/\D/g, ''),
         address: formData.address.trim(),
+        number: formData.number.trim(),
+        complement: formData.complement.trim(),
+        neighborhood: formData.neighborhood.trim(),
         city: formData.city.trim(),
         state: formData.state,
         zip_code: formData.zip_code.replace(/\D/g, '')
@@ -674,14 +683,51 @@ const Profile = () => {
                 </div>
 
                 <div className="form-field">
-                  <label className="form-label">Endereço</label>
+                  <label className="form-label">Rua / Logradouro</label>
                   <input
                     type="text"
                     name="address"
                     value={formData.address}
                     onChange={handleChange}
                     className="form-input"
-                    placeholder="Rua, número, bairro"
+                    placeholder="Rua das Flores"
+                  />
+                </div>
+
+                <div className="form-grid-2">
+                  <div className="form-field">
+                    <label className="form-label">Número</label>
+                    <input
+                      type="text"
+                      name="number"
+                      value={formData.number}
+                      onChange={handleChange}
+                      className="form-input"
+                      placeholder="123"
+                    />
+                  </div>
+                  <div className="form-field">
+                    <label className="form-label">Complemento</label>
+                    <input
+                      type="text"
+                      name="complement"
+                      value={formData.complement}
+                      onChange={handleChange}
+                      className="form-input"
+                      placeholder="Apto 4, Bloco B"
+                    />
+                  </div>
+                </div>
+
+                <div className="form-field">
+                  <label className="form-label">Bairro</label>
+                  <input
+                    type="text"
+                    name="neighborhood"
+                    value={formData.neighborhood}
+                    onChange={handleChange}
+                    className="form-input"
+                    placeholder="Centro"
                   />
                 </div>
 

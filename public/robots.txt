@@ -1,8 +1,13 @@
-# robots.txt for pastita.com.br
-# Allow all user agents and point to sitemap
+# robots.txt for cesaladas.com.br
 
 User-agent: *
 Allow: /
+Disallow: /checkout
+Disallow: /perfil
+Disallow: /sucesso
+Disallow: /pendente
+Disallow: /erro
+Disallow: /login
+Disallow: /registro
 
-Sitemap: https://pastita.com.br/sitemap.xml
-Host: pastita.com.br
+Sitemap: https://cesaladas.com.br/sitemap.xml
