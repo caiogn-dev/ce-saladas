@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useSyncExternalStore, useState } from 'react';
+import { useEffect, useRef, useSyncExternalStore, useState } from 'react';
 import Link from 'next/link';
 import {
   ArrowRight,
@@ -47,6 +47,14 @@ const HeroBlob = () => (
       fill="var(--clr-leaf-500)"
     />
   </svg>
+);
+
+/* ─────────────────────────────────────────────────────────────
+   Orbe terra de calor — emana de baixo do prato como luz quente
+   Emotion: apetite, calor, desejo imediato
+───────────────────────────────────────────────────────────── */
+const HeatGlow = () => (
+  <div className="dish-heat-glow" aria-hidden="true" />
 );
 
 /* ─────────────────────────────────────────────────────────────
@@ -123,6 +131,14 @@ const LandingPage = () => {
             duration: 1.1,
             ease: 'back.out(1.6)',
             delay: 0.35,
+            onComplete() {
+              /* Flash de calor: o orbe terra pulsa quando o prato pousa */
+              gsap.fromTo('.dish-heat-glow',
+                { opacity: 0, scale: 0.7 },
+                { opacity: 1, scale: 1, duration: 0.7, ease: 'power2.out',
+                  onComplete: () => gsap.to('.dish-heat-glow', { opacity: 0.55, scale: 0.92, duration: 1.8, ease: 'sine.inOut', repeat: -1, yoyo: true }) }
+              );
+            },
           });
 
           /* ── Prato secundário — sobe do rodapé ─────────────── */
@@ -155,6 +171,26 @@ const LandingPage = () => {
             yoyo: true,
             ease: 'sine.inOut',
             stagger: 0.4,
+          });
+
+          /* ── Count-up nos stats (confiança social) ──────── */
+          gsap.utils.toArray('.stat-count').forEach((el) => {
+            const target = parseFloat(el.dataset.target);
+            const suffix = el.dataset.suffix || '';
+            const decimal = parseInt(el.dataset.decimal || '0', 10);
+            const obj = { val: 0 };
+            gsap.to(obj, {
+              val: target,
+              duration: 1.6,
+              ease: 'power2.out',
+              delay: 1.0,
+              onUpdate() {
+                el.textContent = obj.val.toFixed(decimal) + suffix;
+              },
+              onComplete() {
+                el.textContent = target.toFixed(decimal) + suffix;
+              },
+            });
           });
 
           /* ── Brand pills ─────────────────────────────────── */
@@ -295,12 +331,12 @@ const LandingPage = () => {
 
             <div className="hero-stats">
               <div className="hero-stat">
-                <strong>100+</strong>
+                <strong className="stat-count" data-target="100" data-suffix="+">100+</strong>
                 <span>Pedidos por semana</span>
               </div>
               <div className="hero-stat-sep" aria-hidden="true" />
               <div className="hero-stat">
-                <strong>4.9</strong>
+                <strong className="stat-count" data-target="4.9" data-decimal="1">4.9</strong>
                 <span className="hero-stat-stars">
                   {[...Array(5)].map((_, i) => <Star key={i} size={12} fill="currentColor" />)}
                 </span>
@@ -318,6 +354,9 @@ const LandingPage = () => {
             <div className="hero-stage">
               {/* Blob orgânico de fundo */}
               <HeroBlob />
+
+              {/* Orbe de calor — emana de baixo do prato (apetite) */}
+              <HeatGlow />
 
               {/* Gotas decorativas de molho */}
               <DrizzleDrop className="drizzle-drop--1" />

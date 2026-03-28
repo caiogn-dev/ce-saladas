@@ -88,19 +88,25 @@
 .hero-title {
   margin: 0;
   font-family: var(--font-display);
-  font-size: clamp(2.5rem, 4.2vw, 3.8rem);
+  font-size: clamp(2.7rem, 4.5vw, 4.2rem);
   font-weight: 400;
-  line-height: 1.06;
-  letter-spacing: -0.025em;
+  line-height: 1.04;
+  letter-spacing: -0.03em;
   color: var(--clr-stone-900);
   text-wrap: balance;
   max-width: 14ch;
+  /* Emotion: CONFIANÇA — sombra de texto quase imperceptível dá profundidade */
+  text-shadow: 0 2px 12px rgba(var(--clr-stone-rgb, 60,50,40), .06);
 }
 
 .hero-accent {
   font-style: italic;
   color: var(--clr-terra-500);
   font-weight: 600;
+  /* Subtil glow terra no accent word — desperta apetite */
+  text-shadow:
+    0 0 28px rgba(var(--clr-terra-rgb), .22),
+    0 2px 8px  rgba(var(--clr-terra-rgb), .12);
 }
 
 .hero-description {
@@ -255,6 +261,31 @@
   opacity: 0.92;
 }
 
+/* ─── Orbe de calor — emana de baixo do prato ───────────────
+   Emotion: APETITE — luz quente vindo do prato, como vapor
+   Começa invisível; GSAP pulsa após o prato pousar
+─────────────────────────────────────────────────────────── */
+.dish-heat-glow {
+  position: absolute;
+  z-index: 1;                          /* entre blob e prato */
+  bottom: 8%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 72%;
+  height: 42%;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse 100% 100% at 50% 100%,
+    rgba(var(--clr-terra-rgb), .38) 0%,
+    rgba(var(--clr-terra-rgb), .18) 35%,
+    transparent 72%
+  );
+  filter: blur(18px);
+  opacity: 0;                          /* GSAP controla */
+  pointer-events: none;
+  will-change: opacity, transform;
+}
+
 /* Gotas de molho — decorativas, cor terra */
 .drizzle-drop {
   position: absolute;
@@ -328,6 +359,19 @@
     transform: none !important;
     animation: none !important;
   }
+}
+
+/* ─── Stat count — número grande, peso emocional ─── */
+.stat-count {
+  font-family: var(--font-display);
+  font-size: 1.55rem;
+  font-weight: 700;
+  font-style: italic;                  /* Fraunces italic = caráter */
+  color: var(--clr-stone-800);
+  line-height: 1;
+  /* Emotion: SOCIAL PROOF — leve glow verde nos números valida a escolha */
+  text-shadow: 0 0 20px rgba(var(--clr-leaf-rgb), .15);
+  transition: color var(--dur-base) var(--ease-organic);
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -413,10 +457,14 @@
 
 /* ═══════════════════════════════════════════════════════════════
    HOW IT WORKS — prato de salmão flutua à direita
+   Emotion: CLAREZA + CALOR CRESCENTE — temperatura aquece ao rolar
    ═══════════════════════════════════════════════════════════════ */
 .how-it-works {
   padding: 88px 0;
-  background: linear-gradient(180deg, rgba(255,255,255,.55) 0%, rgba(255,250,240,.88) 100%);
+  background:
+    /* Textura orgânica sutil — linho, naturalidade */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"),
+    linear-gradient(180deg, rgba(255,255,255,.6) 0%, rgba(255,248,234,.92) 100%);
 }
 
 .how-it-works__inner {
@@ -453,7 +501,13 @@
 
 .step-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 24px 52px rgba(var(--clr-leaf-rgb), .13);
+  /* Emotion: CALOR — glow terra vem de baixo como vapor do prato */
+  box-shadow:
+    0 24px 52px rgba(var(--clr-terra-rgb), .14),
+    0 8px 20px  rgba(var(--clr-terra-rgb), .08),
+    0 2px 6px   rgba(0,0,0,.04);
+  background: linear-gradient(180deg, rgba(255,253,247,.99), rgba(255,245,230,.96));
+  border-color: rgba(var(--clr-terra-rgb), .12);
 }
 
 .step-number {
@@ -470,6 +524,17 @@
   font-size: 1.05rem;
   font-weight: 700;
   font-style: italic;
+  transition:
+    background var(--dur-base) var(--ease-organic),
+    box-shadow var(--dur-base) var(--ease-organic),
+    color var(--dur-base);
+}
+
+/* Emotion: PROGRESSO — número acende quando o card é hovered */
+.step-card:hover .step-number {
+  background: rgba(var(--clr-leaf-rgb), .18);
+  color: var(--clr-leaf-800);
+  box-shadow: 0 0 0 4px rgba(var(--clr-leaf-rgb), .10);
 }
 
 .step-card h3 {
@@ -490,12 +555,14 @@
 
 /* ═══════════════════════════════════════════════════════════════
    WHY SECTION — prato de porco flutua à esquerda
+   Emotion: CONFORTO + IDENTIDADE — mais quente, mais pessoal
    ═══════════════════════════════════════════════════════════════ */
 .why-section {
   padding: 88px 0;
   background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"),
     radial-gradient(ellipse 55% 60% at 0% 55%, rgba(var(--clr-leaf-rgb), .05) 0%, transparent 65%),
-    linear-gradient(180deg, #fffdf8 0%, #fdf7ed 100%);
+    linear-gradient(180deg, #fffdf8 0%, #fdf5e8 100%);
 }
 
 .why-section__inner {
@@ -532,7 +599,13 @@
 
 .feature-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 22px 48px rgba(var(--clr-leaf-rgb), .13);
+  /* Mesmo calor terra — consistência emocional entre seções */
+  box-shadow:
+    0 22px 48px rgba(var(--clr-terra-rgb), .14),
+    0 8px 18px  rgba(var(--clr-terra-rgb), .07),
+    0 2px 6px   rgba(0,0,0,.04);
+  background: linear-gradient(180deg, rgba(255,253,247,.99), rgba(255,245,230,.96));
+  border-color: rgba(var(--clr-terra-rgb), .12);
 }
 
 .feature-icon {
@@ -645,6 +718,17 @@
   transform: translateY(-3px) scale(1.02);
   box-shadow: 0 22px 52px rgba(0,0,0,.3);
 }
+
+/* Emotion: URGÊNCIA — pulso sutil chama atenção sem ser agressivo */
+@keyframes cta-pulse {
+  0%, 100% { box-shadow: 0 10px 36px rgba(0,0,0,.22), 0 0 0 0 rgba(255,255,255,.0); }
+  50%       { box-shadow: 0 10px 36px rgba(0,0,0,.22), 0 0 0 8px rgba(255,255,255,.15); }
+}
+
+.btn-cta-primary {
+  animation: cta-pulse 3.5s ease-in-out infinite;
+}
+.btn-cta-primary:hover { animation: none; }
 
 /* ═══════════════════════════════════════════════════════════════
    FOOTER
