@@ -36,18 +36,6 @@ const DISHES = {
   pork:   '/dishes/bowl-pork.png',     // frango/porco no bowl transparente
 };
 
-/* ─────────────────────────────────────────────────────────────
-   Blob SVG de fundo — orgânico, laranja vibrante como referência
-───────────────────────────────────────────────────────────── */
-const HeroBlob = () => (
-  <svg className="hero-blob" viewBox="0 0 600 600" aria-hidden="true">
-    <path
-      className="hero-blob-path"
-      d="M295,28 C415,28 548,112 558,292 C568,472 455,568 298,568 C141,568 32,464 36,282 C40,100 175,28 295,28 Z"
-      fill="#F97316"
-    />
-  </svg>
-);
 
 /* ─────────────────────────────────────────────────────────────
    Título com última palavra em cor accent (terra + itálico)
@@ -101,33 +89,30 @@ const LandingPage = () => {
           ──────────────────────────────────────────────────── */
           const heroTL = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
-          /* Visual primeiro — blob + prato entram juntos */
+          /* Blob com imagem entra junto com a copy */
           heroTL
-          .from('.hero-blob', { opacity: 0, scale: 0.88, duration: 1.0, ease: 'power2.out' }, 0)
-          .from('.hero-dish-main', {
-            opacity: 0, scale: 0.72, y: 32, duration: 1.0, ease: 'back.out(1.5)',
-          }, 0.1)
+          .from('.hero-food-blob', {
+            opacity: 0, scale: 0.82, y: 28, duration: 1.0, ease: 'back.out(1.4)',
+          }, 0)
 
           /* Copy em cascata */
-          .from('.hero-tag',         { opacity: 0, x: -24, duration: 0.5 }, 0.2)
-          .from('.hero-title',       { opacity: 0, y: 36,  duration: 0.75 }, 0.35)
-          .from('.hero-description', { opacity: 0, y: 22,  duration: 0.6  }, 0.58)
-          .from('.hero-actions',     { opacity: 0, y: 18,  duration: 0.5  }, 0.74)
-          .from('.hero-stats',       { opacity: 0, y: 16,  duration: 0.45 }, 0.90);
+          .from('.hero-tag',         { opacity: 0, x: -24, duration: 0.5 }, 0.15)
+          .from('.hero-title',       { opacity: 0, y: 36,  duration: 0.75 }, 0.3)
+          .from('.hero-description', { opacity: 0, y: 22,  duration: 0.6  }, 0.52)
+          .from('.hero-actions',     { opacity: 0, y: 18,  duration: 0.5  }, 0.68)
+          .from('.hero-stats',       { opacity: 0, y: 16,  duration: 0.45 }, 0.84);
 
-          /* ── Blob morph contínuo — respira suavemente ────── */
-          gsap.to('.hero-blob-path', {
-            attr: {
-              d: 'M280,32 C400,22 552,110 558,295 C564,480 450,572 290,565 C130,558 28,458 38,272 C48,86 160,42 280,32 Z',
-            },
-            duration: 12, repeat: -1, yoyo: true, ease: 'sine.inOut',
+          /* ── Badge pills entram após o blob ──────────────── */
+          gsap.from('.hero-badge-pill', {
+            opacity: 0, scale: 0.7, duration: 0.5, ease: 'back.out(2)', delay: 0.9,
+            stagger: { each: 0.2 },
           });
 
-          /* ── Float suave — herança para todos os pratos ───── */
-          gsap.to('.dish-float', {
-            y: '-=14', rotation: '+=1.5',
-            duration: 4.5, repeat: -1, yoyo: true, ease: 'sine.inOut',
-            stagger: { each: 1.4, from: 'random' },
+          /* ── Float suave no blob ─────────────────────────── */
+          gsap.to('.hero-food-blob', {
+            y: '-=12',
+            duration: 4.2, repeat: -1, yoyo: true, ease: 'sine.inOut',
+            delay: 1.0,
           });
 
           /* ── Count-up nos stats ───────────────────────────── */
@@ -269,15 +254,12 @@ const LandingPage = () => {
             </div>
           </div>
 
-          {/* Visual — Food Stage */}
+          {/* Visual — Food Blob */}
           <div className="hero-visual-col">
-            <div className="hero-stage">
+            <div className="hero-visual-wrapper">
 
-              {/* ── Blob laranja — fundo do stage ────────────── */}
-              <HeroBlob />
-
-              {/* ── Prato principal — camarão, circular ──────── */}
-              <div className="hero-dish-main dish-float">
+              {/* ── Blob laranja com imagem dentro — um só bloco ── */}
+              <div className="hero-food-blob">
                 <img
                   src={DISHES.shrimp}
                   alt="Bowl de camarão com molho"
@@ -285,7 +267,7 @@ const LandingPage = () => {
                 />
               </div>
 
-              {/* ── Badges flutuantes ─────────────────────────── */}
+              {/* ── Badges fora do blob, relativos ao wrapper ─── */}
               <div className="hero-badge-pill hero-badge-pill--top">
                 <Leaf size={13} />
                 <span>100% fresco</span>

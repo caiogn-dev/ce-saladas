@@ -20,13 +20,9 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   DISH IMAGE SYSTEM — Circular crop, sem mix-blend-mode
-   object-fit: cover dentro de border-radius: 50%
+   DISH IMAGE SYSTEM — section dishes (circular)
    ═══════════════════════════════════════════════════════════════ */
 
-/* Container circular — define a forma e o clip */
-.hero-dish-main,
-.hero-dish-mini,
 .section-dish {
   border-radius: 50%;
   overflow: hidden;
@@ -34,9 +30,6 @@
   will-change: transform;
 }
 
-/* Imagem dentro: sempre cobre o container */
-.hero-dish-main img,
-.hero-dish-mini img,
 .section-dish img {
   width: 100%;
   height: 100%;
@@ -230,49 +223,53 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 16px;
+  padding: 0 8px;
 }
 
-/* ─── Stage: quadrado fixo, blob preenche tudo ─── */
-.hero-stage {
+/* ─── Wrapper: posicionamento relativo para os badges ─── */
+.hero-visual-wrapper {
   position: relative;
-  width: min(100%, 460px);
-  aspect-ratio: 1 / 1;
+  width: min(100%, 480px);
   margin: 0 auto;
 }
 
-/* Blob laranja — preenche o stage, sangra levemente para dar profundidade */
-.hero-blob {
-  position: absolute;
-  inset: 0;
+/* ═══════════════════════════════════════════════════════════════
+   HERO FOOD BLOB — bloco em curva, imagem DENTRO da forma
+   Usa CSS border-radius orgânico + overflow: hidden para clipar
+   a foto dentro do blob. Anima suavemente entre formas.
+   ═══════════════════════════════════════════════════════════════ */
+.hero-food-blob {
+  width: 100%;
+  aspect-ratio: 1 / 1.06;
+  background: #F97316;
+  /* Forma orgânica inicial */
+  border-radius: 62% 38% 46% 54% / 55% 42% 58% 45%;
+  overflow: hidden;
+  will-change: transform, border-radius;
+  box-shadow:
+    0 32px 72px rgba(249,115,22,.28),
+    0 8px 24px  rgba(249,115,22,.16);
+  animation: blob-morph 10s ease-in-out infinite;
+}
+
+@keyframes blob-morph {
+  0%   { border-radius: 62% 38% 46% 54% / 55% 42% 58% 45%; }
+  25%  { border-radius: 40% 60% 62% 38% / 48% 58% 42% 52%; }
+  50%  { border-radius: 54% 46% 38% 62% / 60% 38% 56% 44%; }
+  75%  { border-radius: 46% 54% 56% 44% / 38% 62% 40% 60%; }
+  100% { border-radius: 62% 38% 46% 54% / 55% 42% 58% 45%; }
+}
+
+/* Imagem preenche o blob — clipped pela forma curva */
+.hero-food-blob img {
   width: 100%;
   height: 100%;
-  z-index: 0;
+  object-fit: cover;
+  object-position: center 48%;
+  display: block;
   pointer-events: none;
-  overflow: visible;
-  filter: drop-shadow(0 24px 48px rgba(249,115,22,.22));
-}
-
-/* ── Prato principal ── grande círculo no centro do blob laranja */
-.hero-dish-main {
-  position: absolute;
-  z-index: 3;
-  width: 74%;
-  height: 74%;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  /* Clean white ring stands out against orange blob */
-  box-shadow:
-    0 0 0 6px  #fff,
-    0 0 0 14px rgba(255,255,255,.28),
-    0 32px 64px rgba(0,0,0,.18),
-    0 8px 24px  rgba(0,0,0,.12);
-}
-
-/* object-position: foca no bowl, corta menos da comida */
-.hero-dish-main img {
-  object-position: center 55%;
+  user-select: none;
+  -webkit-user-drag: none;
 }
 
 /* ── Prato secundário ── pequeno círculo canto inferior-direito */
@@ -316,15 +313,15 @@
 }
 
 .hero-badge-pill--top {
-  top: 4%;
-  right: -4%;
+  top: 10%;
+  right: -2%;
   animation-delay: 0s;
 }
 .hero-badge-pill--top svg { color: var(--clr-leaf-600); }
 
 .hero-badge-pill--bottom {
-  bottom: 6%;
-  left: -4%;
+  bottom: 14%;
+  left: -2%;
   animation-delay: 2s;
 }
 .hero-badge-pill--bottom svg { color: #F97316; }
@@ -343,14 +340,13 @@
 @media (prefers-reduced-motion: reduce) {
   .hero-copy-col, .hero-visual-col, .hero-title,
   .hero-description, .hero-actions, .hero-stats,
-  .hero-tag, .drizzle-drop, .hero-badge-pill,
-  .hero-dish-main, .hero-dish-mini, .section-dish {
+  .hero-tag, .hero-badge-pill,
+  .hero-food-blob, .section-dish {
     opacity: 1 !important;
     transform: none !important;
     animation: none !important;
     filter: none !important;
   }
-  .badge-float { animation: none !important; }
 }
 
 /* ─── Stat count — número grande, peso emocional ─── */
@@ -950,12 +946,12 @@
   /* Visual primeiro — impacto imediato no mobile */
   .hero-visual-col {
     order: -1;
-    padding: 0 24px;
+    padding: 0 32px;
     width: 100%;
   }
 
-  .hero-stage {
-    width: min(100%, 340px);
+  .hero-visual-wrapper {
+    max-width: 340px;
   }
 
   .hero-copy-col {
@@ -966,9 +962,6 @@
   .hero-title, .hero-description { max-width: none; text-align: center; }
   .hero-actions, .hero-stats { justify-content: center; }
 
-  /* Prato mini menor no mobile */
-  .hero-dish-mini { width: 28%; height: 28%; }
-
   .footer-content { grid-template-columns: 1fr 1fr; }
   .footer-brand { grid-column: 1 / -1; }
 
@@ -977,10 +970,6 @@
     max-width: 520px;
     margin: 0 auto;
   }
-
-  /* Pratos de seção: esconder mobile */
-  .dish-section-salmon,
-  .dish-section-pork { display: none; }
 }
 
 /* ─── 768px ─── */
@@ -994,14 +983,8 @@
     padding: 7px 12px;
     font-size: 0.71rem;
   }
-  .hero-badge-pill--top    { right: 5%; top: 3%; }
-  .hero-badge-pill--bottom { left: 5%; bottom: 8%; }
-
-  .drizzle-drop--2 { display: none; }
-
-  /* Círculos de seção: menores no tablet */
-  .section-dish--right { width: 140px; height: 140px; right: -16px; }
-  .section-dish--left  { width: 130px; height: 130px; left: -16px; }
+  .hero-badge-pill--top    { right: 0; top: 8%; }
+  .hero-badge-pill--bottom { left: 0; bottom: 10%; }
 }
 
 /* ─── 560px ─── */
@@ -1010,10 +993,7 @@
 
   .hero-title { font-size: clamp(1.9rem, 8vw, 2.6rem); }
 
-  .hero-stage { width: min(100%, 280px); }
-
-  .hero-dish-mini { display: none; }
-  .hero-dish-main { width: 74%; height: 74%; }
+  .hero-visual-wrapper { max-width: 280px; }
 
   .features-grid { grid-template-columns: 1fr; }
 
@@ -1069,9 +1049,6 @@
     linear-gradient(180deg, var(--color-bg) 0%, var(--color-bg-muted) 55%, var(--color-bg) 100%);
 }
 
-/* Dark mode: reforçar borda dos círculos */
-.dark .hero-dish-main,
-.dark .hero-dish-mini,
 .dark .section-dish {
   border-color: rgba(255,255,255,.18);
 }
