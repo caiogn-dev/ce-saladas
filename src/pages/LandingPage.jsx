@@ -197,9 +197,9 @@ const LandingPage = () => {
              SCROLL — ScrollTrigger em todos os elementos
           ──────────────────────────────────────────────────── */
 
-          gsap.from('.brand-pill', {
-            opacity: 0, y: 24, stagger: 0.09, duration: 0.55, ease: 'power2.out',
-            scrollTrigger: { trigger: '.brand-strip', start: 'top 92%' },
+          gsap.from('.brand-strip', {
+            opacity: 0, y: 18, duration: 0.55, ease: 'power2.out',
+            scrollTrigger: { trigger: '.brand-strip', start: 'top 96%' },
           });
 
           gsap.from('.step-card', {
@@ -386,13 +386,26 @@ const LandingPage = () => {
         </div>
       </header>
 
-      {/* ── Brand pills ────────────────────────────────────────── */}
-      <section className="brand-strip">
-        <div className="container brand-strip__inner">
-          <div className="brand-pill"><Leaf size={16} /> Ingredientes frescos todo dia</div>
-          <div className="brand-pill"><Clock3 size={16} /> Entrega e retirada</div>
-          <div className="brand-pill"><Zap size={16} /> Monte sua salada</div>
-          <div className="brand-pill"><ShieldCheck size={16} /> Sem conservantes</div>
+      {/* ── Brand strip — marquee ticker ───────────────────────── */}
+      <section className="brand-strip" aria-label="Diferenciais">
+        <div className="brand-strip__track" aria-hidden="true">
+          {/* Duplicado para loop contínuo sem gap */}
+          {[0, 1].map((set) => (
+            <div key={set} className="brand-strip__set">
+              <span className="brand-pill"><Leaf size={14} /> Ingredientes frescos</span>
+              <span className="brand-sep" aria-hidden="true">·</span>
+              <span className="brand-pill"><Clock3 size={14} /> Entrega e retirada</span>
+              <span className="brand-sep" aria-hidden="true">·</span>
+              <span className="brand-pill"><Zap size={14} /> Monte sua salada</span>
+              <span className="brand-sep" aria-hidden="true">·</span>
+              <span className="brand-pill"><ShieldCheck size={14} /> Sem conservantes</span>
+              <span className="brand-sep" aria-hidden="true">·</span>
+              <span className="brand-pill"><Star size={14} fill="currentColor" /> 4.9 no Google</span>
+              <span className="brand-sep" aria-hidden="true">·</span>
+              <span className="brand-pill"><Sparkles size={14} /> Feito na hora</span>
+              <span className="brand-sep" aria-hidden="true">·</span>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -417,7 +430,7 @@ const LandingPage = () => {
               { n: '02', title: 'Monte do seu jeito', body: 'Personalize com ingredientes frescos, proteínas, toppings e molhos saudáveis — tudo feito para você.' },
               { n: '03', title: 'Receba em casa', body: 'Sem cadastro obrigatório. Pague com PIX, cartão ou dinheiro e aguarde a entrega da sua salada.' },
             ].map(({ n, title, body }) => (
-              <div key={n} className="step-card">
+              <div key={n} className="step-card" data-n={n}>
                 <div className="step-number">{n}</div>
                 <h3>{title}</h3>
                 <p>{body}</p>
