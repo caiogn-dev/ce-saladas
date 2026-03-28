@@ -6,9 +6,7 @@
 .landing-page {
   min-height: 100vh;
   color: var(--clr-stone-700);
-  background:
-    radial-gradient(ellipse 70% 50% at 75% -5%, rgba(var(--clr-leaf-rgb), .07) 0%, transparent 60%),
-    linear-gradient(180deg, #fffdf8 0%, #fffaf2 55%, #fdf7ed 100%);
+  background: #FFFBF5;
   overflow-x: clip;
 }
 
@@ -56,8 +54,9 @@
   position: relative;
   min-height: calc(100svh - var(--header-height, 68px));
   overflow: visible;
-  padding: 56px 0 80px;
+  padding: 40px 0 72px;
   isolation: isolate;
+  background: #FFFBF5;
 }
 
 .hero-container {
@@ -81,7 +80,7 @@
   display: inline-flex;
   align-items: center;
   gap: 12px;
-  color: var(--clr-leaf-700);
+  color: #F97316;
   font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 0.12em;
@@ -113,12 +112,11 @@
 
 .hero-accent {
   font-style: italic;
-  color: var(--clr-terra-500);
+  color: #F97316;
   font-weight: 600;
-  /* Subtil glow terra no accent word — desperta apetite */
   text-shadow:
-    0 0 28px rgba(var(--clr-terra-rgb), .22),
-    0 2px 8px  rgba(var(--clr-terra-rgb), .12);
+    0 0 28px rgba(249,115,22, .20),
+    0 2px 8px  rgba(249,115,22, .12);
 }
 
 .hero-description {
@@ -141,25 +139,25 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 14px 28px;
+  padding: 16px 32px;
   border-radius: var(--o-radius-full);
-  background: var(--clr-leaf-600);
+  background: #F97316;
   color: #fff;
   font-size: var(--text-sm);
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.02em;
   text-decoration: none;
   transition:
     background var(--dur-fast) var(--ease-organic),
     transform var(--dur-fast) var(--ease-spring),
     box-shadow var(--dur-base) var(--ease-organic);
-  box-shadow: 0 8px 28px rgba(var(--clr-leaf-rgb), .30);
+  box-shadow: 0 8px 28px rgba(249,115,22, .38);
 }
 
 .btn-hero-main:hover {
-  background: var(--clr-leaf-700);
-  transform: translateY(-3px);
-  box-shadow: 0 16px 40px rgba(var(--clr-leaf-rgb), .38);
+  background: #EA6C0C;
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 16px 40px rgba(249,115,22, .46);
 }
 
 .btn-hero-ghost {
@@ -243,35 +241,33 @@
   margin: 0 auto;
 }
 
-/* Blob verde — preenche o stage e sangra levemente para fora */
+/* Blob laranja — preenche o stage, sangra levemente para dar profundidade */
 .hero-blob {
   position: absolute;
-  top: -4%;
-  left: -8%;
-  width: 116%;
-  height: 108%;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   z-index: 0;
-  opacity: 0.92;
   pointer-events: none;
   overflow: visible;
+  filter: drop-shadow(0 24px 48px rgba(249,115,22,.22));
 }
 
-/* ── Prato principal ── grande círculo centralizado no blob */
+/* ── Prato principal ── grande círculo no centro do blob laranja */
 .hero-dish-main {
   position: absolute;
   z-index: 3;
-  /* 68% do stage, offset levemente para cima-esquerda */
-  width: 68%;
-  height: 68%;
-  top: 8%;
-  left: 8%;
-  /* Concentric rings — luxury editorial feel */
+  width: 74%;
+  height: 74%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  /* Clean white ring stands out against orange blob */
   box-shadow:
-    0 0 0 5px  rgba(255,255,255,.88),
-    0 0 0 11px rgba(var(--clr-leaf-rgb), .12),
-    0 0 0 18px rgba(255,255,255,.28),
-    0 28px 56px rgba(var(--clr-terra-rgb), .20),
-    0 8px 20px  rgba(0,0,0,.14);
+    0 0 0 6px  #fff,
+    0 0 0 14px rgba(255,255,255,.28),
+    0 32px 64px rgba(0,0,0,.18),
+    0 8px 24px  rgba(0,0,0,.12);
 }
 
 /* object-position: foca no bowl, corta menos da comida */
@@ -297,51 +293,6 @@
   object-position: center 60%;
 }
 
-/* ── Orbe de calor — sob o prato principal ── */
-.dish-heat-glow {
-  position: absolute;
-  z-index: 1;
-  /* Centrado no prato principal */
-  top: 40%;
-  left: 10%;
-  width: 62%;
-  height: 40%;
-  border-radius: 50%;
-  background: radial-gradient(
-    ellipse 80% 80% at 50% 80%,
-    rgba(var(--clr-terra-rgb), .32) 0%,
-    rgba(var(--clr-terra-rgb), .12) 45%,
-    transparent 75%
-  );
-  filter: blur(22px);
-  opacity: 0;
-  pointer-events: none;
-  will-change: opacity, transform;
-}
-
-/* ── Gotas decorativas de molho ── */
-.drizzle-drop {
-  position: absolute;
-  z-index: 4;
-  color: var(--clr-terra-400);
-  opacity: 0.7;
-  will-change: transform;
-  pointer-events: none;
-}
-
-.drizzle-drop--1 {
-  width: 14px;
-  top: 7%;
-  right: 4%;
-}
-
-.drizzle-drop--2 {
-  width: 11px;
-  top: 48%;
-  left: 1%;
-  color: var(--clr-leaf-500);
-}
-
 /* ── Badges flutuantes ── dentro do stage */
 .hero-badge-pill {
   position: absolute;
@@ -349,35 +300,34 @@
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  padding: 8px 14px;
+  padding: 10px 16px;
   border-radius: var(--o-radius-full);
-  background: rgba(255,255,255,.95);
+  background: #fff;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(var(--clr-leaf-rgb), .16);
-  box-shadow: 0 6px 20px rgba(0,0,0,.12);
-  font-size: 0.75rem;
+  border: none;
+  box-shadow: 0 8px 24px rgba(0,0,0,.14);
+  font-size: 0.76rem;
   font-weight: 700;
-  color: var(--clr-stone-700);
+  color: var(--clr-stone-800);
   white-space: nowrap;
   will-change: transform;
   animation: badge-float 4s ease-in-out infinite;
 }
 
 .hero-badge-pill--top {
-  top: 5%;
-  right: 5%;
-  color: var(--clr-leaf-700);
+  top: 4%;
+  right: -4%;
   animation-delay: 0s;
 }
 .hero-badge-pill--top svg { color: var(--clr-leaf-600); }
 
 .hero-badge-pill--bottom {
   bottom: 6%;
-  left: 5%;
+  left: -4%;
   animation-delay: 2s;
 }
-.hero-badge-pill--bottom svg { color: var(--clr-terra-500); }
+.hero-badge-pill--bottom svg { color: #F97316; }
 
 @keyframes badge-float {
   0%, 100% { transform: translateY(0); }
@@ -406,13 +356,12 @@
 /* ─── Stat count — número grande, peso emocional ─── */
 .stat-count {
   font-family: var(--font-display);
-  font-size: 1.55rem;
+  font-size: 1.65rem;
   font-weight: 700;
-  font-style: italic;                  /* Fraunces italic = caráter */
-  color: var(--clr-stone-800);
+  font-style: italic;
+  color: #F97316;
   line-height: 1;
-  /* Emotion: SOCIAL PROOF — leve glow verde nos números valida a escolha */
-  text-shadow: 0 0 20px rgba(var(--clr-leaf-rgb), .15);
+  text-shadow: 0 0 24px rgba(249,115,22, .18);
   transition: color var(--dur-base) var(--ease-organic);
 }
 
@@ -422,13 +371,11 @@
 .brand-strip {
   position: relative;
   z-index: 2;
-  padding: 20px 0;
+  padding: 18px 0;
   overflow: hidden;
-  background: rgba(255,255,255,.72);
-  border-top: 1px solid rgba(var(--clr-leaf-rgb), .08);
-  border-bottom: 1px solid rgba(var(--clr-leaf-rgb), .08);
-  backdrop-filter: blur(10px);
-  /* Fade edges so the loop is seamless */
+  background: #fff;
+  border-top: 1px solid rgba(0,0,0,.07);
+  border-bottom: 1px solid rgba(0,0,0,.07);
   -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%);
   mask-image: linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%);
 }
@@ -463,14 +410,14 @@
   gap: 8px;
   padding: 8px 18px;
   border-radius: var(--o-radius-full);
-  background: rgba(var(--clr-leaf-rgb), .07);
-  border: 1px solid rgba(var(--clr-leaf-rgb), .10);
-  color: var(--clr-leaf-700);
+  background: rgba(249,115,22,.08);
+  border: 1px solid rgba(249,115,22,.14);
+  color: #EA6C0C;
   font-size: 0.82rem;
-  font-weight: 500;
+  font-weight: 600;
 }
 
-.brand-pill svg { color: var(--clr-leaf-600); flex-shrink: 0; }
+.brand-pill svg { color: #F97316; flex-shrink: 0; }
 
 .brand-sep {
   margin: 0 16px;
@@ -496,7 +443,7 @@
   align-items: center;
   gap: 8px;
   margin-bottom: 10px;
-  color: var(--clr-leaf-600);
+  color: #F97316;
   font-size: 0.76rem;
   font-weight: 700;
   letter-spacing: 0.12em;
@@ -517,10 +464,9 @@
 
 .section-accent-title em {
   font-style: italic;
-  color: var(--clr-terra-500);
-  /* Wavy underline — organic, artisanal signature */
+  color: #F97316;
   text-decoration: underline;
-  text-decoration-color: rgba(var(--clr-terra-rgb), .38);
+  text-decoration-color: rgba(249,115,22, .35);
   text-decoration-thickness: 2px;
   text-underline-offset: 5px;
   text-decoration-style: wavy;
@@ -532,10 +478,7 @@
    ═══════════════════════════════════════════════════════════════ */
 .how-it-works {
   padding: 88px 0;
-  background:
-    /* Textura orgânica sutil — linho, naturalidade */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"),
-    linear-gradient(180deg, rgba(255,255,255,.6) 0%, rgba(255,248,234,.92) 100%);
+  background: #fff;
 }
 
 .how-it-works__inner {
@@ -590,9 +533,9 @@
   overflow: hidden;
   padding: 32px 26px;
   border-radius: var(--o-radius-2xl);
-  background: linear-gradient(180deg, rgba(255,253,247,.98), rgba(255,249,238,.94));
-  border: 1px solid rgba(var(--clr-leaf-rgb), .10);
-  box-shadow: 0 14px 36px rgba(var(--clr-leaf-rgb), .07);
+  background: #fff;
+  border: 1px solid rgba(0,0,0,.06);
+  box-shadow: 0 8px 28px rgba(0,0,0,.07);
   transition: transform var(--dur-base) var(--ease-organic), box-shadow var(--dur-base);
 }
 
@@ -619,14 +562,9 @@
 }
 
 .step-card:hover {
-  transform: translateY(-5px);
-  /* Emotion: CALOR — glow terra vem de baixo como vapor do prato */
-  box-shadow:
-    0 24px 52px rgba(var(--clr-terra-rgb), .14),
-    0 8px 20px  rgba(var(--clr-terra-rgb), .08),
-    0 2px 6px   rgba(0,0,0,.04);
-  background: linear-gradient(180deg, rgba(255,253,247,.99), rgba(255,245,230,.96));
-  border-color: rgba(var(--clr-terra-rgb), .12);
+  transform: translateY(-6px);
+  box-shadow: 0 24px 52px rgba(249,115,22,.14), 0 8px 20px rgba(0,0,0,.07);
+  border-color: rgba(249,115,22,.18);
 }
 
 .step-number {
@@ -639,8 +577,8 @@
   height: 52px;
   margin-bottom: 18px;
   border-radius: 16px;
-  background: rgba(var(--clr-leaf-rgb), .10);
-  color: var(--clr-leaf-700);
+  background: rgba(249,115,22,.10);
+  color: #F97316;
   font-family: var(--font-display);
   font-size: 1.05rem;
   font-weight: 700;
@@ -651,11 +589,10 @@
     color var(--dur-base);
 }
 
-/* Emotion: PROGRESSO — número acende quando o card é hovered */
 .step-card:hover .step-number {
-  background: rgba(var(--clr-leaf-rgb), .18);
-  color: var(--clr-leaf-800);
-  box-shadow: 0 0 0 4px rgba(var(--clr-leaf-rgb), .10);
+  background: rgba(249,115,22,.18);
+  color: #EA6C0C;
+  box-shadow: 0 0 0 4px rgba(249,115,22,.12);
 }
 
 .step-card h3 {
@@ -684,10 +621,7 @@
    ═══════════════════════════════════════════════════════════════ */
 .why-section {
   padding: 88px 0;
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"),
-    radial-gradient(ellipse 55% 60% at 0% 55%, rgba(var(--clr-leaf-rgb), .05) 0%, transparent 65%),
-    linear-gradient(180deg, #fffdf8 0%, #fdf5e8 100%);
+  background: #FFFBF5;
 }
 
 .why-section__inner {
@@ -706,21 +640,16 @@
 .feature-card {
   padding: 28px 22px;
   border-radius: var(--o-radius-2xl);
-  background: linear-gradient(180deg, rgba(255,253,247,.98), rgba(255,249,238,.94));
-  border: 1px solid rgba(var(--clr-leaf-rgb), .10);
-  box-shadow: 0 12px 32px rgba(var(--clr-leaf-rgb), .06);
+  background: #fff;
+  border: 1px solid rgba(0,0,0,.06);
+  box-shadow: 0 8px 24px rgba(0,0,0,.07);
   transition: transform var(--dur-base) var(--ease-organic), box-shadow var(--dur-base);
 }
 
 .feature-card:hover {
-  transform: translateY(-5px);
-  /* Mesmo calor terra — consistência emocional entre seções */
-  box-shadow:
-    0 22px 48px rgba(var(--clr-terra-rgb), .14),
-    0 8px 18px  rgba(var(--clr-terra-rgb), .07),
-    0 2px 6px   rgba(0,0,0,.04);
-  background: linear-gradient(180deg, rgba(255,253,247,.99), rgba(255,245,230,.96));
-  border-color: rgba(var(--clr-terra-rgb), .12);
+  transform: translateY(-6px);
+  box-shadow: 0 20px 48px rgba(249,115,22,.14), 0 6px 18px rgba(0,0,0,.06);
+  border-color: rgba(249,115,22,.18);
 }
 
 .feature-icon {
@@ -731,8 +660,8 @@
   height: 52px;
   margin-bottom: 16px;
   border-radius: 16px;
-  background: rgba(var(--clr-leaf-rgb), .10);
-  color: var(--clr-leaf-600);
+  background: rgba(249,115,22,.10);
+  color: #F97316;
 }
 
 .feature-card h3 {

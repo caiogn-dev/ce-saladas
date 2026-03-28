@@ -37,32 +37,15 @@ const DISHES = {
 };
 
 /* ─────────────────────────────────────────────────────────────
-   Blob SVG de fundo — orgânico, verde vibrante
+   Blob SVG de fundo — orgânico, laranja vibrante como referência
 ───────────────────────────────────────────────────────────── */
 const HeroBlob = () => (
   <svg className="hero-blob" viewBox="0 0 600 600" aria-hidden="true">
     <path
       className="hero-blob-path"
-      d="M480,300 C492,396 426,486 336,510 C246,534 138,504 84,426 C30,348 36,234 84,156 C132,78 234,36 330,48 C426,60 468,204 480,300 Z"
-      fill="var(--clr-leaf-500)"
+      d="M295,28 C415,28 548,112 558,292 C568,472 455,568 298,568 C141,568 32,464 36,282 C40,100 175,28 295,28 Z"
+      fill="#F97316"
     />
-  </svg>
-);
-
-/* ─────────────────────────────────────────────────────────────
-   Orbe terra de calor — emana de baixo do prato como luz quente
-   Emotion: apetite, calor, desejo imediato
-───────────────────────────────────────────────────────────── */
-const HeatGlow = () => (
-  <div className="dish-heat-glow" aria-hidden="true" />
-);
-
-/* ─────────────────────────────────────────────────────────────
-   Gota SVG decorativa (molho pingando) — cor terra
-───────────────────────────────────────────────────────────── */
-const DrizzleDrop = ({ className }) => (
-  <svg className={`drizzle-drop ${className || ''}`} viewBox="0 0 24 36" aria-hidden="true">
-    <path d="M12 2 C12 2 2 16 2 22 C2 28.627 6.477 34 12 34 C17.523 34 22 28.627 22 22 C22 16 12 2 12 2 Z" fill="currentColor" />
   </svg>
 );
 
@@ -118,59 +101,26 @@ const LandingPage = () => {
           ──────────────────────────────────────────────────── */
           const heroTL = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
-          /* Visual primeiro (mesma TL) — prato entra com opacity+scale */
-          heroTL.from('.dish-hero-main', {
-            opacity: 0, scale: 0.82, y: 40, duration: 0.9, ease: 'back.out(1.4)',
-          }, 0)
-          .from('.dish-hero-secondary', {
-            opacity: 0, x: 30, y: 20, rotation: 6, duration: 0.75, ease: 'back.out(1.3)',
-          }, 0.3)
+          /* Visual primeiro — blob + prato entram juntos */
+          heroTL
+          .from('.hero-blob', { opacity: 0, scale: 0.88, duration: 1.0, ease: 'power2.out' }, 0)
+          .from('.hero-dish-main', {
+            opacity: 0, scale: 0.72, y: 32, duration: 1.0, ease: 'back.out(1.5)',
+          }, 0.1)
 
           /* Copy em cascata */
-          .from('.hero-tag',         { opacity: 0, x: -24, duration: 0.5 }, 0.15)
-          .from('.hero-title',       { opacity: 0, y: 36,  duration: 0.75 }, 0.3)
-          .from('.hero-description', { opacity: 0, y: 22,  duration: 0.6  }, 0.55)
-          .from('.hero-actions',     { opacity: 0, y: 18,  duration: 0.5  }, 0.72)
-          .from('.hero-stats',       { opacity: 0, y: 16,  duration: 0.45 }, 0.88);
+          .from('.hero-tag',         { opacity: 0, x: -24, duration: 0.5 }, 0.2)
+          .from('.hero-title',       { opacity: 0, y: 36,  duration: 0.75 }, 0.35)
+          .from('.hero-description', { opacity: 0, y: 22,  duration: 0.6  }, 0.58)
+          .from('.hero-actions',     { opacity: 0, y: 18,  duration: 0.5  }, 0.74)
+          .from('.hero-stats',       { opacity: 0, y: 16,  duration: 0.45 }, 0.90);
 
-          /* ── Heat glow — aparece depois do prato chegar ────── */
-          gsap.fromTo('.dish-heat-glow',
-            { opacity: 0, scale: 0.8 },
-            {
-              opacity: 0.65, scale: 1,
-              duration: 1.2, ease: 'power2.out',
-              delay: 0.7,
-              /* Pulso contínuo após entrar */
-              onComplete() {
-                gsap.to(this.targets()[0], {
-                  opacity: 0.35, scale: 0.88,
-                  duration: 2.4, ease: 'sine.inOut',
-                  repeat: -1, yoyo: true,
-                });
-              },
-            }
-          );
-
-          /* ── Blob morph contínuo ─────────────────────────── */
+          /* ── Blob morph contínuo — respira suavemente ────── */
           gsap.to('.hero-blob-path', {
             attr: {
-              d: 'M460,285 C478,385 408,478 312,502 C216,526 112,490 66,406 C20,322 46,210 100,140 C154,70 252,32 346,52 C440,72 442,185 460,285 Z',
+              d: 'M280,32 C400,22 552,110 558,295 C564,480 450,572 290,565 C130,558 28,458 38,272 C48,86 160,42 280,32 Z',
             },
-            duration: 14, repeat: -1, yoyo: true, ease: 'sine.inOut',
-          });
-
-          /* ── Gotas de molho — oscilam ────────────────────── */
-          gsap.to('.drizzle-drop', {
-            y: 10, duration: 2.4, repeat: -1, yoyo: true, ease: 'sine.inOut',
-            stagger: { each: 0.5 },
-          });
-
-          /* ── Prato principal entra escalando do centro ─────── */
-          gsap.from('.hero-dish-main', {
-            scale: 0.6, opacity: 0, duration: 0.9, ease: 'back.out(1.6)', delay: 0.1,
-          });
-          gsap.from('.hero-dish-mini', {
-            scale: 0.5, opacity: 0, x: 20, y: 20, duration: 0.7, ease: 'back.out(1.4)', delay: 0.5,
+            duration: 12, repeat: -1, yoyo: true, ease: 'sine.inOut',
           });
 
           /* ── Float suave — herança para todos os pratos ───── */
@@ -207,19 +157,10 @@ const LandingPage = () => {
             scrollTrigger: { trigger: '.steps-grid', start: 'top 84%' },
           });
 
-          gsap.from('.section-dish--right', {
-            opacity: 0, x: 60, scale: 0.8, duration: 1.0, ease: 'back.out(1.3)',
-            scrollTrigger: { trigger: '.how-it-works', start: 'top 74%' },
-          });
 
           gsap.from('.feature-card', {
             opacity: 0, y: 44, scale: 0.96, stagger: 0.09, duration: 0.65, ease: 'back.out(1.2)',
             scrollTrigger: { trigger: '.features-grid', start: 'top 86%' },
-          });
-
-          gsap.from('.section-dish--left', {
-            opacity: 0, x: -60, scale: 0.8, duration: 1.0, ease: 'back.out(1.3)',
-            scrollTrigger: { trigger: '.why-section', start: 'top 74%' },
           });
 
           gsap.utils.toArray('.section-accent-title').forEach((el) => {
@@ -243,20 +184,6 @@ const LandingPage = () => {
             y: -40, ease: 'none',
             scrollTrigger: {
               trigger: '.hero-section', start: 'top top', end: 'bottom top', scrub: 2.5,
-            },
-          });
-
-          gsap.to('.section-dish--right', {
-            y: -28, ease: 'none',
-            scrollTrigger: {
-              trigger: '.how-it-works', start: 'top bottom', end: 'bottom top', scrub: 1.8,
-            },
-          });
-
-          gsap.to('.section-dish--left', {
-            y: -36, ease: 'none',
-            scrollTrigger: {
-              trigger: '.why-section', start: 'top bottom', end: 'bottom top', scrub: 1.8,
             },
           });
 
@@ -346,16 +273,8 @@ const LandingPage = () => {
           <div className="hero-visual-col">
             <div className="hero-stage">
 
-              {/* ── Blob orgânico — fundo do stage ──────────── */}
+              {/* ── Blob laranja — fundo do stage ────────────── */}
               <HeroBlob />
-
-              {/* ── Orbe de calor sob o prato principal ─────── */}
-              <HeatGlow />
-
-              {/* ── Prato secundário — salmão, canto inferior ─ */}
-              <div className="hero-dish-mini dish-float" aria-hidden="true">
-                <img src={DISHES.salmon} alt="" draggable="false" />
-              </div>
 
               {/* ── Prato principal — camarão, circular ──────── */}
               <div className="hero-dish-main dish-float">
@@ -365,10 +284,6 @@ const LandingPage = () => {
                   draggable="false"
                 />
               </div>
-
-              {/* ── Gotas decorativas de molho ───────────────── */}
-              <DrizzleDrop className="drizzle-drop--1" />
-              <DrizzleDrop className="drizzle-drop--2" />
 
               {/* ── Badges flutuantes ─────────────────────────── */}
               <div className="hero-badge-pill hero-badge-pill--top">
@@ -413,11 +328,6 @@ const LandingPage = () => {
       <section id="como-funciona" className="how-it-works">
         <div className="container how-it-works__inner">
 
-          {/* Prato de salmão — círculo decorativo à direita */}
-          <div className="section-dish section-dish--right dish-float" aria-hidden="true">
-            <img src={DISHES.salmon} alt="" draggable="false" />
-          </div>
-
           <div className="section-header">
             <p className="section-eyebrow">Como pedir</p>
             <h2 className="section-accent-title">
@@ -443,11 +353,6 @@ const LandingPage = () => {
       {/* ── Por que Cê Saladas ─────────────────────────────────── */}
       <section className="why-section">
         <div className="container why-section__inner">
-
-          {/* Prato de porco/legumes — círculo decorativo à esquerda */}
-          <div className="section-dish section-dish--left dish-float" aria-hidden="true">
-            <img src={DISHES.pork} alt="" draggable="false" />
-          </div>
 
           <div className="section-header">
             <p className="section-eyebrow">Por que escolher</p>

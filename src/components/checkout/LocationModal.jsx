@@ -161,7 +161,14 @@ const LocationModal = ({
   return (
     <div className={styles.modalOverlay} onClick={handleClose}>
       <div className={styles.modalContent} onClick={(event) => event.stopPropagation()}>
-        <button className={styles.closeButton} onClick={handleClose}>×</button>
+
+        {/* Sticky header — always visible, even when content scrolls */}
+        <div className={styles.stickyHeader}>
+          <button className={styles.closeButton} onClick={handleClose}>×</button>
+        </div>
+
+        {/* Scrollable body */}
+        <div className={styles.scrollBody}>
 
         {currentStep === 'detecting' && (
           <div className={styles.detectingStep}>
@@ -370,6 +377,14 @@ const LocationModal = ({
               </div>
             </div>
 
+          </div>
+        )}
+
+        </div>{/* end scrollBody */}
+
+        {/* Sticky footer — confirm button always accessible, above keyboard */}
+        {currentStep === 'confirm' && detectedAddress && (
+          <div className={styles.stickyFooter}>
             <button
               onClick={handleConfirmLocation}
               className={styles.confirmBtnFull}
@@ -380,6 +395,7 @@ const LocationModal = ({
             </button>
           </div>
         )}
+
       </div>
     </div>
   );

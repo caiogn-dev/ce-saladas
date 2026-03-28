@@ -25,30 +25,59 @@
   max-width: 480px;
   width: 100%;
   max-height: 90vh;
-  overflow-y: auto;
+  max-height: 90dvh; /* ajusta dinamicamente quando teclado abre */
+  overflow: hidden; /* scroll fica no .scrollBody interno */
   position: relative;
-  box-shadow: 
+  display: flex;
+  flex-direction: column;
+  box-shadow:
     0 8px 16px rgba(0, 0, 0, 0.08),
     0 24px 48px rgba(0, 0, 0, 0.16);
   animation: modalSlideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-/* Custom scrollbar */
-.modalContent::-webkit-scrollbar {
+/* ============================================
+   Sticky layout: header / scroll body / footer
+   ============================================ */
+.stickyHeader {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 0.75rem 1rem 0;
+  flex-shrink: 0;
+}
+
+.scrollBody {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+.stickyFooter {
+  flex-shrink: 0;
+  background: var(--color-bg-card);
+  border-top: 1px solid var(--clr-stone-100);
+  /* espaço para o home indicator do iPhone */
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Custom scrollbar (movido para .scrollBody) */
+.scrollBody::-webkit-scrollbar {
   width: 6px;
 }
 
-.modalContent::-webkit-scrollbar-track {
+.scrollBody::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.modalContent::-webkit-scrollbar-thumb {
+.scrollBody::-webkit-scrollbar-thumb {
   background: #d4d4d4;
   border-radius: 3px;
 }
 
-.modalContent::-webkit-scrollbar-thumb:hover {
+.scrollBody::-webkit-scrollbar-thumb:hover {
   background: #b4b4b4;
 }
 
@@ -64,11 +93,9 @@
 }
 
 .closeButton {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  width: 40px;
-  height: 40px;
+  /* removido position: absolute — agora fica dentro do stickyHeader */
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   border: none;
   background: var(--clr-stone-100);
@@ -78,8 +105,9 @@
   align-items: center;
   justify-content: center;
   color: var(--clr-stone-500);
-  z-index: 10;
+  touch-action: manipulation; /* sem delay de 300ms no iOS */
   transition: all 0.2s ease;
+  flex-shrink: 0;
 }
 
 .closeButton:hover {
@@ -96,7 +124,7 @@
    GPS Detection Step
    ============================================ */
 .detectingStep {
-  padding: 3.5rem 2rem;
+  padding: 1.25rem 2rem 2rem;
   text-align: center;
 }
 
@@ -245,7 +273,7 @@
    Map Step
    ============================================ */
 .mapStep {
-  padding: 1.75rem;
+  padding: 0.5rem 1.75rem 1.75rem;
 }
 
 .mapStep h2 {
@@ -319,7 +347,7 @@
    Confirm Step
    ============================================ */
 .confirmStep {
-  padding: 1.75rem;
+  padding: 0 0 0.5rem;
 }
 
 .confirmStep h2 {
@@ -1288,14 +1316,14 @@
   font-weight: 500;
 }
 
-/* Full Width Confirm Button */
+/* Full Width Confirm Button — agora no stickyFooter */
 .confirmBtnFull {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
   width: calc(100% - 2rem);
-  margin: 0 1rem 1.25rem;
+  margin: 0.75rem 1rem;
   padding: 1rem;
   background: linear-gradient(135deg, var(--color-brand-orange) 0%, var(--color-brand-orange-dark) 100%);
   color: white;
@@ -1304,6 +1332,7 @@
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
+  touch-action: manipulation; /* sem delay de 300ms no iOS */
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 4px 16px rgba(var(--color-brand-orange-rgb), 0.3);
 }
@@ -1327,7 +1356,43 @@
   font-size: 1.1rem;
 }
 
-/* Responsive adjustments for new components */
+/* ============================================
+   Mobile: bottom sheet + iOS safe areas
+   ============================================ */
+
+/* A partir de 640px — slide-up bottom sheet */
+@media (max-width: 640px) {
+  .modalOverlay {
+    align-items: flex-end; /* modal sobe do rodapé */
+    padding: 0;
+  }
+
+  .modalContent {
+    max-width: 100%;
+    max-height: 92vh;    /* fallback para browsers mais antigos */
+    max-height: 92dvh;   /* dvh: ajusta quando teclado iOS abre/fecha */
+    border-radius: 1.25rem 1.25rem 0 0;
+    animation: modalSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .stickyHeader {
+    padding: 0.875rem 1rem 0;
+  }
+
+  .stickyFooter {
+    /* home indicator do iPhone */
+    padding-bottom: max(env(safe-area-inset-bottom, 0px), 16px);
+  }
+
+  .confirmBtnFull {
+    margin: 0.5rem 1rem;
+    padding: 1rem;
+    /* garante altura mínima de tap target */
+    min-height: 52px;
+  }
+}
+
+/* Pequenos ajustes adicionais em telas muito pequenas */
 @media (max-width: 480px) {
   .confirmHeader {
     padding: 1rem 1rem 0.5rem;
@@ -1361,15 +1426,9 @@
     font-size: 0.85rem;
   }
 
-  .confirmBtnFull {
-    width: calc(100% - 1.5rem);
-    margin: 0 0.75rem 1rem;
-    padding: 0.875rem;
-  }
-
   .complementInput {
     padding: 0.75rem;
-    font-size: 0.9rem;
+    font-size: 1rem; /* mínimo 16px para evitar zoom automático do iOS */
   }
 }
 
