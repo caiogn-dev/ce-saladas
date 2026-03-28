@@ -39,28 +39,91 @@
   grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
   align-items: center;
   gap: 48px;
+  /* perspectiva para rotationX dos chars */
+  perspective: 800px;
 }
 
 .hero-copy,
 .hero-visual {
-  opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
   min-width: 0;
+  /* GSAP controla a entrada — sem CSS transition aqui */
 }
 
-.hero-copy.is-visible,
-.hero-visual.is-visible {
-  opacity: 1;
-  transform: translateY(0);
+/* Caracteres do título — GSAP anima cada um */
+.hero-char {
+  display: inline-block;
+  /* perspectiva 3D para rotationX */
+  transform-style: preserve-3d;
+  will-change: transform, opacity, filter;
 }
 
-/* Fallback: show if JS animation class never fires */
+/* Elementos orgânicos flutuantes no hero */
+.hero-floaters {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 0;
+}
+
+.floater {
+  position: absolute;
+  will-change: transform;
+}
+
+.floater--leaf-1 {
+  width: 64px;
+  top: 8%;
+  right: 18%;
+  opacity: 0.85;
+}
+
+.floater--tomato {
+  width: 44px;
+  top: 22%;
+  right: 48%;
+  opacity: 0.80;
+}
+
+.floater--leaf-2 {
+  width: 46px;
+  bottom: 18%;
+  right: 12%;
+  opacity: 0.70;
+}
+
+.floater--dot-1 {
+  width: 28px;
+  top: 38%;
+  right: 6%;
+  opacity: 0.75;
+}
+
+.floater--seed {
+  width: 22px;
+  top: 55%;
+  right: 40%;
+  opacity: 0.65;
+}
+
+.floater--dot-2 {
+  width: 18px;
+  bottom: 28%;
+  right: 56%;
+  opacity: 0.60;
+}
+
+/* Fallback: sem JS / prefers-reduced-motion — tudo visível */
 @media (prefers-reduced-motion: reduce) {
   .hero-copy,
-  .hero-visual {
-    opacity: 1;
-    transform: none;
+  .hero-visual,
+  .hero-char,
+  .hero-description,
+  .hero-actions,
+  .hero-kicker-row {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
   }
 }
 
@@ -103,6 +166,8 @@
   color: var(--color-brand-green-dark);
   line-height: 1.02;
   text-wrap: balance;
+  /* Permite rotationX 3D nos chars filhos */
+  transform-style: preserve-3d;
 }
 
 .hero-description {
@@ -155,12 +220,15 @@
 .hero-brand-surface {
   width: min(100%, 480px);
   padding: 18px;
-  border-radius: 34px;
+  /* Estado inicial orgânico — GSAP morphs entre este e outro blob */
+  border-radius: 42% 58% 54% 46% / 46% 42% 58% 54%;
   background:
     linear-gradient(145deg, rgba(255, 253, 247, 0.96), rgba(255, 249, 238, 0.9)),
     rgba(255, 255, 255, 0.72);
   border: 1px solid rgba(var(--color-brand-green-rgb), 0.16);
   box-shadow: 0 24px 52px rgba(74, 89, 18, 0.12);
+  overflow: hidden;
+  will-change: border-radius;
 }
 
 .hero-image,
@@ -773,3 +841,34 @@
   box-shadow: 0 26px 60px rgba(0, 0, 0, 0.5);
 }
 
+
+/* ── Botão CTA blob — forma orgânica que pulsa ──────────────── */
+.btn-cta-blob {
+  border-radius: 60% 40% 52% 48% / 44% 56% 44% 56%;
+  transition:
+    background var(--dur-fast) var(--ease-organic),
+    box-shadow var(--dur-base) var(--ease-organic),
+    border-radius var(--dur-slow) var(--ease-organic);
+  will-change: border-radius, transform;
+}
+
+.btn-cta-blob:hover {
+  border-radius: 48% 52% 40% 60% / 56% 44% 56% 44%;
+  box-shadow:
+    0 16px 48px rgba(var(--clr-leaf-rgb), 0.35),
+    0 4px 16px rgba(var(--clr-leaf-rgb), 0.20);
+}
+
+/* Mobile: floaters menores e reposicionados */
+@media (max-width: 768px) {
+  .floater--leaf-1 { width: 44px; top: 6%; right: 8%; }
+  .floater--tomato  { width: 32px; top: 14%; right: 52%; }
+  .floater--leaf-2  { display: none; }
+  .floater--dot-1   { width: 22px; top: 30%; right: 4%; }
+  .floater--seed    { display: none; }
+  .floater--dot-2   { width: 14px; bottom: 20%; right: 60%; }
+
+  .hero-brand-surface {
+    border-radius: 38% 62% 50% 50% / 46% 46% 54% 54%;
+  }
+}
