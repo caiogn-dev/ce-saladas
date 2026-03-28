@@ -9,88 +9,73 @@ import {
   MessageCircle,
   ShieldCheck,
   Sparkles,
+  Star,
   Zap,
 } from 'lucide-react';
 import Navbar from '../components/Navbar';
-import ShaderBackground from '../components/ui/ShaderBackground';
 import { useStore } from '../context/StoreContext';
 
+/* ─────────────────────────────────────────────────────────────
+   Promo store sync
+───────────────────────────────────────────────────────────── */
 const PROMO_STORAGE_KEY = 'storefrontPromoSeen';
 const PROMO_EVENT = 'storefront-promo';
-
-function subscribePromo(callback) {
-  window.addEventListener(PROMO_EVENT, callback);
-  return () => { window.removeEventListener(PROMO_EVENT, callback); };
+function subscribePromo(cb) {
+  window.addEventListener(PROMO_EVENT, cb);
+  return () => window.removeEventListener(PROMO_EVENT, cb);
 }
 function getPromoSnapshot() { return sessionStorage.getItem(PROMO_STORAGE_KEY); }
 function getPromoServerSnapshot() { return null; }
 
-/* ── Character split para o título animado ─────────────── */
-const SplitTitle = ({ text, className }) => (
-  <h1 className={className} aria-label={text}>
-    {[...text].map((char, i) => (
-      <span
-        key={i}
-        className="hero-char"
-        aria-hidden="true"
-        style={{ display: 'inline-block', whiteSpace: char === ' ' ? 'pre' : undefined }}
-      >
-        {char === ' ' ? '\u00A0' : char}
-      </span>
-    ))}
-  </h1>
+/* ─────────────────────────────────────────────────────────────
+   Blob SVG de fundo do hero — orgânico, verde
+───────────────────────────────────────────────────────────── */
+const HeroBlob = () => (
+  <svg
+    className="hero-blob"
+    viewBox="0 0 560 560"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    aria-hidden="true"
+  >
+    <path
+      d="M470,285 C480,370 420,460 335,490 C250,520 145,495 88,425 C31,355 28,245 72,165 C116,85 218,35 315,45 C412,55 460,200 470,285 Z"
+      fill="var(--clr-leaf-500)"
+    />
+  </svg>
 );
 
-/* ── SVG orgânicos flutuantes ─────────────────────────── */
-const FloatingElements = () => (
-  <div className="hero-floaters" aria-hidden="true">
-    {/* Folha grande — canto superior direito */}
-    <svg className="floater floater--leaf-1" viewBox="0 0 48 68" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M24 3C24 3 45 17 45 36C45 52 36 65 24 65C12 65 3 52 3 36C3 17 24 3 24 3Z" fill="rgba(100,158,32,0.18)" />
-      <path d="M24 3 L24 65" stroke="rgba(100,158,32,0.28)" strokeWidth="1.5" strokeLinecap="round" />
-      <path d="M24 20 Q34 28 30 40" stroke="rgba(100,158,32,0.20)" strokeWidth="1" strokeLinecap="round" />
-      <path d="M24 20 Q14 28 18 40" stroke="rgba(100,158,32,0.20)" strokeWidth="1" strokeLinecap="round" />
-    </svg>
+/* ─────────────────────────────────────────────────────────────
+   Título com última palavra em cor accent (terra)
+───────────────────────────────────────────────────────────── */
+const AccentTitle = ({ text, className }) => {
+  const words = text.trim().split(/\s+/);
+  // Colore a última palavra
+  const accent = words.pop();
+  const rest = words.join(' ');
+  return (
+    <h1 className={className}>
+      {rest && <>{rest}{' '}</>}
+      <em className="hero-accent">{accent}</em>
+    </h1>
+  );
+};
 
-    {/* Tomate/círculo — centro-alto */}
-    <svg className="floater floater--tomato" viewBox="0 0 40 40" fill="none">
-      <circle cx="20" cy="20" r="18" fill="rgba(222,107,54,0.14)" />
-      <circle cx="20" cy="20" r="11" fill="rgba(222,107,54,0.10)" />
-      <circle cx="20" cy="20" r="5"  fill="rgba(222,107,54,0.16)" />
-    </svg>
-
-    {/* Folha menor — esquerda */}
-    <svg className="floater floater--leaf-2" viewBox="0 0 34 50" fill="none">
-      <path d="M17 2C17 2 32 14 32 28C32 41 25 48 17 48C9 48 2 41 2 28C2 14 17 2 17 2Z" fill="rgba(74,93,18,0.15)" />
-      <path d="M17 2 L17 48" stroke="rgba(74,93,18,0.22)" strokeWidth="1.2" strokeLinecap="round" />
-    </svg>
-
-    {/* Ponto verde — flutuante livre */}
-    <svg className="floater floater--dot-1" viewBox="0 0 24 24" fill="none">
-      <circle cx="12" cy="12" r="11" fill="rgba(150,190,60,0.20)" />
-    </svg>
-
-    {/* Semente/grão — quinoa */}
-    <svg className="floater floater--seed" viewBox="0 0 18 28" fill="none">
-      <ellipse cx="9" cy="14" rx="7" ry="12" fill="rgba(140,110,60,0.16)" />
-      <ellipse cx="9" cy="14" rx="3" ry="6"  fill="rgba(140,110,60,0.12)" />
-    </svg>
-
-    {/* Ponto pequeno — decoração */}
-    <svg className="floater floater--dot-2" viewBox="0 0 16 16" fill="none">
-      <circle cx="8" cy="8" r="7" fill="rgba(100,158,32,0.22)" />
-    </svg>
-  </div>
+/* ─────────────────────────────────────────────────────────────
+   Mini thumbnails flutuantes — sem imagens reais, usa SVG
+───────────────────────────────────────────────────────────── */
+const MiniCircle = ({ className, children }) => (
+  <div className={`hero-mini ${className}`}>{children}</div>
 );
 
-/* ══════════════════════════════════════════════════════════════ */
-
+/* ══════════════════════════════════════════════════════════════
+   LandingPage
+══════════════════════════════════════════════════════════════ */
 const LandingPage = () => {
   const { store, isLoading } = useStore();
   const hasSeenPromo = useSyncExternalStore(subscribePromo, getPromoSnapshot, getPromoServerSnapshot);
   const [promoDismissed, setPromoDismissed] = useState(false);
-  const heroRef = useRef(null);
-  const gsapCtxRef = useRef(null);
+  const pageRef = useRef(null);
 
   const showPromo = !hasSeenPromo && !promoDismissed;
 
@@ -102,246 +87,122 @@ const LandingPage = () => {
     setPromoDismissed(true);
   };
 
-  /* ── GSAP animations ───────────────────────────────────────── */
+  /* ── GSAP ────────────────────────────────────────────────── */
   useEffect(() => {
     if (typeof window === 'undefined' || !store) return;
-
-    // Prefere movimentos reduzidos — respeitar o sistema
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReducedMotion) {
-      // Garante visibilidade sem animação
-      document.querySelectorAll('.hero-char, .hero-description, .hero-actions, .hero-kicker-row').forEach((el) => {
-        el.style.opacity = '1';
-        el.style.transform = 'none';
-        el.style.filter = 'none';
-      });
-      return;
-    }
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReduced) return;
 
     let cleanup = null;
 
-    // Dynamic import — evita quebrar SSR no Next.js
-    Promise.all([
-      import('gsap'),
-      import('gsap/ScrollTrigger'),
-    ]).then(([{ gsap }, { ScrollTrigger }]) => {
-      gsap.registerPlugin(ScrollTrigger);
+    Promise.all([import('gsap'), import('gsap/ScrollTrigger')]).then(
+      ([{ gsap }, { ScrollTrigger }]) => {
+        gsap.registerPlugin(ScrollTrigger);
 
-      const ctx = gsap.context(() => {
+        const ctx = gsap.context(() => {
+          /* Hero — entra da esquerda em cascata */
+          gsap.from('.hero-tag', { opacity: 0, x: -24, duration: 0.5, ease: 'power2.out', delay: 0.1 });
+          gsap.from('.hero-title', { opacity: 0, y: 40, duration: 0.75, ease: 'power3.out', delay: 0.25 });
+          gsap.from('.hero-description', { opacity: 0, y: 24, duration: 0.6, ease: 'power2.out', delay: 0.55 });
+          gsap.from('.hero-actions', { opacity: 0, y: 18, duration: 0.5, ease: 'power2.out', delay: 0.75 });
+          gsap.from('.hero-stats', { opacity: 0, y: 16, duration: 0.5, ease: 'power2.out', delay: 0.95 });
 
-        /* ── 1. Hero: kicker badge ──────────────────────────── */
-        gsap.from('.hero-kicker-row', {
-          opacity: 0,
-          y: -16,
-          duration: 0.6,
-          ease: 'power2.out',
-          delay: 0.15,
-        });
+          /* Blob entra da direita */
+          gsap.from('.hero-visual-col', { opacity: 0, x: 60, scale: 0.92, duration: 1.0, ease: 'power3.out', delay: 0.15 });
 
-        /* ── 2. Título caracter a caracter ──────────────────── */
-        const chars = document.querySelectorAll('.hero-char');
-        if (chars.length) {
-          gsap.from(chars, {
-            opacity: 0,
-            y: 70,
-            rotationX: -50,
-            filter: 'blur(6px)',
-            stagger: { each: 0.028, from: 'start' },
-            duration: 0.85,
-            ease: 'back.out(1.4)',
-            delay: 0.3,
-          });
-        }
-
-        /* ── 3. Descrição ────────────────────────────────────── */
-        gsap.from('.hero-description', {
-          opacity: 0,
-          y: 28,
-          duration: 0.75,
-          ease: 'power2.out',
-          delay: 0.9,
-        });
-
-        /* ── 4. Botões CTA do hero ───────────────────────────── */
-        gsap.from('.hero-actions', {
-          opacity: 0,
-          y: 18,
-          duration: 0.6,
-          ease: 'power2.out',
-          delay: 1.1,
-        });
-
-        /* ── 5. Hero visual entra da direita ─────────────────── */
-        gsap.from('.hero-brand-panel', {
-          opacity: 0,
-          x: 50,
-          scale: 0.94,
-          duration: 1.0,
-          ease: 'power3.out',
-          delay: 0.2,
-        });
-
-        /* ── 6. Blob morph na surface da imagem ──────────────── */
-        // Sem MorphSVG — usamos border-radius CSS animation
-        gsap.to('.hero-brand-surface', {
-          borderRadius: '62% 38% 72% 28% / 38% 64% 36% 62%',
-          duration: 9,
-          repeat: -1,
-          yoyo: true,
-          ease: 'sine.inOut',
-        });
-
-        /* ── 7. Floaters — cada um com easing único ──────────── */
-        const floaterConfigs = [
-          { sel: '.floater--leaf-1', y: -28, rot: 14, dur: 7.2 },
-          { sel: '.floater--tomato',  y: -18, rot: -8, dur: 5.8 },
-          { sel: '.floater--leaf-2',  y: -22, rot: 10, dur: 8.5 },
-          { sel: '.floater--dot-1',   y: -35, rot: 0,  dur: 6.1 },
-          { sel: '.floater--seed',    y: -20, rot: -12, dur: 9.0 },
-          { sel: '.floater--dot-2',   y: -14, rot: 5,  dur: 4.8 },
-        ];
-        floaterConfigs.forEach(({ sel, y, rot, dur }, i) => {
-          const el = document.querySelector(sel);
-          if (!el) return;
-          gsap.to(el, {
-            y,
-            rotation: rot,
-            duration: dur,
+          /* Blob morph contínuo */
+          gsap.to('.hero-blob path', {
+            attr: {
+              d: 'M450,270 C465,360 400,465 310,492 C220,519 118,488 72,412 C26,336 40,228 90,155 C140,82 240,42 330,55 C420,68 435,180 450,270 Z',
+            },
+            duration: 10,
             repeat: -1,
             yoyo: true,
             ease: 'sine.inOut',
-            delay: i * 0.38,
           });
-        });
 
-        /* ── 8. Parallax scroll na imagem do hero ─────────────── */
-        gsap.to('.hero-brand-panel', {
-          y: -50,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: '.hero-section',
-            start: 'top top',
-            end: 'bottom top',
-            scrub: 1.5,
-          },
-        });
-
-        /* ── 9. Brand strip ──────────────────────────────────── */
-        gsap.from('.brand-strip__item', {
-          opacity: 0,
-          y: 36,
-          stagger: 0.14,
-          duration: 0.65,
-          ease: 'power2.out',
-          scrollTrigger: { trigger: '.brand-strip', start: 'top 88%' },
-        });
-
-        /* ── 10. Section headers ─────────────────────────────── */
-        gsap.utils.toArray('.section-header').forEach((header) => {
-          gsap.from(header, {
-            opacity: 0,
-            y: 30,
-            duration: 0.7,
-            ease: 'power2.out',
-            scrollTrigger: { trigger: header, start: 'top 85%' },
-          });
-        });
-
-        /* ── 11. Steps: brotam do fundo com stagger ──────────── */
-        gsap.from('.step-card', {
-          opacity: 0,
-          y: 70,
-          scale: 0.92,
-          stagger: { each: 0.15, from: 'start' },
-          duration: 0.85,
-          ease: 'back.out(1.3)',
-          scrollTrigger: { trigger: '.steps-grid', start: 'top 82%' },
-        });
-
-        /* ── 12. Features grid ───────────────────────────────── */
-        gsap.from('.feature-card', {
-          opacity: 0,
-          y: 55,
-          scale: 0.94,
-          stagger: { each: 0.10, from: 'start' },
-          duration: 0.75,
-          ease: 'back.out(1.2)',
-          scrollTrigger: { trigger: '.features-grid', start: 'top 84%' },
-        });
-
-        /* ── 13. CTA section: entra com dramatismo ─────────────
-           Texto vem da esquerda, botão "brota" do zero         */
-        gsap.from('.cta-copy > *', {
-          opacity: 0,
-          x: -50,
-          stagger: 0.12,
-          duration: 0.8,
-          ease: 'power3.out',
-          scrollTrigger: { trigger: '.cta-section', start: 'top 75%' },
-        });
-
-        gsap.from('.cta-actions .btn-primary', {
-          opacity: 0,
-          scale: 0.5,
-          rotation: -8,
-          duration: 0.85,
-          ease: 'back.out(2)',
-          scrollTrigger: { trigger: '.cta-section', start: 'top 72%' },
-        });
-
-        // CTA blob-pulse no botão (breathe)
-        const ctaBtn = document.querySelector('.cta-actions .btn-primary');
-        if (ctaBtn) {
-          gsap.to(ctaBtn, {
-            scale: 1.04,
-            duration: 2.2,
+          /* Mini circles flutuam */
+          gsap.to('.hero-mini', {
+            y: -14,
+            duration: 3.5,
             repeat: -1,
             yoyo: true,
             ease: 'sine.inOut',
-            delay: 2,
+            stagger: { each: 0.8 },
           });
-        }
 
-      }, heroRef);
+          /* Brand strip */
+          gsap.from('.brand-pill', {
+            opacity: 0, y: 30, stagger: 0.12, duration: 0.6, ease: 'power2.out',
+            scrollTrigger: { trigger: '.brand-strip', start: 'top 88%' },
+          });
 
-      gsapCtxRef.current = ctx;
-      cleanup = () => ctx.revert();
-    });
+          /* Steps */
+          gsap.from('.step-card', {
+            opacity: 0, y: 60, scale: 0.94,
+            stagger: { each: 0.14 }, duration: 0.8, ease: 'back.out(1.3)',
+            scrollTrigger: { trigger: '.steps-grid', start: 'top 82%' },
+          });
 
-    return () => { cleanup?.(); };
+          /* Features */
+          gsap.from('.feature-card', {
+            opacity: 0, y: 50, scale: 0.95,
+            stagger: { each: 0.1 }, duration: 0.7, ease: 'back.out(1.2)',
+            scrollTrigger: { trigger: '.features-grid', start: 'top 84%' },
+          });
+
+          /* Section titles */
+          gsap.utils.toArray('.section-accent-title').forEach((el) => {
+            gsap.from(el, {
+              opacity: 0, y: 28, duration: 0.65, ease: 'power2.out',
+              scrollTrigger: { trigger: el, start: 'top 87%' },
+            });
+          });
+
+          /* CTA */
+          gsap.from('.cta-copy > *', {
+            opacity: 0, x: -40, stagger: 0.1, duration: 0.75, ease: 'power3.out',
+            scrollTrigger: { trigger: '.cta-section', start: 'top 78%' },
+          });
+          gsap.from('.cta-btn-wrap', {
+            opacity: 0, scale: 0.6, duration: 0.8, ease: 'back.out(2)',
+            scrollTrigger: { trigger: '.cta-section', start: 'top 75%' },
+          });
+
+          /* Parallax hero visual */
+          gsap.to('.hero-visual-col', {
+            y: -40, ease: 'none',
+            scrollTrigger: { trigger: '.hero-section', start: 'top top', end: 'bottom top', scrub: 1.8 },
+          });
+        }, pageRef);
+
+        cleanup = () => ctx.revert();
+      }
+    );
+
+    return () => cleanup?.();
   }, [store]);
 
-  if (isLoading || !store) {
-    return <div className="loading-screen">Carregando...</div>;
-  }
+  if (isLoading || !store) return <div className="loading-screen">Carregando...</div>;
 
   const whatsappNumber = store.whatsapp_number || store.phone || '';
   const whatsappUrl = whatsappNumber ? `https://api.whatsapp.com/send?phone=${whatsappNumber}` : '#';
   const instagramUrl = store.metadata?.instagram_url || '#';
-  const heroTitle = store.metadata?.hero_title || 'Saladas frescas e comida saudável entregues para você.';
+  const heroTitle = store.metadata?.hero_title || 'Saladas frescas entregues para você';
   const heroDescription = store.description || 'Saladas, pratos leves e combinações frescas para quem quer comer bem sem complicação.';
 
   return (
-    <div className="landing-page" ref={heroRef}>
+    <div className="landing-page" ref={pageRef}>
       <Navbar />
 
-      {/* ── Promo modal ────────────────────────────────────── */}
+      {/* ── Promo ─────────────────────────────────────────────── */}
       {showPromo && (
         <div className="promo-modal-overlay" onClick={handleClosePromo} role="presentation">
-          <div
-            className="promo-modal"
-            role="dialog"
-            aria-modal="true"
-            aria-label={`Fluxo de checkout em ${store.name}`}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button className="promo-close" onClick={handleClosePromo} aria-label="Fechar aviso">×</button>
+          <div className="promo-modal" role="dialog" aria-modal="true" aria-label="Fluxo de checkout" onClick={(e) => e.stopPropagation()}>
+            <button className="promo-close" onClick={handleClosePromo} aria-label="Fechar">×</button>
             <div className="promo-badge">Novo fluxo</div>
             <h3>Agora o pedido termina com menos atrito</h3>
-            <p>
-              O cliente adiciona os itens à sacola, informa apenas e-mail e celular e segue para
-              um checkout mais direto, com entrega e pagamento organizados.
-            </p>
+            <p>Adicione itens, informe e-mail e celular, e siga para um checkout direto com entrega e pagamento organizados.</p>
             <div className="promo-actions">
               <Link href="/cardapio" className="btn-primary">Explorar o cardápio</Link>
               <button type="button" className="btn-secondary" onClick={handleClosePromo}>Fechar</button>
@@ -350,146 +211,168 @@ const LandingPage = () => {
         </div>
       )}
 
-      {/* ── Hero ───────────────────────────────────────────── */}
+      {/* ══════════════════════════════════════════════════════
+          HERO — blob + circular image
+      ══════════════════════════════════════════════════════ */}
       <header className="hero-section">
-        <div className="hero-shader-shell" aria-hidden="true">
-          <ShaderBackground className="hero-shader-canvas" />
-          <div className="hero-shader-overlay" />
-        </div>
-
-        {/* Elementos orgânicos flutuantes */}
-        <FloatingElements />
-
         <div className="container hero-container">
-          {/* Copy */}
-          <div className="hero-copy">
-            <div className="hero-kicker-row">
-              <span className="hero-kicker">Cê Saladas</span>
-              <span className="hero-chip">Leve, fresco e objetivo</span>
-            </div>
 
-            <SplitTitle text={heroTitle} className="hero-title" />
+          {/* Copy */}
+          <div className="hero-copy-col">
+            <p className="hero-tag">
+              <span className="hero-tag-line" aria-hidden="true" />
+              {store.name || 'Cê Saladas'}
+            </p>
+
+            <AccentTitle text={heroTitle} className="hero-title" />
+
             <p className="hero-description">{heroDescription}</p>
 
             <div className="hero-actions">
-              <Link href="/cardapio" className="btn-primary btn-glow">
-                Ver cardápio
-                <ArrowRight size={18} />
+              <Link href="/cardapio" className="btn-primary btn-hero-main">
+                Ver cardápio <ArrowRight size={18} />
               </Link>
-              <a href="#como-funciona" className="btn-secondary">Entender o fluxo</a>
+              <a href="#como-funciona" className="btn-hero-ghost">Como funciona</a>
+            </div>
+
+            <div className="hero-stats">
+              <div className="hero-stat">
+                <strong>100+</strong>
+                <span>Pedidos por semana</span>
+              </div>
+              <div className="hero-stat-sep" aria-hidden="true" />
+              <div className="hero-stat">
+                <strong>4.9</strong>
+                <span className="hero-stat-stars">
+                  {[...Array(5)].map((_, i) => <Star key={i} size={12} fill="currentColor" />)}
+                </span>
+              </div>
+              <div className="hero-stat-sep" aria-hidden="true" />
+              <div className="hero-stat">
+                <strong>Fresh</strong>
+                <span>Todo dia</span>
+              </div>
             </div>
           </div>
 
           {/* Visual */}
-          <div className="hero-visual">
-            <div className="hero-brand-panel">
-              <div className="hero-brand-badge">
-                <Leaf size={16} />
-                Ingredientes frescos todos os dias
-              </div>
-              <div className="hero-brand-surface">
+          <div className="hero-visual-col">
+            <div className="hero-visual-inner">
+              {/* Blob verde de fundo */}
+              <HeroBlob />
+
+              {/* Imagem circular principal */}
+              <div className="hero-food-ring">
                 {store.banner_url ? (
-                  <img src={store.banner_url} alt={store.name} className="hero-image" />
+                  <img src={store.banner_url} alt={store.name} className="hero-food-img" />
                 ) : (
-                  <div className="hero-placeholder">
-                    <span>Cê</span>
-                    <small>Saladas</small>
+                  <div className="hero-food-placeholder">
+                    <Leaf size={48} />
+                    <span>Cê Saladas</span>
                   </div>
                 )}
               </div>
+
+              {/* Badge flutuante — canto superior */}
+              <MiniCircle className="hero-mini--badge">
+                <Leaf size={14} />
+                <span>Fresco</span>
+              </MiniCircle>
+
+              {/* Pill inferior — entrega */}
+              <MiniCircle className="hero-mini--delivery">
+                <Clock3 size={14} />
+                <span>Delivery disponível</span>
+              </MiniCircle>
             </div>
           </div>
+
         </div>
       </header>
 
-      {/* ── Brand strip ────────────────────────────────────── */}
+      {/* ── Brand pills ────────────────────────────────────────── */}
       <section className="brand-strip">
         <div className="container brand-strip__inner">
-          <div className="brand-strip__item"><Leaf size={18} /> Saladas frescas todo dia</div>
-          <div className="brand-strip__item"><Clock3 size={18} /> Ingredientes naturais e saudáveis</div>
-          <div className="brand-strip__item"><Zap size={18} /> Delivery e retirada disponíveis</div>
+          <div className="brand-pill"><Leaf size={16} /> Ingredientes frescos todo dia</div>
+          <div className="brand-pill"><Clock3 size={16} /> Entrega e retirada</div>
+          <div className="brand-pill"><Zap size={16} /> Monte sua salada</div>
+          <div className="brand-pill"><ShieldCheck size={16} /> Sem conservantes</div>
         </div>
       </section>
 
-      {/* ── Como funciona ──────────────────────────────────── */}
+      {/* ── Como funciona ──────────────────────────────────────── */}
       <section id="como-funciona" className="how-it-works">
         <div className="container">
           <div className="section-header">
-            <span className="section-eyebrow">Como pedir</span>
-            <h2 className="section-title">Salada fresca em poucos passos</h2>
+            <p className="section-eyebrow">Como pedir</p>
+            <h2 className="section-accent-title">
+              Salada fresca em <em>poucos passos</em>
+            </h2>
           </div>
           <div className="steps-grid">
-            <div className="step-card">
-              <div className="step-number">01</div>
-              <h3>Escolha sua salada</h3>
-              <p>Navegue pelo cardápio de saladas, bowls e pratos fit. Veja ingredientes, calorias e preço antes de decidir.</p>
-            </div>
-            <div className="step-card">
-              <div className="step-number">02</div>
-              <h3>Monte do seu jeito</h3>
-              <p>Personalize com ingredientes frescos, proteínas, toppings e molhos saudáveis — tudo feito para você.</p>
-            </div>
-            <div className="step-card">
-              <div className="step-number">03</div>
-              <h3>Receba em casa</h3>
-              <p>Sem cadastro obrigatório. Pague com PIX, cartão ou dinheiro e aguarde a entrega da sua salada.</p>
-            </div>
+            {[
+              { n: '01', title: 'Escolha sua salada', body: 'Navegue pelo cardápio de saladas, bowls e pratos fit. Veja ingredientes e preço antes de decidir.' },
+              { n: '02', title: 'Monte do seu jeito', body: 'Personalize com ingredientes frescos, proteínas, toppings e molhos saudáveis — tudo feito para você.' },
+              { n: '03', title: 'Receba em casa', body: 'Sem cadastro obrigatório. Pague com PIX, cartão ou dinheiro e aguarde a entrega da sua salada.' },
+            ].map(({ n, title, body }) => (
+              <div key={n} className="step-card">
+                <div className="step-number">{n}</div>
+                <h3>{title}</h3>
+                <p>{body}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* ── Por que Cê Saladas ─────────────────────────────── */}
-      <section className="why-ce-saladas">
+      {/* ── Por que Cê Saladas ─────────────────────────────────── */}
+      <section className="why-section">
         <div className="container">
           <div className="section-header">
-            <span className="section-eyebrow">Por que escolher</span>
-            <h2 className="section-title">Por que escolher o Cê Saladas</h2>
+            <p className="section-eyebrow">Por que escolher</p>
+            <h2 className="section-accent-title">
+              Por que o <em>Cê Saladas</em>
+            </h2>
           </div>
           <div className="features-grid">
-            <article className="feature-card">
-              <span className="feature-icon"><Leaf size={22} /></span>
-              <h3>Ingredientes sempre frescos</h3>
-              <p>Selecionados diariamente para garantir sabor, qualidade e frescor em cada salada preparada.</p>
-            </article>
-            <article className="feature-card">
-              <span className="feature-icon"><Sparkles size={22} /></span>
-              <h3>Comida fit e saudável</h3>
-              <p>Do low carb ao proteico: opções balanceadas para quem cuida da alimentação sem abrir mão do sabor.</p>
-            </article>
-            <article className="feature-card">
-              <span className="feature-icon"><Zap size={22} /></span>
-              <h3>Monte sua salada</h3>
-              <p>Escolha base, proteína, toppings e molho. Crie a salada perfeita com os ingredientes que você quer.</p>
-            </article>
-            <article className="feature-card">
-              <span className="feature-icon"><ShieldCheck size={22} /></span>
-              <h3>Delivery e retirada</h3>
-              <p>Peça pelo cardápio digital e receba em casa ou retire na loja — rápido, fácil e sem complicação.</p>
-            </article>
+            {[
+              { icon: <Leaf size={24} />, title: 'Ingredientes frescos', body: 'Selecionados diariamente para garantir sabor e qualidade em cada salada.' },
+              { icon: <Sparkles size={24} />, title: 'Comida fit e saudável', body: 'Do low carb ao proteico: opções balanceadas sem abrir mão do sabor.' },
+              { icon: <Zap size={24} />, title: 'Monte sua salada', body: 'Escolha base, proteína, toppings e molho. A salada perfeita para você.' },
+              { icon: <ShieldCheck size={24} />, title: 'Delivery e retirada', body: 'Peça pelo cardápio e receba em casa ou retire na loja — rápido e fácil.' },
+            ].map(({ icon, title, body }) => (
+              <article key={title} className="feature-card">
+                <span className="feature-icon">{icon}</span>
+                <h3>{title}</h3>
+                <p>{body}</p>
+              </article>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* ── CTA final ──────────────────────────────────────── */}
+      {/* ── CTA ────────────────────────────────────────────────── */}
       <section className="cta-section">
+        {/* Blob decorativo esquerdo */}
+        <svg className="cta-blob" viewBox="0 0 400 400" aria-hidden="true">
+          <path d="M340,200 C350,270 300,350 225,365 C150,380 70,330 45,255 C20,180 60,90 135,60 C210,30 290,70 325,140 C335,160 338,180 340,200 Z" fill="rgba(255,255,255,0.08)" />
+        </svg>
         <div className="container cta-shell">
           <div className="cta-copy">
-            <span className="section-eyebrow section-eyebrow--light">Peça agora</span>
-            <h2>Monte sua salada agora mesmo.</h2>
-            <p>
-              Saladas frescas, bowls proteicos e opções fit prontos para você. Monte seu pedido
-              em poucos toques e receba em casa ou retire na loja.
-            </p>
+            <p className="section-eyebrow section-eyebrow--light">Peça agora</p>
+            <h2>Monte sua salada <em>agora mesmo.</em></h2>
+            <p>Saladas frescas, bowls proteicos e opções fit. Em poucos toques, receba em casa ou retire na loja.</p>
           </div>
-          <div className="cta-actions">
-            <Link href="/cardapio" className="btn-primary btn-large btn-cta-blob">
+          <div className="cta-btn-wrap">
+            <Link href="/cardapio" className="btn-cta-primary">
               Ir para o cardápio
+              <ArrowRight size={20} />
             </Link>
           </div>
         </div>
       </section>
 
-      {/* ── Footer ─────────────────────────────────────────── */}
+      {/* ── Footer ─────────────────────────────────────────────── */}
       <footer className="footer">
         <div className="container footer-content">
           <div className="footer-brand">
