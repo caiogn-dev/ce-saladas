@@ -217,112 +217,114 @@
 /* ─── Stage (coluna visual) ─── */
 .hero-visual-col {
   min-width: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  /* Breathing room so badges don't clip at viewport edge */
+  padding: 0 24px 0 8px;
 }
 
 .hero-stage {
   position: relative;
-  width: min(100%, 560px);
-  aspect-ratio: 1 / 1.05;
+  width: min(100%, 460px);
+  margin: 0 auto;
+  /* NO aspect-ratio — main dish (in flow) sets the height */
 }
 
-/* Blob verde de fundo */
+/* Blob verde — absolute background, stays behind everything */
 .hero-blob {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+  top: -6%;
+  left: -12%;
+  width: 90%;
+  height: 86%;
   z-index: 0;
-  opacity: 0.88;
+  opacity: 0.9;
+  pointer-events: none;
   will-change: transform;
+  overflow: visible;
 }
 
-/* Prato principal — camarão, ocupa ~75% do stage */
+/* ── Prato principal: IN NORMAL FLOW ──
+   Determina a altura do stage. Sem absolute, sem overflow. */
 .dish-hero-main {
-  position: absolute;
+  position: relative;
   z-index: 2;
-  width: 84%;
-  top: 4%;
-  left: 50%;
-  transform: translateX(-50%);
+  display: block;
+  width: 100%;
+  /* GSAP entry animation usa transform, não position */
   transform-origin: center bottom;
 }
 
-/* Prato secundário — salmão, aparece por baixo à esquerda */
+/* ── Prato secundário: pequeno, decorativo, canto inferior ── */
 .dish-hero-secondary {
   position: absolute;
   z-index: 1;
-  width: 52%;
-  bottom: -6%;
-  right: -8%;
+  width: 42%;
+  bottom: 0;
+  right: -2%;
+  opacity: 0.88;
   transform-origin: center bottom;
-  opacity: 0.92;
 }
 
-/* ─── Orbe de calor — emana de baixo do prato ───────────────
-   Emotion: APETITE — luz quente vindo do prato, como vapor
-   Começa invisível; GSAP pulsa após o prato pousar
-─────────────────────────────────────────────────────────── */
+/* ── Orbe de calor ──
+   Emotion: APETITE — luz quente de baixo do prato, como vapor
+   Posição relativa ao stage; GSAP pulsa após o prato pousar  */
 .dish-heat-glow {
   position: absolute;
-  z-index: 1;                          /* entre blob e prato */
-  bottom: 8%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 72%;
-  height: 42%;
+  z-index: 1;
+  bottom: 28%;                         /* alinha sob o bowl */
+  left: 5%;
+  width: 82%;
+  height: 38%;
   border-radius: 50%;
   background: radial-gradient(
     ellipse 100% 100% at 50% 100%,
-    rgba(var(--clr-terra-rgb), .38) 0%,
-    rgba(var(--clr-terra-rgb), .18) 35%,
+    rgba(var(--clr-terra-rgb), .35) 0%,
+    rgba(var(--clr-terra-rgb), .14) 40%,
     transparent 72%
   );
-  filter: blur(18px);
-  opacity: 0;                          /* GSAP controla */
+  filter: blur(20px);
+  opacity: 0;
   pointer-events: none;
   will-change: opacity, transform;
 }
 
-/* Gotas de molho — decorativas, cor terra */
+/* ── Gotas decorativas de molho ── */
 .drizzle-drop {
   position: absolute;
   z-index: 3;
   color: var(--clr-terra-400);
-  opacity: 0.72;
+  opacity: 0.65;
   will-change: transform;
+  pointer-events: none;
 }
 
 .drizzle-drop--1 {
-  width: 18px;
-  top: 10%;
-  right: 6%;
+  width: 16px;
+  top: 12%;
+  right: 8%;
 }
 
 .drizzle-drop--2 {
-  width: 13px;
-  top: 28%;
-  left: 4%;
+  width: 12px;
+  top: 32%;
+  left: 2%;
   color: var(--clr-leaf-500);
 }
 
-/* Badges flutuantes */
+/* ── Badges flutuantes ── */
 .hero-badge-pill {
   position: absolute;
-  z-index: 4;
+  z-index: 5;
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  padding: 9px 16px;
+  padding: 9px 14px;
   border-radius: var(--o-radius-full);
-  background: rgba(255,255,255,.92);
+  background: rgba(255,255,255,.94);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border: 1px solid rgba(var(--clr-leaf-rgb), .14);
-  box-shadow: 0 8px 24px rgba(0,0,0,.10);
-  font-size: 0.78rem;
+  box-shadow: 0 6px 20px rgba(0,0,0,.10);
+  font-size: 0.76rem;
   font-weight: 700;
   color: var(--clr-stone-700);
   white-space: nowrap;
@@ -331,16 +333,16 @@
 }
 
 .hero-badge-pill--top {
-  top: 6%;
-  right: -5%;
+  top: 4%;
+  right: 0;                            /* dentro da coluna */
   color: var(--clr-leaf-700);
   animation-delay: 0s;
 }
 .hero-badge-pill--top svg { color: var(--clr-leaf-600); }
 
 .hero-badge-pill--bottom {
-  bottom: 8%;
-  left: -8%;
+  bottom: 14%;
+  left: 0;                             /* dentro da coluna */
   animation-delay: 1.8s;
 }
 .hero-badge-pill--bottom svg { color: var(--clr-terra-500); }
@@ -900,7 +902,18 @@
 @media (max-width: 900px) {
   .hero-container {
     grid-template-columns: 1fr;
-    gap: 32px;
+    gap: 16px;
+  }
+
+  /* Visual primeiro — impacto imediato no mobile */
+  .hero-visual-col {
+    order: -1;
+    padding: 0 24px;
+    width: 100%;
+  }
+
+  .hero-stage {
+    width: min(100%, 340px);
   }
 
   .hero-copy-col {
@@ -911,14 +924,8 @@
   .hero-title, .hero-description { max-width: none; text-align: center; }
   .hero-actions, .hero-stats { justify-content: center; }
 
-  .hero-visual-col {
-    max-width: 380px;
-    margin: 0 auto;
-    width: 100%;
-  }
-
-  .dish-hero-main { width: 88%; }
-  .dish-hero-secondary { width: 54%; right: -6%; bottom: -4%; }
+  /* Prato secundário: menor */
+  .dish-hero-secondary { width: 36%; right: 0; }
 
   .footer-content { grid-template-columns: 1fr 1fr; }
   .footer-brand { grid-column: 1 / -1; }
@@ -929,34 +936,38 @@
     margin: 0 auto;
   }
 
-  /* Pratos de seção reposicionados em telas menores */
-  .dish-section-salmon { right: -16px; width: 200px; opacity: 0.65; }
-  .dish-section-pork   { left: -16px;  width: 190px; opacity: 0.65; }
-}
-
-/* ─── 768px ─── */
-@media (max-width: 768px) {
-  .hero-section { padding: 38px 0 52px; }
-  .how-it-works, .why-section, .cta-section { padding: 52px 0; }
-
-  .cta-shell { flex-direction: column; align-items: flex-start; }
-
-  .hero-badge-pill { padding: 7px 12px; font-size: 0.72rem; }
-  .hero-badge-pill--top   { right: -2%; }
-  .hero-badge-pill--bottom { left: -4%; }
-
-  /* Pratos de seção: ocultar em mobile para não cortar o layout */
+  /* Pratos de seção: esconder mobile */
   .dish-section-salmon,
   .dish-section-pork { display: none; }
 }
 
+/* ─── 768px ─── */
+@media (max-width: 768px) {
+  .hero-section { padding: 24px 0 36px; }
+  .how-it-works, .why-section, .cta-section { padding: 52px 0; }
+
+  .cta-shell { flex-direction: column; align-items: flex-start; }
+
+  .hero-badge-pill {
+    padding: 7px 12px;
+    font-size: 0.71rem;
+  }
+  .hero-badge-pill--top    { right: 4%; top: 2%; }
+  .hero-badge-pill--bottom { left: 4%; bottom: 12%; }
+
+  .drizzle-drop--2 { display: none; }
+}
+
 /* ─── 560px ─── */
 @media (max-width: 560px) {
-  .hero-section { padding: 26px 0 38px; }
+  .hero-section { padding: 16px 0 28px; }
 
-  .hero-title { font-size: clamp(2rem, 8vw, 2.8rem); }
+  .hero-title { font-size: clamp(1.9rem, 8vw, 2.6rem); }
 
-  .hero-visual-col { max-width: 300px; }
+  .hero-stage { width: min(100%, 280px); }
+
+  /* Ocultar prato secundário em telas muito pequenas */
+  .dish-hero-secondary { display: none; }
 
   .features-grid { grid-template-columns: 1fr; }
 
