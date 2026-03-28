@@ -1432,3 +1432,203 @@
   }
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   DARK MODE — CheckoutModal
+   ═══════════════════════════════════════════════════════════════ */
+:global(.dark) .modalContent {
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+:global(.dark) .stickyFooter {
+  background: var(--color-bg-card);
+  border-top-color: var(--color-border);
+}
+
+:global(.dark) .scrollBody::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+}
+:global(.dark) .scrollBody::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-hint);
+}
+
+:global(.dark) .closeButton {
+  background: var(--color-bg-muted);
+  color: var(--color-text-muted);
+}
+:global(.dark) .closeButton:hover {
+  background: var(--color-border);
+  color: var(--color-text-base);
+}
+
+/* GPS / detecting step */
+:global(.dark) .detectingStep h2,
+:global(.dark) .mapStep h2,
+:global(.dark) .confirmStep h2,
+:global(.dark) .sectionTitle {
+  color: var(--color-text-base);
+}
+:global(.dark) .detectingStep p,
+:global(.dark) .mapStep p {
+  color: var(--color-text-muted);
+}
+
+:global(.dark) .pulseRing {
+  border-color: rgba(var(--clr-terra-rgb), 0.34);
+}
+:global(.dark) .pulseRing::before {
+  border-color: rgba(var(--clr-terra-rgb), 0.16);
+}
+
+:global(.dark) .errorBox {
+  background: rgba(220, 38, 38, .10);
+  border-color: rgba(220, 38, 38, .28);
+}
+
+:global(.dark) .skipBtn {
+  background: var(--color-bg-muted);
+  color: var(--color-text-base);
+  border-color: var(--color-border);
+}
+:global(.dark) .skipBtn:hover {
+  background: var(--color-border);
+}
+
+:global(.dark) .skipLink {
+  color: var(--color-text-hint);
+}
+
+/* Map step */
+:global(.dark) .mapLoading {
+  background: var(--color-bg-muted);
+  color: var(--color-text-muted);
+}
+:global(.dark) .loadingOverlay {
+  background: rgba(22, 16, 10, 0.92);
+}
+:global(.dark) .spinner {
+  border-color: var(--color-bg-muted);
+  border-top-color: var(--clr-terra-400);
+}
+
+/* Confirm step */
+:global(.dark) .deliveryInfoCard {
+  background: linear-gradient(135deg, var(--clr-terra-600) 0%, var(--clr-terra-500) 100%);
+  box-shadow: 0 4px 20px rgba(var(--clr-terra-rgb), 0.3);
+}
+:global(.dark) .addressCard {
+  background: var(--color-bg-muted);
+  border-color: var(--color-border);
+}
+:global(.dark) .streetName { color: var(--color-text-base); }
+:global(.dark) .neighborhood { color: var(--color-text-muted); }
+:global(.dark) .cityState { color: var(--color-text-hint); }
+
+:global(.dark) .editBtn {
+  background: var(--color-bg-muted);
+  color: var(--color-text-base);
+  border-color: var(--color-border);
+}
+:global(.dark) .editBtn:hover {
+  background: var(--color-border);
+}
+
+/* Cart items */
+:global(.dark) .cartSection {
+  border-bottom-color: var(--color-border);
+}
+:global(.dark) .cartItem {
+  background: var(--color-bg-muted);
+  border-color: var(--color-border);
+}
+:global(.dark) .cartItem:hover {
+  background: rgba(var(--clr-terra-rgb), .06);
+  border-color: rgba(var(--clr-terra-rgb), .2);
+}
+
+/* Delivery options */
+:global(.dark) .deliveryOption:hover {
+  background: rgba(var(--clr-terra-rgb), .05);
+  border-color: rgba(var(--clr-terra-rgb), .18);
+}
+:global(.dark) .deliveryOption.selected {
+  background: rgba(var(--clr-terra-rgb), .08);
+  border-color: rgba(var(--clr-terra-rgb), .3);
+}
+:global(.dark) .confirmedAddress {
+  background: rgba(var(--clr-terra-rgb), .06);
+  border-color: rgba(var(--clr-terra-rgb), .2);
+}
+
+/* Order total */
+:global(.dark) .orderTotal {
+  background: var(--color-bg-muted);
+  border-color: var(--color-border);
+}
+:global(.dark) .totalRow.grandTotal {
+  border-top-color: rgba(var(--clr-terra-rgb), .2);
+}
+:global(.dark) .totalRow.grandTotal span:last-child {
+  color: var(--clr-terra-300);
+}
+
+/* Payment */
+:global(.dark) .paymentLockedHint {
+  background: rgba(234, 179, 8, .10);
+  border-color: rgba(234, 179, 8, .2);
+}
+:global(.dark) .cardPaymentContainer,
+:global(.dark) .paymentSummary {
+  background: var(--color-bg-muted);
+  border-color: var(--color-border);
+}
+
+:global(.dark) .errorMessage {
+  background: rgba(220, 38, 38, .12);
+  border-color: rgba(220, 38, 38, .25);
+  color: #fca5a5;
+}
+
+/* Map hint & edit overlay */
+:global(.dark) .mapHintBanner {
+  background: rgba(var(--clr-terra-rgb), .08);
+  border-color: rgba(var(--clr-terra-rgb), .15);
+}
+:global(.dark) .mapEditOverlay span {
+  background: rgba(22, 16, 10, 0.92);
+  color: var(--color-text-base);
+}
+
+/* Address inline & complement */
+:global(.dark) .addressCardInline {
+  background: var(--color-bg-muted);
+  border-color: var(--color-border);
+}
+:global(.dark) .complementInput {
+  background: var(--color-bg-muted);
+  border-color: var(--color-border);
+  color: var(--color-text-base);
+}
+:global(.dark) .complementInput:focus {
+  border-color: var(--clr-terra-400);
+  box-shadow: 0 0 0 3px rgba(var(--clr-terra-rgb), 0.12);
+}
+:global(.dark) .complementHint {
+  background: rgba(234, 179, 8, .10);
+  color: #fbbf24;
+}
+
+/* Delivery stats & fee */
+:global(.dark) .deliveryStatsCompact {
+  background: rgba(var(--clr-terra-rgb), .06);
+  border-color: rgba(var(--clr-terra-rgb), .12);
+}
+:global(.dark) .feeValue {
+  color: var(--clr-terra-300);
+}
+
+/* Disabled confirm button */
+:global(.dark) .confirmBtnFull:disabled {
+  background: var(--color-bg-muted);
+  color: var(--color-text-hint);
+}
+

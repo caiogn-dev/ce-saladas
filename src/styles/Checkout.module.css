@@ -1204,6 +1204,173 @@
   }
 }
 
+/* ============================================
+   DARK MODE
+   ============================================ */
+:global(.dark) .checkoutPage {
+  background: var(--color-bg);
+}
+:global(.dark) .checkoutMain,
+:global(.dark) .orderSummary,
+:global(.dark) .detectedAddressCard {
+  background: var(--color-bg-card);
+  box-shadow: var(--o-shadow-md);
+}
+:global(.dark) .section {
+  border-color: var(--color-border);
+}
+:global(.dark) .sectionTitle,
+:global(.dark) .confirmationHeader h3,
+:global(.dark) .streetAddress,
+:global(.dark) .gpsLoadingText {
+  color: var(--color-text-base);
+}
+/* Form inputs */
+:global(.dark) .input,
+:global(.dark) .select {
+  background: var(--color-bg-muted);
+  border-color: var(--color-border);
+  color: var(--color-text-base);
+}
+:global(.dark) .input:focus,
+:global(.dark) .select:focus {
+  border-color: var(--clr-terra-400);
+  border-style: solid;
+  box-shadow: 0 0 0 3px rgba(var(--clr-terra-rgb), .12);
+}
+:global(.dark) .label {
+  color: var(--color-text-muted);
+}
+/* Shipping / Payment options */
+:global(.dark) .methodOption,
+:global(.dark) .paymentOption {
+  border-color: var(--color-border);
+  background: var(--color-bg-card);
+}
+:global(.dark) .methodOption:hover,
+:global(.dark) .paymentOption:hover {
+  border-color: var(--clr-terra-400);
+  background: rgba(var(--clr-terra-rgb), .06);
+}
+:global(.dark) .methodOption input,
+:global(.dark) .paymentOption input,
+:global(.dark) .checkboxLabel input,
+:global(.dark) .saveAddressCheckbox input {
+  accent-color: var(--clr-terra-400);
+}
+:global(.dark) .cardPaymentContainer {
+  background: var(--color-bg-muted);
+}
+/* Customer / ID card */
+:global(.dark) .savedCustomerInfo {
+  background: rgba(var(--clr-terra-rgb), .08);
+  border-color: rgba(var(--clr-terra-rgb), .22);
+}
+:global(.dark) .savedInfoHeader { color: var(--clr-terra-300); }
+:global(.dark) .savedFieldHint  { color: var(--clr-terra-300); }
+:global(.dark) .identificationCard,
+:global(.dark) .personalDataCard {
+  background: var(--color-bg-muted);
+  border-color: var(--color-border);
+}
+:global(.dark) .formSectionEyebrow { color: var(--clr-terra-300); }
+:global(.dark) .identificationHelp,
+:global(.dark) .identificationSummaryLabel { color: var(--color-text-hint); }
+:global(.dark) .identificationError {
+  background: rgba(190,18,60,.12);
+  border-color: rgba(190,18,60,.28);
+  color: #fca5a5;
+}
+/* Map button */
+:global(.dark) .selectOnMapButton {
+  background: var(--color-bg-muted);
+  border-color: var(--clr-terra-400);
+  color: var(--clr-terra-300);
+}
+:global(.dark) .selectOnMapButton:hover {
+  background: rgba(var(--clr-terra-rgb), .10);
+  border-style: solid;
+}
+/* GPS loading / error */
+:global(.dark) .gpsLoading {
+  background: var(--color-bg-muted);
+}
+:global(.dark) .spinner {
+  border-color: var(--color-border);
+  border-top-color: var(--clr-terra-400);
+}
+:global(.dark) .skipGpsButton {
+  border-color: var(--color-border);
+  color: var(--color-text-muted);
+}
+:global(.dark) .skipGpsButton:hover { background: var(--color-border); }
+:global(.dark) .gpsError {
+  background: rgba(220,38,38,.10);
+  border-color: rgba(220,38,38,.22);
+}
+:global(.dark) .gpsErrorMessage { color: #fca5a5; }
+:global(.dark) .manualEntryButton {
+  background: var(--color-bg-muted);
+  border-color: var(--color-border);
+  color: var(--color-text-muted);
+}
+:global(.dark) .manualEntryButton:hover { background: var(--color-border); }
+/* Address confirmation */
+:global(.dark) .addressConfirmation { background: var(--color-bg-muted); }
+:global(.dark) .deliveryDetails { border-color: var(--color-border); }
+:global(.dark) .mapInfoOverlay {
+  background: rgba(22, 16, 10, 0.92);
+  box-shadow: 0 4px 12px rgba(0,0,0,.4);
+}
+:global(.dark) .zoneInfo { border-color: var(--color-border); }
+:global(.dark) .editButton {
+  background: var(--color-bg-muted);
+  border-color: rgba(var(--clr-terra-rgb), .28);
+  color: var(--clr-terra-300);
+}
+:global(.dark) .editButton:hover,
+:global(.dark) .manualButton:hover {
+  background: rgba(var(--clr-terra-rgb), .08);
+}
+:global(.dark) .manualButton {
+  border-color: rgba(var(--clr-terra-rgb), .28);
+  color: var(--color-text-muted);
+}
+/* Coupon */
+:global(.dark) .appliedCoupon {
+  background: rgba(var(--clr-terra-rgb), .08);
+  border-color: rgba(var(--clr-terra-rgb), .22);
+}
+:global(.dark) .couponCode,
+:global(.dark) .couponDiscount { color: var(--clr-terra-300); }
+:global(.dark) .removeCouponButton {
+  background: rgba(220,38,38,.18);
+  color: #fca5a5;
+}
+:global(.dark) .removeCouponButton:hover { background: rgba(220,38,38,.28); }
+:global(.dark) .discountRow { color: var(--clr-terra-300); }
+:global(.dark) .freeDelivery,
+:global(.dark) .freeShipping { color: var(--clr-terra-300); }
+/* Scheduling */
+:global(.dark) .schedulingOptions { background: var(--color-bg-muted); }
+/* Summary */
+:global(.dark) .summaryTitle { border-color: var(--color-border); }
+:global(.dark) .cartItem { border-color: var(--color-border); }
+:global(.dark) .summaryTotals { border-color: var(--color-border); }
+:global(.dark) .securePayment { background: var(--color-bg-muted); }
+/* Error */
+:global(.dark) .errorMessage {
+  background: rgba(220,38,38,.12);
+  border-color: rgba(220,38,38,.25);
+  color: #fca5a5;
+}
+/* Submit disabled */
+:global(.dark) .submitButton:disabled {
+  background: var(--color-bg-muted);
+  color: var(--color-text-hint);
+}
+:global(.dark) .applyCouponButton:disabled { background: var(--color-bg-muted); }
+
 @media (max-width: 480px) {
   .checkoutPage {
     padding: 1rem 0.5rem;

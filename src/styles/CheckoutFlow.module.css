@@ -28,7 +28,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  color: var(--clr-leaf-700);
+  color: var(--color-marsala);
   text-decoration: none;
   font-size: 0.875rem;
   font-weight: 500;
@@ -87,14 +87,14 @@
 .step.active .stepNumber {
   background: var(--color-primary);
   color: white;
-  box-shadow: 0 4px 16px rgba(var(--clr-leaf-rgb), 0.32);
+  box-shadow: 0 4px 16px rgba(var(--clr-terra-rgb), 0.32);
   transform: scale(1.05);
 }
 
 .step.completed .stepNumber {
   background: var(--color-primary);
   color: white;
-  box-shadow: 0 4px 12px rgba(var(--clr-leaf-rgb), 0.24);
+  box-shadow: 0 4px 12px rgba(var(--clr-terra-rgb), 0.24);
   opacity: 0.7;
 }
 
@@ -314,7 +314,7 @@
   color: var(--color-marsala);
 }
 :global(.dark) .backLink:hover {
-  background: rgba(100, 158, 32, .12);
+  background: rgba(var(--clr-terra-rgb), .12);
 }
 
 :global(.dark) .stepNumber {
@@ -336,4 +336,26 @@
 
 :global(.dark) .emptyCartContent p {
   color: var(--color-text-muted);
+}
+
+:global(.dark) .checkoutContent {
+  background: var(--color-bg-card);
+  border-color: var(--color-border);
+}
+
+:global(.dark) .checkoutHeader h1 {
+  color: var(--color-text-base);
+}
+
+:global(.dark) .step.active .stepNumber,
+:global(.dark) .step.completed .stepNumber {
+  box-shadow: 0 4px 16px rgba(var(--clr-terra-rgb), 0.28);
+}
+
+:global(.dark) .step.active .stepLabel {
+  color: var(--clr-terra-300);
+}
+
+:global(.dark) .step.completed .stepLabel {
+  color: var(--clr-terra-300);
 }

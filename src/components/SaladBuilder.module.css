@@ -20,8 +20,8 @@
 }
 
 .cta:hover {
-  border-color: var(--color-primary, #649e20);
-  box-shadow: 0 4px 16px rgba(var(--clr-leaf-rgb, 100,158,32), 0.12);
+  border-color: var(--color-accent, #f97316);
+  box-shadow: 0 4px 16px rgba(var(--clr-terra-rgb, 249,115,22), 0.12);
 }
 
 .ctaLeft {
@@ -237,7 +237,7 @@
 }
 
 .sectionHeaderDone {
-  background: rgba(var(--clr-leaf-rgb, 100,158,32), 0.05);
+  background: rgba(var(--clr-terra-rgb, 249,115,22), 0.05);
 }
 
 .sectionHeaderLeft {
@@ -268,8 +268,8 @@
 .sectionCount {
   font-size: 0.76rem;
   font-weight: 600;
-  color: var(--clr-leaf-600, #4c7c14);
-  background: rgba(var(--clr-leaf-rgb, 100,158,32), 0.12);
+  color: var(--clr-terra-500, #ea6c0c);
+  background: rgba(var(--clr-terra-rgb, 249,115,22), 0.12);
   padding: 2px 9px;
   border-radius: 999px;
 }
@@ -312,7 +312,7 @@
 }
 
 .ingredientRowSelected {
-  background: rgba(var(--clr-leaf-rgb, 100,158,32), 0.04);
+  background: rgba(var(--clr-terra-rgb, 249,115,22), 0.04);
 }
 
 .ingredientImgWrapper {
@@ -388,12 +388,12 @@
 }
 
 .radioBtn:hover {
-  border-color: var(--color-primary, #649e20);
+  border-color: var(--color-accent, #f97316);
 }
 
 .radioBtnActive {
-  border-color: var(--color-primary, #649e20);
-  background: var(--color-primary, #649e20);
+  border-color: var(--color-accent, #f97316);
+  background: var(--color-accent, #f97316);
 }
 
 .radioDot {
@@ -412,9 +412,9 @@
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  border: 2px solid var(--color-primary, #649e20);
+  border: 2px solid var(--color-accent, #f97316);
   background: transparent;
-  color: var(--color-primary, #649e20);
+  color: var(--color-accent, #f97316);
   font-size: 1.3rem;
   line-height: 1;
   cursor: pointer;
@@ -426,7 +426,7 @@
 }
 
 .plusBtn:hover:not(:disabled) {
-  background: var(--color-primary, #649e20);
+  background: var(--color-accent, #f97316);
   color: #fff;
   transform: scale(1.06);
 }
@@ -446,7 +446,7 @@
   display: flex;
   align-items: center;
   background: #fff;
-  border: 2px solid var(--color-primary, #649e20);
+  border: 2px solid var(--color-accent, #f97316);
   border-radius: 999px;
   overflow: hidden;
 }
@@ -456,7 +456,7 @@
   height: 34px;
   background: none;
   border: none;
-  color: var(--color-primary, #649e20);
+  color: var(--color-accent, #f97316);
   font-size: 1.1rem;
   cursor: pointer;
   display: flex;
@@ -467,7 +467,7 @@
 }
 
 .qtyBtn:hover:not(:disabled) {
-  background: rgba(var(--clr-leaf-rgb, 100,158,32), 0.08);
+  background: rgba(var(--clr-terra-rgb, 249,115,22), 0.08);
 }
 
 .qtyBtn:active:not(:disabled) {
@@ -545,6 +545,102 @@
   opacity: 0.9;
   font-weight: 400;
   font-size: 0.94rem;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   DARK MODE
+   ══════════════════════════════════════════════════════════════ */
+
+:global(.dark) .cta {
+  background: var(--color-bg-card);
+  border-color: var(--color-border);
+  box-shadow: none;
+}
+:global(.dark) .cta:hover {
+  border-color: var(--clr-terra-400);
+  box-shadow: 0 4px 16px rgba(var(--clr-terra-rgb), .14);
+}
+
+:global(.dark) .modal {
+  background: var(--color-bg-card);
+}
+
+:global(.dark) .modalHeader {
+  background: var(--color-bg-card);
+  border-color: var(--color-border);
+}
+
+:global(.dark) .modal::before {
+  background: var(--color-border);
+}
+
+:global(.dark) .closeBtn {
+  background: var(--color-bg-muted);
+  color: var(--color-text-muted);
+}
+:global(.dark) .closeBtn:hover {
+  background: var(--color-border);
+  color: var(--color-text-base);
+}
+
+:global(.dark) .stepSection {
+  border-color: var(--color-border);
+}
+
+:global(.dark) .sectionHeader {
+  background: var(--color-bg-muted);
+  border-color: var(--color-border);
+}
+:global(.dark) .sectionHeaderDone {
+  background: rgba(var(--clr-terra-rgb), .08);
+}
+
+:global(.dark) .ingredientRow {
+  border-color: var(--color-border);
+}
+:global(.dark) .ingredientRowSelected {
+  background: rgba(var(--clr-terra-rgb), .07);
+}
+:global(.dark) .ingredientImgWrapper {
+  background: var(--color-bg-muted);
+}
+
+:global(.dark) .radioBtn {
+  border-color: var(--color-border);
+}
+:global(.dark) .radioBtnActive {
+  border-color: var(--clr-terra-400);
+  background: var(--clr-terra-400);
+}
+:global(.dark) .radioBtnActive .radioDot {
+  background: #fff;
+}
+:global(.dark) .plusBtn {
+  border-color: var(--clr-terra-400);
+  color: var(--clr-terra-400);
+}
+:global(.dark) .plusBtn:hover:not(:disabled) {
+  background: var(--clr-terra-400);
+  color: #fff;
+}
+:global(.dark) .qtyStrip {
+  background: var(--color-bg-muted);
+  border-color: var(--clr-terra-400);
+}
+:global(.dark) .qtyBtn {
+  color: var(--clr-terra-300);
+}
+:global(.dark) .qtyBtn:hover:not(:disabled) {
+  background: rgba(var(--clr-terra-rgb), .12);
+}
+
+:global(.dark) .modalFooter {
+  background: var(--color-bg-card);
+  border-color: var(--color-border);
+}
+:global(.dark) .addToCartBtn:disabled {
+  background: var(--color-bg-muted);
+  color: var(--color-text-hint);
 }
 
 /* ── Mobile tweaks ─────────────────────────────────────────── */
