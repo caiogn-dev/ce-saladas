@@ -22,19 +22,31 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   DISH IMAGE SYSTEM
-   mix-blend-mode: multiply → fundo branco some sobre fundo claro
+   DISH IMAGE SYSTEM — Circular crop, sem mix-blend-mode
+   object-fit: cover dentro de border-radius: 50%
    ═══════════════════════════════════════════════════════════════ */
-.dish-img {
-  /* Fundo branco vira transparente sobre qualquer fundo claro */
-  mix-blend-mode: multiply;
+
+/* Container circular — define a forma e o clip */
+.hero-dish-main,
+.hero-dish-mini,
+.section-dish {
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  will-change: transform;
+}
+
+/* Imagem dentro: sempre cobre o container */
+.hero-dish-main img,
+.hero-dish-mini img,
+.section-dish img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
   pointer-events: none;
   user-select: none;
   -webkit-user-drag: none;
-  will-change: transform;
-  /* Suaviza as bordas da foto */
-  filter: drop-shadow(0 24px 48px rgba(var(--clr-terra-rgb), .14))
-          drop-shadow(0 6px 16px rgba(0,0,0,.08));
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -214,74 +226,90 @@
   color: var(--clr-terra-400);
 }
 
-/* ─── Stage (coluna visual) ─── */
+/* ─── Coluna visual ─── */
 .hero-visual-col {
   min-width: 0;
-  /* Breathing room so badges don't clip at viewport edge */
-  padding: 0 24px 0 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
 }
 
+/* ─── Stage: quadrado fixo, blob preenche tudo ─── */
 .hero-stage {
   position: relative;
   width: min(100%, 460px);
+  aspect-ratio: 1 / 1;
   margin: 0 auto;
-  /* NO aspect-ratio — main dish (in flow) sets the height */
 }
 
-/* Blob verde — absolute background, stays behind everything */
+/* Blob verde — preenche todo o stage */
 .hero-blob {
   position: absolute;
-  top: -6%;
-  left: -12%;
-  width: 90%;
-  height: 86%;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   z-index: 0;
-  opacity: 0.9;
+  opacity: 0.92;
   pointer-events: none;
-  will-change: transform;
   overflow: visible;
 }
 
-/* ── Prato principal: IN NORMAL FLOW ──
-   Determina a altura do stage. Sem absolute, sem overflow. */
-.dish-hero-main {
-  position: relative;
-  z-index: 2;
-  display: block;
-  width: 100%;
-  /* GSAP entry animation usa transform, não position */
-  transform-origin: center bottom;
-}
-
-/* ── Prato secundário: pequeno, decorativo, canto inferior ── */
-.dish-hero-secondary {
+/* ── Prato principal ── grande círculo centralizado no blob */
+.hero-dish-main {
   position: absolute;
-  z-index: 1;
-  width: 42%;
-  bottom: 0;
-  right: -2%;
-  opacity: 0.88;
-  transform-origin: center bottom;
+  z-index: 3;
+  /* 68% do stage, offset levemente para cima-esquerda */
+  width: 68%;
+  height: 68%;
+  top: 8%;
+  left: 8%;
+  box-shadow:
+    0 28px 56px rgba(var(--clr-terra-rgb), .18),
+    0 8px 20px  rgba(0,0,0,.14);
+  border: 4px solid rgba(255,255,255,.88);
 }
 
-/* ── Orbe de calor ──
-   Emotion: APETITE — luz quente de baixo do prato, como vapor
-   Posição relativa ao stage; GSAP pulsa após o prato pousar  */
+/* object-position: foca no bowl, corta menos da comida */
+.hero-dish-main img {
+  object-position: center 55%;
+}
+
+/* ── Prato secundário ── pequeno círculo canto inferior-direito */
+.hero-dish-mini {
+  position: absolute;
+  z-index: 2;
+  width: 32%;
+  height: 32%;
+  bottom: 4%;
+  right: 2%;
+  box-shadow:
+    0 16px 36px rgba(var(--clr-terra-rgb), .14),
+    0 4px 12px  rgba(0,0,0,.12);
+  border: 3px solid rgba(255,255,255,.85);
+}
+
+.hero-dish-mini img {
+  object-position: center 60%;
+}
+
+/* ── Orbe de calor — sob o prato principal ── */
 .dish-heat-glow {
   position: absolute;
   z-index: 1;
-  bottom: 28%;                         /* alinha sob o bowl */
-  left: 5%;
-  width: 82%;
-  height: 38%;
+  /* Centrado no prato principal */
+  top: 40%;
+  left: 10%;
+  width: 62%;
+  height: 40%;
   border-radius: 50%;
   background: radial-gradient(
-    ellipse 100% 100% at 50% 100%,
-    rgba(var(--clr-terra-rgb), .35) 0%,
-    rgba(var(--clr-terra-rgb), .14) 40%,
-    transparent 72%
+    ellipse 80% 80% at 50% 80%,
+    rgba(var(--clr-terra-rgb), .32) 0%,
+    rgba(var(--clr-terra-rgb), .12) 45%,
+    transparent 75%
   );
-  filter: blur(20px);
+  filter: blur(22px);
   opacity: 0;
   pointer-events: none;
   will-change: opacity, transform;
@@ -290,60 +318,60 @@
 /* ── Gotas decorativas de molho ── */
 .drizzle-drop {
   position: absolute;
-  z-index: 3;
+  z-index: 4;
   color: var(--clr-terra-400);
-  opacity: 0.65;
+  opacity: 0.7;
   will-change: transform;
   pointer-events: none;
 }
 
 .drizzle-drop--1 {
-  width: 16px;
-  top: 12%;
-  right: 8%;
+  width: 14px;
+  top: 7%;
+  right: 4%;
 }
 
 .drizzle-drop--2 {
-  width: 12px;
-  top: 32%;
-  left: 2%;
+  width: 11px;
+  top: 48%;
+  left: 1%;
   color: var(--clr-leaf-500);
 }
 
-/* ── Badges flutuantes ── */
+/* ── Badges flutuantes ── dentro do stage */
 .hero-badge-pill {
   position: absolute;
   z-index: 5;
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  padding: 9px 14px;
+  padding: 8px 14px;
   border-radius: var(--o-radius-full);
-  background: rgba(255,255,255,.94);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(var(--clr-leaf-rgb), .14);
-  box-shadow: 0 6px 20px rgba(0,0,0,.10);
-  font-size: 0.76rem;
+  background: rgba(255,255,255,.95);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(var(--clr-leaf-rgb), .16);
+  box-shadow: 0 6px 20px rgba(0,0,0,.12);
+  font-size: 0.75rem;
   font-weight: 700;
   color: var(--clr-stone-700);
   white-space: nowrap;
   will-change: transform;
-  animation: badge-float 3.8s ease-in-out infinite;
+  animation: badge-float 4s ease-in-out infinite;
 }
 
 .hero-badge-pill--top {
-  top: 4%;
-  right: 0;                            /* dentro da coluna */
+  top: 5%;
+  right: 5%;
   color: var(--clr-leaf-700);
   animation-delay: 0s;
 }
 .hero-badge-pill--top svg { color: var(--clr-leaf-600); }
 
 .hero-badge-pill--bottom {
-  bottom: 14%;
-  left: 0;                             /* dentro da coluna */
-  animation-delay: 1.8s;
+  bottom: 6%;
+  left: 5%;
+  animation-delay: 2s;
 }
 .hero-badge-pill--bottom svg { color: var(--clr-terra-500); }
 
@@ -361,8 +389,8 @@
 @media (prefers-reduced-motion: reduce) {
   .hero-copy-col, .hero-visual-col, .hero-title,
   .hero-description, .hero-actions, .hero-stats,
-  .hero-tag, .dish-img, .drizzle-drop, .hero-badge-pill,
-  .dish-hero-main, .dish-hero-secondary {
+  .hero-tag, .drizzle-drop, .hero-badge-pill,
+  .hero-dish-main, .hero-dish-mini, .section-dish {
     opacity: 1 !important;
     transform: none !important;
     animation: none !important;
@@ -481,15 +509,39 @@
   position: relative;
 }
 
-/* Prato de salmão decorativo — canto direito, fora do fluxo */
-.dish-section-salmon {
+/* ── Imagens de seção — círculos decorativos, fora do fluxo ── */
+.section-dish {
   position: absolute;
-  right: -72px;
-  top: -24px;
-  width: 320px;
   z-index: 0;
-  opacity: 0.85;
-  transform: rotate(8deg);
+  will-change: transform;
+}
+
+.section-dish--right {
+  width: 220px;
+  height: 220px;
+  right: -60px;
+  top: 50%;
+  transform: translateY(-50%);
+  box-shadow:
+    0 24px 56px rgba(var(--clr-terra-rgb), .12),
+    0 6px 16px  rgba(0,0,0,.09);
+  border: 5px solid rgba(255,255,255,.82);
+}
+
+.section-dish--left {
+  width: 200px;
+  height: 200px;
+  left: -50px;
+  top: 50%;
+  transform: translateY(-50%);
+  box-shadow:
+    0 24px 56px rgba(var(--clr-terra-rgb), .12),
+    0 6px 16px  rgba(0,0,0,.09);
+  border: 5px solid rgba(255,255,255,.82);
+}
+
+.section-dish img {
+  object-position: center 55%;
 }
 
 .steps-grid {
@@ -579,16 +631,6 @@
   position: relative;
 }
 
-/* Prato de porco/legumes — canto esquerdo, fora do fluxo */
-.dish-section-pork {
-  position: absolute;
-  left: -64px;
-  top: -16px;
-  width: 300px;
-  z-index: 0;
-  opacity: 0.82;
-  transform: rotate(-6deg);
-}
 
 .features-grid {
   position: relative;
@@ -902,8 +944,8 @@
 /* ─── 1100px ─── */
 @media (max-width: 1100px) {
   .features-grid { grid-template-columns: repeat(2, 1fr); }
-  .dish-section-salmon { right: -40px; width: 260px; }
-  .dish-section-pork   { left: -40px;  width: 240px; }
+  .section-dish--right { width: 180px; height: 180px; right: -30px; }
+  .section-dish--left  { width: 170px; height: 170px; left: -30px; }
 }
 
 /* ─── 900px: hero stack ─── */
@@ -932,8 +974,8 @@
   .hero-title, .hero-description { max-width: none; text-align: center; }
   .hero-actions, .hero-stats { justify-content: center; }
 
-  /* Prato secundário: menor */
-  .dish-hero-secondary { width: 36%; right: 0; }
+  /* Prato mini menor no mobile */
+  .hero-dish-mini { width: 28%; height: 28%; }
 
   .footer-content { grid-template-columns: 1fr 1fr; }
   .footer-brand { grid-column: 1 / -1; }
@@ -960,10 +1002,14 @@
     padding: 7px 12px;
     font-size: 0.71rem;
   }
-  .hero-badge-pill--top    { right: 4%; top: 2%; }
-  .hero-badge-pill--bottom { left: 4%; bottom: 12%; }
+  .hero-badge-pill--top    { right: 5%; top: 3%; }
+  .hero-badge-pill--bottom { left: 5%; bottom: 8%; }
 
   .drizzle-drop--2 { display: none; }
+
+  /* Círculos de seção: menores no tablet */
+  .section-dish--right { width: 140px; height: 140px; right: -16px; }
+  .section-dish--left  { width: 130px; height: 130px; left: -16px; }
 }
 
 /* ─── 560px ─── */
@@ -974,8 +1020,8 @@
 
   .hero-stage { width: min(100%, 280px); }
 
-  /* Ocultar prato secundário em telas muito pequenas */
-  .dish-hero-secondary { display: none; }
+  .hero-dish-mini { display: none; }
+  .hero-dish-main { width: 74%; height: 74%; }
 
   .features-grid { grid-template-columns: 1fr; }
 
@@ -1031,13 +1077,11 @@
     linear-gradient(180deg, var(--color-bg) 0%, var(--color-bg-muted) 55%, var(--color-bg) 100%);
 }
 
-/* No dark mode, mix-blend-mode: multiply não funciona — usar luminosity + ajuste */
-.dark .dish-img {
-  mix-blend-mode: screen;
-  opacity: 0.88;
-  filter: drop-shadow(0 24px 48px rgba(var(--clr-terra-rgb), .20))
-          drop-shadow(0 6px 16px rgba(0,0,0,.35))
-          brightness(0.82) saturate(1.2);
+/* Dark mode: reforçar borda dos círculos */
+.dark .hero-dish-main,
+.dark .hero-dish-mini,
+.dark .section-dish {
+  border-color: rgba(255,255,255,.18);
 }
 
 .dark .hero-title { color: var(--color-text-base); }

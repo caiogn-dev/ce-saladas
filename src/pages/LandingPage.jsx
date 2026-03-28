@@ -165,6 +165,14 @@ const LandingPage = () => {
             stagger: { each: 0.5 },
           });
 
+          /* ── Prato principal entra escalando do centro ─────── */
+          gsap.from('.hero-dish-main', {
+            scale: 0.6, opacity: 0, duration: 0.9, ease: 'back.out(1.6)', delay: 0.1,
+          });
+          gsap.from('.hero-dish-mini', {
+            scale: 0.5, opacity: 0, x: 20, y: 20, duration: 0.7, ease: 'back.out(1.4)', delay: 0.5,
+          });
+
           /* ── Float suave — herança para todos os pratos ───── */
           gsap.to('.dish-float', {
             y: '-=14', rotation: '+=1.5',
@@ -199,8 +207,8 @@ const LandingPage = () => {
             scrollTrigger: { trigger: '.steps-grid', start: 'top 84%' },
           });
 
-          gsap.from('.dish-section-salmon', {
-            opacity: 0, x: 60, rotation: -5, scale: 0.92, duration: 1.0, ease: 'back.out(1.2)',
+          gsap.from('.section-dish--right', {
+            opacity: 0, x: 60, scale: 0.8, duration: 1.0, ease: 'back.out(1.3)',
             scrollTrigger: { trigger: '.how-it-works', start: 'top 74%' },
           });
 
@@ -209,8 +217,8 @@ const LandingPage = () => {
             scrollTrigger: { trigger: '.features-grid', start: 'top 86%' },
           });
 
-          gsap.from('.dish-section-pork', {
-            opacity: 0, x: -60, rotation: 5, scale: 0.92, duration: 1.0, ease: 'back.out(1.2)',
+          gsap.from('.section-dish--left', {
+            opacity: 0, x: -60, scale: 0.8, duration: 1.0, ease: 'back.out(1.3)',
             scrollTrigger: { trigger: '.why-section', start: 'top 74%' },
           });
 
@@ -238,14 +246,14 @@ const LandingPage = () => {
             },
           });
 
-          gsap.to('.dish-section-salmon', {
+          gsap.to('.section-dish--right', {
             y: -28, ease: 'none',
             scrollTrigger: {
               trigger: '.how-it-works', start: 'top bottom', end: 'bottom top', scrub: 1.8,
             },
           });
 
-          gsap.to('.dish-section-pork', {
+          gsap.to('.section-dish--left', {
             y: -36, ease: 'none',
             scrollTrigger: {
               trigger: '.why-section', start: 'top bottom', end: 'bottom top', scrub: 1.8,
@@ -337,43 +345,41 @@ const LandingPage = () => {
           {/* Visual — Food Stage */}
           <div className="hero-visual-col">
             <div className="hero-stage">
-              {/* Blob orgânico de fundo */}
+
+              {/* ── Blob orgânico — fundo do stage ──────────── */}
               <HeroBlob />
 
-              {/* Orbe de calor — emana de baixo do prato (apetite) */}
+              {/* ── Orbe de calor sob o prato principal ─────── */}
               <HeatGlow />
 
-              {/* Gotas decorativas de molho */}
+              {/* ── Prato secundário — salmão, canto inferior ─ */}
+              <div className="hero-dish-mini dish-float" aria-hidden="true">
+                <img src={DISHES.salmon} alt="" draggable="false" />
+              </div>
+
+              {/* ── Prato principal — camarão, circular ──────── */}
+              <div className="hero-dish-main dish-float">
+                <img
+                  src={DISHES.shrimp}
+                  alt="Bowl de camarão com molho"
+                  draggable="false"
+                />
+              </div>
+
+              {/* ── Gotas decorativas de molho ───────────────── */}
               <DrizzleDrop className="drizzle-drop--1" />
               <DrizzleDrop className="drizzle-drop--2" />
 
-              {/* Prato principal — camarão */}
-              <img
-                src={DISHES.shrimp}
-                alt="Bowl de camarão temperado"
-                className="dish-img dish-hero-main dish-float"
-                draggable="false"
-              />
-
-              {/* Prato secundário — salmão, aparece por baixo */}
-              <img
-                src={DISHES.salmon}
-                alt="Bowl de salmão"
-                className="dish-img dish-hero-secondary dish-float"
-                draggable="false"
-              />
-
-              {/* Badge flutuante — frescor */}
+              {/* ── Badges flutuantes ─────────────────────────── */}
               <div className="hero-badge-pill hero-badge-pill--top">
-                <Leaf size={14} />
+                <Leaf size={13} />
                 <span>100% fresco</span>
               </div>
-
-              {/* Pill inferior — entrega */}
               <div className="hero-badge-pill hero-badge-pill--bottom">
-                <Clock3 size={14} />
+                <Clock3 size={13} />
                 <span>Entrega hoje</span>
               </div>
+
             </div>
           </div>
 
@@ -394,14 +400,10 @@ const LandingPage = () => {
       <section id="como-funciona" className="how-it-works">
         <div className="container how-it-works__inner">
 
-          {/* Prato de salmão decorativo — direita */}
-          <img
-            src={DISHES.salmon}
-            alt=""
-            aria-hidden="true"
-            className="dish-img dish-section-salmon dish-float"
-            draggable="false"
-          />
+          {/* Prato de salmão — círculo decorativo à direita */}
+          <div className="section-dish section-dish--right dish-float" aria-hidden="true">
+            <img src={DISHES.salmon} alt="" draggable="false" />
+          </div>
 
           <div className="section-header">
             <p className="section-eyebrow">Como pedir</p>
@@ -429,14 +431,10 @@ const LandingPage = () => {
       <section className="why-section">
         <div className="container why-section__inner">
 
-          {/* Prato de porco/legumes decorativo — esquerda */}
-          <img
-            src={DISHES.pork}
-            alt=""
-            aria-hidden="true"
-            className="dish-img dish-section-pork dish-float"
-            draggable="false"
-          />
+          {/* Prato de porco/legumes — círculo decorativo à esquerda */}
+          <div className="section-dish section-dish--left dish-float" aria-hidden="true">
+            <img src={DISHES.pork} alt="" draggable="false" />
+          </div>
 
           <div className="section-header">
             <p className="section-eyebrow">Por que escolher</p>
