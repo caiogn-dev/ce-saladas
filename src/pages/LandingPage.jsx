@@ -31,8 +31,8 @@ function getPromoServerSnapshot() { return null; }
    Salve as imagens em /public/dishes/ com esses nomes exatos.
 ───────────────────────────────────────────────────────────── */
 const DISHES = {
-  shrimp: '/dishes/bowl-shrimp.png',   // camarão com molho laranja
-  salmon: '/dishes/bowl-salmon.png',   // salmão com vinagrete
+  shrimp: '/dishes/bowl-shrimp.webp',  // camarão com molho laranja
+  salmon: '/dishes/bowl-salmon.webp',  // salmão com vinagrete
   pork:   '/dishes/bowl-pork.png',     // frango/porco no bowl transparente
 };
 
