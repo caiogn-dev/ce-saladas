@@ -208,8 +208,8 @@
 }
 
 .checkout-address-option.is-selected {
-  background-color: #f0e6e6;
-  border-color: var(--color-marsala);
+  background-color: rgba(var(--clr-terra-rgb), .08);
+  border-color: var(--clr-terra-400);
 }
 
 .checkout-address-option input {
@@ -480,9 +480,9 @@
 }
 
 .map-toggle-btn.active {
-  background: #e8f5e9;
-  border-color: #4CAF50;
-  color: #2e7d32;
+  background: rgba(var(--clr-terra-rgb), .10);
+  border-color: var(--clr-terra-400);
+  color: var(--clr-terra-600);
 }
 
 .location-confirmed {
@@ -490,8 +490,8 @@
   align-items: center;
   gap: 6px;
   font-size: 13px;
-  color: #2e7d32;
-  background: #e8f5e9;
+  color: var(--clr-terra-600);
+  background: rgba(var(--clr-terra-rgb), .10);
   padding: 6px 12px;
   border-radius: var(--o-radius-xl);
 }
@@ -1035,8 +1035,8 @@
 }
 
 .dark .checkout-address-option.is-selected {
-  background: rgba(100, 158, 32, .15);
-  border-color: var(--clr-leaf-400);
+  background: rgba(var(--clr-terra-rgb), .14);
+  border-color: var(--clr-terra-400);
 }
 
 .dark .checkout-payment-option {

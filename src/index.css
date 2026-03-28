@@ -21,15 +21,15 @@
   --clr-leaf-900: #111c03;
   --clr-leaf-rgb: 100, 158, 32;
 
-  --clr-terra-50:  #fdf2ec;
-  --clr-terra-100: #faddca;
-  --clr-terra-200: #f4bb96;
-  --clr-terra-300: #eb9161;
-  --clr-terra-400: #de6b36;
-  --clr-terra-500: #c75522;
-  --clr-terra-600: #a04018;
-  --clr-terra-700: #782f0f;
-  --clr-terra-rgb: 222, 107, 54;
+  --clr-terra-50:  #fff7ed;
+  --clr-terra-100: #ffedd5;
+  --clr-terra-200: #fed7aa;
+  --clr-terra-300: #fb923c;
+  --clr-terra-400: #f97316;
+  --clr-terra-500: #ea6c0c;
+  --clr-terra-600: #c85a08;
+  --clr-terra-700: #9a4504;
+  --clr-terra-rgb: 249, 115, 22;
 
   --clr-sand-50:  #fdfbf7;
   --clr-sand-100: #f8f3eb;
@@ -147,11 +147,11 @@
   --color-surface-card:       var(--color-bg-card);
   --color-surface-card-strong: var(--clr-sand-50);
   --color-surface-muted:      var(--clr-stone-100);
-  --color-border-soft:   rgba(var(--clr-leaf-rgb), .14);
-  --color-border-strong: rgba(var(--clr-leaf-rgb), .24);
-  --color-marsala:       var(--clr-leaf-700);
-  --color-marsala-dark:  var(--clr-leaf-800);
-  --color-marsala-light: var(--clr-leaf-500);
+  --color-border-soft:   rgba(var(--clr-terra-rgb), .14);
+  --color-border-strong: rgba(var(--clr-terra-rgb), .24);
+  --color-marsala:       var(--clr-terra-500);
+  --color-marsala-dark:  var(--clr-terra-600);
+  --color-marsala-light: var(--clr-terra-400);
   --color-gold:       var(--clr-terra-400);
   --color-gold-light: var(--clr-terra-300);
   --color-cream:  var(--clr-sand-100);
@@ -201,61 +201,60 @@
 .dark {
   color-scheme: dark;
 
-  --color-bg:           #0d1f14;
-  --color-bg-card:      #122a1a;
-  --color-bg-muted:     #1a3324;
-  --color-text-base:    #e8f4ec;
-  --color-text-muted:   #a3c4ad;
-  --color-text-hint:    #6b9e79;
-  --color-text-inverse: #0d1f14;
-  --color-border:       #1e3d28;
-  --color-border-focus: var(--clr-leaf-400);
-  --color-primary:       var(--clr-leaf-400);
-  --color-primary-hover: var(--clr-leaf-300);
-  --color-primary-light: rgba(100, 158, 32, .15);
+  /* ── Fundos quentes escuros — casam com o laranja da marca ── */
+  --color-bg:           #16100a;
+  --color-bg-card:      #211810;
+  --color-bg-muted:     #2d2014;
+  --color-text-base:    #f8f0e8;
+  --color-text-muted:   #c4b0a0;
+  --color-text-hint:    #8a7868;
+  --color-text-inverse: #16100a;
+  --color-border:       #3a2a1a;
+  --color-border-focus: var(--clr-terra-400);
+  --color-primary:       var(--clr-terra-400);
+  --color-primary-hover: var(--clr-terra-300);
+  --color-primary-light: rgba(249, 115, 22, .14);
   --color-accent:        var(--clr-terra-300);
   --color-accent-hover:  var(--clr-terra-400);
 
-  --color-surface-page:      #0d1f14;
-  --color-surface-page-alt:  #122a1a;
-  --color-surface-card:      #122a1a;
-  --color-surface-card-strong: #1a3324;
-  --color-surface-muted:     #1a3324;
-  --color-border-soft:   rgba(100, 158, 32, .18);
-  --color-border-strong: rgba(100, 158, 32, .30);
+  --color-surface-page:        var(--color-bg);
+  --color-surface-page-alt:    var(--color-bg-card);
+  --color-surface-card:        var(--color-bg-card);
+  --color-surface-card-strong: var(--color-bg-muted);
+  --color-surface-muted:       var(--color-bg-muted);
+  --color-border-soft:   rgba(249, 115, 22, .14);
+  --color-border-strong: rgba(249, 115, 22, .26);
 
   --color-text:        var(--color-text-base);
-  --color-text-strong: #f0faf3;
+  --color-text-strong: #fff8f0;
   --color-text-light:  var(--color-text-muted);
 
-  --color-white:  #122a1a;
-  --color-gray-50:  #122a1a;
-  --color-gray-100: #1a3324;
-  --color-gray-200: #1e3d28;
-  --color-gray-300: #254f32;
-  --color-gray-400: #2d6140;
-  --color-gray-500: #3d7e55;
-  --color-gray-600: #549a6c;
-  --color-gray-700: #7ab88f;
-  --color-gray-800: #a3c4ad;
-  --color-gray-900: #c8dece;
+  /* ── Gray aliases — warm-tinted ── */
+  --color-white:    #211810;
+  --color-gray-50:  #211810;
+  --color-gray-100: #2d2014;
+  --color-gray-200: #3a2a1a;
+  --color-gray-300: #503c28;
+  --color-gray-400: #6e5038;
+  --color-gray-500: #8c6e50;
+  --color-gray-600: #b08c6e;
+  --color-gray-700: #c4a88a;
+  --color-gray-800: #dcc4b0;
+  --color-gray-900: #f0dece;
 
-  --o-shadow-sm: 0 2px 8px rgba(0,0,0,.3), 0 1px 3px rgba(0,0,0,.2);
-  --o-shadow-md: 0 4px 16px rgba(0,0,0,.4), 0 2px 6px rgba(0,0,0,.25);
-  --o-shadow-lg: 0 8px 32px rgba(0,0,0,.5), 0 4px 12px rgba(0,0,0,.3);
-  --o-shadow-xl: 0 20px 60px rgba(0,0,0,.6), 0 8px 24px rgba(0,0,0,.35);
+  --o-shadow-sm: 0 2px 8px rgba(0,0,0,.35), 0 1px 3px rgba(0,0,0,.25);
+  --o-shadow-md: 0 4px 16px rgba(0,0,0,.45), 0 2px 6px rgba(0,0,0,.3);
+  --o-shadow-lg: 0 8px 32px rgba(0,0,0,.55), 0 4px 12px rgba(0,0,0,.35);
+  --o-shadow-xl: 0 20px 60px rgba(0,0,0,.65), 0 8px 24px rgba(0,0,0,.4);
 
-  /* Compat aliases — adaptados ao tema escuro */
+  /* ── Compat aliases ── */
   --color-accent-fg:     #ffffff;
-  --color-marsala:       var(--clr-leaf-400);
-  --color-marsala-dark:  var(--clr-leaf-300);
-  --color-marsala-light: var(--clr-leaf-500);
+  --color-marsala:       var(--clr-terra-400);
+  --color-marsala-dark:  var(--clr-terra-300);
+  --color-marsala-light: var(--clr-terra-500);
+  --color-gold:          var(--clr-terra-300);
+  --color-gold-light:    var(--clr-terra-200);
   --color-cream:         var(--color-bg);
-  --color-surface-page:      var(--color-bg);
-  --color-surface-page-alt:  var(--color-bg-card);
-  --color-surface-card:      var(--color-bg-card);
-  --color-surface-card-strong: var(--color-bg-muted);
-  --color-surface-muted:     var(--color-bg-muted);
 }
 
 *, *::before, *::after { box-sizing: border-box; }

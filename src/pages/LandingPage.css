@@ -5,8 +5,8 @@
 /* ─── Page shell ─── */
 .landing-page {
   min-height: 100vh;
-  color: var(--clr-stone-700);
-  background: #FFFBF5;
+  color: var(--color-text-base);
+  background: var(--color-bg, #FFFBF5);
   overflow-x: clip;
 }
 
@@ -49,7 +49,7 @@
   overflow: visible;
   padding: 40px 0 72px;
   isolation: isolate;
-  background: #FFFBF5;
+  background: var(--color-bg, #FFFBF5);
 }
 
 .hero-container {
@@ -172,8 +172,8 @@
 }
 
 .btn-hero-ghost:hover {
-  border-color: var(--clr-leaf-400);
-  color: var(--clr-leaf-700);
+  border-color: var(--clr-terra-400);
+  color: var(--clr-terra-600);
   transform: translateY(-2px);
 }
 
@@ -317,7 +317,7 @@
   right: -2%;
   animation-delay: 0s;
 }
-.hero-badge-pill--top svg { color: var(--clr-leaf-600); }
+.hero-badge-pill--top svg { color: var(--clr-terra-500); }
 
 .hero-badge-pill--bottom {
   bottom: 14%;
@@ -417,7 +417,7 @@
 
 .brand-sep {
   margin: 0 16px;
-  color: var(--clr-leaf-400);
+  color: var(--clr-terra-400);
   opacity: 0.45;
   font-size: 1rem;
   flex-shrink: 0;
@@ -546,7 +546,7 @@
   font-weight: 700;
   font-style: italic;
   line-height: 1;
-  color: rgba(var(--clr-leaf-rgb), .07);
+  color: rgba(var(--clr-terra-rgb), .07);
   pointer-events: none;
   user-select: none;
   z-index: 0;
@@ -741,7 +741,7 @@
   padding: 18px 36px;
   border-radius: var(--o-radius-full);
   background: #fff;
-  color: var(--clr-leaf-800);
+  color: var(--clr-terra-700);
   font-size: 1rem;
   font-weight: 700;
   letter-spacing: 0.02em;
@@ -828,7 +828,7 @@
 }
 .social-link:hover {
   transform: translateY(-2px);
-  background: rgba(var(--clr-leaf-rgb), .28);
+  background: rgba(var(--clr-terra-rgb), .28);
 }
 
 .footer-address {
@@ -875,8 +875,8 @@
   padding: 30px;
   border-radius: 28px;
   background: linear-gradient(180deg, #fffdf8 0%, #fffaf2 100%);
-  border: 1px solid rgba(var(--clr-leaf-rgb), .16);
-  box-shadow: 0 28px 64px rgba(var(--clr-leaf-rgb), .18);
+  border: 1px solid rgba(var(--clr-terra-rgb), .16);
+  box-shadow: 0 28px 64px rgba(var(--clr-terra-rgb), .18);
 }
 
 .promo-badge {
@@ -885,8 +885,8 @@
   min-height: 32px;
   padding: 0 14px;
   border-radius: var(--o-radius-full);
-  background: rgba(var(--clr-leaf-rgb), .12);
-  color: var(--clr-leaf-700);
+  background: rgba(var(--clr-terra-rgb), .12);
+  color: var(--clr-terra-600);
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.09em;
@@ -1041,87 +1041,106 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   DARK MODE
+   DARK MODE — Landing Page
+   Fundo quente escuro, blob laranja permanece, texto claro
    ═══════════════════════════════════════════════════════════════ */
-.dark .landing-page {
-  background:
-    radial-gradient(ellipse 70% 50% at 75% -5%, rgba(var(--clr-leaf-rgb), .07) 0%, transparent 60%),
-    linear-gradient(180deg, var(--color-bg) 0%, var(--color-bg-muted) 55%, var(--color-bg) 100%);
-}
 
-.dark .section-dish {
-  border-color: rgba(255,255,255,.18);
-}
+/* ─── Page & sections ─── */
+.dark .landing-page  { background: var(--color-bg); }
+.dark .how-it-works  { background: var(--color-bg-muted); }
+.dark .why-section   { background: var(--color-bg); }
 
-.dark .hero-title { color: var(--color-text-base); }
-.dark .hero-accent { color: var(--clr-terra-300); }
+/* ─── Hero copy ─── */
+.dark .hero-title       { color: var(--color-text-base); }
+.dark .hero-accent      { color: var(--clr-terra-300); text-shadow: 0 0 28px rgba(249,115,22,.28); }
 .dark .hero-description { color: var(--color-text-muted); }
-.dark .hero-tag { color: var(--clr-leaf-400); }
-.dark .hero-tag-line { background: var(--clr-leaf-400); }
+.dark .hero-tag         { color: var(--clr-terra-400); }
+.dark .hero-tag-line    { background: var(--clr-terra-400); }
 .dark .hero-stat strong { color: var(--color-text-base); }
-.dark .hero-stat span { color: var(--color-text-hint); }
-.dark .hero-stat-sep { background: var(--color-border); }
+.dark .hero-stat span   { color: var(--color-text-hint); }
+.dark .hero-stat-sep    { background: var(--color-border); }
 
+/* ─── Food blob — mantém laranja no dark ─── */
+/* .hero-food-blob retém o background: #F97316 — sem override necessário */
+
+/* ─── Buttons ─── */
 .dark .btn-hero-ghost {
   border-color: var(--color-border);
   color: var(--color-text-muted);
 }
 .dark .btn-hero-ghost:hover {
-  border-color: var(--clr-leaf-500);
-  color: var(--clr-leaf-300);
+  border-color: var(--clr-terra-400);
+  color: var(--clr-terra-300);
 }
 
+/* ─── Badges ─── */
 .dark .hero-badge-pill {
-  background: rgba(var(--color-bg-card), .92);
-  border-color: rgba(var(--clr-leaf-rgb), .22);
-  color: var(--color-text-muted);
+  background: var(--color-bg-card);
+  color: var(--color-text-base);
+  box-shadow: 0 8px 24px rgba(0,0,0,.45);
 }
 
+/* ─── Brand strip ─── */
 .dark .brand-strip {
-  background: rgba(var(--color-bg-card), .7);
-  border-color: rgba(var(--clr-leaf-rgb), .11);
+  background: var(--color-bg-card);
+  border-color: var(--color-border);
 }
-
 .dark .brand-pill {
-  background: rgba(var(--clr-leaf-rgb), .08);
-  border-color: rgba(var(--clr-leaf-rgb), .14);
-  color: var(--clr-leaf-300);
+  background: rgba(249,115,22,.10);
+  border-color: rgba(249,115,22,.18);
+  color: var(--clr-terra-300);
 }
+.dark .brand-pill svg { color: var(--clr-terra-400); }
+.dark .brand-sep { color: var(--clr-terra-600); }
 
-.dark .how-it-works {
-  background: linear-gradient(180deg, var(--color-bg-muted) 0%, var(--color-bg) 100%);
-}
-
+/* ─── Cards ─── */
 .dark .step-card,
 .dark .feature-card {
-  background: linear-gradient(180deg, var(--color-bg-card), var(--color-bg-muted));
-  border-color: rgba(var(--clr-leaf-rgb), .14);
-  box-shadow: 0 14px 36px rgba(0,0,0,.3);
+  background: var(--color-bg-card);
+  border-color: var(--color-border);
+  box-shadow: 0 14px 36px rgba(0,0,0,.4);
 }
-
-.dark .step-card h3, .dark .feature-card h3 { color: var(--color-text-base); }
-.dark .step-card p, .dark .feature-card p { color: var(--color-text-muted); }
-.dark .step-number, .dark .feature-icon {
-  background: rgba(var(--clr-leaf-rgb), .12);
-  color: var(--clr-leaf-400);
+.dark .step-card:hover,
+.dark .feature-card:hover {
+  border-color: rgba(249,115,22,.28);
+  box-shadow: 0 22px 48px rgba(249,115,22,.12), 0 6px 16px rgba(0,0,0,.3);
 }
-
-.dark .why-section {
-  background:
-    radial-gradient(ellipse 55% 60% at 0% 55%, rgba(var(--clr-leaf-rgb), .06) 0%, transparent 65%),
-    linear-gradient(180deg, var(--color-bg) 0%, var(--color-bg-muted) 100%);
+.dark .step-card h3,    .dark .feature-card h3 { color: var(--color-text-base); }
+.dark .step-card p,     .dark .feature-card p  { color: var(--color-text-muted); }
+.dark .step-card::before { color: rgba(249,115,22,.08); }
+.dark .step-number,
+.dark .feature-icon {
+  background: rgba(249,115,22,.12);
+  color: var(--clr-terra-300);
 }
+.dark .step-card:hover .step-number {
+  background: rgba(249,115,22,.20);
+  color: var(--clr-terra-300);
+  box-shadow: 0 0 0 4px rgba(249,115,22,.10);
+}
+.dark .step-card footer { border-top-color: var(--color-border); }
 
-.dark .section-accent-title { color: var(--color-text-base); }
-.dark .section-accent-title em { color: var(--clr-terra-300); }
-.dark .section-eyebrow { color: var(--clr-leaf-400); }
+/* ─── Section text ─── */
+.dark .section-accent-title     { color: var(--color-text-base); }
+.dark .section-accent-title em  { color: var(--clr-terra-300); text-decoration-color: rgba(249,115,22,.3); }
+.dark .section-eyebrow          { color: var(--clr-terra-400); }
 
+/* ─── CTA ─── */
+.dark .cta-section { background: linear-gradient(135deg, #1c0e05 0%, #2d1808 42%, #3d2010 100%); }
+
+/* ─── Footer ─── */
+.dark .footer { background: linear-gradient(180deg, #120d07 0%, #0e0a05 100%); }
+.dark .footer-bottom { border-top-color: var(--color-border); }
+
+/* ─── Promo modal ─── */
 .dark .promo-modal {
-  background: linear-gradient(180deg, var(--color-bg-card) 0%, var(--color-bg-muted) 100%);
-  border-color: rgba(var(--clr-leaf-rgb), .22);
-  box-shadow: 0 28px 64px rgba(0,0,0,.55);
+  background: var(--color-bg-card);
+  border-color: var(--color-border);
+  box-shadow: 0 28px 64px rgba(0,0,0,.6);
 }
-.dark .promo-modal h3 { color: var(--color-text-base); }
-.dark .promo-modal p  { color: var(--color-text-muted); }
-.dark .promo-close    { color: var(--color-text-hint); }
+.dark .promo-modal h3   { color: var(--color-text-base); }
+.dark .promo-modal p    { color: var(--color-text-muted); }
+.dark .promo-close      { color: var(--color-text-hint); }
 .dark .promo-close:hover { color: var(--color-text-base); }
+
+.dark .section-dish { border-color: rgba(255,255,255,.15); }
