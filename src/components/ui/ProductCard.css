@@ -18,9 +18,13 @@
 }
 
 .product-card:hover {
-  transform: translateY(-5px);
-  box-shadow: var(--o-shadow-xl);
-  border-color: var(--clr-stone-300);
+  transform: translateY(-7px);
+  /* Glow quente vindo de baixo — terra/laranja emanando do prato */
+  box-shadow:
+    0 24px 64px rgba(var(--clr-terra-rgb), .18),
+    0 8px 24px rgba(var(--clr-terra-rgb), .10),
+    0 2px 8px rgba(0,0,0,.05);
+  border-color: rgba(var(--clr-terra-rgb), .22);
 }
 
 /* ─── Image ─── */
@@ -71,16 +75,25 @@
 .product-card__image.loaded img { opacity: 1; }
 .product-card:hover .product-card__image img { transform: scale(1.05); }
 
-/* gradient scrim so bottom-left badge stays readable */
+/* gradient scrim — em repouso neutro, no hover muda para calor terra */
 .product-card__image::after {
   content: '';
   position: absolute;
   inset: auto 0 0;
-  height: 50%;
+  height: 60%;
   background: linear-gradient(to top, rgba(0,0,0,.38) 0%, transparent 100%);
   pointer-events: none;
   z-index: 1;
-  transition: opacity var(--dur-base);
+  transition: background var(--dur-slow) var(--ease-organic);
+}
+.product-card:hover .product-card__image::after {
+  /* Scrim quente — traz a sensação do prato assado, caramelizado */
+  background: linear-gradient(
+    to top,
+    rgba(var(--clr-terra-rgb), .45) 0%,
+    rgba(var(--clr-terra-rgb), .08) 55%,
+    transparent 100%
+  );
 }
 .product-card__image.error::after { display: none; }
 
@@ -157,6 +170,11 @@
   line-height: var(--leading-snug);
   letter-spacing: var(--tracking-tight);
   font-style: normal;
+  transition: color var(--dur-base) var(--ease-organic);
+}
+.product-card:hover .product-card__name {
+  color: var(--clr-stone-900);
+  font-style: italic; /* Fraunces italic = caráter, identidade */
 }
 
 .product-card__original-price {
@@ -220,6 +238,12 @@
   font-style: italic;
   line-height: 1;
   letter-spacing: var(--tracking-tight);
+  transition: color var(--dur-base) var(--ease-organic), transform var(--dur-base) var(--ease-spring);
+}
+.product-card:hover .product-card__price-value {
+  color: var(--clr-terra-600);
+  transform: scale(1.04);
+  display: inline-block;
 }
 
 /* ─── Actions ─── */

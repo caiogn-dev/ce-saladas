@@ -496,7 +496,26 @@
   font-size: 1.24rem;
   line-height: 1.14;
   letter-spacing: -0.02em;
+  /* Fraunces italic — dá caráter artesanal ao nome da categoria */
+  font-style: italic;
 }
+
+/* Linha orgânica abaixo do header de seção — como uma pincelada */
+.catalog-section__header::after {
+  content: '';
+  display: block;
+  width: 48px;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    var(--color-brand-green) 0%,
+    rgba(var(--color-brand-orange-rgb), 0.6) 100%
+  );
+  margin-top: 2px;
+  transition: width 0.4s cubic-bezier(.25,.46,.45,.94);
+}
+.catalog-section__header:hover::after { width: 72px; }
 
 .catalog-featured__description,
 .catalog-section__description {

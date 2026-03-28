@@ -297,6 +297,19 @@ const Cardapio = () => {
     return () => observers.forEach((o) => o.disconnect());
   }, [groupedSections]);
 
+  // Scroll-reveal: ativa .revealed nos elementos com classe .reveal quando entram na tela
+  useEffect(() => {
+    if (typeof IntersectionObserver === 'undefined') return undefined;
+    const els = document.querySelectorAll('.reveal:not(.revealed)');
+    if (!els.length) return undefined;
+    const obs = new IntersectionObserver(
+      (entries) => entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('revealed'); obs.unobserve(e.target); } }),
+      { rootMargin: '0px 0px -60px 0px', threshold: 0.08 }
+    );
+    els.forEach((el) => obs.observe(el));
+    return () => obs.disconnect();
+  });
+
   // Scroll active nav chip into view — horizontal only.
   // NEVER use chip.scrollIntoView(): elements inside position:sticky containers
   // cause the browser to scroll the page to the element's natural (pre-sticky)
@@ -542,13 +555,14 @@ const Cardapio = () => {
                     {/* Regular vertical list */}
                     {!section.featuredOnly && section.items.length > 0 && (
                       <div className="catalog-row-list">
-                        {section.items.map((product) => (
-                          <MenuProductRow
-                            key={product.id}
-                            product={product}
-                            onOpenDetails={setSelectedItem}
-                            favoriteButton={product.itemType === 'product' && isAuthenticated ? <FavoriteButton productId={product.id} size="small" /> : null}
-                          />
+                        {section.items.map((product, idx) => (
+                          <div key={product.id} className="reveal" data-delay={String(Math.min(idx + 1, 6))}>
+                            <MenuProductRow
+                              product={product}
+                              onOpenDetails={setSelectedItem}
+                              favoriteButton={product.itemType === 'product' && isAuthenticated ? <FavoriteButton productId={product.id} size="small" /> : null}
+                            />
+                          </div>
                         ))}
                       </div>
                     )}
