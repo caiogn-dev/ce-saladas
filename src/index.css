@@ -258,6 +258,20 @@
   --color-gold:          var(--clr-terra-300);
   --color-gold-light:    var(--clr-terra-200);
   --color-cream:         var(--color-bg);
+
+  /* ── Stone scale — inverted warm for dark mode ──
+     Mirrors --color-gray-* aliases so every component using
+     var(--clr-stone-N) directly gets readable text in dark mode */
+  --clr-stone-50:  #211810;
+  --clr-stone-100: #2d2014;
+  --clr-stone-200: #3a2a1a;
+  --clr-stone-300: #503c28;
+  --clr-stone-400: #8a7868;
+  --clr-stone-500: #c4b0a0;
+  --clr-stone-600: #d4c0b0;
+  --clr-stone-700: #e0ccbc;
+  --clr-stone-800: #f0e0d0;
+  --clr-stone-900: #fff8f0;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
