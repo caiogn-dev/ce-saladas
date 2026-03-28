@@ -51,8 +51,8 @@
   right: 16px;
   height: 3px;
   border-radius: 999px;
-  background: linear-gradient(90deg, var(--color-brand-green) 0%, rgba(var(--color-brand-green-rgb), 0.38) 68%, rgba(var(--color-brand-orange-rgb), 0.82) 100%);
-  animation: accentPulse 5s ease-in-out infinite;
+  background: linear-gradient(90deg, var(--color-accent) 0%, rgba(var(--clr-terra-rgb), 0.38) 68%, rgba(var(--clr-terra-rgb), 0.82) 100%);
+  animation: accentPulse 5s var(--ease-fluid) infinite;
 }
 
 @keyframes accentPulse {
@@ -293,7 +293,7 @@
 .cardapio-hero__cart-btn.is-pulsing,
 .catalog-toolbar__cart.is-pulsing,
 .cart-fab.is-pulsing {
-  animation: cartPulse 520ms var(--ease-spring);
+  animation: cartPulse 280ms var(--ease-spring);
 }
 
 @keyframes cartPulse {
@@ -859,13 +859,15 @@
 }
 
 @keyframes fabIn {
-  from { opacity: 0; transform: scale(0.7) translateY(12px); }
+  from { opacity: 0; transform: scale(0.88) translateY(10px); }
   to   { opacity: 1; transform: scale(1) translateY(0); }
 }
 
-.cart-fab:hover {
-  transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.28);
+@media (hover: hover) and (pointer: fine) {
+  .cart-fab:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.28);
+  }
 }
 
 .cart-fab:active {

@@ -347,6 +347,9 @@
     animation: none !important;
     filter: none !important;
   }
+  /* Stop all continuous motion */
+  .brand-strip__track { animation: none; }
+  .btn-cta-primary    { animation: none; }
 }
 
 /* ─── Stat count — número grande, peso emocional ─── */
@@ -766,9 +769,11 @@
 }
 
 .btn-cta-primary {
-  animation: cta-pulse 3.5s ease-in-out infinite;
+  animation: cta-pulse 3s var(--ease-fluid) infinite;
 }
-.btn-cta-primary:hover { animation: none; }
+@media (hover: hover) and (pointer: fine) {
+  .btn-cta-primary:hover { animation: none; }
+}
 
 /* ═══════════════════════════════════════════════════════════════
    FOOTER

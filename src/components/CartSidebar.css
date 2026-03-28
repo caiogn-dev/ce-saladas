@@ -29,11 +29,11 @@
   z-index: 100;
   display: flex;
   flex-direction: column;
-  animation: cartSlideIn var(--dur-slow) var(--ease-organic);
+  animation: cartSlideIn var(--dur-slow) var(--ease-drawer);
 }
 
 @keyframes cartSlideIn {
-  from { transform: translateX(100%); opacity: .85; }
+  from { transform: translateX(100%); opacity: .92; }
   to   { transform: translateX(0);    opacity: 1; }
 }
 
@@ -80,13 +80,15 @@
   border-radius: var(--o-radius-full);
   cursor: pointer;
   font-size: 1.1rem;
-  transition: all var(--dur-fast) var(--ease-organic);
+  transition: background var(--dur-fast) var(--ease-organic), color var(--dur-fast) var(--ease-organic), transform var(--dur-base) var(--ease-out);
 }
-
-.cart-close-btn:hover {
-  background: var(--clr-stone-200);
-  color: var(--clr-stone-800);
-  transform: rotate(90deg);
+.cart-close-btn:active { transform: scale(0.90); }
+@media (hover: hover) and (pointer: fine) {
+  .cart-close-btn:hover {
+    background: var(--clr-stone-200);
+    color: var(--clr-stone-800);
+    transform: rotate(90deg);
+  }
 }
 
 /* ─── Items container ─── */
@@ -217,11 +219,13 @@
   font-size: 1rem;
   font-weight: 400;
   color: var(--clr-terra-500);
-  transition: background var(--dur-fast);
+  transition: background var(--dur-micro) var(--ease-organic), transform var(--dur-micro) var(--ease-out);
   line-height: 1;
 }
-
-.quantity-control button:hover { background: rgba(var(--clr-terra-rgb), .07); }
+.quantity-control button:active { transform: scale(0.88); }
+@media (hover: hover) and (pointer: fine) {
+  .quantity-control button:hover { background: rgba(var(--clr-terra-rgb), .07); }
+}
 .quantity-control button:active { transform: scale(.9); }
 
 .quantity-control span {
