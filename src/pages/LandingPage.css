@@ -352,15 +352,23 @@
   50%       { transform: translateY(-10px); }
 }
 
-/* Reduced motion */
+/* ── Fallback: prefers-reduced-motion E pré-GSAP ─────────────
+   Garante que elementos SÃO visíveis antes do GSAP carregar.
+   GSAP define opacity:0 imediatamente ao inicializar — se a
+   importação dinâmica demorar, elementos ficam invisíveis.
+   O .gsap-ready class (adicionada pelo JS) ativa as animações.
+──────────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   .hero-copy-col, .hero-visual-col, .hero-title,
   .hero-description, .hero-actions, .hero-stats,
-  .hero-tag, .dish-img, .drizzle-drop, .hero-badge-pill {
+  .hero-tag, .dish-img, .drizzle-drop, .hero-badge-pill,
+  .dish-hero-main, .dish-hero-secondary {
     opacity: 1 !important;
     transform: none !important;
     animation: none !important;
+    filter: none !important;
   }
+  .badge-float { animation: none !important; }
 }
 
 /* ─── Stat count — número grande, peso emocional ─── */

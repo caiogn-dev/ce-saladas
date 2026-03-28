@@ -103,178 +103,163 @@ const LandingPage = () => {
   /* ── GSAP ────────────────────────────────────────────────── */
   useEffect(() => {
     if (typeof window === 'undefined' || !store) return;
-    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReduced) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-    let cleanup = null;
+    let ctx;
 
     Promise.all([import('gsap'), import('gsap/ScrollTrigger')]).then(
       ([{ gsap }, { ScrollTrigger }]) => {
         gsap.registerPlugin(ScrollTrigger);
 
-        const ctx = gsap.context(() => {
+        ctx = gsap.context(() => {
 
-          /* ── Hero copy — cascata da esquerda ─────────────── */
-          const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
-          tl.from('.hero-tag',         { opacity: 0, x: -28, duration: 0.55 }, 0.1)
-            .from('.hero-title',       { opacity: 0, y: 44, duration: 0.8 },   0.25)
-            .from('.hero-description', { opacity: 0, y: 28, duration: 0.65 },  0.55)
-            .from('.hero-actions',     { opacity: 0, y: 20, duration: 0.55 },  0.75)
-            .from('.hero-stats',       { opacity: 0, y: 18, duration: 0.5  },  0.95);
+          /* ────────────────────────────────────────────────────
+             HERO — Timeline coordenado, evita conflitos de delay
+          ──────────────────────────────────────────────────── */
+          const heroTL = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
-          /* ── Prato principal — entra sendo "servido" de cima ─ */
-          gsap.from('.dish-hero-main', {
-            y: -100,
-            rotation: -10,
-            opacity: 0,
-            scale: 0.88,
-            duration: 1.1,
-            ease: 'back.out(1.6)',
-            delay: 0.35,
-            onComplete() {
-              /* Flash de calor: o orbe terra pulsa quando o prato pousa */
-              gsap.fromTo('.dish-heat-glow',
-                { opacity: 0, scale: 0.7 },
-                { opacity: 1, scale: 1, duration: 0.7, ease: 'power2.out',
-                  onComplete: () => gsap.to('.dish-heat-glow', { opacity: 0.55, scale: 0.92, duration: 1.8, ease: 'sine.inOut', repeat: -1, yoyo: true }) }
-              );
-            },
-          });
+          /* Visual primeiro (mesma TL) — prato entra com opacity+scale */
+          heroTL.from('.dish-hero-main', {
+            opacity: 0, scale: 0.82, y: 40, duration: 0.9, ease: 'back.out(1.4)',
+          }, 0)
+          .from('.dish-hero-secondary', {
+            opacity: 0, x: 30, y: 20, rotation: 6, duration: 0.75, ease: 'back.out(1.3)',
+          }, 0.3)
 
-          /* ── Prato secundário — sobe do rodapé ─────────────── */
-          gsap.from('.dish-hero-secondary', {
-            y: 80,
-            x: 30,
-            rotation: 8,
-            opacity: 0,
-            duration: 1.0,
-            ease: 'back.out(1.4)',
-            delay: 0.65,
-          });
+          /* Copy em cascata */
+          .from('.hero-tag',         { opacity: 0, x: -24, duration: 0.5 }, 0.15)
+          .from('.hero-title',       { opacity: 0, y: 36,  duration: 0.75 }, 0.3)
+          .from('.hero-description', { opacity: 0, y: 22,  duration: 0.6  }, 0.55)
+          .from('.hero-actions',     { opacity: 0, y: 18,  duration: 0.5  }, 0.72)
+          .from('.hero-stats',       { opacity: 0, y: 16,  duration: 0.45 }, 0.88);
+
+          /* ── Heat glow — aparece depois do prato chegar ────── */
+          gsap.fromTo('.dish-heat-glow',
+            { opacity: 0, scale: 0.8 },
+            {
+              opacity: 0.65, scale: 1,
+              duration: 1.2, ease: 'power2.out',
+              delay: 0.7,
+              /* Pulso contínuo após entrar */
+              onComplete() {
+                gsap.to(this.targets()[0], {
+                  opacity: 0.35, scale: 0.88,
+                  duration: 2.4, ease: 'sine.inOut',
+                  repeat: -1, yoyo: true,
+                });
+              },
+            }
+          );
 
           /* ── Blob morph contínuo ─────────────────────────── */
           gsap.to('.hero-blob-path', {
             attr: {
               d: 'M460,285 C478,385 408,478 312,502 C216,526 112,490 66,406 C20,322 46,210 100,140 C154,70 252,32 346,52 C440,72 442,185 460,285 Z',
             },
-            duration: 12,
-            repeat: -1,
-            yoyo: true,
-            ease: 'sine.inOut',
+            duration: 14, repeat: -1, yoyo: true, ease: 'sine.inOut',
           });
 
-          /* ── Gota de molho — oscila verticalmente ────────── */
+          /* ── Gotas de molho — oscilam ────────────────────── */
           gsap.to('.drizzle-drop', {
-            y: 10,
-            duration: 2.2,
-            repeat: -1,
-            yoyo: true,
-            ease: 'sine.inOut',
-            stagger: 0.4,
+            y: 10, duration: 2.4, repeat: -1, yoyo: true, ease: 'sine.inOut',
+            stagger: { each: 0.5 },
           });
 
-          /* ── Count-up nos stats (confiança social) ──────── */
+          /* ── Float suave — herança para todos os pratos ───── */
+          gsap.to('.dish-float', {
+            y: '-=14', rotation: '+=1.5',
+            duration: 4.5, repeat: -1, yoyo: true, ease: 'sine.inOut',
+            stagger: { each: 1.4, from: 'random' },
+          });
+
+          /* ── Count-up nos stats ───────────────────────────── */
           gsap.utils.toArray('.stat-count').forEach((el) => {
             const target = parseFloat(el.dataset.target);
             const suffix = el.dataset.suffix || '';
-            const decimal = parseInt(el.dataset.decimal || '0', 10);
+            const decimals = parseInt(el.dataset.decimal || '0', 10);
             const obj = { val: 0 };
             gsap.to(obj, {
-              val: target,
-              duration: 1.6,
-              ease: 'power2.out',
-              delay: 1.0,
-              onUpdate() {
-                el.textContent = obj.val.toFixed(decimal) + suffix;
-              },
-              onComplete() {
-                el.textContent = target.toFixed(decimal) + suffix;
-              },
+              val: target, duration: 1.8, ease: 'power2.out', delay: 1.1,
+              onUpdate() { el.textContent = obj.val.toFixed(decimals) + suffix; },
+              onComplete() { el.textContent = target.toFixed(decimals) + suffix; },
             });
           });
 
-          /* ── Brand pills ─────────────────────────────────── */
+          /* ────────────────────────────────────────────────────
+             SCROLL — ScrollTrigger em todos os elementos
+          ──────────────────────────────────────────────────── */
+
           gsap.from('.brand-pill', {
-            opacity: 0, y: 28, stagger: 0.1, duration: 0.6, ease: 'power2.out',
-            scrollTrigger: { trigger: '.brand-strip', start: 'top 90%' },
+            opacity: 0, y: 24, stagger: 0.09, duration: 0.55, ease: 'power2.out',
+            scrollTrigger: { trigger: '.brand-strip', start: 'top 92%' },
           });
 
-          /* ── Steps ───────────────────────────────────────── */
           gsap.from('.step-card', {
-            opacity: 0, y: 64, scale: 0.94, stagger: 0.14, duration: 0.85, ease: 'back.out(1.3)',
-            scrollTrigger: { trigger: '.steps-grid', start: 'top 82%' },
+            opacity: 0, y: 56, scale: 0.95, stagger: 0.12, duration: 0.8, ease: 'back.out(1.3)',
+            scrollTrigger: { trigger: '.steps-grid', start: 'top 84%' },
           });
 
-          /* ── Prato na seção como-funciona ────────────────── */
           gsap.from('.dish-section-salmon', {
-            opacity: 0, x: 80, rotation: -6, scale: 0.9, duration: 1.1, ease: 'back.out(1.2)',
-            scrollTrigger: { trigger: '.how-it-works', start: 'top 72%' },
+            opacity: 0, x: 60, rotation: -5, scale: 0.92, duration: 1.0, ease: 'back.out(1.2)',
+            scrollTrigger: { trigger: '.how-it-works', start: 'top 74%' },
           });
 
-          /* ── Features ────────────────────────────────────── */
           gsap.from('.feature-card', {
-            opacity: 0, y: 50, scale: 0.95, stagger: 0.1, duration: 0.7, ease: 'back.out(1.2)',
-            scrollTrigger: { trigger: '.features-grid', start: 'top 84%' },
+            opacity: 0, y: 44, scale: 0.96, stagger: 0.09, duration: 0.65, ease: 'back.out(1.2)',
+            scrollTrigger: { trigger: '.features-grid', start: 'top 86%' },
           });
 
-          /* ── Prato na seção por que ──────────────────────── */
           gsap.from('.dish-section-pork', {
-            opacity: 0, x: -80, rotation: 6, scale: 0.9, duration: 1.1, ease: 'back.out(1.2)',
-            scrollTrigger: { trigger: '.why-section', start: 'top 72%' },
+            opacity: 0, x: -60, rotation: 5, scale: 0.92, duration: 1.0, ease: 'back.out(1.2)',
+            scrollTrigger: { trigger: '.why-section', start: 'top 74%' },
           });
 
-          /* ── Section titles ──────────────────────────────── */
           gsap.utils.toArray('.section-accent-title').forEach((el) => {
             gsap.from(el, {
-              opacity: 0, y: 30, duration: 0.65, ease: 'power2.out',
-              scrollTrigger: { trigger: el, start: 'top 88%' },
+              opacity: 0, y: 26, duration: 0.6, ease: 'power2.out',
+              scrollTrigger: { trigger: el, start: 'top 90%' },
             });
           });
 
-          /* ── CTA ─────────────────────────────────────────── */
           gsap.from('.cta-copy > *', {
-            opacity: 0, x: -44, stagger: 0.1, duration: 0.75, ease: 'power3.out',
-            scrollTrigger: { trigger: '.cta-section', start: 'top 78%' },
+            opacity: 0, x: -36, stagger: 0.09, duration: 0.7, ease: 'power3.out',
+            scrollTrigger: { trigger: '.cta-section', start: 'top 80%' },
           });
           gsap.from('.cta-btn-wrap', {
-            opacity: 0, scale: 0.6, duration: 0.9, ease: 'back.out(2)',
-            scrollTrigger: { trigger: '.cta-section', start: 'top 75%' },
+            opacity: 0, scale: 0.65, duration: 0.8, ease: 'back.out(2)',
+            scrollTrigger: { trigger: '.cta-section', start: 'top 76%' },
           });
 
-          /* ── Parallax hero visual ────────────────────────── */
+          /* ── Parallax suave ──────────────────────────────── */
           gsap.to('.hero-visual-col', {
-            y: -50, ease: 'none',
-            scrollTrigger: { trigger: '.hero-section', start: 'top top', end: 'bottom top', scrub: 2 },
-          });
-
-          /* ── Parallax pratos de seção (camadas) ──────────── */
-          gsap.to('.dish-section-salmon', {
-            y: -30, ease: 'none',
-            scrollTrigger: { trigger: '.how-it-works', start: 'top bottom', end: 'bottom top', scrub: 1.5 },
-          });
-          gsap.to('.dish-section-pork', {
             y: -40, ease: 'none',
-            scrollTrigger: { trigger: '.why-section', start: 'top bottom', end: 'bottom top', scrub: 1.5 },
+            scrollTrigger: {
+              trigger: '.hero-section', start: 'top top', end: 'bottom top', scrub: 2.5,
+            },
           });
 
-          /* ── Float suave contínuo nos pratos ─────────────── */
-          gsap.to('.dish-float', {
-            y: '-=16',
-            rotation: '+=2',
-            duration: 4,
-            repeat: -1,
-            yoyo: true,
-            ease: 'sine.inOut',
-            stagger: { each: 1.2, from: 'random' },
+          gsap.to('.dish-section-salmon', {
+            y: -28, ease: 'none',
+            scrollTrigger: {
+              trigger: '.how-it-works', start: 'top bottom', end: 'bottom top', scrub: 1.8,
+            },
           });
+
+          gsap.to('.dish-section-pork', {
+            y: -36, ease: 'none',
+            scrollTrigger: {
+              trigger: '.why-section', start: 'top bottom', end: 'bottom top', scrub: 1.8,
+            },
+          });
+
+          /* Refresh APÓS setup — corrige medidas de layout do React */
+          ScrollTrigger.refresh();
 
         }, pageRef);
-
-        cleanup = () => ctx.revert();
       }
     );
 
-    return () => cleanup?.();
+    return () => ctx?.revert();
   }, [store]);
 
   if (isLoading || !store) return <div className="loading-screen">Carregando...</div>;
