@@ -53,7 +53,7 @@ class ErrorBoundary extends React.Component {
               Tente atualizar a página. Se o problema continuar, volte mais tarde.
             </p>
 
-            {showDetails && (
+            {showDetails && process.env.NODE_ENV === 'development' && (
               <pre className="status-error-details">
                 {errorMessage}
                 {errorStack}

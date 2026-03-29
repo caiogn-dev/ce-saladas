@@ -202,7 +202,7 @@ const CheckoutPage = () => {
 
       if (normalizeString(paymentMethod) === 'card') {
         if (!mpPublicKey) {
-          throw new Error('Pagamento com cartão indisponÃ­vel: a chave pública do Mercado Pago não estÃ¡ configurada no frontend.');
+          throw new Error('Pagamento com cartão indisponível: a chave pública do Mercado Pago não está configurada no frontend.');
         }
 
         if (!hasDirectCardPayload(normalizedPaymentPayload)) {
@@ -236,22 +236,6 @@ const CheckoutPage = () => {
       const orderNumber = response.order_number;
       const accessToken = response.access_token;
 
-      // Cache payment data with access token
-      if (orderNumber) {
-        try {
-          sessionStorage.setItem(
-            `mp_payment_${orderNumber}`,
-            JSON.stringify({ 
-              ...payment, 
-              order_number: orderNumber,
-              access_token: accessToken,
-              total_amount: response.total_amount
-            })
-          );
-        } catch {
-          // Storage not available
-        }
-      }
 
       // Update profile if needed
       if (checkoutForm.saveAddress) {
@@ -329,7 +313,7 @@ const CheckoutPage = () => {
     return (
       <div className={styles.emptyCart}>
         <div className={styles.emptyCartContent}>
-          <span className={styles.emptyCartIcon}>ðŸ›’</span>
+          <span className={styles.emptyCartIcon}>🛒</span>
           <h2>Sua sacola está vazia</h2>
           <p>Adicione itens antes de finalizar o pedido.</p>
           <Link href="/cardapio" className={styles.backButton}>

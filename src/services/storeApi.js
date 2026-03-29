@@ -97,8 +97,8 @@ const buildAuthHeader = (token) => {
 };
 
 // API base URL
-// Priority: Environment Variable > Local Development > Production Fallback
-const DEFAULT_API_URL = 'https://backend.pastita.com.br/api/v1';
+// Priority: Environment Variable > Local Development
+const DEFAULT_API_URL = 'http://localhost:8000/api/v1';
 const API_ROOT = (process.env.NEXT_PUBLIC_API_URL || DEFAULT_API_URL).replace(/\/+$/, '');
 const STORES_API_URL = `${API_ROOT}/stores`;
 const STORE_API_URL = `${STORES_API_URL}/${STORE_SLUG}`;
@@ -198,8 +198,12 @@ const getCsrfToken = () => {
   if (typeof document === 'undefined') return null;
   const cookies = document.cookie.split(';');
   for (const cookie of cookies) {
-    const [key, value] = cookie.trim().split('=');
-    if (key === 'csrftoken') return value;
+    const eqIdx = cookie.indexOf('=');
+    if (eqIdx === -1) continue;
+    const key = cookie.slice(0, eqIdx).trim();
+    if (key === 'csrftoken') {
+      return decodeURIComponent(cookie.slice(eqIdx + 1).trim());
+    }
   }
   return null;
 };
@@ -268,19 +272,19 @@ authApi.interceptors.response.use(
 );
 
 // Listen for auth events to sync token across all API instances
-if (typeof window !== 'undefined') {
-  // Sync token when auth:login event is fired
+// Guard prevents duplicate listeners on HMR re-execution in development
+if (typeof window !== 'undefined' && !window.__ceStoreApiInitialized) {
+  window.__ceStoreApiInitialized = true;
+
   window.addEventListener('auth:login', () => {
     refreshAuthHeaders();
   });
 
-  // Clear token when auth:logout event is fired
   window.addEventListener('auth:logout', () => {
     delete storeApi.defaults.headers.common['Authorization'];
     delete authApi.defaults.headers.common['Authorization'];
   });
 
-  // Initialize headers on load
   refreshAuthHeaders();
 }
 
@@ -480,7 +484,7 @@ export const validateCoupon = async (code, subtotal) => {
  * Calculate route from store to destination
  */
 export const calculateRoute = async (destLat, destLng) => {
-  const response = await storeApi.get(`/route/?dest_lat=${destLat}&dest_lng=${destLng}`);
+  const response = await storeApi.get('/route/', { params: { dest_lat: destLat, dest_lng: destLng } });
   return response.data;
 };
 

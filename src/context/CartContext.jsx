@@ -43,6 +43,8 @@ export const CartProvider = ({ children }) => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const cartRef = useRef({ products: [], combos: [] });
+  // Mutex: prevents concurrent cart mutations from creating inconsistent state
+  const cartMutexRef = useRef(false);
 
   useEffect(() => {
     cartRef.current = { products: cart, combos };
@@ -145,6 +147,8 @@ export const CartProvider = ({ children }) => {
 
   // Add product to cart
   const addToCart = async (product) => {
+    if (cartMutexRef.current) return;
+    cartMutexRef.current = true;
     setIsLoading(true);
     const previousCart = cartRef.current.products;
     
@@ -169,12 +173,14 @@ export const CartProvider = ({ children }) => {
       setCart(previousCart);
       toast.error('Erro ao adicionar à sacola.');
     } finally {
+      cartMutexRef.current = false;
       setIsLoading(false);
     }
   };
 
   // Add salad builder selections as a single virtual combo cart item
   const addSaladToCart = async (selections) => {
+    if (cartMutexRef.current) return;
     // selections = { base: [product], proteina: [product], complemento: [product,...], molho: [product] }
     const allIngredients = Object.entries(selections).flatMap(([role, items]) =>
       items.map((p) => ({ id: p.id, name: p.name, price: Number(p.price || 0), role }))
@@ -195,6 +201,7 @@ export const CartProvider = ({ children }) => {
       ingredients: allIngredients,
     };
 
+    cartMutexRef.current = true;
     setIsLoading(true);
     const previousCombos = cartRef.current.combos;
 
@@ -228,12 +235,15 @@ export const CartProvider = ({ children }) => {
       setCombos(previousCombos);
       toast.error('Erro ao adicionar salada à sacola.');
     } finally {
+      cartMutexRef.current = false;
       setIsLoading(false);
     }
   };
 
   // Add combo to cart
   const addComboToCart = async (combo) => {
+    if (cartMutexRef.current) return;
+    cartMutexRef.current = true;
     setIsLoading(true);
     const previousCombos = cartRef.current.combos;
     
@@ -258,6 +268,7 @@ export const CartProvider = ({ children }) => {
       setCombos(previousCombos);
       toast.error('Erro ao adicionar item à sacola.');
     } finally {
+      cartMutexRef.current = false;
       setIsLoading(false);
     }
   };

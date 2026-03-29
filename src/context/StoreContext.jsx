@@ -138,11 +138,6 @@ export const StoreProvider = ({ children, initialCatalog = null }) => {
     );
   }, [products]);
 
-  // Grouped products for Pastita-style display
-  const molhos = products.filter(p => p.attributes?.product_type === 'molho');
-  const carnes = products.filter(p => p.attributes?.product_type === 'carne');
-  const rondellis = products.filter(p => p.attributes?.product_type === 'rondelli');
-
   return (
     <StoreContext.Provider value={{
       // Store info
@@ -156,11 +151,6 @@ export const StoreProvider = ({ children, initialCatalog = null }) => {
       combos,
       featuredProducts,
       productTypes,
-
-      // Pastita-specific groupings
-      molhos,
-      carnes,
-      rondellis,
 
       // Helper functions
       getProductsByCategory,

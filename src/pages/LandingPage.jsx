@@ -38,16 +38,25 @@ const DISHES = {
 
 
 /* ─────────────────────────────────────────────────────────────
-   Título com última palavra em cor accent (terra + itálico)
+   Word-mask title: cada palavra num clip container para o
+   reveal por baixo estilo editorial (yPercent 115 → 0).
+   A última palavra recebe a classe hero-accent (itálico laranja).
 ───────────────────────────────────────────────────────────── */
-const AccentTitle = ({ text, className }) => {
+const MaskTitle = ({ text, className }) => {
   const words = text.trim().split(/\s+/);
-  const accent = words.pop();
-  const rest = words.join(' ');
+  const last = words.pop();
   return (
     <h1 className={className}>
-      {rest && <>{rest}{' '}</>}
-      <em className="hero-accent">{accent}</em>
+      {words.map((word, i) => (
+        // eslint-disable-next-line react/no-array-index-key
+        <span key={i} className="word-mask">
+          <span className="word-inner">{word}</span>
+        </span>
+      ))}
+      {words.length > 0 && ' '}
+      <span className="word-mask">
+        <em className="hero-accent word-inner">{last}</em>
+      </span>
     </h1>
   );
 };
@@ -60,6 +69,7 @@ const LandingPage = () => {
   const hasSeenPromo = useSyncExternalStore(subscribePromo, getPromoSnapshot, getPromoServerSnapshot);
   const [promoDismissed, setPromoDismissed] = useState(false);
   const pageRef = useRef(null);
+  const cursorGlowRef = useRef(null);
 
   const showPromo = !hasSeenPromo && !promoDismissed;
 
@@ -77,109 +87,197 @@ const LandingPage = () => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     let ctx;
+    let onMouseMove = null;
+    const cleanupHandlers = [];
 
     Promise.all([import('gsap'), import('gsap/ScrollTrigger')]).then(
       ([{ gsap }, { ScrollTrigger }]) => {
         gsap.registerPlugin(ScrollTrigger);
 
+        /* ── Cursor glow + hero parallax multi-layer ─────────── */
+        onMouseMove = (e) => {
+          if (cursorGlowRef.current) {
+            gsap.to(cursorGlowRef.current, {
+              x: e.clientX, y: e.clientY, duration: 0.9, ease: 'power2.out',
+            });
+          }
+          const xPct = e.clientX / window.innerWidth - 0.5;
+          const yPct = e.clientY / window.innerHeight - 0.5;
+          gsap.to('.hero-food-blob', {
+            x: xPct * 28, duration: 1.4, ease: 'power2.out', overwrite: 'auto',
+          });
+          gsap.to('.hero-badge-pill--top', {
+            x: xPct * -22, y: yPct * -14, duration: 1.0, ease: 'power2.out', overwrite: 'auto',
+          });
+          gsap.to('.hero-badge-pill--bottom', {
+            x: xPct * 16, y: yPct * 11, duration: 1.1, ease: 'power2.out', overwrite: 'auto',
+          });
+        };
+        window.addEventListener('mousemove', onMouseMove);
+
+        /* ── Magnetic buttons ─────────────────────────────────── */
+        gsap.utils.toArray('.btn-hero-main, .btn-cta-primary').forEach((btn) => {
+          const onMove = (e) => {
+            const r = btn.getBoundingClientRect();
+            const x = (e.clientX - (r.left + r.width / 2)) * 0.28;
+            const y = (e.clientY - (r.top + r.height / 2)) * 0.28;
+            gsap.to(btn, { x, y, duration: 0.3, ease: 'power2.out' });
+          };
+          const onLeave = () => {
+            gsap.to(btn, { x: 0, y: 0, duration: 0.7, ease: 'elastic.out(1.1, 0.4)' });
+          };
+          btn.addEventListener('mousemove', onMove);
+          btn.addEventListener('mouseleave', onLeave);
+          cleanupHandlers.push(() => {
+            btn.removeEventListener('mousemove', onMove);
+            btn.removeEventListener('mouseleave', onLeave);
+          });
+        });
+
+        /* ── 3D card tilt ─────────────────────────────────────── */
+        gsap.utils.toArray('.feature-card').forEach((card) => {
+          const onMove = (e) => {
+            const r = card.getBoundingClientRect();
+            const x = (e.clientX - r.left) / r.width - 0.5;
+            const y = (e.clientY - r.top) / r.height - 0.5;
+            gsap.to(card, {
+              rotateX: y * -13,
+              rotateY: x * 13,
+              transformPerspective: 700,
+              duration: 0.4,
+              ease: 'power2.out',
+            });
+          };
+          const onLeave = () => {
+            gsap.to(card, { rotateX: 0, rotateY: 0, duration: 0.65, ease: 'elastic.out(1, 0.3)' });
+          };
+          card.addEventListener('mousemove', onMove);
+          card.addEventListener('mouseleave', onLeave);
+          cleanupHandlers.push(() => {
+            card.removeEventListener('mousemove', onMove);
+            card.removeEventListener('mouseleave', onLeave);
+          });
+        });
+
         ctx = gsap.context(() => {
 
           /* ────────────────────────────────────────────────────
-             HERO — Timeline coordenado, evita conflitos de delay
+             HERO — Timeline coordenado
           ──────────────────────────────────────────────────── */
-          const heroTL = gsap.timeline({ defaults: { ease: 'power3.out' } });
+          const heroTL = gsap.timeline({ defaults: { ease: 'power4.out' } });
 
-          /* Blob com imagem entra junto com a copy */
           heroTL
-          .from('.hero-food-blob', {
-            opacity: 0, scale: 0.82, y: 28, duration: 1.0, ease: 'back.out(1.4)',
-          }, 0)
+            .from('.hero-food-blob', {
+              opacity: 0, scale: 0.78, y: 36, duration: 1.1, ease: 'back.out(1.5)',
+            }, 0)
+            .from('.hero-tag', { opacity: 0, x: -28, duration: 0.5 }, 0.12)
+            /* Word-mask reveal — cada palavra sobe por baixo do clip */
+            .from('.hero-title .word-inner', {
+              yPercent: 115, opacity: 0,
+              duration: 0.9, stagger: 0.075, ease: 'power4.out',
+            }, 0.25)
+            .from('.hero-description', { opacity: 0, y: 24, duration: 0.65 }, 0.72)
+            .from('.hero-actions',     { opacity: 0, y: 20, duration: 0.55 }, 0.88)
+            .from('.hero-stats',       { opacity: 0, y: 18, duration: 0.5  }, 1.02);
 
-          /* Copy em cascata */
-          .from('.hero-tag',         { opacity: 0, x: -24, duration: 0.5 }, 0.15)
-          .from('.hero-title',       { opacity: 0, y: 36,  duration: 0.75 }, 0.3)
-          .from('.hero-description', { opacity: 0, y: 22,  duration: 0.6  }, 0.52)
-          .from('.hero-actions',     { opacity: 0, y: 18,  duration: 0.5  }, 0.68)
-          .from('.hero-stats',       { opacity: 0, y: 16,  duration: 0.45 }, 0.84);
-
-          /* ── Badge pills entram após o blob ──────────────── */
+          /* Badge pills entram com mais bounce */
           gsap.from('.hero-badge-pill', {
-            opacity: 0, scale: 0.7, duration: 0.5, ease: 'back.out(2)', delay: 0.9,
-            stagger: { each: 0.2 },
+            opacity: 0, scale: 0.55, duration: 0.6, ease: 'back.out(2.8)',
+            delay: 1.1, stagger: { each: 0.22 },
           });
 
-          /* ── Float suave no blob ─────────────────────────── */
+          /* Float orgânico no blob */
           gsap.to('.hero-food-blob', {
-            y: '-=12',
-            duration: 4.2, repeat: -1, yoyo: true, ease: 'sine.inOut',
-            delay: 1.0,
+            y: '-=14', duration: 4.4, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 1.2,
           });
 
-          /* ── Count-up nos stats ───────────────────────────── */
+          /* Count-up stats */
           gsap.utils.toArray('.stat-count').forEach((el) => {
             const target = parseFloat(el.dataset.target);
             const suffix = el.dataset.suffix || '';
             const decimals = parseInt(el.dataset.decimal || '0', 10);
             const obj = { val: 0 };
             gsap.to(obj, {
-              val: target, duration: 1.8, ease: 'power2.out', delay: 1.1,
+              val: target, duration: 2.0, ease: 'power2.out', delay: 1.2,
               onUpdate() { el.textContent = obj.val.toFixed(decimals) + suffix; },
               onComplete() { el.textContent = target.toFixed(decimals) + suffix; },
             });
           });
 
           /* ────────────────────────────────────────────────────
-             SCROLL — ScrollTrigger em todos os elementos
+             SCROLL
           ──────────────────────────────────────────────────── */
 
           gsap.from('.brand-strip', {
-            opacity: 0, y: 18, duration: 0.55, ease: 'power2.out',
+            opacity: 0, y: 20, duration: 0.55, ease: 'power2.out',
             scrollTrigger: { trigger: '.brand-strip', start: 'top 96%' },
           });
 
+          /* Section eyebrows */
+          gsap.utils.toArray('.section-eyebrow').forEach((el) => {
+            gsap.from(el, {
+              opacity: 0, x: -18, duration: 0.5, ease: 'power2.out',
+              scrollTrigger: { trigger: el, start: 'top 92%' },
+            });
+          });
+
+          /* Step cards — mais dramáticos */
           gsap.from('.step-card', {
-            opacity: 0, y: 56, scale: 0.95, stagger: 0.12, duration: 0.8, ease: 'back.out(1.3)',
-            scrollTrigger: { trigger: '.steps-grid', start: 'top 84%' },
+            opacity: 0, y: 68, scale: 0.9,
+            stagger: 0.14, duration: 0.95, ease: 'back.out(1.5)',
+            scrollTrigger: { trigger: '.steps-grid', start: 'top 82%' },
           });
 
-
-          gsap.from('.feature-card', {
-            opacity: 0, y: 44, scale: 0.96, stagger: 0.09, duration: 0.65, ease: 'back.out(1.2)',
-            scrollTrigger: { trigger: '.features-grid', start: 'top 86%' },
+          /* Feature card icons — rotation + scale */
+          gsap.from('.feature-icon', {
+            scale: 0, rotation: -60, opacity: 0,
+            stagger: 0.1, duration: 0.7, ease: 'back.out(2.2)',
+            scrollTrigger: { trigger: '.features-grid', start: 'top 88%' },
           });
 
+          /* Feature cards h3 + p — slide sutil após ícone */
+          gsap.from('.feature-card h3, .feature-card p', {
+            opacity: 0, y: 18, stagger: 0.05, duration: 0.5, ease: 'power2.out',
+            scrollTrigger: { trigger: '.features-grid', start: 'top 82%' },
+          });
+
+          /* Section accent titles */
           gsap.utils.toArray('.section-accent-title').forEach((el) => {
             gsap.from(el, {
-              opacity: 0, y: 26, duration: 0.6, ease: 'power2.out',
+              opacity: 0, y: 28, duration: 0.65, ease: 'power3.out',
               scrollTrigger: { trigger: el, start: 'top 90%' },
             });
           });
 
+          /* CTA */
           gsap.from('.cta-copy > *', {
-            opacity: 0, x: -36, stagger: 0.09, duration: 0.7, ease: 'power3.out',
+            opacity: 0, x: -40, stagger: 0.1, duration: 0.75, ease: 'power3.out',
             scrollTrigger: { trigger: '.cta-section', start: 'top 80%' },
           });
           gsap.from('.cta-btn-wrap', {
-            opacity: 0, scale: 0.65, duration: 0.8, ease: 'back.out(2)',
+            opacity: 0, scale: 0.6, duration: 0.9, ease: 'back.out(2.2)',
             scrollTrigger: { trigger: '.cta-section', start: 'top 76%' },
           });
 
-          /* ── Parallax suave ──────────────────────────────── */
+          /* Parallax hero visual */
           gsap.to('.hero-visual-col', {
-            y: -40, ease: 'none',
+            y: -48, ease: 'none',
             scrollTrigger: {
               trigger: '.hero-section', start: 'top top', end: 'bottom top', scrub: 2.5,
             },
           });
 
-          /* Refresh APÓS setup — corrige medidas de layout do React */
           ScrollTrigger.refresh();
 
         }, pageRef);
       }
     );
 
-    return () => ctx?.revert();
+    return () => {
+      if (onMouseMove) window.removeEventListener('mousemove', onMouseMove);
+      cleanupHandlers.forEach((fn) => fn());
+      ctx?.revert();
+    };
   }, [store]);
 
   if (isLoading || !store) return <div className="loading-screen">Carregando...</div>;
@@ -192,6 +290,8 @@ const LandingPage = () => {
 
   return (
     <div className="landing-page" ref={pageRef}>
+      {/* Cursor glow — segue o mouse, visível apenas em dispositivos com hover */}
+      <div className="hero-cursor-glow" ref={cursorGlowRef} aria-hidden="true" />
       <Navbar />
 
       {/* ── Promo ─────────────────────────────────────────────── */}
@@ -223,7 +323,7 @@ const LandingPage = () => {
               {store.name || 'Cê Saladas'}
             </p>
 
-            <AccentTitle text={heroTitle} className="hero-title" />
+            <MaskTitle text={heroTitle} className="hero-title" />
 
             <p className="hero-description">{heroDescription}</p>
 
