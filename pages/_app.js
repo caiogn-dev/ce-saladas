@@ -44,6 +44,7 @@ import { StoreProvider } from '../src/context/StoreContext';
 import { ThemeProvider } from '../src/context/ThemeContext';
 import ErrorBoundary from '../src/components/ErrorBoundary';
 import CartSidebar from '../src/components/CartSidebar';
+import FloatingWhatsApp from '../src/components/FloatingWhatsApp';
 import { ToastProvider } from '../src/components/Toast';
 import { fetchCsrfToken } from '../src/services/storeApi';
 import StoreHead from '../src/components/StoreHead';
@@ -74,6 +75,7 @@ gtag('config', '${GA_ID}');`}
                 <WishlistProvider>
                   <CartProvider>
                     <CartSidebar />
+                    <FloatingWhatsApp />
                     <Component {...pageProps} />
                   </CartProvider>
                 </WishlistProvider>
