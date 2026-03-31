@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import './FloatingWhatsApp.css';
 
 const WHATSAPP_NUMBER = '5563991386719';
 const WHATSAPP_MESSAGE = 'Olá! Gostaria de mais informações sobre a CE Saladas 🥗';

@@ -4,6 +4,27 @@ const securityHeaders = [
   { key: 'X-XSS-Protection', value: '1; mode=block' },
   { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
   { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=(self)' },
+  { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains; preload' },
+  {
+    key: 'Content-Security-Policy',
+    value: [
+      "default-src 'self'",
+      // Scripts: own domain + Google Analytics + MercadoPago SDK
+      "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://sdk.mercadopago.com",
+      // Styles: own domain + inline (required by Next.js and MercadoPago)
+      "style-src 'self' 'unsafe-inline'",
+      // Images: own domain + backend media + map tiles + external images
+      "img-src 'self' data: blob: https:",
+      // Fonts: own domain only
+      "font-src 'self' data:",
+      // API + WebSocket + maps + analytics connections
+      "connect-src 'self' https://backend.pastita.com.br wss://backend.pastita.com.br https://www.google-analytics.com https://api.here.com https://geocoder.ls.hereapi.com https://route.ls.hereapi.com",
+      // Frames: MercadoPago checkout iframes
+      "frame-src https://www.mercadopago.com.br https://www.mercadopago.com https://sandbox.mercadopago.com.br",
+      // Workers: own domain only (Next.js service worker)
+      "worker-src 'self' blob:",
+    ].join('; '),
+  },
 ];
 
 const nextConfig = {

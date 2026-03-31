@@ -7,12 +7,16 @@ const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '556399138671
 
 const PaymentSuccess = () => {
   const router = useRouter();
-  
-  // Support both token-based (secure) and legacy order-based access
+
+  // Prefer sessionStorage token (set by CheckoutPage to avoid URL exposure).
+  // Fall back to URL query param for backwards compatibility (e.g. MP redirects).
   const tokenParam = router.query.token;
   const orderParam = router.query.order || router.query.external_reference;
-  
-  const accessToken = Array.isArray(tokenParam) ? tokenParam[0] : tokenParam;
+
+  const accessToken = (() => {
+    try { return sessionStorage.getItem('ce_order_access_token') || (Array.isArray(tokenParam) ? tokenParam[0] : tokenParam) || null; }
+    catch { return Array.isArray(tokenParam) ? tokenParam[0] : tokenParam || null; }
+  })();
   const orderNumber = Array.isArray(orderParam) ? orderParam[0] : orderParam;
   
   const [orderDetails, setOrderDetails] = useState(null);
@@ -52,7 +56,10 @@ const PaymentSuccess = () => {
     };
 
     if (router.isReady) {
-      fetchOrderDetails();
+      fetchOrderDetails().then(() => {
+        // Clean up sessionStorage token after use
+        try { sessionStorage.removeItem('ce_order_access_token'); } catch { /* ignore */ }
+      });
     }
   }, [router.isReady, accessToken, orderNumber]);
 

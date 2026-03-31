@@ -32,6 +32,27 @@ const normalizeString = (value) => (
   typeof value === 'string' ? value.trim().toLowerCase() : ''
 );
 
+const ALLOWED_REDIRECT_HOSTS = [
+  'www.mercadopago.com.br',
+  'www.mercadopago.com',
+  'mercadopago.com.br',
+  'mercadopago.com',
+  'checkout.mercadopago.com.br',
+  'checkout.mercadopago.com',
+  'sandbox.mercadopago.com.br',
+  'sandbox.mercadopago.com',
+];
+
+const isSafePaymentUrl = (url) => {
+  if (!url) return false;
+  try {
+    const parsed = new URL(url);
+    return parsed.protocol === 'https:' && ALLOWED_REDIRECT_HOSTS.includes(parsed.hostname);
+  } catch {
+    return false;
+  }
+};
+
 const resolveCardMethodFromPayload = (paymentPayload = {}) => {
   const direct = normalizeString(
     paymentPayload.selected_payment_method
@@ -252,9 +273,14 @@ const CheckoutPage = () => {
       // Clear cart
       clearCart();
 
-      // Navigate based on payment status - use access_token for secure access
-      const tokenParam = accessToken ? `token=${accessToken}` : `order=${orderNumber}`;
-      
+      // Store access token in sessionStorage to avoid exposing it in the URL.
+      // Success/pending pages read from sessionStorage first, then fall back to
+      // the order number (which is safe to expose).
+      if (accessToken) {
+        try { sessionStorage.setItem('ce_order_access_token', accessToken); } catch { /* ignore */ }
+      }
+      const orderParam = orderNumber ? `order=${orderNumber}` : '';
+
       if (payment) {
         const paymentStatus = payment.status;
         const paymentMethod = normalizeString(payment.payment_method || checkoutData.payment_method);
@@ -266,40 +292,48 @@ const CheckoutPage = () => {
           || payment.sandbox_init_point;
 
         if (payment.requires_redirect && checkoutUrl) {
+          if (!isSafePaymentUrl(checkoutUrl)) {
+            setPaymentError('URL de pagamento inválida. Contate o suporte.');
+            return;
+          }
           window.location.href = checkoutUrl;
           return;
         }
 
         // Cash payment goes directly to success
         if (paymentMethod === 'cash') {
-          router.push(`/sucesso?${tokenParam}&method=cash`);
+          router.push(`/sucesso?${orderParam}&method=cash`);
           return;
         }
 
         if (paymentStatus === 'approved') {
-          router.push(`/sucesso?${tokenParam}`);
+          router.push(`/sucesso?${orderParam}`);
           return;
         }
 
         if (paymentStatus === 'rejected') {
           const errorCode = payment.status_detail || '';
-          router.push(`/erro?${tokenParam}&error=${errorCode}`);
+          router.push(`/erro?${orderParam}&error=${errorCode}`);
           return;
         }
 
-        router.push(`/pendente?${tokenParam}`);
+        router.push(`/pendente?${orderParam}`);
         return;
       }
 
       // Fallback - use pix_ticket_url if available (Mercado Pago payment page)
       const paymentLink = response.pix_ticket_url || response.payment_link || response.init_point || response.sandbox_init_point;
       if (paymentLink) {
+        if (!isSafePaymentUrl(paymentLink)) {
+          setPaymentError('URL de pagamento inválida. Contate o suporte.');
+          return;
+        }
         window.location.href = paymentLink;
         return;
       }
 
       if (orderNumber) {
-        router.push(`/pendente?${tokenParam}`);
+        router.push(`/pendente?${orderParam}`);
       }
     } catch (error) {
       setPaymentError(error.message || 'Erro ao processar pedido');
