@@ -49,11 +49,11 @@ const MaskTitle = ({ text, className }) => {
     <h1 className={className}>
       {words.map((word, i) => (
         // eslint-disable-next-line react/no-array-index-key
-        <span key={i} className="word-mask">
+        [<span key={i} className="word-mask">
           <span className="word-inner">{word}</span>
-        </span>
+        </span>, ' ']
       ))}
-      {words.length > 0 && ' '}
+      {' '}
       <span className="word-mask">
         <em className="hero-accent word-inner">{last}</em>
       </span>
