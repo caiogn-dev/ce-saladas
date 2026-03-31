@@ -3,6 +3,7 @@
  */
 import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import * as storeApi from '../services/storeApi';
+import { verifyWhatsAppCode } from '../services/auth';
 
 const AuthContext = createContext();
 const PROFILE_CACHE_TTL_MS = 5 * 60 * 1000;
@@ -103,6 +104,28 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const signInWithWhatsApp = async (phone, code) => {
+    try {
+      const data = await verifyWhatsAppCode(phone, code);
+      if (!data?.valid) {
+        return { success: false, error: data?.message || 'Código inválido.' };
+      }
+      const profileData = await fetchProfile({ force: true });
+      // Re-fetch cart to merge guest cart with authenticated user cart
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('cart:refresh'));
+      }
+      return { success: true, profile: profileData, userData: data.user };
+    } catch (error) {
+      return {
+        success: false,
+        error: error?.response?.data?.message
+          || error?.response?.data?.error
+          || 'Erro ao autenticar. Tente novamente.',
+      };
+    }
+  };
+
   const signOut = async () => {
     try {
       await storeApi.logoutUser();
@@ -128,6 +151,7 @@ export const AuthProvider = ({ children }) => {
       loading,
       isAuthenticated: Boolean(user || profile),
       signIn,
+      signInWithWhatsApp,
       signOut,
       updateProfile: updateUserProfile,
       fetchProfile

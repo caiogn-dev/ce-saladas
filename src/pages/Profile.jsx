@@ -576,6 +576,38 @@ const Profile = () => {
 
         {activeTab === 'profile' && (
           <div className="profile-card">
+            {/* Profile completeness indicator */}
+            {(() => {
+              const fields = [
+                profile?.first_name,
+                profile?.last_name,
+                profile?.email && !profile.email.endsWith('@pastita.local'),
+                profile?.phone,
+                profile?.cpf,
+                profile?.address,
+              ];
+              const filled = fields.filter(Boolean).length;
+              const total = fields.length;
+              const pct = Math.round((filled / total) * 100);
+              if (pct >= 100) return null;
+              return (
+                <div style={{ marginBottom: '1.25rem', padding: '1rem', background: 'var(--color-bg-muted, #f7f5f2)', borderRadius: '0.75rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                    <span style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--color-text-muted)' }}>Perfil {pct}% completo</span>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>{filled}/{total} campos</span>
+                  </div>
+                  <div style={{ height: '6px', background: 'var(--color-border, #e0dbd5)', borderRadius: '99px', overflow: 'hidden' }}>
+                    <div style={{ height: '100%', width: `${pct}%`, background: 'var(--clr-leaf-500, #649e20)', borderRadius: '99px', transition: 'width 0.4s ease' }} />
+                  </div>
+                  {pct < 50 && (
+                    <p style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', marginTop: '0.5rem', marginBottom: 0 }}>
+                      Complete seu perfil para agilizar próximos pedidos.
+                    </p>
+                  )}
+                </div>
+              );
+            })()}
+
             {!isEditing ? (
               <>
                 <div className="profile-info-grid">

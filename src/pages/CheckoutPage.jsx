@@ -15,6 +15,8 @@ import { useAuth } from '../context/AuthContext';
 import { useStore } from '../context/StoreContext';
 import * as storeApi from '../services/storeApi';
 import styles from '../styles/CheckoutFlow.module.css';
+import useLastAddress from '../hooks/useLastAddress';
+import useGuestInfo from '../hooks/useGuestInfo';
 
 // Import modular components
 import {
@@ -128,9 +130,11 @@ const hasDirectCardPayload = (paymentPayload = {}) => (
 const CheckoutPage = () => {
   const router = useRouter();
   const { cart, combos, cartTotal, clearCart, hasItems } = useCart();
-  const { updateProfile } = useAuth();
+  const { updateProfile, isAuthenticated, user, profile, signOut } = useAuth();
   const { isStoreOpen, availability } = useStore();
   const mpPublicKey = process.env.NEXT_PUBLIC_MERCADO_PAGO_PUBLIC_KEY;
+  const { readLastAddress, saveLastAddress } = useLastAddress();
+  const { saveGuestInfo, buildMergePayload } = useGuestInfo();
 
   // Custom hooks
   const checkoutForm = useCheckoutForm();
@@ -160,6 +164,36 @@ const CheckoutPage = () => {
     }
   }, [mpPublicKey]);
 
+  // Pre-populate delivery address: profile > localStorage
+  useEffect(() => {
+    if (!checkoutForm.userDataLoaded) return;
+
+    const currentProfile = profile || user;
+    const hasProfileAddress = currentProfile?.address && currentProfile?.city;
+
+    if (hasProfileAddress) {
+      const addr = {
+        street: currentProfile.address,
+        number: currentProfile.number || '',
+        complement: currentProfile.complement || '',
+        neighborhood: currentProfile.neighborhood || '',
+        city: currentProfile.city,
+        state: currentProfile.state || '',
+        zip_code: currentProfile.zip_code || '',
+      };
+      setConfirmedAddress(addr);
+      checkoutForm.setAddressFromGeo(addr);
+      return;
+    }
+
+    const last = readLastAddress();
+    if (last?.address) {
+      setConfirmedAddress(last.address);
+      checkoutForm.setAddressFromGeo(last.address);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [checkoutForm.userDataLoaded]);
+
   // Handle shipping method change
   const handleShippingMethodChange = useCallback((method) => {
     delivery.setShippingMethod(method);
@@ -180,14 +214,33 @@ const CheckoutPage = () => {
   const handleLocationConfirm = useCallback((locationData) => {
     setConfirmedAddress(locationData.address);
     checkoutForm.setAddressFromGeo(locationData.address);
-    
+
+    // Persist for next visit
+    saveLastAddress(locationData.address);
+
+    // Save to profile immediately if authenticated and profile has no address yet
+    if (isAuthenticated && locationData.address) {
+      const currentProfile = profile || user;
+      if (!currentProfile?.address) {
+        updateProfile({
+          address: locationData.address.street || '',
+          number: locationData.address.number || '',
+          complement: locationData.address.complement || '',
+          neighborhood: locationData.address.neighborhood || '',
+          city: locationData.address.city || '',
+          state: locationData.address.state || '',
+          zip_code: (locationData.address.zip_code || '').replace(/\D/g, ''),
+        }).catch(() => { /* non-critical */ });
+      }
+    }
+
     if (locationData.deliveryInfo) {
       delivery.setDeliveryInfo(locationData.deliveryInfo);
       delivery.setShippingCost(locationData.deliveryInfo.fee);
     }
-    
+
     setShowLocationModal(false);
-  }, [checkoutForm, delivery]);
+  }, [checkoutForm, delivery, saveLastAddress, isAuthenticated, profile, user, updateProfile]);
 
   // Handle proceed to payment
   const handleProceedToPayment = useCallback(() => {
@@ -272,6 +325,17 @@ const CheckoutPage = () => {
 
       // Clear cart
       clearCart();
+
+      // Save guest info for pre-population in future orders
+      saveGuestInfo(checkoutForm.buildGuestInfoPayload());
+
+      // Merge guest info into profile if authenticated and profile is missing fields
+      if (isAuthenticated) {
+        const mergePayload = buildMergePayload(profile || user);
+        if (Object.keys(mergePayload).length > 0) {
+          updateProfile(mergePayload).catch(() => { /* non-critical */ });
+        }
+      }
 
       // Store access token in sessionStorage to avoid exposing it in the URL.
       // Success/pending pages read from sessionStorage first, then fall back to
@@ -416,6 +480,10 @@ const CheckoutPage = () => {
               isIdentificationComplete={checkoutForm.isIdentificationComplete}
               onCompleteIdentification={checkoutForm.completeIdentification}
               onEditIdentification={checkoutForm.editIdentification}
+              onPhoneChange={(phone) => checkoutForm.setVerifiedPhone(phone)}
+              isAuthenticated={isAuthenticated}
+              userName={profile?.first_name || user?.first_name || ''}
+              onSignOut={signOut}
               paymentMethod={paymentMethod}
               onPaymentMethodChange={setPaymentMethod}
               coupon={coupon}
@@ -448,6 +516,7 @@ const CheckoutPage = () => {
         onConfirm={handleLocationConfirm}
         geolocation={geolocation}
         delivery={delivery}
+        savedAddress={readLastAddress()?.address || null}
       />
     </div>
   );

@@ -13,6 +13,7 @@ import {
   STORE_ADDRESS,
   splitFullName,
 } from '../utils';
+import { readGuestInfoStatic } from '../../../hooks/useGuestInfo';
 
 const CHECKOUT_DRAFT_VERSION = 1;
 
@@ -117,13 +118,20 @@ export const useCheckoutForm = () => {
       };
       setExistingFields(newExistingFields);
 
+      // Priority: profile > guest info (ce_guest_info) > draft
+      const guestInfo = readGuestInfoStatic() || {};
       const draftData = checkoutDraft || {};
+
+      const profileName = currentProfile?.first_name && currentProfile?.last_name
+        ? `${currentProfile.first_name} ${currentProfile.last_name}`.trim()
+        : currentProfile?.first_name || '';
+
       const nextFormData = {
-        name: currentProfile?.first_name && currentProfile?.last_name
-          ? `${currentProfile.first_name} ${currentProfile.last_name}`.trim()
-          : currentProfile?.first_name || draftData.name || '',
-        email: currentProfile?.email || draftData.email || '',
-        phone: currentProfile?.phone ? formatPhone(currentProfile.phone) : draftData.phone || '',
+        name: profileName || guestInfo.name || draftData.name || '',
+        email: currentProfile?.email || guestInfo.email || draftData.email || '',
+        phone: currentProfile?.phone
+          ? formatPhone(currentProfile.phone)
+          : guestInfo.phone ? formatPhone(guestInfo.phone) : draftData.phone || '',
         cpf: currentProfile?.cpf ? formatCPF(currentProfile.cpf) : draftData.cpf || '',
         address: currentProfile?.address || draftData.address || '',
         number: currentProfile?.number || draftData.number || '',
@@ -136,10 +144,12 @@ export const useCheckoutForm = () => {
 
       setFormData(nextFormData);
       setSaveAddress(draftData.saveAddress ?? true);
+      // Identification is complete when: already auth'd, phone verified via OTP (draft), or profile has phone
       setIsIdentificationComplete(
         Boolean(
           draftData.isIdentificationComplete
-          || (isValidEmail(nextFormData.email) && isValidPhone(nextFormData.phone))
+          || currentProfile?.phone
+          || (isValidPhone(nextFormData.phone) && draftData.isIdentificationComplete)
         ),
       );
       setUserDataLoaded(true);
@@ -166,39 +176,39 @@ export const useCheckoutForm = () => {
 
   const getIdentificationErrors = useCallback(() => {
     const nextErrors = {};
-
-    if (!formData.email.trim()) nextErrors.email = 'E-mail é obrigatório';
-    else if (!isValidEmail(formData.email)) nextErrors.email = 'E-mail inválido';
-
     if (!formData.phone.trim()) nextErrors.phone = 'Celular é obrigatório';
     else if (!isValidPhone(formData.phone)) nextErrors.phone = 'Celular inválido';
-
     return nextErrors;
-  }, [formData.email, formData.phone]);
+  }, [formData.phone]);
 
   const validateIdentification = useCallback(() => {
     const identificationErrors = getIdentificationErrors();
 
     setErrors((prev) => ({
       ...prev,
-      email: identificationErrors.email || '',
       phone: identificationErrors.phone || '',
       identification: Object.keys(identificationErrors).length > 0
-        ? 'Informe um e-mail válido e um celular válido para continuar'
+        ? 'Informe um celular válido para continuar'
         : '',
     }));
 
     return Object.keys(identificationErrors).length === 0;
   }, [getIdentificationErrors]);
 
-  const completeIdentification = useCallback(() => {
-    const isValid = validateIdentification();
-    if (!isValid) return false;
-
+  const completeIdentification = useCallback((verifiedPhone) => {
+    if (verifiedPhone) {
+      setFormData((prev) => ({ ...prev, phone: formatPhone(verifiedPhone) }));
+    }
     setIsIdentificationComplete(true);
     setErrors((prev) => ({ ...prev, identification: '' }));
     return true;
-  }, [validateIdentification]);
+  }, []);
+
+  // Expose method for phone update from OTP flow
+  const setVerifiedPhone = useCallback((phone) => {
+    setFormData((prev) => ({ ...prev, phone: formatPhone(phone) }));
+    setIsIdentificationComplete(true);
+  }, []);
 
   const editIdentification = useCallback(() => {
     setIsIdentificationComplete(false);
@@ -269,10 +279,14 @@ export const useCheckoutForm = () => {
   }, [formData]);
 
   const validateForm = useCallback((shippingMethod) => {
-    const newErrors = getIdentificationErrors();
+    const newErrors = {};
 
     if (!isIdentificationComplete) {
-      newErrors.identification = 'Confirme seu e-mail e celular antes de continuar.';
+      newErrors.identification = 'Verifique seu celular via WhatsApp antes de continuar.';
+    }
+
+    if (!formData.phone.trim() || !isValidPhone(formData.phone)) {
+      newErrors.phone = 'Celular inválido';
     }
 
     if (!formData.name.trim()) newErrors.name = 'Nome é obrigatório';
@@ -358,6 +372,12 @@ export const useCheckoutForm = () => {
     return payload;
   }, [formData, profile, saveAddress]);
 
+  const buildGuestInfoPayload = useCallback(() => ({
+    name: formData.name.trim(),
+    phone: onlyDigits(formData.phone),
+    email: formData.email.trim(),
+  }), [formData]);
+
   return {
     formData,
     errors,
@@ -373,9 +393,11 @@ export const useCheckoutForm = () => {
     validateIdentification,
     completeIdentification,
     editIdentification,
+    setVerifiedPhone,
     validateForm,
     buildCheckoutPayload,
     buildProfileUpdatePayload,
+    buildGuestInfoPayload,
     setSaveAddress,
     setErrors,
   };

@@ -7,6 +7,7 @@ import dynamic from 'next/dynamic';
 import { Clock3, Hand, Hash, Home, MapPin, MapPinned, Navigation, Route, Wallet } from 'lucide-react';
 import styles from '../../styles/CheckoutModal.module.css';
 import { STORE_LOCATION } from './utils';
+import SavedAddressPicker from './SavedAddressPicker';
 
 // HERE Maps uses browser-only APIs — must be loaded client-side only
 const InteractiveMap = dynamic(() => import('../InteractiveMap'), { ssr: false });
@@ -19,6 +20,7 @@ const LocationModal = ({
   onConfirm,
   geolocation,
   delivery,
+  savedAddress = null,
 }) => {
   const {
     position,
@@ -169,6 +171,15 @@ const LocationModal = ({
 
         {/* Scrollable body */}
         <div className={styles.scrollBody}>
+
+        {/* Saved address quick-select — shown before GPS detection */}
+        {savedAddress && currentStep === 'detecting' && (
+          <SavedAddressPicker
+            savedAddress={savedAddress}
+            onUse={(addr) => onConfirm({ address: addr, deliveryInfo: null })}
+            onIgnore={() => {/* continue with GPS flow */}}
+          />
+        )}
 
         {currentStep === 'detecting' && (
           <div className={styles.detectingStep}>

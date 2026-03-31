@@ -15,6 +15,10 @@ const PaymentStep = ({
   isIdentificationComplete,
   onCompleteIdentification,
   onEditIdentification,
+  onPhoneChange,
+  isAuthenticated,
+  userName,
+  onSignOut,
   paymentMethod,
   onPaymentMethodChange,
   coupon,
@@ -49,8 +53,12 @@ const PaymentStep = ({
           onChange={onFormChange}
           onCompleteIdentification={onCompleteIdentification}
           onEditIdentification={onEditIdentification}
+          onPhoneChange={onPhoneChange}
           isIdentificationComplete={isIdentificationComplete}
           existingFields={existingFields}
+          isAuthenticated={isAuthenticated}
+          userName={userName}
+          onSignOut={onSignOut}
           disabled={loading}
         />
       </div>

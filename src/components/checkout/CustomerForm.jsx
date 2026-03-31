@@ -1,4 +1,5 @@
-﻿import React from 'react';
+import React from 'react';
+import IdentificationStep from './IdentificationStep';
 import styles from '../../styles/Checkout.module.css';
 
 const CustomerForm = ({
@@ -10,86 +11,23 @@ const CustomerForm = ({
   isIdentificationComplete = false,
   existingFields = {},
   disabled = false,
+  isAuthenticated = false,
+  userName = '',
+  onSignOut,
+  onPhoneChange,
 }) => (
   <div className={styles.customerForm}>
-    <div className={styles.identificationCard}>
-      <div className={styles.formSectionHeader}>
-        <span className={styles.formSectionEyebrow}>Identificação</span>
-        <p className={styles.formSectionDescription}>
-          Informe seu e-mail e celular para continuar. Não pedimos senha para concluir o pedido.
-        </p>
-      </div>
-
-      {!isIdentificationComplete ? (
-        <>
-          <div className={styles.formRow}>
-            <div className={styles.formGroup}>
-              <label className={styles.label}>E-mail *</label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={onChange}
-                placeholder="seu@email.com"
-                className={`${styles.input} ${errors.email ? styles.inputError : ''}`}
-                disabled={disabled}
-                autoComplete="email"
-              />
-              {errors.email && <span className={styles.errorText}>{errors.email}</span>}
-            </div>
-
-            <div className={styles.formGroup}>
-              <label className={styles.label}>Celular *</label>
-              <input
-                type="tel"
-                name="phone"
-                value={formData.phone}
-                onChange={onChange}
-                placeholder="(11) 99999-9999"
-                className={`${styles.input} ${errors.phone ? styles.inputError : ''}`}
-                disabled={disabled}
-                autoComplete="tel"
-              />
-              {errors.phone && <span className={styles.errorText}>{errors.phone}</span>}
-            </div>
-          </div>
-
-          {errors.identification && <div className={styles.identificationError}>{errors.identification}</div>}
-
-          <button
-            type="button"
-            className={styles.identificationButton}
-            onClick={onCompleteIdentification}
-            disabled={disabled}
-          >
-            Continuar
-          </button>
-
-          <p className={styles.identificationHelp}>
-            Usaremos esses dados para confirmação do pedido, contato de entrega e retomada rápida do checkout.
-          </p>
-        </>
-      ) : (
-        <div className={styles.identificationSummary}>
-          <div className={styles.identificationSummaryItem}>
-            <span className={styles.identificationSummaryLabel}>E-mail</span>
-            <strong>{formData.email}</strong>
-          </div>
-          <div className={styles.identificationSummaryItem}>
-            <span className={styles.identificationSummaryLabel}>Celular</span>
-            <strong>{formData.phone}</strong>
-          </div>
-          <button
-            type="button"
-            className={styles.identificationLink}
-            onClick={onEditIdentification}
-            disabled={disabled}
-          >
-            Editar identificação
-          </button>
-        </div>
-      )}
-    </div>
+    <IdentificationStep
+      phone={formData.phone}
+      onPhoneChange={onPhoneChange}
+      isIdentificationComplete={isIdentificationComplete}
+      onIdentificationComplete={onCompleteIdentification}
+      onEditIdentification={onEditIdentification}
+      isAuthenticated={isAuthenticated}
+      userName={userName}
+      onSignOut={onSignOut}
+      disabled={disabled}
+    />
 
     {isIdentificationComplete && (
       <div className={styles.personalDataCard}>

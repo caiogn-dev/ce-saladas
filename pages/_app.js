@@ -14,6 +14,7 @@ import '../src/components/LoginModal.css';
 import '../src/components/Toast.css';
 import '../src/components/FavoriteButton.css';
 import '../src/components/FloatingWhatsApp.css';
+import '../src/components/WhatsAppOTPModal.css';
 import '../src/components/ProductFilters.css';
 import '../src/components/StockBadge.css';
 
