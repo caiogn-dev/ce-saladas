@@ -100,6 +100,42 @@
   gap: var(--space-3);
 }
 
+.navbar-account-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0 var(--space-4);
+  border-radius: var(--o-radius-full);
+  border: 1px solid rgba(var(--clr-terra-rgb), .14);
+  background: rgba(255, 255, 255, .82);
+  color: var(--clr-stone-800);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  letter-spacing: var(--tracking-wide);
+  text-decoration: none;
+  transition:
+    transform var(--dur-fast) var(--ease-spring),
+    border-color var(--dur-fast) var(--ease-organic),
+    background var(--dur-fast) var(--ease-organic);
+}
+
+.navbar-account-btn:hover {
+  transform: translateY(-1px);
+  background: rgba(var(--clr-terra-rgb), .08);
+  border-color: rgba(var(--clr-terra-rgb), .22);
+}
+
+.dark .navbar-account-btn {
+  background: rgba(33, 24, 16, .9);
+  border-color: rgba(var(--clr-terra-rgb), .18);
+  color: var(--color-text-base);
+}
+
+.dark .navbar-account-btn:hover {
+  background: rgba(var(--clr-terra-rgb), .14);
+}
+
 /* ─── User actions ─── */
 .navbar-user   { color: var(--color-text-muted); font-size: var(--text-sm); }
 .navbar-logout { color: var(--color-text-muted); font-size: var(--text-sm); }
@@ -253,6 +289,19 @@
   background: rgba(var(--clr-terra-rgb), .08);
   color: var(--clr-terra-500);
 }
+
+.navbar-mobile-link--accent {
+  margin-top: var(--space-3);
+  background: var(--color-accent);
+  color: #fff;
+  font-weight: 600;
+}
+
+.navbar-mobile-link--accent.active,
+.navbar-mobile-link--accent:hover {
+  background: var(--color-accent-hover);
+  color: #fff;
+}
 @media (hover: hover) and (pointer: fine) {
   .navbar-mobile-link:hover {
     background: rgba(var(--clr-terra-rgb), .08);
@@ -299,6 +348,10 @@
   .navbar-container {
     grid-template-columns: minmax(44px, 1fr) auto minmax(44px, 1fr);
     gap: var(--space-3);
+  }
+
+  .navbar-account-btn {
+    display: none;
   }
 
   /* ── Hamburger: square pill — mirrors cart button visually ── */
@@ -421,4 +474,3 @@
 .dark .navbar-mobile-link { color: var(--color-text-base); }
 .dark .navbar-mobile-link:hover,
 .dark .navbar-mobile-link.active { color: var(--clr-terra-200); background: rgba(249, 115, 22, 0.12); }
-

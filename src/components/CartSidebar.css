@@ -47,6 +47,12 @@
   background: var(--color-bg-card);
 }
 
+.cart-header__copy {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
 .cart-header h2 {
   font-family: var(--font-display);
   color: var(--clr-stone-900);
@@ -58,6 +64,13 @@
   gap: var(--space-3);
   letter-spacing: var(--tracking-tight);
   font-style: italic;
+}
+
+.cart-header__copy p {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  line-height: 1.5;
 }
 
 .cart-header h2::before {
@@ -355,6 +368,13 @@
   padding: var(--space-5) var(--space-6);
   border-top: 1px solid var(--clr-stone-100);
   background: var(--clr-sand-50);
+}
+
+.cart-footer__meta {
+  margin: 0 0 var(--space-3);
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+  line-height: 1.5;
 }
 
 .cart-total {

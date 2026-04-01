@@ -141,6 +141,29 @@ export const CartProvider = ({ children }) => {
     fetchCart();
   }, [fetchCart]);
 
+  const refreshCartState = useCallback(() => {
+    clearCartCacheInternal();
+    return fetchCart({ force: true });
+  }, [fetchCart]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return undefined;
+
+    const handleCartRefresh = () => {
+      refreshCartState();
+    };
+
+    window.addEventListener('cart:refresh', handleCartRefresh);
+    window.addEventListener('auth:login', handleCartRefresh);
+    window.addEventListener('auth:logout', handleCartRefresh);
+
+    return () => {
+      window.removeEventListener('cart:refresh', handleCartRefresh);
+      window.removeEventListener('auth:login', handleCartRefresh);
+      window.removeEventListener('auth:logout', handleCartRefresh);
+    };
+  }, [refreshCartState]);
+
   const openCart = () => setIsCartOpen(true);
   const closeCart = () => setIsCartOpen(false);
   const toggleCart = () => setIsCartOpen((current) => !current);
@@ -413,6 +436,7 @@ export const CartProvider = ({ children }) => {
       toggleCart,
       clearCart,
       fetchCart,
+      refreshCartState,
     }}>
       {children}
     </CartContext.Provider>

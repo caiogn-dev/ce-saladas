@@ -1,7 +1,7 @@
 .floating-whatsapp {
   position: fixed;
-  bottom: 1.75rem;
-  right: 1.75rem;
+  bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+  right: 1rem;
   z-index: 98;
   display: flex;
   align-items: center;
@@ -69,5 +69,18 @@
 
   .floating-whatsapp__tooltip::after {
     border-left-color: #2a2a2a;
+  }
+}
+
+@media (max-width: 767px) {
+  .floating-whatsapp {
+    width: 3.25rem;
+    height: 3.25rem;
+    right: 1rem;
+    bottom: calc(5.75rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .floating-whatsapp__tooltip {
+    display: none;
   }
 }

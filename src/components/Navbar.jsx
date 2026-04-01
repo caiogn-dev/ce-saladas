@@ -1,17 +1,29 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { useStore } from '../context/StoreContext';
 import { useTheme } from '../context/ThemeContext';
+
+const normalizePhone = (value = '') => value.replace(/\D/g, '');
+
 const Navbar = () => {
   const { store } = useStore();
+  const { isAuthenticated } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { cartCount, openCart } = useCart();
   const { theme, toggleTheme } = useTheme();
   const router = useRouter();
 
   const isActive = (path) => router.pathname === path;
+  const whatsappNumber = useMemo(
+    () => normalizePhone(store?.whatsapp_number || store?.phone || ''),
+    [store?.phone, store?.whatsapp_number]
+  );
+  const whatsappUrl = whatsappNumber
+    ? `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(`Ola! Quero falar com ${store?.name || 'Ce Saladas'}.`)}`
+    : '/cardapio';
 
   useEffect(() => {
     const handleRouteChange = () => {
@@ -55,25 +67,40 @@ const Navbar = () => {
           href="/"
           className="navbar-logo"
           onClick={closeMobileMenu}
-          aria-label={store?.name || 'Início'}
+          aria-label={store?.name || 'Inicio'}
         >
           {store?.logo_url ? (
             <img src={store.logo_url} alt={store.name} className="navbar-logo-image" />
           ) : (
-            <span className="navbar-logo-text">{store?.name || 'Cê Saladas'}</span>
+            <span className="navbar-logo-text">{store?.name || 'Ce Saladas'}</span>
           )}
         </Link>
 
         <div className="navbar-links">
           <Link href="/" className={`navbar-link ${isActive('/') ? 'active' : ''}`}>
-            Início
+            Inicio
           </Link>
           <Link href="/cardapio" className={`navbar-link ${isActive('/cardapio') ? 'active' : ''}`}>
-            Cardápio
+            Cardapio
           </Link>
         </div>
 
         <div className="navbar-actions">
+          {isAuthenticated ? (
+            <Link href="/perfil" className="navbar-account-btn">
+              Minha conta
+            </Link>
+          ) : (
+            <a
+              href={whatsappUrl}
+              target={whatsappNumber ? '_blank' : undefined}
+              rel={whatsappNumber ? 'noopener noreferrer' : undefined}
+              className="navbar-account-btn"
+            >
+              WhatsApp
+            </a>
+          )}
+
           <button
             onClick={toggleTheme}
             aria-label={theme === 'dark' ? 'Mudar para tema claro' : 'Mudar para tema escuro'}
@@ -89,6 +116,7 @@ const Navbar = () => {
               </svg>
             )}
           </button>
+
           <button
             key={cartCount > 0 ? `navbar-cart-${cartCount}` : 'navbar-cart-empty'}
             onClick={openCart}
@@ -110,16 +138,34 @@ const Navbar = () => {
 
       <div className={`navbar-mobile-menu ${mobileMenuOpen ? 'open' : ''}`}>
         <Link href="/" className={`navbar-mobile-link ${isActive('/') ? 'active' : ''}`} onClick={closeMobileMenu}>
-          Início
+          Inicio
         </Link>
         <button
           type="button"
           className={`navbar-mobile-link ${isActive('/cardapio') ? 'active' : ''}`}
           onClick={() => handleMobileNavigate('/cardapio')}
         >
-          Cardápio
+          Cardapio
         </button>
-
+        {isAuthenticated && (
+          <Link href="/perfil" className={`navbar-mobile-link ${isActive('/perfil') ? 'active' : ''}`} onClick={closeMobileMenu}>
+            Minha conta
+          </Link>
+        )}
+        {isAuthenticated && (
+          <Link href="/perfil?tab=orders" className="navbar-mobile-link" onClick={closeMobileMenu}>
+            Meus pedidos
+          </Link>
+        )}
+        <a
+          href={whatsappUrl}
+          target={whatsappNumber ? '_blank' : undefined}
+          rel={whatsappNumber ? 'noopener noreferrer' : undefined}
+          className="navbar-mobile-link navbar-mobile-link--accent"
+          onClick={closeMobileMenu}
+        >
+          Falar no WhatsApp
+        </a>
       </div>
 
       {mobileMenuOpen && (

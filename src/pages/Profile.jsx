@@ -3,7 +3,6 @@ import { useRouter } from 'next/router';
 import Navbar from '../components/Navbar';
 import * as storeApi from '../services/storeApi';
 import { useAuth } from '../context/AuthContext';
-import { useCart } from '../context/CartContext';
 import PageTransition, { StaggeredList, AnimatedCard } from '../components/ui/PageTransition';
 import {
   BRAZILIAN_STATES,
@@ -235,11 +234,13 @@ const DEFAULT_PREFERENCES = {
   preferred_payment: 'pix',
 };
 
+const PROFILE_TABS = ['profile', 'orders', 'addresses', 'preferences'];
+const getProfileTab = (value) => (PROFILE_TABS.includes(value) ? value : 'profile');
+
 const Profile = () => {
   const router = useRouter();
   const { profile, updateProfile } = useAuth();
-  const { addItem } = useCart();
-  const [activeTab, setActiveTab] = useState('profile');
+  const [activeTab, setActiveTab] = useState(() => getProfileTab(router.query.tab));
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState(() => buildFormData(profile));
   const [saving, setSaving] = useState(false);
@@ -281,6 +282,28 @@ const Profile = () => {
   useEffect(() => {
     setFormData(buildFormData(profile));
   }, [profile]);
+
+  useEffect(() => {
+    const nextTab = getProfileTab(router.query.tab);
+    setActiveTab((current) => (current === nextTab ? current : nextTab));
+  }, [router.query.tab]);
+
+  const handleTabChange = useCallback((nextTab) => {
+    setActiveTab(nextTab);
+
+    const nextQuery = { ...router.query };
+    if (nextTab === 'profile') {
+      delete nextQuery.tab;
+    } else {
+      nextQuery.tab = nextTab;
+    }
+
+    router.replace(
+      { pathname: router.pathname, query: nextQuery },
+      undefined,
+      { shallow: true }
+    );
+  }, [router]);
 
   useEffect(() => {
     if (activeTab !== 'orders' || ordersLoaded) {
@@ -503,17 +526,7 @@ const Profile = () => {
 
   const handleReorder = useCallback(async (order) => {
     try {
-      // Fetch full order details if needed
-      const details = await storeApi.getOrder(order.id);
-      const items = details?.items || [];
-      
-      // Add items to cart
-      for (const item of items) {
-        // We need product data to add to cart - redirect to menu for now
-        // In a full implementation, we'd fetch product details and add directly
-      }
-      
-      // Navigate to menu with a message
+      await storeApi.getOrder(order.id);
       router.push('/cardapio');
     } catch (err) {
       console.error('Error reordering:', err);
@@ -538,7 +551,7 @@ const Profile = () => {
             <button
               type="button"
               className={`profile-tab ${activeTab === 'profile' ? 'active' : ''}`}
-              onClick={() => setActiveTab('profile')}
+              onClick={() => handleTabChange('profile')}
               role="tab"
               aria-selected={activeTab === 'profile'}
             >
@@ -547,7 +560,7 @@ const Profile = () => {
             <button
               type="button"
               className={`profile-tab ${activeTab === 'orders' ? 'active' : ''}`}
-              onClick={() => setActiveTab('orders')}
+              onClick={() => handleTabChange('orders')}
               role="tab"
               aria-selected={activeTab === 'orders'}
             >
@@ -556,7 +569,7 @@ const Profile = () => {
             <button
               type="button"
               className={`profile-tab ${activeTab === 'addresses' ? 'active' : ''}`}
-              onClick={() => setActiveTab('addresses')}
+              onClick={() => handleTabChange('addresses')}
               role="tab"
               aria-selected={activeTab === 'addresses'}
             >
@@ -565,7 +578,7 @@ const Profile = () => {
             <button
               type="button"
               className={`profile-tab ${activeTab === 'preferences' ? 'active' : ''}`}
-              onClick={() => setActiveTab('preferences')}
+              onClick={() => handleTabChange('preferences')}
               role="tab"
               aria-selected={activeTab === 'preferences'}
             >

@@ -1,5 +1,7 @@
 import React, { useMemo, useState, useRef, useEffect, useCallback } from 'react';
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { ArrowRight, Clock3, MapPin, ShoppingBag } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import FavoriteButton from '../components/FavoriteButton';
@@ -102,6 +104,8 @@ const formatMoney = (value) => Number(value || 0).toLocaleString('pt-BR', {
   currency: 'BRL',
 });
 
+const normalizePhone = (value = '') => value.replace(/\D/g, '');
+
 const ProductsSkeleton = () => (
   <div className="catalog-main">
     <div className="catalog-toolbar catalog-toolbar--skeleton">
@@ -129,6 +133,7 @@ const ProductsSkeleton = () => (
 );
 
 const Cardapio = () => {
+  const router = useRouter();
   const [selectedItem, setSelectedItem] = useState(null);
   const [query, setQuery] = useState('');
   const [activeSection, setActiveSection] = useState(null);
@@ -350,6 +355,16 @@ const Cardapio = () => {
   const storeHoursLabel = store?.metadata?.business_hours_label || store?.metadata?.opening_hours || 'Pedido simples, rápido e sem cadastro obrigatório';
   const heroDescription = store?.metadata?.catalog_pitch || 'Escolha sua refeição, ajuste os sabores e finalize em poucos toques.';
 
+  const whatsappNumber = useMemo(
+    () => normalizePhone(store?.whatsapp_number || store?.phone || ''),
+    [store?.phone, store?.whatsapp_number]
+  );
+  const whatsappUrl = useMemo(() => (
+    whatsappNumber
+      ? `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(`Ola! Quero ajuda para montar meu pedido na ${store?.name || 'Ce Saladas'}.`)}`
+      : '#'
+  ), [store?.name, whatsappNumber]);
+
   return (
     <div className="cardapio-page">
       <Navbar />
@@ -438,6 +453,23 @@ const Cardapio = () => {
                   </button>
                 )}
               </div>
+
+              <div className="cardapio-hero__quick-actions">
+                {isAuthenticated ? (
+                  <>
+                    <Link href="/perfil" className="cardapio-hero__quick-link">
+                      Minha conta
+                    </Link>
+                    <Link href="/perfil?tab=orders" className="cardapio-hero__quick-link">
+                      Meus pedidos
+                    </Link>
+                  </>
+                ) : whatsappNumber ? (
+                  <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="cardapio-hero__quick-link cardapio-hero__quick-link--accent">
+                    Ajuda no WhatsApp
+                  </a>
+                ) : null}
+              </div>
             </div>
           </div>
         </header>
@@ -456,7 +488,7 @@ const Cardapio = () => {
       {!loading && !error && catalogItems.length === 0 && (
         <PageTransition animation="fadeIn" delay={100}>
           <div className="container">
-            <EmptyState.Products onAction={() => { window.location.href = '/'; }} />
+            <EmptyState.Products onAction={() => { router.push('/'); }} />
           </div>
         </PageTransition>
       )}

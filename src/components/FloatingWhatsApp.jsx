@@ -1,12 +1,24 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import { useStore } from '../context/StoreContext';
 
-const WHATSAPP_NUMBER = '5563991386719';
-const WHATSAPP_MESSAGE = 'Olá! Gostaria de mais informações sobre a CE Saladas 🥗';
+const normalizePhone = (value = '') => value.replace(/\D/g, '');
 
 export default function FloatingWhatsApp() {
+  const { store } = useStore();
   const [hovered, setHovered] = useState(false);
 
-  const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
+  const whatsappNumber = useMemo(
+    () => normalizePhone(store?.whatsapp_number || store?.phone || ''),
+    [store?.phone, store?.whatsapp_number]
+  );
+
+  if (!whatsappNumber) {
+    return null;
+  }
+
+  const whatsappMessage = store?.metadata?.whatsapp_default_message
+    || `Ola! Quero fazer um pedido na ${store?.name || 'Ce Saladas'}.`;
+  const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`;
 
   return (
     <a
@@ -18,7 +30,7 @@ export default function FloatingWhatsApp() {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      <span className="floating-whatsapp__tooltip">Fale conosco!</span>
+      <span className="floating-whatsapp__tooltip">Fale no WhatsApp</span>
       <svg
         className="floating-whatsapp__icon"
         xmlns="http://www.w3.org/2000/svg"
