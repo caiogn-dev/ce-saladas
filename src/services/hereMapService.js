@@ -11,6 +11,7 @@ const HERE_API_VERSION = '3.1';
 
 // CDN URLs for HERE Maps
 const HERE_CORE_JS = `https://js.api.here.com/v3/${HERE_API_VERSION}/mapsjs-core.js`;
+const HERE_CORE_LEGACY_JS = `https://js.api.here.com/v3/${HERE_API_VERSION}/mapsjs-core-legacy.js`;
 const HERE_SERVICE_JS = `https://js.api.here.com/v3/${HERE_API_VERSION}/mapsjs-service.js`;
 const HERE_UI_JS = `https://js.api.here.com/v3/${HERE_API_VERSION}/mapsjs-ui.js`;
 const HERE_EVENTS_JS = `https://js.api.here.com/v3/${HERE_API_VERSION}/mapsjs-mapevents.js`;
@@ -40,6 +41,10 @@ let loadPromise = null;
 
 // Track scripts that successfully executed (not just added to DOM)
 const confirmedScripts = new Set();
+
+function hasP2DRenderer(H) {
+  return Boolean(H?.map?.render?.p2d?.RenderEngine);
+}
 
 /**
  * Load HERE Maps scripts dynamically
@@ -101,6 +106,8 @@ export async function initHereMaps() {
     try {
       // Load scripts in order
       await loadScript(HERE_CORE_JS);
+      // The legacy bundle defines H.map.render.p2d.RenderEngine used when WebGL is unavailable.
+      await loadScript(HERE_CORE_LEGACY_JS);
       await loadScript(HERE_SERVICE_JS);
       await loadScript(HERE_EVENTS_JS);
       await loadScript(HERE_UI_JS);
@@ -167,6 +174,10 @@ export function createMap(container, options = {}) {
     });
 
     // Build raster-oriented layers explicitly for the P2D fallback.
+    if (!hasP2DRenderer(H)) {
+      throw new Error(`WebGL indisponivel e o renderer legado P2D do HERE nao foi carregado. Verifique mapsjs-core-legacy.js. (original: ${webglErr.message})`);
+    }
+
     const p2dEngine = p2dType ?? 'p2d';
     defaultLayers = plt.createDefaultLayers({ engineType: p2dEngine });
     const rasterLayer = defaultLayers.raster?.normal?.map;
