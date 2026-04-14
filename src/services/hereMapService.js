@@ -143,19 +143,34 @@ export function getPlatform() {
 /**
  * Create a new map instance
  */
+function isWebGLAvailable() {
+  try {
+    const canvas = document.createElement('canvas');
+    return !!(window.WebGLRenderingContext &&
+      (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')));
+  } catch (e) {
+    return false;
+  }
+}
+
 export function createMap(container, options = {}) {
   const H = window.H;
   const plt = getPlatform();
   const defaultLayers = plt.createDefaultLayers();
 
+  const webgl = isWebGLAvailable();
+
+  // P2D engine uses Canvas 2D (no WebGL), works with raster tiles only
+  const baseLayer = webgl
+    ? defaultLayers.vector.normal.map
+    : (defaultLayers.raster?.normal?.map ?? defaultLayers.vector.normal.map);
+
   const mapOptions = {
     zoom: options.zoom || DEFAULT_ZOOM,
     center: options.center || DEFAULT_CENTER,
-    pixelRatio: window.devicePixelRatio || 1
+    pixelRatio: window.devicePixelRatio || 1,
+    ...(!webgl && { engineType: H.Map.EngineType?.P2D ?? 'p2d' })
   };
-
-  // Use raster layer — vector requires WebGL which may not be available in all envs
-  const baseLayer = defaultLayers.raster?.normal?.map ?? defaultLayers.vector.normal.map;
 
   const map = new H.Map(
     container,
