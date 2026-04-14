@@ -38,19 +38,31 @@ let platform = null;
 let isLoaded = false;
 let loadPromise = null;
 
+// Track scripts that successfully executed (not just added to DOM)
+const confirmedScripts = new Set();
+
 /**
  * Load HERE Maps scripts dynamically
  */
 function loadScript(src) {
   return new Promise((resolve, reject) => {
-    if (document.querySelector(`script[src="${src}"]`)) {
+    // Only skip if we confirmed this script actually executed before
+    if (confirmedScripts.has(src)) {
       resolve();
       return;
+    }
+    // Remove any existing element that may have been blocked (e.g. by CSP)
+    const existing = document.querySelector(`script[src="${src}"]`);
+    if (existing) {
+      existing.remove();
     }
     const script = document.createElement('script');
     script.src = src;
     script.async = true;
-    script.onload = resolve;
+    script.onload = () => {
+      confirmedScripts.add(src);
+      resolve();
+    };
     script.onerror = reject;
     document.head.appendChild(script);
   });
@@ -94,6 +106,11 @@ export async function initHereMaps() {
       await loadScript(HERE_UI_JS);
       await loadScript(HERE_CLUSTERING_JS);
       await loadCSS(HERE_UI_CSS);
+
+      // Verify the SDK actually initialized (guards against silent CSP blocks)
+      if (!window.H || !window.H.service) {
+        throw new Error('HERE Maps SDK unavailable after loading — check Content-Security-Policy');
+      }
 
       // Initialize platform
       platform = new window.H.service.Platform({
