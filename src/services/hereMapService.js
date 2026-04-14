@@ -154,9 +154,12 @@ export function createMap(container, options = {}) {
     pixelRatio: window.devicePixelRatio || 1
   };
 
+  // Use raster layer — vector requires WebGL which may not be available in all envs
+  const baseLayer = defaultLayers.raster?.normal?.map ?? defaultLayers.vector.normal.map;
+
   const map = new H.Map(
     container,
-    defaultLayers.vector.normal.map,
+    baseLayer,
     mapOptions
   );
 
