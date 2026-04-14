@@ -253,7 +253,10 @@ export default function InteractiveMap({
 
     } catch (err) {
       logger.error('Failed to create map', err);
-      setError('Erro ao criar o mapa');
+      // Show real error message to aid debugging in production
+      const msg = err?.message || String(err);
+      console.error('[InteractiveMap] createMap failed:', msg, err);
+      setError(`Erro ao criar o mapa: ${msg}`);
     }
 
     return () => {

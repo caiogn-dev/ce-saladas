@@ -22,8 +22,8 @@ const securityHeaders = [
       "connect-src 'self' https://backend.pastita.com.br wss://backend.pastita.com.br https://www.google-analytics.com https://api.here.com https://geocoder.ls.hereapi.com https://route.ls.hereapi.com https://revgeocode.search.hereapi.com https://autosuggest.search.hereapi.com https://geocode.search.hereapi.com https://router.hereapi.com https://*.ls.hereapi.com https://*.hereapi.com",
       // Frames: MercadoPago checkout iframes
       "frame-src https://www.mercadopago.com.br https://www.mercadopago.com https://sandbox.mercadopago.com.br",
-      // Workers: own domain only (Next.js service worker)
-      "worker-src 'self' blob:",
+      // Workers: own domain + blob (Next.js) + HERE Maps vector tile workers
+      "worker-src 'self' blob: https://js.api.here.com",
     ].join('; '),
   },
 ];
