@@ -159,10 +159,13 @@ export function createMap(container, options = {}) {
     // First try: WebGL vector (best quality)
     map = new H.Map(container, defaultLayers.vector.normal.map, baseMapOptions);
   } catch (webglErr) {
-    // Fallback: Canvas 2D (P2D) with raster tiles — no WebGL required
+    // Fallback: Canvas 2D with raster tiles — 'p2d' string is the engine type value
     const rasterLayer = defaultLayers.raster?.normal?.map ?? defaultLayers.vector.normal.map;
-    const p2dType = H.map?.render?.RenderEngine?.EngineType?.P2D ?? 1;
-    map = new H.Map(container, rasterLayer, { ...baseMapOptions, engineType: p2dType });
+    try {
+      map = new H.Map(container, rasterLayer, { ...baseMapOptions, engineType: 'p2d' });
+    } catch (p2dErr) {
+      throw webglErr; // throw original error if both fail
+    }
   }
 
   // Enable map interaction
