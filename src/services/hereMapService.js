@@ -146,7 +146,6 @@ export function getPlatform() {
 export function createMap(container, options = {}) {
   const H = window.H;
   const plt = getPlatform();
-  const defaultLayers = plt.createDefaultLayers();
 
   const baseMapOptions = {
     zoom: options.zoom || DEFAULT_ZOOM,
@@ -154,17 +153,31 @@ export function createMap(container, options = {}) {
     pixelRatio: window.devicePixelRatio || 1
   };
 
+  const p2dType = H.Map?.EngineType?.P2D;
+  const vectorLayers = plt.createDefaultLayers();
+
   let map;
+  let defaultLayers = vectorLayers;
   try {
     // First try: WebGL vector (best quality)
-    map = new H.Map(container, defaultLayers.vector.normal.map, baseMapOptions);
+    map = new H.Map(container, vectorLayers.vector.normal.map, baseMapOptions);
   } catch (webglErr) {
-    // Fallback: Canvas 2D with raster tiles — 'p2d' string is the engine type value
-    const rasterLayer = defaultLayers.raster?.normal?.map ?? defaultLayers.vector.normal.map;
+    logger.warn('Vector map failed, retrying with raster fallback', {
+      error: webglErr?.message || String(webglErr)
+    });
+
+    // Build raster-oriented layers explicitly for the P2D fallback.
+    const p2dEngine = p2dType ?? 'p2d';
+    defaultLayers = plt.createDefaultLayers({ engineType: p2dEngine });
+    const rasterLayer = defaultLayers.raster?.normal?.map;
+    if (!rasterLayer) {
+      throw new Error(`WebGL indisponível e camada raster não encontrada. Habilite aceleração de hardware no navegador. (original: ${webglErr.message})`);
+    }
+
     try {
-      map = new H.Map(container, rasterLayer, { ...baseMapOptions, engineType: 'p2d' });
+      map = new H.Map(container, rasterLayer, { ...baseMapOptions, engineType: p2dEngine });
     } catch (p2dErr) {
-      throw webglErr; // throw original error if both fail
+      throw new Error(`WebGL: ${webglErr.message} | P2D: ${p2dErr.message}`);
     }
   }
 
@@ -174,6 +187,15 @@ export function createMap(container, options = {}) {
 
   // Add default UI (zoom controls, etc.)
   const ui = H.ui.UI.createDefault(map, defaultLayers);
+
+  // Maps created inside modals can start with stale dimensions until layout settles.
+  setTimeout(() => {
+    try {
+      map.getViewPort().resize();
+    } catch {
+      // Ignore resize errors during teardown
+    }
+  }, 0);
 
   // Handle window resize
   const resizeHandler = () => map.getViewPort().resize();
