@@ -82,7 +82,7 @@ EmptyState.Orders = ({ onAction }) => (
       </svg>
     }
     title="Nenhum pedido encontrado"
-    description="VocÃª ainda nÃ£o fez nenhum pedido. Que tal experimentar nossas delÃ­cias?"
+    description="Você ainda não fez nenhum pedido. Que tal experimentar nossas delícias?"
     actionLabel="Fazer Pedido"
     onAction={onAction}
   />
@@ -96,9 +96,9 @@ EmptyState.Products = ({ onAction }) => (
         <line x1="7" y1="7" x2="7.01" y2="7" />
       </svg>
     }
-    title="Nenhum produto disponÃ­vel"
-    description="No momento nÃ£o hÃ¡ produtos disponÃ­veis. Volte em breve!"
-    actionLabel={onAction ? "Voltar ao InÃ­cio" : undefined}
+    title="Nenhum produto disponível"
+    description="No momento não há produtos disponíveis. Volte em breve!"
+    actionLabel={onAction ? "Voltar ao Início" : undefined}
     onAction={onAction}
   />
 );
@@ -112,7 +112,7 @@ EmptyState.Search = ({ query, onAction }) => (
       </svg>
     }
     title="Nenhum resultado encontrado"
-    description={query ? `NÃ£o encontramos resultados para "${query}".` : "Tente buscar por outro termo."}
+    description={query ? `Não encontramos resultados para "${query}".` : "Tente buscar por outro termo."}
     actionLabel="Limpar Busca"
     onAction={onAction}
   />

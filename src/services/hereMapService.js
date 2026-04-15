@@ -1082,7 +1082,7 @@ export async function calculateRouteAPI(origin, destination, options = {}) {
       distance_km: parseFloat((section.summary.length / 1000).toFixed(2)),
       duration_minutes: Math.round(section.summary.duration / 60),
       polyline: section.polyline,
-      summary: `${(section.summary.length / 1000).toFixed(1)} km â€¢ ${Math.round(section.summary.duration / 60)} min`,
+      summary: `${(section.summary.length / 1000).toFixed(1)} km • ${Math.round(section.summary.duration / 60)} min`,
     };
   } catch (error) {
     logger.error('Routing error', error);
@@ -1136,7 +1136,7 @@ export async function geocodeBrazilianAddress(cep, addressData = {}) {
       logger.warn('CEP is not from Palmas, TO:', cepData);
       return {
         error: true,
-        message: 'Desculpe, sÃ³ entregamos em Palmas - TO',
+        message: 'Desculpe, só entregamos em Palmas - TO',
         city: cepData.city,
         state: cepData.state
       };
@@ -1176,7 +1176,7 @@ export async function geocodeBrazilianAddress(cep, addressData = {}) {
 export function getCurrentLocation(options = {}) {
   return new Promise((resolve, reject) => {
     if (typeof navigator === 'undefined' || !navigator.geolocation) {
-      reject(new Error('GeolocalizaÃ§Ã£o nÃ£o suportada pelo navegador'));
+      reject(new Error('Geolocalização não suportada pelo navegador'));
       return;
     }
 
@@ -1190,7 +1190,7 @@ export function getCurrentLocation(options = {}) {
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const { latitude, longitude, accuracy } = position.coords;
-        console.log(`ðŸ“ GPS: ${latitude}, ${longitude} (accuracy: ${Math.round(accuracy)}m)`);
+        console.log(`[GPS] ${latitude}, ${longitude} (accuracy: ${Math.round(accuracy)}m)`);
         
         resolve({
           latitude,
@@ -1200,11 +1200,11 @@ export function getCurrentLocation(options = {}) {
       },
       (error) => {
         const messages = {
-          1: 'PermissÃ£o de localizaÃ§Ã£o negada. Permita o acesso nas configuraÃ§Ãµes do navegador.',
-          2: 'NÃ£o foi possÃ­vel obter sua localizaÃ§Ã£o. Verifique se o GPS estÃ¡ ativado.',
-          3: 'Tempo esgotado ao obter localizaÃ§Ã£o. Tente novamente.',
+          1: 'Permissão de localização negada. Permita o acesso nas configurações do navegador.',
+          2: 'Não foi possível obter sua localização. Verifique se o GPS está ativado.',
+          3: 'Tempo esgotado ao obter localização. Tente novamente.',
         };
-        reject(new Error(messages[error.code] || 'Erro ao obter localizaÃ§Ã£o'));
+        reject(new Error(messages[error.code] || 'Erro ao obter localização'));
       },
       defaultOptions
     );

@@ -282,7 +282,7 @@ const LocationModal = ({
                     {resolvedNumber && `, ${resolvedNumber}`}
                   </p>
                   <p className={styles.addressSecondary}>
-                    {resolvedNeighborhood && `${resolvedNeighborhood} â€¢ `}
+                    {resolvedNeighborhood && `${resolvedNeighborhood} • `}
                     {detectedAddress.city}
                     {detectedAddress.state && ` - ${detectedAddress.state}`}
                   </p>
@@ -363,10 +363,10 @@ const LocationModal = ({
                     ? formatDistance(routeInfo.distance_km)
                     : detectedDeliveryInfo?.distance_km
                     ? formatDistance(detectedDeliveryInfo.distance_km)
-                    : 'â€”'}
+                    : '—'}
                 </span>
               </div>
-              <div className={styles.statDivider}>â€¢</div>
+              <div className={styles.statDivider}>•</div>
               <div className={styles.statCompact}>
                 <span className={styles.statIcon}><Clock3 size={16} /></span>
                 <span>
@@ -374,10 +374,10 @@ const LocationModal = ({
                     ? formatDuration(routeInfo.duration_minutes)
                     : detectedDeliveryInfo?.estimated_minutes
                     ? formatDuration(detectedDeliveryInfo.estimated_minutes)
-                    : 'â€”'}
+                    : '—'}
                 </span>
               </div>
-              <div className={styles.statDivider}>â€¢</div>
+              <div className={styles.statDivider}>•</div>
               <div className={`${styles.statCompact} ${styles.statFee}`}>
                 <span className={styles.statIcon}><Wallet size={16} /></span>
                 <span className={styles.feeValue}>
