@@ -4,6 +4,7 @@ import styles from '../../styles/Checkout.module.css';
 
 const CustomerForm = ({
   formData,
+  errors = {},
   onChange,
   isIdentificationComplete = false,
   existingFields = {},
