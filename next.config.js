@@ -19,7 +19,7 @@ const securityHeaders = [
       // Fonts: own domain + Google Fonts CDN
       "font-src 'self' data: https://fonts.gstatic.com",
       // API + WebSocket + maps + analytics connections
-      "connect-src 'self' https://backend.pastita.com.br wss://backend.pastita.com.br https://www.google-analytics.com https://api.mercadopago.com https://sdk.mercadopago.com https://http2.mlstatic.com https://www.mercadolibre.com https://www.mercadolivre.com https://api.here.com https://js.api.here.com https://geocoder.ls.hereapi.com https://route.ls.hereapi.com https://revgeocode.search.hereapi.com https://autosuggest.search.hereapi.com https://geocode.search.hereapi.com https://router.hereapi.com https://*.ls.hereapi.com https://*.hereapi.com",
+      "connect-src 'self' https://backend.pastita.com.br wss://backend.pastita.com.br https://www.google-analytics.com https://api.mercadopago.com https://api.mercadolibre.com https://sdk.mercadopago.com https://http2.mlstatic.com https://www.mercadolibre.com https://www.mercadolivre.com https://api.here.com https://js.api.here.com https://geocoder.ls.hereapi.com https://route.ls.hereapi.com https://revgeocode.search.hereapi.com https://autosuggest.search.hereapi.com https://geocode.search.hereapi.com https://router.hereapi.com https://*.ls.hereapi.com https://*.hereapi.com",
       // Frames: Mercado Pago checkout fields and antifraud fingerprint iframe
       "frame-src https://www.mercadopago.com.br https://www.mercadopago.com https://sandbox.mercadopago.com.br https://api.mercadopago.com https://www.mercadolibre.com https://www.mercadolivre.com",
       // Workers: own domain + blob (Next.js) + HERE Maps vector tile workers
