@@ -11,7 +11,7 @@ const securityHeaders = [
       "default-src 'self'",
       // Scripts: own domain + Google Analytics + MercadoPago SDK + HERE Maps SDK
       // 'unsafe-eval' required: HERE Maps v3 uses H.util.eval() internally
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://sdk.mercadopago.com https://api.mercadopago.com https://http2.mlstatic.com https://www.mercadolibre.com https://www.mercadolivre.com https://js.api.here.com",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://sdk.mercadopago.com https://api.mercadopago.com https://api-static.mercadopago.com https://http2.mlstatic.com https://www.mercadolibre.com https://www.mercadolivre.com https://js.api.here.com",
       // Styles: own domain + inline (required by Next.js and MercadoPago) + HERE Maps UI CSS + Google Fonts
       "style-src 'self' 'unsafe-inline' https://http2.mlstatic.com https://js.api.here.com https://fonts.googleapis.com",
       // Images: own domain + backend media + map tiles + external images
