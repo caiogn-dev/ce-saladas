@@ -3,7 +3,7 @@
  * Replaces the old email+phone form in CustomerForm.
  * Three branches: authenticated | phone-verified | unidentified
  */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import WhatsAppOTPModal from '../WhatsAppOTPModal';
 import styles from '../../styles/Checkout.module.css';
 
@@ -28,6 +28,13 @@ export default function IdentificationStep({
 }) {
   const [otpOpen, setOtpOpen] = useState(false);
   const [inputPhone, setInputPhone] = useState(phone.replace(/\D/g, ''));
+
+  useEffect(() => {
+    const normalizedPhone = phone.replace(/\D/g, '');
+    if (normalizedPhone !== inputPhone) {
+      setInputPhone(normalizedPhone);
+    }
+  }, [phone, inputPhone]);
 
   const handleOtpSuccess = (userData) => {
     const phoneFromOTP = userData?.phone_number || userData?.user?.phone || inputPhone;
