@@ -13,8 +13,6 @@ const PaymentStep = ({
   existingFields,
   onFormChange,
   isIdentificationComplete,
-  onCompleteIdentification,
-  onEditIdentification,
   onPhoneChange,
   isAuthenticated,
   userName,
@@ -51,8 +49,6 @@ const PaymentStep = ({
           formData={formData}
           errors={errors}
           onChange={onFormChange}
-          onCompleteIdentification={onCompleteIdentification}
-          onEditIdentification={onEditIdentification}
           onPhoneChange={onPhoneChange}
           isIdentificationComplete={isIdentificationComplete}
           existingFields={existingFields}

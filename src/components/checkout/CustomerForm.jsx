@@ -4,10 +4,7 @@ import styles from '../../styles/Checkout.module.css';
 
 const CustomerForm = ({
   formData,
-  errors,
   onChange,
-  onCompleteIdentification,
-  onEditIdentification,
   isIdentificationComplete = false,
   existingFields = {},
   disabled = false,
@@ -21,8 +18,6 @@ const CustomerForm = ({
       phone={formData.phone}
       onPhoneChange={onPhoneChange}
       isIdentificationComplete={isIdentificationComplete}
-      onIdentificationComplete={onCompleteIdentification}
-      onEditIdentification={onEditIdentification}
       isAuthenticated={isAuthenticated}
       userName={userName}
       onSignOut={onSignOut}

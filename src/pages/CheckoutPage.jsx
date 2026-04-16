@@ -487,8 +487,6 @@ const CheckoutPage = () => {
               existingFields={checkoutForm.existingFields}
               onFormChange={checkoutForm.handleChange}
               isIdentificationComplete={checkoutForm.isIdentificationComplete}
-              onCompleteIdentification={checkoutForm.completeIdentification}
-              onEditIdentification={checkoutForm.editIdentification}
               onPhoneChange={checkoutForm.setPhoneValue}
               isAuthenticated={isAuthenticated}
               userName={profile?.first_name || user?.first_name || ''}
@@ -532,4 +530,3 @@ const CheckoutPage = () => {
 };
 
 export default CheckoutPage;
-

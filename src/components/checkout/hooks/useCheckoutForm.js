@@ -55,7 +55,7 @@ const writeCheckoutDraft = (data) => {
 };
 
 const isValidEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value || '').trim());
-const isValidPhone = (value) => onlyDigits(value).length >= 10;
+const isValidPhone = (value) => onlyDigits(value).length === 11;
 
 export const useCheckoutForm = () => {
   const { profile, user } = useAuth();
@@ -144,12 +144,10 @@ export const useCheckoutForm = () => {
 
       setFormData(nextFormData);
       setSaveAddress(draftData.saveAddress ?? true);
-      // Identification is complete when: already auth'd, phone verified via OTP (draft), or profile has phone
+      // Identification is complete when the customer already has a valid phone.
       setIsIdentificationComplete(
         Boolean(
-          draftData.isIdentificationComplete
-          || currentProfile?.phone
-          || (isValidPhone(nextFormData.phone) && draftData.isIdentificationComplete)
+          currentProfile?.phone || isValidPhone(nextFormData.phone)
         ),
       );
       setUserDataLoaded(true);
@@ -195,28 +193,17 @@ export const useCheckoutForm = () => {
     return Object.keys(identificationErrors).length === 0;
   }, [getIdentificationErrors]);
 
-  const completeIdentification = useCallback((verifiedPhone) => {
-    if (verifiedPhone) {
-      setFormData((prev) => ({ ...prev, phone: formatPhone(verifiedPhone) }));
-    }
-    setIsIdentificationComplete(true);
-    setErrors((prev) => ({ ...prev, identification: '' }));
-    return true;
-  }, []);
-
-  // Expose method for phone update from OTP flow
-  const setVerifiedPhone = useCallback((phone) => {
-    setFormData((prev) => ({ ...prev, phone: formatPhone(phone) }));
-    setIsIdentificationComplete(true);
-  }, []);
-
-  // Update phone value only — does NOT complete identification (used while typing)
   const setPhoneValue = useCallback((phone) => {
-    setFormData((prev) => ({ ...prev, phone: formatPhone(phone) }));
-  }, []);
+    const formattedPhone = formatPhone(phone);
+    const validPhone = isValidPhone(formattedPhone);
 
-  const editIdentification = useCallback(() => {
-    setIsIdentificationComplete(false);
+    setFormData((prev) => ({ ...prev, phone: formattedPhone }));
+    setIsIdentificationComplete(validPhone);
+    setErrors((prev) => ({
+      ...prev,
+      phone: validPhone || !formattedPhone ? '' : prev.phone,
+      identification: validPhone ? '' : prev.identification,
+    }));
   }, []);
 
   // Handle form field changes.
@@ -287,7 +274,7 @@ export const useCheckoutForm = () => {
     const newErrors = {};
 
     if (!isIdentificationComplete) {
-      newErrors.identification = 'Verifique seu celular via WhatsApp antes de continuar.';
+      newErrors.identification = 'Informe um celular válido para continuar.';
     }
 
     if (!formData.phone.trim() || !isValidPhone(formData.phone)) {
@@ -313,7 +300,7 @@ export const useCheckoutForm = () => {
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
-  }, [formData, getIdentificationErrors, isIdentificationComplete]);
+  }, [formData, isIdentificationComplete]);
 
   const buildCheckoutPayload = useCallback((shippingMethod, enableScheduling, scheduledDate, scheduledTimeSlot) => {
     const fullAddress = formData.number
@@ -396,9 +383,6 @@ export const useCheckoutForm = () => {
     setAddressFromGeo,
     handleShippingMethodChange,
     validateIdentification,
-    completeIdentification,
-    editIdentification,
-    setVerifiedPhone,
     setPhoneValue,
     validateForm,
     buildCheckoutPayload,
@@ -410,4 +394,3 @@ export const useCheckoutForm = () => {
 };
 
 export default useCheckoutForm;
-
