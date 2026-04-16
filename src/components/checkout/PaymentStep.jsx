@@ -30,6 +30,7 @@ const PaymentStep = ({
   loading,
   paymentError,
   mpPublicKey,
+  onCardError,
 }) => {
   const total = Math.max(0, cartTotal + (shippingCost || 0) - discount);
 
@@ -108,7 +109,7 @@ const PaymentStep = ({
                 <CardPayment
                   initialization={{ amount: total }}
                   onSubmit={onSubmit}
-                  onError={(error) => console.error('Erro no cartão:', error)}
+                  onError={onCardError}
                 />
               </div>
             )}

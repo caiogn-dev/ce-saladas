@@ -160,34 +160,45 @@ export function createMap(container, options = {}) {
     pixelRatio: window.devicePixelRatio || 1
   };
 
-  const p2dType = H.Map?.EngineType?.P2D;
-  const vectorLayers = plt.createDefaultLayers();
+  // Resolve the P2D engine type constant — the numeric value is needed (not the string 'p2d')
+  const EngineType = H.Map?.EngineType;
+  const p2dEngineType = EngineType?.P2D;
+  const hasP2D = hasP2DRenderer(H);
+
+  console.log('[createMap] EngineType:', EngineType, '| P2D value:', p2dEngineType, '| hasP2D renderer:', hasP2D);
+
+  const defaultLayers = plt.createDefaultLayers();
+  const rasterLayer = defaultLayers.raster?.normal?.map;
+
+  console.log('[createMap] raster layer available:', !!rasterLayer, '| vector layer available:', !!defaultLayers.vector?.normal?.map);
 
   let map;
-  let defaultLayers = vectorLayers;
+  let activeLayers = defaultLayers;
   try {
     // First try: WebGL vector (best quality)
-    map = new H.Map(container, vectorLayers.vector.normal.map, baseMapOptions);
+    map = new H.Map(container, defaultLayers.vector.normal.map, baseMapOptions);
+    console.log('[createMap] WebGL map created OK');
   } catch (webglErr) {
-    logger.warn('Vector map failed, retrying with raster fallback', {
-      error: webglErr?.message || String(webglErr)
-    });
+    console.warn('[createMap] WebGL failed:', webglErr.message);
 
-    // Build raster-oriented layers explicitly for the P2D fallback.
-    if (!hasP2DRenderer(H)) {
-      throw new Error(`WebGL indisponivel e o renderer legado P2D do HERE nao foi carregado. Verifique mapsjs-core-legacy.js. (original: ${webglErr.message})`);
+    if (!hasP2D) {
+      throw new Error(`WebGL indisponivel e o renderer legado P2D do HERE nao foi carregado. (${webglErr.message})`);
     }
 
-    const p2dEngine = p2dType ?? 'p2d';
-    defaultLayers = plt.createDefaultLayers({ engineType: p2dEngine });
-    const rasterLayer = defaultLayers.raster?.normal?.map;
     if (!rasterLayer) {
-      throw new Error(`WebGL indisponível e camada raster não encontrada. Habilite aceleração de hardware no navegador. (original: ${webglErr.message})`);
+      throw new Error(`WebGL indisponível e camada raster não encontrada. (${webglErr.message})`);
     }
+
+    // p2dEngineType is the numeric constant (e.g. 1) if available, otherwise try the string 'p2d'
+    const engineArg = p2dEngineType !== undefined ? p2dEngineType : 'p2d';
+    console.log('[createMap] Trying P2D fallback with engineType:', engineArg);
 
     try {
-      map = new H.Map(container, rasterLayer, { ...baseMapOptions, engineType: p2dEngine });
+      map = new H.Map(container, rasterLayer, { ...baseMapOptions, engineType: engineArg });
+      activeLayers = defaultLayers;
+      console.log('[createMap] P2D map created OK');
     } catch (p2dErr) {
+      console.error('[createMap] P2D also failed:', p2dErr.message);
       throw new Error(`WebGL: ${webglErr.message} | P2D: ${p2dErr.message}`);
     }
   }
@@ -197,7 +208,7 @@ export function createMap(container, options = {}) {
   const behavior = new H.mapevents.Behavior(mapEvents);
 
   // Add default UI (zoom controls, etc.)
-  const ui = H.ui.UI.createDefault(map, defaultLayers);
+  const ui = H.ui.UI.createDefault(map, activeLayers);
 
   // Maps created inside modals can start with stale dimensions until layout settles.
   setTimeout(() => {
@@ -216,7 +227,7 @@ export function createMap(container, options = {}) {
     map,
     behavior,
     ui,
-    defaultLayers,
+    defaultLayers: activeLayers,
     cleanup: () => {
       window.removeEventListener('resize', resizeHandler);
       map.dispose();

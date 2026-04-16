@@ -127,6 +127,24 @@ const hasDirectCardPayload = (paymentPayload = {}) => (
   Boolean(paymentPayload?.token && paymentPayload?.payment_method_id)
 );
 
+const extractMercadoPagoErrorMessage = (error) => {
+  if (!error) {
+    return 'Erro ao carregar o formulário do cartão.';
+  }
+
+  if (typeof error === 'string') {
+    return error;
+  }
+
+  const firstCause = Array.isArray(error.cause) ? error.cause[0] : error.cause;
+  return (
+    firstCause?.description
+    || firstCause?.message
+    || error.message
+    || 'Erro ao carregar o formulário do cartão.'
+  );
+};
+
 const CheckoutPage = () => {
   const router = useRouter();
   const { cart, combos, cartTotal, clearCart, hasItems } = useCart();
@@ -260,6 +278,11 @@ const CheckoutPage = () => {
 
   // Calculate discount
   const discountAmount = coupon.calculateDiscount(cartTotal, delivery.shippingCost || 0);
+
+  const handleCardBrickError = useCallback((error) => {
+    console.error('Erro no CardPayment Brick:', error);
+    setPaymentError(extractMercadoPagoErrorMessage(error));
+  }, []);
 
   // Process checkout
   const processCheckout = async (paymentPayload) => {
@@ -511,6 +534,7 @@ const CheckoutPage = () => {
               loading={loading}
               paymentError={paymentError}
               mpPublicKey={mpPublicKey}
+              onCardError={handleCardBrickError}
             />
           )}
         </div>
