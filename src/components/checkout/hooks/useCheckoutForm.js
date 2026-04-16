@@ -210,6 +210,11 @@ export const useCheckoutForm = () => {
     setIsIdentificationComplete(true);
   }, []);
 
+  // Update phone value only — does NOT complete identification (used while typing)
+  const setPhoneValue = useCallback((phone) => {
+    setFormData((prev) => ({ ...prev, phone: formatPhone(phone) }));
+  }, []);
+
   const editIdentification = useCallback(() => {
     setIsIdentificationComplete(false);
   }, []);
@@ -394,6 +399,7 @@ export const useCheckoutForm = () => {
     completeIdentification,
     editIdentification,
     setVerifiedPhone,
+    setPhoneValue,
     validateForm,
     buildCheckoutPayload,
     buildProfileUpdatePayload,

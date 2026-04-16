@@ -193,24 +193,52 @@ export const refreshAuthHeaders = () => {
   return !!authHeader;
 };
 
-// Get CSRF token from cookie
+// In-memory CSRF token cache (cross-domain: document.cookie won't have the backend cookie)
+let _csrfTokenMemory = null;
+let _csrfTokenFetchPromise = null;
+
+// Get CSRF token — first tries the cookie (same-domain), then falls back to in-memory cache
 const getCsrfToken = () => {
-  if (typeof document === 'undefined') return null;
-  const cookies = document.cookie.split(';');
-  for (const cookie of cookies) {
-    const eqIdx = cookie.indexOf('=');
-    if (eqIdx === -1) continue;
-    const key = cookie.slice(0, eqIdx).trim();
-    if (key === 'csrftoken') {
-      return decodeURIComponent(cookie.slice(eqIdx + 1).trim());
+  if (typeof document !== 'undefined') {
+    const cookies = document.cookie.split(';');
+    for (const cookie of cookies) {
+      const eqIdx = cookie.indexOf('=');
+      if (eqIdx === -1) continue;
+      const key = cookie.slice(0, eqIdx).trim();
+      if (key === 'csrftoken') {
+        return decodeURIComponent(cookie.slice(eqIdx + 1).trim());
+      }
     }
   }
-  return null;
+  return _csrfTokenMemory || null;
+};
+
+// Fetch CSRF token from backend and cache in memory (used for cross-domain setups)
+const ensureCsrfToken = async () => {
+  if (_csrfTokenMemory) return _csrfTokenMemory;
+  if (_csrfTokenFetchPromise) return _csrfTokenFetchPromise;
+
+  _csrfTokenFetchPromise = (async () => {
+    try {
+      const response = await axios.get(`${AUTH_API_URL}/core/csrf/`, { withCredentials: true });
+      const token = response.data?.csrfToken || response.data?.csrf_token;
+      if (token) {
+        _csrfTokenMemory = token;
+      }
+      return _csrfTokenMemory;
+    } catch (e) {
+      return null;
+    } finally {
+      _csrfTokenFetchPromise = null;
+    }
+  })();
+
+  return _csrfTokenFetchPromise;
 };
 
 // Request interceptor for store API
 storeApi.interceptors.request.use(
-  (config) => {
+  async (config) => {
     const token = getAuthToken();
     const authHeader = buildAuthHeader(token);
     if (authHeader) {
@@ -221,7 +249,7 @@ storeApi.interceptors.request.use(
 
     // Add CSRF token for non-GET requests
     if (config.method !== 'get') {
-      const csrfToken = getCsrfToken();
+      const csrfToken = getCsrfToken() || await ensureCsrfToken();
       if (csrfToken) {
         config.headers['X-CSRFToken'] = csrfToken;
       }
@@ -233,14 +261,14 @@ storeApi.interceptors.request.use(
 
 // Request interceptor for auth API
 authApi.interceptors.request.use(
-  (config) => {
+  async (config) => {
     const token = getAuthToken();
     const authHeader = buildAuthHeader(token);
     if (authHeader) {
       config.headers.Authorization = authHeader;
     }
     if (config.method !== 'get') {
-      const csrfToken = getCsrfToken();
+      const csrfToken = getCsrfToken() || await ensureCsrfToken();
       if (csrfToken) {
         config.headers['X-CSRFToken'] = csrfToken;
       }
@@ -293,16 +321,12 @@ if (typeof window !== 'undefined' && !window.__ceStoreApiInitialized) {
 // =============================================================================
 
 /**
- * Fetch CSRF token from server
+ * Fetch CSRF token from server and cache in memory
  */
 export const fetchCsrfToken = async () => {
-  try {
-    const response = await authApi.get('/csrf/');
-    return response.data.csrfToken;
-  } catch (error) {
-    logger.error('Failed to fetch CSRF token', error);
-    return null;
-  }
+  const token = await ensureCsrfToken();
+  if (!token) logger.error('Failed to fetch CSRF token');
+  return token;
 };
 
 // =============================================================================

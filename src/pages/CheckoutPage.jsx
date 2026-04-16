@@ -264,8 +264,17 @@ const CheckoutPage = () => {
   // Process checkout
   const processCheckout = async (paymentPayload) => {
     if (!checkoutForm.validateForm(delivery.shippingMethod)) {
+      // Scroll to first visible error so the user can see what needs to be filled
+      setTimeout(() => {
+        const firstError = document.querySelector('[class*="inputError"], [class*="errorText"], [class*="error"]');
+        if (firstError) {
+          firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 50);
+      setPaymentError('Preencha todos os campos obrigatórios antes de continuar.');
       return;
     }
+    setPaymentError('');
 
     setLoading(true);
     setPaymentError('');
