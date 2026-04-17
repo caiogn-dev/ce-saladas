@@ -12,6 +12,7 @@ const HERE_API_VERSION = '3.1';
 // CDN URLs for HERE Maps
 const HERE_CORE_JS = `https://js.api.here.com/v3/${HERE_API_VERSION}/mapsjs-core.js`;
 const HERE_CORE_LEGACY_JS = `https://js.api.here.com/v3/${HERE_API_VERSION}/mapsjs-core-legacy.js`;
+const HERE_DATA_JS = `https://js.api.here.com/v3/${HERE_API_VERSION}/mapsjs-data.js`;
 const HERE_SERVICE_JS = `https://js.api.here.com/v3/${HERE_API_VERSION}/mapsjs-service.js`;
 const HERE_UI_JS = `https://js.api.here.com/v3/${HERE_API_VERSION}/mapsjs-ui.js`;
 const HERE_EVENTS_JS = `https://js.api.here.com/v3/${HERE_API_VERSION}/mapsjs-mapevents.js`;
@@ -104,10 +105,11 @@ export async function initHereMaps() {
 
   loadPromise = (async () => {
     try {
-      // Load scripts in order
+      // Load scripts in order (mapsjs-data.js is required for vector tile rendering)
       await loadScript(HERE_CORE_JS);
       // The legacy bundle defines H.map.render.p2d.RenderEngine used when WebGL is unavailable.
       await loadScript(HERE_CORE_LEGACY_JS);
+      await loadScript(HERE_DATA_JS);
       await loadScript(HERE_SERVICE_JS);
       await loadScript(HERE_EVENTS_JS);
       await loadScript(HERE_UI_JS);
@@ -210,14 +212,9 @@ export function createMap(container, options = {}) {
   // Add default UI (zoom controls, etc.)
   const ui = H.ui.UI.createDefault(map, activeLayers);
 
-  // Maps created inside modals can start with stale dimensions until layout settles.
-  setTimeout(() => {
-    try {
-      map.getViewPort().resize();
-    } catch {
-      // Ignore resize errors during teardown
-    }
-  }, 0);
+  // Maps created inside modals need layout to settle before resize
+  setTimeout(() => { try { map.getViewPort().resize(); } catch { /* disposed */ } }, 50);
+  setTimeout(() => { try { map.getViewPort().resize(); } catch { /* disposed */ } }, 300);
 
   // Handle window resize
   const resizeHandler = () => map.getViewPort().resize();

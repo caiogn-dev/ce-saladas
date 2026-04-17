@@ -1271,6 +1271,24 @@
   animation: fadeIn 0.3s ease;
 }
 
+.revertHint {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.78rem;
+  color: var(--color-primary, #16a34a);
+  background: none;
+  border: none;
+  padding: 0.2rem 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  animation: fadeIn 0.2s ease;
+}
+.revertHint:hover {
+  opacity: 0.75;
+}
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-5px); }
   to { opacity: 1; transform: translateY(0); }

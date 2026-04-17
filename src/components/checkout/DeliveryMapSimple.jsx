@@ -17,9 +17,11 @@ import styles from '../../styles/DeliveryMap.module.css';
 const HERE_API_KEY = process.env.NEXT_PUBLIC_HERE_API_KEY || '';
 const HERE_API_VERSION = '3.1';
 
-// CDN URLs
+// CDN URLs (mapsjs-data.js required for vector tile rendering)
 const HERE_SCRIPTS = [
   `https://js.api.here.com/v3/${HERE_API_VERSION}/mapsjs-core.js`,
+  `https://js.api.here.com/v3/${HERE_API_VERSION}/mapsjs-core-legacy.js`,
+  `https://js.api.here.com/v3/${HERE_API_VERSION}/mapsjs-data.js`,
   `https://js.api.here.com/v3/${HERE_API_VERSION}/mapsjs-service.js`,
   `https://js.api.here.com/v3/${HERE_API_VERSION}/mapsjs-mapevents.js`,
   `https://js.api.here.com/v3/${HERE_API_VERSION}/mapsjs-ui.js`,

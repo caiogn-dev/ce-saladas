@@ -38,8 +38,20 @@ const LocationModal = ({
   const [addressNeighborhood, setAddressNeighborhood] = useState('');
   const [addressNumber, setAddressNumber] = useState('');
   const [addressComplement, setAddressComplement] = useState('');
+  // Tracks whether each field has been touched by the user — prevents GPS re-fill after manual edit
+  const [touched, setTouched] = useState({ street: false, neighborhood: false, number: false, complement: false });
 
   const currentStep = manualMode ? 'map' : (detectedAddress ? 'confirm' : 'detecting');
+
+  // Pre-fill fields when GPS address arrives — but only for fields the user hasn't touched yet
+  useEffect(() => {
+    if (!detectedAddress) return;
+    setAddressStreet((prev) => (touched.street ? prev : (detectedAddress.street || '')));
+    setAddressNeighborhood((prev) => (touched.neighborhood ? prev : (detectedAddress.neighborhood || '')));
+    setAddressNumber((prev) => (touched.number ? prev : (detectedAddress.number || '')));
+    setAddressComplement((prev) => (touched.complement ? prev : (detectedAddress.complement || '')));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [detectedAddress]);
 
   useEffect(() => {
     if (!isOpen || manualMode || detectedAddress || position) return undefined;
@@ -65,6 +77,7 @@ const LocationModal = ({
     setAddressNeighborhood('');
     setAddressNumber('');
     setAddressComplement('');
+    setTouched({ street: false, neighborhood: false, number: false, complement: false });
   }, []);
 
   const handleClose = useCallback(() => {
@@ -95,11 +108,13 @@ const LocationModal = ({
     setManualMode(false);
   }, [updateLocation]);
 
-  const resolvedStreet = addressStreet.trim() || detectedAddress?.street || '';
-  const resolvedNeighborhood = addressNeighborhood.trim() || detectedAddress?.neighborhood || '';
-  const resolvedNumber = addressNumber.trim() || detectedAddress?.number || '';
-  const resolvedComplement = addressComplement.trim() || detectedAddress?.complement || '';
-  const requiresNumber = !resolvedNumber && !resolveDetectedNumber(detectedAddress);
+  // Values used for display in the inputs — state is the source of truth after GPS pre-fill
+  const resolvedStreet = addressStreet;
+  const resolvedNeighborhood = addressNeighborhood;
+  const resolvedNumber = addressNumber;
+  const resolvedComplement = addressComplement;
+  // For validation: require a number only when both state and detected GPS are empty
+  const requiresNumber = !addressNumber.trim() && !resolveDetectedNumber(detectedAddress);
 
   const handleConfirmLocation = useCallback(() => {
     if (!detectedAddress) return;
@@ -153,9 +168,9 @@ const LocationModal = ({
   };
 
   const isAddressReady = (
-    Boolean(resolvedStreet)
-    && Boolean(resolvedNeighborhood)
-    && Boolean(resolvedNumber || !requiresNumber)
+    Boolean(addressStreet.trim())
+    && Boolean(addressNeighborhood.trim())
+    && Boolean(addressNumber.trim() || !requiresNumber)
   );
 
   if (!isOpen) return null;
@@ -300,7 +315,10 @@ const LocationModal = ({
                     className={styles.complementInput}
                     placeholder="Rua, avenida, quadra..."
                     value={resolvedStreet}
-                    onChange={(event) => setAddressStreet(event.target.value)}
+                    onChange={(event) => {
+                      setTouched((t) => ({ ...t, street: true }));
+                      setAddressStreet(event.target.value);
+                    }}
                   />
                 </div>
 
@@ -308,19 +326,36 @@ const LocationModal = ({
                   <div className={styles.complementField}>
                     <label className={styles.complementLabel}>
                       <span className={styles.complementIcon}><Hash size={16} /></span>
-                      Número *
+                      Número / Lote *
                     </label>
                     <input
                       type="text"
+                      inputMode="text"
                       className={styles.complementInput}
-                      placeholder="Ex: 123"
+                      placeholder="Ex: 15, Lote 7, Apto 302..."
                       value={resolvedNumber}
-                      onChange={(event) => setAddressNumber(event.target.value)}
+                      onChange={(event) => {
+                        setTouched((t) => ({ ...t, number: true }));
+                        setAddressNumber(event.target.value);
+                      }}
                     />
                     {requiresNumber && (
                       <p className={styles.complementHint}>
-                        Não detectamos o número. Informe-o para liberar a entrega.
+                        Informe o número ou lote para confirmar o endereço.
                       </p>
+                    )}
+                    {/* Restore GPS number if user wants to revert after editing */}
+                    {touched.number && detectedAddress?.number && addressNumber.trim() !== detectedAddress.number && (
+                      <button
+                        type="button"
+                        className={styles.revertHint}
+                        onClick={() => {
+                          setAddressNumber(detectedAddress.number);
+                          setTouched((t) => ({ ...t, number: false }));
+                        }}
+                      >
+                        Usar número detectado: {detectedAddress.number}
+                      </button>
                     )}
                   </div>
 
@@ -334,7 +369,10 @@ const LocationModal = ({
                       className={styles.complementInput}
                       placeholder="Bairro"
                       value={resolvedNeighborhood}
-                      onChange={(event) => setAddressNeighborhood(event.target.value)}
+                      onChange={(event) => {
+                        setTouched((t) => ({ ...t, neighborhood: true }));
+                        setAddressNeighborhood(event.target.value);
+                      }}
                     />
                   </div>
                 </div>
@@ -349,7 +387,10 @@ const LocationModal = ({
                     className={styles.complementInput}
                     placeholder="Apto, bloco, portão, referência (opcional)"
                     value={resolvedComplement}
-                    onChange={(event) => setAddressComplement(event.target.value)}
+                    onChange={(event) => {
+                      setTouched((t) => ({ ...t, complement: true }));
+                      setAddressComplement(event.target.value);
+                    }}
                   />
                 </div>
               </div>

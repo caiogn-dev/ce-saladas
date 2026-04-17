@@ -11,6 +11,7 @@ const securityHeaders = [
       "default-src 'self'",
       // Scripts: own domain + Google Analytics + MercadoPago SDK + HERE Maps SDK
       // 'unsafe-eval' required: HERE Maps v3 uses H.util.eval() internally
+      // blob: required: HERE Maps v3 vector renderer creates <script src="blob:..."> for WebGL shader compilation
       "script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: https://www.googletagmanager.com https://www.google-analytics.com https://sdk.mercadopago.com https://api.mercadopago.com https://api-static.mercadopago.com https://http2.mlstatic.com https://www.mercadolibre.com https://www.mercadolivre.com https://js.api.here.com",
       // Styles: own domain + inline (required by Next.js and MercadoPago) + HERE Maps UI CSS + Google Fonts
       "style-src 'self' 'unsafe-inline' https://http2.mlstatic.com https://js.api.here.com https://fonts.googleapis.com",
@@ -24,6 +25,9 @@ const securityHeaders = [
       "frame-src https://secure-fields.mercadopago.com https://www.mercadopago.com.br https://www.mercadopago.com https://sandbox.mercadopago.com.br https://api.mercadopago.com https://www.mercadolibre.com https://www.mercadolivre.com",
       // Workers: own domain + blob (Next.js) + HERE Maps vector tile workers
       "worker-src 'self' blob: https://js.api.here.com",
+      // child-src: legacy fallback for browsers that don't support worker-src (Chrome <60, Firefox <55)
+      // Required for HERE Maps blob workers to work across all browsers
+      "child-src 'self' blob:",
     ].join('; '),
   },
 ];

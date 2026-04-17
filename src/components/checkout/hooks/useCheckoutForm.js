@@ -62,6 +62,8 @@ export const useCheckoutForm = () => {
   const deliveryAddressRef = useRef(null);
   const previousSavePref = useRef(true);
   const saveAddressRef = useRef(true);
+  // Geo coordinates captured from GPS/map — kept separate so they survive form resets
+  const geoExtrasRef = useRef({ lat: null, lng: null, raw_address: '' });
 
   const [formData, setFormData] = useState({
     name: '',
@@ -223,9 +225,16 @@ export const useCheckoutForm = () => {
     setFormData((prev) => ({ ...prev, ...updates }));
   }, []);
 
-  // Set address from geolocation.
+  // Set address from geolocation — also captures lat/lng/raw_address for checkout payload.
   const setAddressFromGeo = useCallback((geoAddress) => {
     if (!geoAddress) return;
+
+    // Persist coordinates and raw label so buildCheckoutPayload can include them
+    geoExtrasRef.current = {
+      lat: geoAddress.lat ?? geoAddress.latitude ?? null,
+      lng: geoAddress.lng ?? geoAddress.longitude ?? null,
+      raw_address: geoAddress.display_name || geoAddress.label || geoAddress.raw_address || '',
+    };
 
     setFormData((prev) => ({
       ...prev,
@@ -308,6 +317,12 @@ export const useCheckoutForm = () => {
       : formData.address;
 
     const isPickup = shippingMethod === 'pickup';
+    const { lat, lng, raw_address } = geoExtrasRef.current;
+
+    const fullAddressStr = formData.number
+      ? `${formData.address}, ${formData.number}${formData.complement ? ` - ${formData.complement}` : ''}, ${formData.neighborhood}, ${formData.city}`
+      : `${formData.address}, ${formData.neighborhood}, ${formData.city}`;
+
     const deliveryAddress = isPickup ? {
       street: STORE_ADDRESS.address,
       city: STORE_ADDRESS.city,
@@ -321,6 +336,9 @@ export const useCheckoutForm = () => {
       city: formData.city,
       state: formData.state,
       zip_code: onlyDigits(formData.zip_code),
+      raw_address: raw_address || fullAddressStr,
+      ...(lat != null && { lat }),
+      ...(lng != null && { lng }),
     };
 
     return {
