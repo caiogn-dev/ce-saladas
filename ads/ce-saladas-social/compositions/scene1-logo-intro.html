@@ -1,0 +1,318 @@
+<template id="scene1-logo-intro-template">
+  <div
+    data-composition-id="scene1-logo-intro"
+    data-start="0"
+    data-width="1080"
+    data-height="1920"
+    data-duration="3"
+  >
+    <div class="canvas">
+      <div class="noise"></div>
+      <div class="orb orb-a"></div>
+      <div class="orb orb-b"></div>
+      <div class="brand-chip">Cê Saladas</div>
+      <div class="hero-copy">
+        <div class="eyebrow">leve, fresco, direto</div>
+        <h1 class="headline">
+          <span>Comer bem</span>
+          <span>sem perder</span>
+          <span class="accent">tempo.</span>
+        </h1>
+        <p class="subcopy">Saladas frescas, bowls e pedido rápido no site.</p>
+      </div>
+      <div class="bowl-wrap">
+        <div class="bowl-shadow"></div>
+        <div class="bowl-shell">
+          <img class="bowl" src="../assets/bowl-shrimp.webp" alt="Bowl de camarão" />
+        </div>
+      </div>
+      <div class="pill pill-top">
+        <span class="pill-dot"></span>
+        <span>100% fresco</span>
+      </div>
+      <div class="pill pill-bottom">
+        <span class="pill-dot pill-dot--leaf"></span>
+        <span>Entrega hoje</span>
+      </div>
+    </div>
+
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter:wght@400;500;600;700;800&display=block");
+
+      [data-composition-id="scene1-logo-intro"] {
+        overflow: hidden;
+      }
+
+      [data-composition-id="scene1-logo-intro"] .canvas {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background:
+          radial-gradient(circle at 20% 12%, rgba(127, 181, 46, 0.16), transparent 22%),
+          radial-gradient(circle at 80% 18%, rgba(249, 115, 22, 0.14), transparent 26%),
+          linear-gradient(180deg, #fdfbf7 0%, #fff7ed 100%);
+        color: #36332f;
+        font-family: "Inter", sans-serif;
+      }
+
+      [data-composition-id="scene1-logo-intro"] .noise {
+        position: absolute;
+        inset: 0;
+        background-image: radial-gradient(rgba(54, 51, 47, 0.045) 1px, transparent 1px);
+        background-size: 24px 24px;
+        opacity: 0.22;
+      }
+
+      [data-composition-id="scene1-logo-intro"] .orb {
+        position: absolute;
+        border-radius: 999px;
+        filter: blur(10px);
+      }
+
+      [data-composition-id="scene1-logo-intro"] .orb-a {
+        top: 124px;
+        right: 82px;
+        width: 188px;
+        height: 188px;
+        background: rgba(127, 181, 46, 0.22);
+      }
+
+      [data-composition-id="scene1-logo-intro"] .orb-b {
+        bottom: 260px;
+        left: 32px;
+        width: 240px;
+        height: 240px;
+        background: rgba(249, 115, 22, 0.2);
+      }
+
+      [data-composition-id="scene1-logo-intro"] .brand-chip {
+        position: absolute;
+        top: 96px;
+        left: 74px;
+        padding: 20px 32px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.8);
+        border: 1px solid rgba(249, 115, 22, 0.16);
+        box-shadow: 0 12px 40px rgba(54, 51, 47, 0.08);
+        font-size: 26px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+      }
+
+      [data-composition-id="scene1-logo-intro"] .hero-copy {
+        position: absolute;
+        left: 74px;
+        top: 236px;
+        width: 540px;
+        display: flex;
+        flex-direction: column;
+        gap: 22px;
+      }
+
+      [data-composition-id="scene1-logo-intro"] .eyebrow {
+        font-size: 22px;
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: #649e20;
+      }
+
+      [data-composition-id="scene1-logo-intro"] .headline {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        font-family: "Fraunces", serif;
+        font-size: 118px;
+        line-height: 0.9;
+        letter-spacing: -0.05em;
+      }
+
+      [data-composition-id="scene1-logo-intro"] .headline .accent {
+        color: #f97316;
+        font-style: italic;
+      }
+
+      [data-composition-id="scene1-logo-intro"] .subcopy {
+        max-width: 470px;
+        font-size: 34px;
+        line-height: 1.28;
+        color: rgba(54, 51, 47, 0.82);
+      }
+
+      [data-composition-id="scene1-logo-intro"] .bowl-wrap {
+        position: absolute;
+        left: 290px;
+        bottom: 250px;
+        width: 702px;
+        height: 702px;
+      }
+
+      [data-composition-id="scene1-logo-intro"] .bowl-shadow {
+        position: absolute;
+        left: 86px;
+        right: 86px;
+        bottom: 48px;
+        height: 108px;
+        border-radius: 999px;
+        background: rgba(54, 51, 47, 0.14);
+        filter: blur(28px);
+      }
+
+      [data-composition-id="scene1-logo-intro"] .bowl-shell {
+        position: absolute;
+        inset: 0;
+        border-radius: 46% 54% 52% 48% / 44% 40% 60% 56%;
+        background:
+          radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.22), transparent 24%),
+          linear-gradient(160deg, #f97316 0%, #ea6c0c 100%);
+        box-shadow:
+          0 32px 90px rgba(249, 115, 22, 0.28),
+          inset 0 2px 0 rgba(255, 255, 255, 0.25);
+        overflow: hidden;
+      }
+
+      [data-composition-id="scene1-logo-intro"] .bowl {
+        position: absolute;
+        inset: 64px;
+        width: calc(100% - 128px);
+        height: calc(100% - 128px);
+        object-fit: contain;
+        mix-blend-mode: multiply;
+        transform-origin: center center;
+      }
+
+      [data-composition-id="scene1-logo-intro"] .pill {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 20px 28px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.82);
+        border: 1px solid rgba(54, 51, 47, 0.08);
+        box-shadow: 0 16px 40px rgba(54, 51, 47, 0.08);
+        font-size: 24px;
+        font-weight: 700;
+      }
+
+      [data-composition-id="scene1-logo-intro"] .pill-top {
+        top: 1000px;
+        right: 84px;
+      }
+
+      [data-composition-id="scene1-logo-intro"] .pill-bottom {
+        left: 74px;
+        bottom: 188px;
+      }
+
+      [data-composition-id="scene1-logo-intro"] .pill-dot {
+        width: 16px;
+        height: 16px;
+        border-radius: 999px;
+        background: #f97316;
+        box-shadow: 0 0 0 8px rgba(249, 115, 22, 0.14);
+      }
+
+      [data-composition-id="scene1-logo-intro"] .pill-dot--leaf {
+        background: #649e20;
+        box-shadow: 0 0 0 8px rgba(100, 158, 32, 0.14);
+      }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      (function () {
+        const scope = '[data-composition-id="scene1-logo-intro"]';
+        const tl = gsap.timeline({ paused: true });
+
+        tl.from(`${scope} .brand-chip`, {
+          y: -40,
+          opacity: 0,
+          duration: 0.45,
+          ease: "power3.out",
+        }, 0);
+
+        tl.from(`${scope} .eyebrow`, {
+          x: -30,
+          opacity: 0,
+          duration: 0.45,
+          ease: "power3.out",
+        }, 0.1);
+
+        tl.from(`${scope} .headline span`, {
+          y: 120,
+          opacity: 0,
+          stagger: 0.08,
+          duration: 0.72,
+          ease: "power4.out",
+        }, 0.16);
+
+        tl.from(`${scope} .subcopy`, {
+          y: 28,
+          opacity: 0,
+          duration: 0.5,
+          ease: "power3.out",
+        }, 0.45);
+
+        tl.from(`${scope} .bowl-wrap`, {
+          scale: 0.8,
+          y: 90,
+          opacity: 0,
+          duration: 0.95,
+          ease: "back.out(1.4)",
+        }, 0.12);
+
+        tl.from(`${scope} .bowl`, {
+          rotation: -10,
+          scale: 0.88,
+          duration: 0.95,
+          ease: "power3.out",
+        }, 0.12);
+
+        tl.from(`${scope} .pill-top`, {
+          x: 80,
+          opacity: 0,
+          duration: 0.45,
+          ease: "power3.out",
+        }, 0.65);
+
+        tl.from(`${scope} .pill-bottom`, {
+          x: -80,
+          opacity: 0,
+          duration: 0.45,
+          ease: "power3.out",
+        }, 0.78);
+
+        tl.to(`${scope} .bowl-wrap`, {
+          y: -18,
+          duration: 0.7,
+          ease: "sine.inOut",
+        }, 1.55);
+
+        tl.to(`${scope} .bowl-wrap`, {
+          y: 0,
+          duration: 0.7,
+          ease: "sine.inOut",
+        }, 2.25);
+
+        tl.to(`${scope} .orb-a`, {
+          x: -18,
+          y: 12,
+          duration: 1.2,
+          ease: "sine.inOut",
+        }, 0.4);
+
+        tl.to(`${scope} .orb-b`, {
+          x: 16,
+          y: -10,
+          duration: 1.2,
+          ease: "sine.inOut",
+        }, 0.6);
+
+        window.__timelines = window.__timelines || {};
+        window.__timelines["scene1-logo-intro"] = tl;
+      })();
+    </script>
+  </div>
+</template>

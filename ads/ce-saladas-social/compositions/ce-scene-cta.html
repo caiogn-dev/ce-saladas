@@ -1,0 +1,214 @@
+<template id="ce-scene-cta-template">
+  <div
+    data-composition-id="ce-scene-cta"
+    data-start="0"
+    data-width="1080"
+    data-height="1920"
+    data-duration="2"
+  >
+    <div class="canvas">
+      <div class="glow glow-a"></div>
+      <div class="glow glow-b"></div>
+      <div class="brand">Cê Saladas</div>
+      <div class="bowl-frame">
+        <div class="bowl-bg"></div>
+        <img class="bowl" src="../assets/bowl-shrimp.webp" alt="Bowl de camarão" />
+      </div>
+      <div class="cta-stack">
+        <div class="cta-label">pedido rápido no site</div>
+        <div class="cta-button">
+          <span>Abra o cardápio</span>
+          <span class="cta-arrow">→</span>
+        </div>
+        <div class="cta-url">cesaladas.com.br</div>
+      </div>
+    </div>
+
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter:wght@400;500;600;700;800&display=block");
+
+      [data-composition-id="ce-scene-cta"] .canvas {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background:
+          radial-gradient(circle at 20% 20%, rgba(127, 181, 46, 0.18), transparent 28%),
+          linear-gradient(180deg, #2d1808 0%, #16100a 100%);
+        color: #fff8f0;
+        font-family: "Inter", sans-serif;
+      }
+
+      [data-composition-id="ce-scene-cta"] .glow {
+        position: absolute;
+        border-radius: 999px;
+        filter: blur(18px);
+      }
+
+      [data-composition-id="ce-scene-cta"] .glow-a {
+        left: 44px;
+        top: 130px;
+        width: 300px;
+        height: 300px;
+        background: rgba(100, 158, 32, 0.26);
+      }
+
+      [data-composition-id="ce-scene-cta"] .glow-b {
+        right: 10px;
+        bottom: 200px;
+        width: 360px;
+        height: 360px;
+        background: rgba(249, 115, 22, 0.24);
+      }
+
+      [data-composition-id="ce-scene-cta"] .brand {
+        position: absolute;
+        top: 128px;
+        left: 80px;
+        font-size: 38px;
+        font-weight: 800;
+        letter-spacing: 0.02em;
+      }
+
+      [data-composition-id="ce-scene-cta"] .bowl-frame {
+        position: absolute;
+        right: -20px;
+        top: 340px;
+        width: 620px;
+        height: 620px;
+      }
+
+      [data-composition-id="ce-scene-cta"] .bowl-bg {
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        background:
+          radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.18), transparent 20%),
+          linear-gradient(135deg, #f97316 0%, #ea6c0c 100%);
+        box-shadow: 0 24px 70px rgba(249, 115, 22, 0.28);
+      }
+
+      [data-composition-id="ce-scene-cta"] .bowl {
+        position: absolute;
+        inset: 56px;
+        width: calc(100% - 112px);
+        height: calc(100% - 112px);
+        object-fit: contain;
+        mix-blend-mode: multiply;
+      }
+
+      [data-composition-id="ce-scene-cta"] .cta-stack {
+        position: absolute;
+        left: 80px;
+        bottom: 170px;
+        width: 620px;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+      }
+
+      [data-composition-id="ce-scene-cta"] .cta-label {
+        font-size: 24px;
+        font-weight: 800;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: #d8edb8;
+      }
+
+      [data-composition-id="ce-scene-cta"] .cta-button {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 28px 34px;
+        border-radius: 999px;
+        background: #f97316;
+        color: #fff;
+        font-family: "Fraunces", serif;
+        font-size: 52px;
+        line-height: 1;
+        letter-spacing: -0.04em;
+        box-shadow: 0 20px 50px rgba(249, 115, 22, 0.26);
+      }
+
+      [data-composition-id="ce-scene-cta"] .cta-arrow {
+        font-family: "Inter", sans-serif;
+        font-size: 44px;
+        font-weight: 700;
+      }
+
+      [data-composition-id="ce-scene-cta"] .cta-url {
+        padding-left: 16px;
+        font-size: 24px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: rgba(255, 248, 240, 0.76);
+      }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      (function () {
+        const scope = '[data-composition-id="ce-scene-cta"]';
+        const tl = gsap.timeline({ paused: true });
+
+        tl.from(`${scope} .brand`, {
+          y: -18,
+          opacity: 0,
+          duration: 0.3,
+          ease: "power3.out",
+        }, 0);
+
+        tl.from(`${scope} .bowl-frame`, {
+          x: 90,
+          scale: 0.88,
+          opacity: 0,
+          duration: 0.65,
+          ease: "back.out(1.4)",
+        }, 0.06);
+
+        tl.from(`${scope} .cta-label`, {
+          y: 20,
+          opacity: 0,
+          duration: 0.3,
+          ease: "power3.out",
+        }, 0.16);
+
+        tl.from(`${scope} .cta-button`, {
+          y: 40,
+          scale: 0.9,
+          opacity: 0,
+          duration: 0.55,
+          ease: "back.out(1.4)",
+        }, 0.22);
+
+        tl.from(`${scope} .cta-url`, {
+          y: 20,
+          opacity: 0,
+          duration: 0.32,
+          ease: "power3.out",
+        }, 0.42);
+
+        tl.to(`${scope} .cta-button`, {
+          scale: 1.03,
+          duration: 0.22,
+          ease: "power2.out",
+        }, 0.95);
+
+        tl.to(`${scope} .cta-button`, {
+          scale: 1,
+          duration: 0.22,
+          ease: "power2.inOut",
+        }, 1.17);
+
+        tl.to(`${scope} .canvas`, {
+          opacity: 0,
+          duration: 0.25,
+          ease: "power2.in",
+        }, 1.75);
+
+        window.__timelines = window.__timelines || {};
+        window.__timelines["ce-scene-cta"] = tl;
+      })();
+    </script>
+  </div>
+</template>
