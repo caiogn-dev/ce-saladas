@@ -94,6 +94,7 @@ function DeliveryMapSimpleInner({
 
   const searchTimeoutRef = useRef(null);
   const resultsRef = useRef(null);
+  const handleLocationSelectedRef = useRef(null);
 
   // Handle location selection (click / drag / GPS)
   const handleLocationSelected = useCallback(async (lat, lng) => {
@@ -155,6 +156,8 @@ function DeliveryMapSimpleInner({
       setIsLoading(false);
     }
   }, [enableSelection, onAddressFound, onLocationSelect]);
+
+  handleLocationSelectedRef.current = handleLocationSelected;
 
   const disposeRouteRenderer = useCallback(() => {
     if (!directionsRendererRef.current) return;
@@ -219,7 +222,7 @@ function DeliveryMapSimpleInner({
 
         if (enableSelection) {
           map.addListener('click', (e) => {
-            handleLocationSelected(e.latLng.lat(), e.latLng.lng());
+            handleLocationSelectedRef.current?.(e.latLng.lat(), e.latLng.lng());
           });
         }
 
@@ -255,7 +258,7 @@ function DeliveryMapSimpleInner({
         }
       }
     };
-  }, [disposeMarker, disposeRouteLine, disposeRouteRenderer, handleLocationSelected, storeLocation, enableSelection]);
+  }, [disposeMarker, disposeRouteLine, disposeRouteRenderer, storeLocation, enableSelection]);
 
   // Update customer marker when prop changes
   useEffect(() => {

@@ -145,6 +145,40 @@ const extractMercadoPagoErrorMessage = (error) => {
   );
 };
 
+class CheckoutSubtreeBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error) {
+    console.error('[CheckoutSubtreeBoundary] subtree render failed:', error);
+  }
+
+  handleRetry = () => {
+    this.setState({ hasError: false });
+  };
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ background: '#fff7ed', color: '#9a3412', border: '1px solid #fdba74', borderRadius: 12, padding: 16, marginTop: 16 }}>
+          <p style={{ margin: 0 }}>O bloco de localização falhou ao renderizar. Tente abrir novamente.</p>
+          <button type="button" onClick={this.handleRetry} style={{ marginTop: 12, border: 0, borderRadius: 999, padding: '10px 16px', background: '#f97316', color: '#fff', cursor: 'pointer' }}>
+            Tentar novamente
+          </button>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
+
 const CheckoutPage = () => {
   const router = useRouter();
   const { cart, combos, cartTotal, clearCart, hasItems } = useCart();
@@ -624,14 +658,16 @@ const CheckoutPage = () => {
       </div>
 
       {/* Location Modal */}
-      <LocationModal
-        isOpen={showLocationModal}
-        onClose={() => setShowLocationModal(false)}
-        onConfirm={handleLocationConfirm}
-        geolocation={geolocation}
-        delivery={delivery}
-        savedAddress={readLastAddress()?.address || null}
-      />
+      <CheckoutSubtreeBoundary>
+        <LocationModal
+          isOpen={showLocationModal}
+          onClose={() => setShowLocationModal(false)}
+          onConfirm={handleLocationConfirm}
+          geolocation={geolocation}
+          delivery={delivery}
+          savedAddress={readLastAddress()?.address || null}
+        />
+      </CheckoutSubtreeBoundary>
     </div>
   );
 };

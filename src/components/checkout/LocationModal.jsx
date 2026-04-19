@@ -38,6 +38,7 @@ const LocationModal = ({
   const [mapSelectionReady, setMapSelectionReady] = useState(false);
   // Tracks whether each field has been touched by the user — prevents GPS re-fill after manual edit
   const [touched, setTouched] = useState({ street: false, neighborhood: false, number: false, complement: false });
+  const handleAddressFound = useCallback(() => {}, []);
 
   const currentStep = manualMode ? 'map' : (detectedAddress ? 'confirm' : 'detecting');
 
@@ -244,7 +245,7 @@ const LocationModal = ({
                 customerLocation={position}
                 routePolyline={null}
                 onLocationSelect={handleMapLocationSelect}
-                onAddressFound={() => {}}
+                onAddressFound={handleAddressFound}
                 enableSelection={true}
                 showSearch={true}
                 showGpsButton={true}
@@ -308,7 +309,7 @@ const LocationModal = ({
                 storeLocation={STORE_LOCATION}
                 customerLocation={position}
                 routePolyline={null}
-                onAddressFound={() => {}}
+                onAddressFound={handleAddressFound}
                 enableSelection={false}
                 showSearch={false}
                 showGpsButton={false}
