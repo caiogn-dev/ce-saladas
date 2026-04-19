@@ -33,6 +33,7 @@ const DeliveryMapSimple = ({
   const storeMarkerRef = useRef(null);
   const customerMarkerRef = useRef(null);
   const routeLineRef = useRef(null);
+  const resizeHandlerRef = useRef(null);
 
   const [isReady, setIsReady] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -74,12 +75,10 @@ const DeliveryMapSimple = ({
           });
         }
 
-        const resizeHandler = () => window.google?.maps?.event?.trigger(map, 'resize');
-        window.addEventListener('resize', resizeHandler);
+        resizeHandlerRef.current = () => window.google?.maps?.event?.trigger(map, 'resize');
+        window.addEventListener('resize', resizeHandlerRef.current);
 
         if (mounted) setIsReady(true);
-
-        return () => window.removeEventListener('resize', resizeHandler);
       } catch (err) {
         console.error('Map init error:', err);
         if (mounted) setError('Erro ao carregar o mapa');
@@ -87,7 +86,13 @@ const DeliveryMapSimple = ({
     };
 
     initMap();
-    return () => { mounted = false; };
+    return () => {
+      mounted = false;
+      if (resizeHandlerRef.current) {
+        window.removeEventListener('resize', resizeHandlerRef.current);
+        resizeHandlerRef.current = null;
+      }
+    };
   }, [storeLocation]);
 
   // Update customer marker when prop changes
@@ -161,6 +166,16 @@ const DeliveryMapSimple = ({
     setError(null);
 
     try {
+      if (mapRef.current) {
+        const nextPosition = { lat: latitude, lng: longitude };
+        if (customerMarkerRef.current) {
+          customerMarkerRef.current.setPosition(nextPosition);
+        } else {
+          customerMarkerRef.current = createCustomerMarker(mapRef.current, nextPosition, enableSelection);
+        }
+        mapRef.current.panTo(nextPosition);
+      }
+
       let address = {};
       try {
         const data = await storeApi.reverseGeocode(latitude, longitude);
@@ -298,7 +313,11 @@ const DeliveryMapSimple = ({
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    if (searchResults.length > 0) handleResultSelect(searchResults[0]);
+    if (searchResults.length > 0) {
+      handleResultSelect(searchResults[0]);
+    } else if (searchQuery.trim().length >= 3) {
+      searchByAddress(searchQuery.trim());
+    }
   };
 
   // Close results on outside click

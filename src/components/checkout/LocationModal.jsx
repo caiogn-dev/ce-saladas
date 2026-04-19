@@ -222,12 +222,12 @@ const LocationModal = ({
               <DeliveryMapSimple
                 storeLocation={STORE_LOCATION}
                 customerLocation={position}
-                routePolyline={routeInfo?.polyline}
+                routePolyline={null}
                 onLocationSelect={handleMapLocationSelect}
                 onAddressFound={() => {}}
                 enableSelection={true}
-                showSearch={false}
-                showGpsButton={false}
+                showSearch={true}
+                showGpsButton={true}
                 height="350px"
               />
             </div>
@@ -262,7 +262,7 @@ const LocationModal = ({
               <DeliveryMapSimple
                 storeLocation={STORE_LOCATION}
                 customerLocation={position}
-                routePolyline={routeInfo?.polyline}
+                routePolyline={null}
                 onAddressFound={() => {}}
                 enableSelection={false}
                 showSearch={false}
