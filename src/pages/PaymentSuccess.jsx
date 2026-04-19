@@ -1,15 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import * as storeApi from '../services/storeApi';
 
 const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '5563991386719';
+const POLL_INTERVAL_MS = 20000; // 20s
+
+const STATUS_READY = 'ready';
+const STATUS_OUT_FOR_DELIVERY = 'out_for_delivery';
+const STATUS_DELIVERED = 'delivered';
 
 const PaymentSuccess = () => {
   const router = useRouter();
 
-  // Prefer sessionStorage token (set by CheckoutPage to avoid URL exposure).
-  // Fall back to URL query param for backwards compatibility (e.g. MP redirects).
   const tokenParam = router.query.token;
   const orderParam = router.query.order || router.query.external_reference;
 
@@ -18,34 +21,35 @@ const PaymentSuccess = () => {
     catch { return Array.isArray(tokenParam) ? tokenParam[0] : tokenParam || null; }
   })();
   const orderNumber = Array.isArray(orderParam) ? orderParam[0] : orderParam;
-  
+  const isCash = router.query.method === 'cash';
+
   const [orderDetails, setOrderDetails] = useState(null);
   const [whatsappUrl, setWhatsappUrl] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [orderStatus, setOrderStatus] = useState(null);
+
+  // Keep token in a ref so polling can use it after sessionStorage is cleared
+  const tokenRef = useRef(accessToken);
 
   useEffect(() => {
     const fetchOrderDetails = async () => {
       try {
         let orderData = null;
-        
-        // Prefer token-based access for security
-        if (accessToken) {
-          orderData = await storeApi.getOrderByToken(accessToken);
-        } else if (orderNumber) {
-          orderData = await storeApi.getOrder(orderNumber);
+        if (tokenRef.current) {
+          orderData = await storeApi.getOrderByToken(tokenRef.current);
         }
-        
+
         if (orderData) {
           setOrderDetails(orderData);
-          
-          // Get WhatsApp URL using order ID
+          setOrderStatus(orderData.status);
+
           const orderId = orderData.order_id || orderData.id;
           if (orderId) {
             try {
               const whatsappData = await storeApi.getOrderWhatsApp(orderId);
               setWhatsappUrl(whatsappData.whatsapp_url);
             } catch {
-              // WhatsApp URL not available - will use generated URL
+              // WhatsApp URL not available
             }
           }
         }
@@ -57,43 +61,98 @@ const PaymentSuccess = () => {
 
     if (router.isReady) {
       fetchOrderDetails().then(() => {
-        // Clean up sessionStorage token after use
         try { sessionStorage.removeItem('ce_order_access_token'); } catch { /* ignore */ }
       });
     }
-  }, [router.isReady, accessToken, orderNumber]);
+  }, [router.isReady]);
 
-  // Get display order number
+  // Poll for status changes while order is not in a terminal state
+  useEffect(() => {
+    if (!router.isReady || !tokenRef.current) return;
+    if ([STATUS_DELIVERED, 'cancelled', 'completed'].includes(orderStatus)) return;
+
+    const poll = async () => {
+      try {
+        const data = await storeApi.getOrderByToken(tokenRef.current);
+        if (data?.status && data.status !== orderStatus) {
+          setOrderStatus(data.status);
+          setOrderDetails(data);
+        }
+      } catch {
+        // silently skip failed polls
+      }
+    };
+
+    const timer = setInterval(poll, POLL_INTERVAL_MS);
+    return () => clearInterval(timer);
+  }, [router.isReady, orderStatus]);
+
   const displayOrderNumber = orderDetails?.order_number || orderNumber;
 
-  // Generate WhatsApp message if no API URL
   const generateWhatsAppUrl = () => {
     if (whatsappUrl) return whatsappUrl;
-    
-    const message = displayOrderNumber 
+    const message = displayOrderNumber
       ? `Olá! Gostaria de confirmar meu pedido #${displayOrderNumber}.`
       : 'Olá! Acabei de fazer um pedido e gostaria de confirmar.';
-    
     return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+  };
+
+  // Determine what to show based on current status
+  const isReadyForPickup = orderStatus === STATUS_READY;
+  const isOutForDelivery = orderStatus === STATUS_OUT_FOR_DELIVERY;
+  const isDelivered = orderStatus === STATUS_DELIVERED;
+
+  const getTitle = () => {
+    if (isReadyForPickup) return 'Pronto para retirada!';
+    if (isOutForDelivery) return 'Saiu para entrega!';
+    if (isDelivered) return 'Pedido entregue!';
+    if (isCash) return 'Pedido confirmado!';
+    return 'Pagamento confirmado!';
+  };
+
+  const getSubtitle = () => {
+    if (isReadyForPickup) return 'Seu pedido está pronto! Pode vir buscar.';
+    if (isOutForDelivery) return 'Seu pedido saiu para entrega. Fique de olho!';
+    if (isDelivered) return 'Seu pedido foi entregue. Bom apetite!';
+    if (isCash) return 'Em breve seu pedido estará pronto para retirada. O pagamento será feito na retirada.';
+    return 'Seu pedido foi processado com sucesso.';
+  };
+
+  const getStatusIcon = () => {
+    if (isReadyForPickup) return (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+    );
+    if (isOutForDelivery) return (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <rect x="1" y="3" width="15" height="13" rx="2" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M16 8h4l3 3v5h-7V8z" strokeLinecap="round" strokeLinejoin="round"/>
+        <circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+      </svg>
+    );
+    return (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" strokeLinecap="round" strokeLinejoin="round"/>
+        <polyline points="22,4 12,14.01 9,11.01" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+    );
   };
 
   return (
     <div className="status-page">
-      <div className="status-card status-success">
+      <div className={`status-card status-success${isReadyForPickup ? ' status-ready' : ''}${isOutForDelivery ? ' status-delivery' : ''}`}>
         <div className="status-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" strokeLinecap="round" strokeLinejoin="round" />
-            <polyline points="22,4 12,14.01 9,11.01" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
+          {getStatusIcon()}
         </div>
 
-        <h1 className="status-title">Pagamento confirmado!</h1>
-        <p className="status-subtitle">Seu pedido foi processado com sucesso.</p>
+        <h1 className="status-title">{getTitle()}</h1>
+        <p className="status-subtitle">{getSubtitle()}</p>
 
-        {orderNumber && (
+        {displayOrderNumber && (
           <div className="status-order">
             <span className="status-label">Número do Pedido:</span>
-            <span className="status-value">#{orderNumber}</span>
+            <span className="status-value">#{displayOrderNumber}</span>
           </div>
         )}
 
@@ -102,34 +161,35 @@ const PaymentSuccess = () => {
             <div className="status-row">
               <span>Status:</span>
               <span className="status-badge status-badge-success">
-                {orderDetails.status_display || orderDetails.payment_status || 'Aprovado'}
+                {orderDetails.status_display || orderDetails.payment_status || 'Confirmado'}
               </span>
             </div>
             <div className="status-row">
               <span>Total:</span>
               <span className="status-price">
-                R$ {orderDetails.total ? Number(orderDetails.total).toFixed(2) : 
+                R$ {orderDetails.total ? Number(orderDetails.total).toFixed(2) :
                     orderDetails.total_amount ? Number(orderDetails.total_amount).toFixed(2) : '0.00'}
               </span>
             </div>
           </div>
         )}
 
-        {!loading && (
+        {!loading && !isDelivered && (
           <p className="status-note">
-            Você receberá um e-mail com os detalhes do seu pedido e informações de entrega.
+            {isCash
+              ? 'Você será notificado quando o pedido estiver pronto.'
+              : 'Você receberá atualizações sobre o seu pedido.'}
           </p>
         )}
 
-        {/* WhatsApp Confirmation */}
         <div className="whatsapp-confirmation">
           <p className="whatsapp-text">
             <span className="whatsapp-icon">📱</span>
-            Confirme seu pedido pelo WhatsApp para agilizar a entrega!
+            Confirme seu pedido pelo WhatsApp para agilizar!
           </p>
-          <a 
-            href={generateWhatsAppUrl()} 
-            target="_blank" 
+          <a
+            href={generateWhatsAppUrl()}
+            target="_blank"
             rel="noopener noreferrer"
             className="whatsapp-button"
           >

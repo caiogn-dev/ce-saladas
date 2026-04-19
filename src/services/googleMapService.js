@@ -66,7 +66,7 @@ export function loadGoogleMaps() {
 
     const script = document.createElement('script');
     script.id = scriptId;
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=geometry&callback=${callbackName}&loading=async`;
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=geometry&callback=${callbackName}`;
     script.async = true;
     script.onerror = () => {
       fail(new Error('Failed to load Google Maps JS API'));

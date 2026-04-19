@@ -732,7 +732,7 @@ export const getOrderStatus = async (orderIdOrNumber, token = null) => {
 export const getUserOrders = async () => {
   const token = getAuthToken();
   const authHeader = buildAuthHeader(token);
-  const response = await axios.get(`${STORES_API_URL}/orders/`, {
+  const response = await axios.get(`${STORES_API_URL}/customer/orders/`, {
     headers: authHeader ? { Authorization: authHeader } : {},
     params: { store: STORE_SLUG },
   });

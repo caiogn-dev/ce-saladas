@@ -58,6 +58,12 @@
 .status-success .status-icon { background: var(--clr-moss-50); color: var(--clr-moss-400); }
 .status-success .status-title { color: var(--clr-leaf-700); }
 .status-success .status-badge { background: var(--clr-moss-50); color: var(--clr-moss-600); }
+/* Ready for pickup state */
+.status-ready .status-icon { background: #fef3c7; color: #d97706; }
+.status-ready .status-title { color: #92400e; }
+/* Out for delivery state */
+.status-delivery .status-icon { background: #dbeafe; color: #2563eb; }
+.status-delivery .status-title { color: #1e3a8a; }
 .status-error .status-icon { background: var(--clr-clay-50); color: var(--clr-clay-400); }
 .status-error .status-title { color: var(--clr-clay-600); }
 .status-pending .status-icon { background: var(--clr-amber-50); color: var(--clr-amber-400); }
