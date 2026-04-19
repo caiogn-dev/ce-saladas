@@ -14,6 +14,7 @@ export const MAP_COLORS = {
 };
 
 let _loadPromise = null;
+let _routesLibraryPromise = null;
 
 export function loadGoogleMaps() {
   if (typeof window === 'undefined') return Promise.resolve(null);
@@ -72,6 +73,29 @@ export function loadGoogleMaps() {
   });
 
   return _loadPromise;
+}
+
+export async function loadRoutesLibrary() {
+  const maps = await loadGoogleMaps();
+  if (!maps) {
+    throw new Error('Google Maps JS API is not available');
+  }
+
+  if (_routesLibraryPromise) return _routesLibraryPromise;
+
+  _routesLibraryPromise = (async () => {
+    if (typeof maps.importLibrary === 'function') {
+      return maps.importLibrary('routes');
+    }
+    return {
+      DirectionsService: maps.DirectionsService,
+      DirectionsRenderer: maps.DirectionsRenderer,
+      TravelMode: maps.TravelMode,
+      DirectionsStatus: maps.DirectionsStatus,
+    };
+  })();
+
+  return _routesLibraryPromise;
 }
 
 function svgToDataUrl(svg) {
@@ -167,4 +191,33 @@ export function fitBounds(map, positions, padding = 60) {
   const bounds = new maps.LatLngBounds();
   positions.forEach(pos => bounds.extend(pos));
   map.fitBounds(bounds, padding);
+}
+
+export async function createDirectionsRenderer(map, options = {}) {
+  const { DirectionsRenderer } = await loadRoutesLibrary();
+  return new DirectionsRenderer({
+    map,
+    suppressMarkers: options.suppressMarkers ?? true,
+    preserveViewport: options.preserveViewport ?? false,
+    polylineOptions: {
+      strokeColor: options.strokeColor || MAP_COLORS.route,
+      strokeWeight: options.strokeWeight || 5,
+      strokeOpacity: options.strokeOpacity || 0.85,
+    },
+  });
+}
+
+export async function requestDirections(origin, destination, options = {}) {
+  const maps = await loadGoogleMaps();
+  const { DirectionsService, TravelMode } = await loadRoutesLibrary();
+  const service = new DirectionsService();
+
+  return service.route({
+    origin,
+    destination,
+    travelMode: options.travelMode || TravelMode.DRIVING || maps.TravelMode.DRIVING,
+    provideRouteAlternatives: false,
+    region: options.region || 'br',
+    language: options.language || 'pt-BR',
+  });
 }

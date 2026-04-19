@@ -11,9 +11,10 @@ import {
   createMap,
   createStoreMarker,
   createCustomerMarker,
-  createPolyline,
   fitBounds,
   MAP_COLORS,
+  createDirectionsRenderer,
+  requestDirections,
 } from '../../services/googleMapService';
 import * as storeApi from '../../services/storeApi';
 
@@ -33,6 +34,7 @@ const DeliveryMapSimple = ({
   const storeMarkerRef = useRef(null);
   const customerMarkerRef = useRef(null);
   const routeLineRef = useRef(null);
+  const directionsRendererRef = useRef(null);
   const resizeHandlerRef = useRef(null);
 
   const [isReady, setIsReady] = useState(false);
@@ -134,27 +136,58 @@ const DeliveryMapSimple = ({
   useEffect(() => {
     if (!isReady || !mapRef.current) return;
 
-    if (routeLineRef.current) {
-      routeLineRef.current.setMap(null);
-      routeLineRef.current = null;
-    }
+    let cancelled = false;
 
-    if (routePolyline && typeof routePolyline === 'string' && storeLocation) {
-      try {
-        const line = createPolyline(mapRef.current, routePolyline);
-        routeLineRef.current = line;
-
-        const path = window.google.maps.geometry.encoding.decodePath(routePolyline);
-        if (path.length > 0) {
-          const bounds = new window.google.maps.LatLngBounds();
-          path.forEach(p => bounds.extend(p));
-          mapRef.current.fitBounds(bounds, 60);
-        }
-      } catch (err) {
-        console.error('Route polyline error:', err);
+    const renderDirections = async () => {
+      if (routeLineRef.current) {
+        routeLineRef.current.setMap(null);
+        routeLineRef.current = null;
       }
-    }
-  }, [routePolyline, isReady, storeLocation]);
+
+      if (directionsRendererRef.current) {
+        directionsRendererRef.current.setDirections({ routes: [] });
+        directionsRendererRef.current.setMap(null);
+        directionsRendererRef.current = null;
+      }
+
+      if (!storeLocation || !customerLocation) return;
+
+      const origin = {
+        lat: Number(storeLocation.latitude),
+        lng: Number(storeLocation.longitude),
+      };
+      const destination = {
+        lat: Number(customerLocation.lat || customerLocation.latitude),
+        lng: Number(customerLocation.lng || customerLocation.longitude),
+      };
+
+      if ([origin.lat, origin.lng, destination.lat, destination.lng].some(Number.isNaN)) {
+        return;
+      }
+
+      try {
+        const renderer = await createDirectionsRenderer(mapRef.current, {
+          suppressMarkers: true,
+          preserveViewport: false,
+        });
+        const directions = await requestDirections(origin, destination);
+        if (cancelled) {
+          renderer.setMap(null);
+          return;
+        }
+        renderer.setDirections(directions);
+        directionsRendererRef.current = renderer;
+      } catch (err) {
+        console.error('Native directions render error:', err);
+      }
+    };
+
+    renderDirections();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [customerLocation, isReady, storeLocation, routePolyline]);
 
   // Handle location selection (click / drag / GPS)
   const handleLocationSelected = useCallback(async (lat, lng) => {
