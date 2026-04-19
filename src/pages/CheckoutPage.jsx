@@ -175,6 +175,50 @@ const CheckoutPage = () => {
   const [scheduledDate, setScheduledDate] = useState('');
   const [scheduledTimeSlot, setScheduledTimeSlot] = useState('');
 
+  const applyResolvedDeliveryInfo = useCallback((info) => {
+    if (!info) {
+      delivery.setDeliveryInfo(null);
+      delivery.setShippingCost(null);
+      return;
+    }
+
+    delivery.setDeliveryInfo(info);
+    delivery.setShippingCost(info.is_valid === false ? null : info.fee);
+  }, [delivery]);
+
+  const buildAddressValidationString = useCallback((address) => {
+    if (!address) return '';
+
+    return [
+      address.street && address.number ? `${address.street}, ${address.number}` : address.street,
+      address.complement,
+      address.neighborhood,
+      address.city,
+      address.state,
+      address.zip_code,
+    ].filter(Boolean).join(', ');
+  }, []);
+
+  const restoreDeliveryForAddress = useCallback(async (address) => {
+    if (!address || delivery.shippingMethod !== 'delivery') {
+      return null;
+    }
+
+    const lat = address.lat ?? address.latitude ?? null;
+    const lng = address.lng ?? address.longitude ?? null;
+
+    if (lat != null && lng != null) {
+      return delivery.calculateDeliveryFeeByCoords(lat, lng);
+    }
+
+    const addressString = buildAddressValidationString(address);
+    if (!addressString) {
+      return null;
+    }
+
+    return delivery.calculateDeliveryFeeByAddress(addressString);
+  }, [buildAddressValidationString, delivery]);
+
   // Initialize Mercado Pago
   useEffect(() => {
     if (mpPublicKey) {
@@ -212,6 +256,36 @@ const CheckoutPage = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [checkoutForm.userDataLoaded]);
 
+  useEffect(() => {
+    if (!checkoutForm.userDataLoaded) return;
+    if (delivery.shippingMethod !== 'delivery') return;
+    if (!confirmedAddress) return;
+    if (delivery.loadingDelivery) return;
+    if (delivery.shippingCost !== null) return;
+
+    let cancelled = false;
+
+    const resolveSavedDelivery = async () => {
+      const resolved = await restoreDeliveryForAddress(confirmedAddress);
+      if (cancelled) return;
+      applyResolvedDeliveryInfo(resolved);
+    };
+
+    resolveSavedDelivery();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    applyResolvedDeliveryInfo,
+    checkoutForm.userDataLoaded,
+    confirmedAddress,
+    delivery.loadingDelivery,
+    delivery.shippingCost,
+    delivery.shippingMethod,
+    restoreDeliveryForAddress,
+  ]);
+
   // Handle shipping method change
   const handleShippingMethodChange = useCallback((method) => {
     delivery.setShippingMethod(method);
@@ -229,7 +303,7 @@ const CheckoutPage = () => {
   }, []);
 
   // Handle location confirmation from modal
-  const handleLocationConfirm = useCallback((locationData) => {
+  const handleLocationConfirm = useCallback(async (locationData) => {
     setConfirmedAddress(locationData.address);
     checkoutForm.setAddressFromGeo(locationData.address);
 
@@ -252,13 +326,22 @@ const CheckoutPage = () => {
       }
     }
 
-    if (locationData.deliveryInfo) {
-      delivery.setDeliveryInfo(locationData.deliveryInfo);
-      delivery.setShippingCost(locationData.deliveryInfo.fee);
-    }
+    const resolvedDeliveryInfo = locationData.deliveryInfo
+      || await restoreDeliveryForAddress(locationData.address);
+
+    applyResolvedDeliveryInfo(resolvedDeliveryInfo);
 
     setShowLocationModal(false);
-  }, [checkoutForm, delivery, saveLastAddress, isAuthenticated, profile, user, updateProfile]);
+  }, [
+    applyResolvedDeliveryInfo,
+    checkoutForm,
+    saveLastAddress,
+    isAuthenticated,
+    profile,
+    restoreDeliveryForAddress,
+    updateProfile,
+    user,
+  ]);
 
   // Handle proceed to payment
   const handleProceedToPayment = useCallback(() => {

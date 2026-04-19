@@ -14,7 +14,13 @@ const OrderConfirmation = ({
   confirmedAddress,
   onProceedToPayment,
 }) => {
-  const canProceed = shippingMethod === 'pickup' || (shippingMethod === 'delivery' && confirmedAddress);
+  const hasValidDeliverySelection = (
+    shippingMethod === 'delivery'
+    && confirmedAddress
+    && deliveryInfo
+    && deliveryInfo.is_valid !== false
+  );
+  const canProceed = shippingMethod === 'pickup' || hasValidDeliverySelection;
   const numericCartTotal = toFiniteNumber(cartTotal, 0);
   const shippingCost = shippingMethod === 'pickup' ? 0 : toFiniteNumber(deliveryInfo?.fee, 0);
   const total = numericCartTotal + shippingCost;
