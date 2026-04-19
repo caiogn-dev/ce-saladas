@@ -23,6 +23,7 @@ class MapErrorBoundary extends React.Component {
   }
 
   componentDidCatch(error) {
+    console.error('[SafeInteractiveMap] render failed:', error);
     if (typeof window !== 'undefined') {
       try {
         const errors = JSON.parse(sessionStorage.getItem('app_errors') || '[]');

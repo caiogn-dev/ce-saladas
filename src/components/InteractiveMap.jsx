@@ -28,6 +28,12 @@ const extractCoords = (location) => {
   return isValidCoordinate(lat, lng) ? { lat, lng } : null;
 };
 
+const asErrorMessage = (error, fallback) => {
+  if (error instanceof Error && error.message) return error.message;
+  if (typeof error === 'string' && error.trim()) return error;
+  return fallback;
+};
+
 export default function InteractiveMap({
   initialLocation = null,
   storeLocation = null,
@@ -139,29 +145,34 @@ export default function InteractiveMap({
 
   // Update customer marker when prop changes
   useEffect(() => {
-    if (!mapRef.current) return;
-    const coords = extractCoords(customerLocation);
-    if (!coords) return;
+    try {
+      if (!mapRef.current) return;
+      const coords = extractCoords(customerLocation);
+      if (!coords) return;
 
-    if (customerMarkerRef.current) {
-      customerMarkerRef.current.setPosition(coords);
-    } else if (showCustomerMarker) {
-      const draggable = markerDraggable && enableSelection;
-      const marker = createCustomerMarker(mapRef.current, coords, draggable);
-      if (draggable) {
-        marker.addListener('dragend', (e) => {
-          selectLocation(e.latLng.lat(), e.latLng.lng(), false);
-        });
+      if (customerMarkerRef.current) {
+        customerMarkerRef.current.setPosition(coords);
+      } else if (showCustomerMarker) {
+        const draggable = markerDraggable && enableSelection;
+        const marker = createCustomerMarker(mapRef.current, coords, draggable);
+        if (draggable) {
+          marker.addListener('dragend', (e) => {
+            selectLocation(e.latLng.lat(), e.latLng.lng(), false);
+          });
+        }
+        customerMarkerRef.current = marker;
       }
-      customerMarkerRef.current = marker;
-    }
 
-    const storeCoords = extractCoords(storeLocation) || extractCoords(STORE_LOCATION);
-    if (storeCoords) {
-      fitBounds(mapRef.current, [storeCoords, coords]);
-    } else {
-      mapRef.current.setCenter(coords);
-      mapRef.current.setZoom(15);
+      const storeCoords = extractCoords(storeLocation) || extractCoords(STORE_LOCATION);
+      if (storeCoords) {
+        fitBounds(mapRef.current, [storeCoords, coords]);
+      } else {
+        mapRef.current.setCenter(coords);
+        mapRef.current.setZoom(15);
+      }
+    } catch (err) {
+      console.error('[InteractiveMap] customer marker update failed:', err);
+      setError(asErrorMessage(err, 'Erro ao atualizar o mapa'));
     }
   }, [customerLocation, showCustomerMarker, markerDraggable, enableSelection, storeLocation]);
 
@@ -194,31 +205,35 @@ export default function InteractiveMap({
 
   // Update delivery zones
   useEffect(() => {
-    if (!mapRef.current || !showZones) return;
+    try {
+      if (!mapRef.current || !showZones) return;
 
-    zoneObjectsRef.current.forEach(obj => obj.setMap(null));
-    zoneObjectsRef.current = [];
+      zoneObjectsRef.current.forEach(obj => obj.setMap(null));
+      zoneObjectsRef.current = [];
 
-    const zoneColors = [
-      { stroke: MAP_COLORS.primary,   fill: MAP_COLORS.primary,   fillOpacity: 0.12 },
-      { stroke: MAP_COLORS.secondary, fill: MAP_COLORS.secondary, fillOpacity: 0.12 },
-      { stroke: '#4caf50',            fill: '#4caf50',            fillOpacity: 0.12 },
-    ];
+      const zoneColors = [
+        { stroke: MAP_COLORS.primary,   fill: MAP_COLORS.primary,   fillOpacity: 0.12 },
+        { stroke: MAP_COLORS.secondary, fill: MAP_COLORS.secondary, fillOpacity: 0.12 },
+        { stroke: '#4caf50',            fill: '#4caf50',            fillOpacity: 0.12 },
+      ];
 
-    zones.forEach((zone, i) => {
-      if (!zone.center || !zone.radius) return;
-      const center = {
-        lat: Number(zone.center.latitude || zone.center.lat),
-        lng: Number(zone.center.longitude || zone.center.lng),
-      };
-      const colors = zoneColors[i % zoneColors.length];
-      const circle = createCircle(mapRef.current, center, zone.radius * 1000, {
-        strokeColor: colors.stroke,
-        fillColor: colors.fill,
-        fillOpacity: colors.fillOpacity,
+      zones.forEach((zone, i) => {
+        if (!zone.center || !zone.radius) return;
+        const center = extractCoords(zone.center);
+        if (!center) return;
+        const colors = zoneColors[i % zoneColors.length];
+        const radiusMeters = Number(zone.radius) * 1000;
+        if (!Number.isFinite(radiusMeters) || radiusMeters <= 0) return;
+        const circle = createCircle(mapRef.current, center, radiusMeters, {
+          strokeColor: colors.stroke,
+          fillColor: colors.fill,
+          fillOpacity: colors.fillOpacity,
+        });
+        zoneObjectsRef.current.push(circle);
       });
-      zoneObjectsRef.current.push(circle);
-    });
+    } catch (err) {
+      console.error('[InteractiveMap] zones update failed:', err);
+    }
   }, [zones, showZones, isLoaded]);
 
   // Reverse geocode via backend and notify parent
