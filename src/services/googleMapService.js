@@ -19,16 +19,54 @@ export function loadGoogleMaps() {
   if (typeof window === 'undefined') return Promise.resolve(null);
   if (window.google?.maps?.Map) return Promise.resolve(window.google.maps);
   if (_loadPromise) return _loadPromise;
+  if (!GOOGLE_MAPS_API_KEY) {
+    return Promise.reject(new Error('NEXT_PUBLIC_GOOGLE_MAPS_KEY is not configured'));
+  }
 
   _loadPromise = new Promise((resolve, reject) => {
     const callbackName = '__googleMapsReady__';
-    window[callbackName] = () => resolve(window.google.maps);
+    const scriptId = 'google-maps-js-api';
+    const existingScript = document.getElementById(scriptId);
+    let timeoutId = null;
+
+    const cleanup = () => {
+      if (timeoutId) window.clearTimeout(timeoutId);
+      delete window[callbackName];
+      delete window.gm_authFailure;
+    };
+
+    const fail = (error) => {
+      _loadPromise = null;
+      cleanup();
+      reject(error);
+    };
+
+    window[callbackName] = () => {
+      cleanup();
+      resolve(window.google.maps);
+    };
+
+    window.gm_authFailure = () => {
+      fail(new Error('Google Maps JS API authentication failed'));
+    };
+
+    timeoutId = window.setTimeout(() => {
+      fail(new Error('Timed out while loading Google Maps JS API'));
+    }, 15000);
+
+    if (existingScript) {
+      existingScript.addEventListener('error', () => {
+        fail(new Error('Failed to load Google Maps JS API'));
+      }, { once: true });
+      return;
+    }
+
     const script = document.createElement('script');
+    script.id = scriptId;
     script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=geometry&callback=${callbackName}&loading=async`;
     script.async = true;
     script.onerror = () => {
-      _loadPromise = null;
-      reject(new Error('Failed to load Google Maps JS API'));
+      fail(new Error('Failed to load Google Maps JS API'));
     };
     document.head.appendChild(script);
   });
