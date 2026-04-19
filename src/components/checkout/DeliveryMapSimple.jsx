@@ -25,7 +25,48 @@ import {
   isSafeStoreCoordinateInput,
 } from '../../utils/storeRegion';
 
-const DeliveryMapSimple = ({
+class DeliveryMapErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error) {
+    console.error('[DeliveryMapSimple] render failed:', error);
+  }
+
+  handleRetry = () => {
+    this.setState({ hasError: false });
+  };
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className={styles.mapContainer}>
+          <div className={styles.errorMessage}>
+            O mapa não pôde ser exibido agora. Você ainda pode informar o endereço manualmente.
+          </div>
+          <button
+            type="button"
+            onClick={this.handleRetry}
+            className={styles.gpsButton}
+            style={{ position: 'static', marginTop: 12 }}
+          >
+            Tentar carregar o mapa novamente
+          </button>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
+
+function DeliveryMapSimpleInner({
   storeLocation,
   customerLocation = null,
   routePolyline = null,
@@ -35,7 +76,7 @@ const DeliveryMapSimple = ({
   showSearch = true,
   showGpsButton = true,
   height = '350px',
-}) => {
+}) {
   const mapContainerRef = useRef(null);
   const mapRef = useRef(null);
   const storeMarkerRef = useRef(null);
@@ -53,6 +94,67 @@ const DeliveryMapSimple = ({
 
   const searchTimeoutRef = useRef(null);
   const resultsRef = useRef(null);
+
+  // Handle location selection (click / drag / GPS)
+  const handleLocationSelected = useCallback(async (lat, lng) => {
+    const latitude = Number(lat);
+    const longitude = Number(lng);
+    if (isNaN(latitude) || isNaN(longitude)) return;
+
+    if (!isSafeStoreCoordinateInput({ lat: latitude, lng: longitude })) {
+      setError(getStoreRegionErrorMessage());
+      setShowResults(false);
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      if (mapRef.current) {
+        const nextPosition = { lat: latitude, lng: longitude };
+        if (customerMarkerRef.current) {
+          customerMarkerRef.current.setPosition(nextPosition);
+        } else {
+          customerMarkerRef.current = createCustomerMarker(mapRef.current, nextPosition, enableSelection);
+        }
+        mapRef.current.panTo(nextPosition);
+      }
+
+      let address = {};
+      try {
+        const backendData = await storeApi.reverseGeocode(latitude, longitude);
+        const nativeData = backendData ? null : await reverseGeocodeNative(latitude, longitude);
+        const data = [backendData, nativeData].find((candidate) => candidate && isLocalAddressCandidate(candidate));
+        if (data) {
+          address = {
+            street: data.street || '',
+            number: data.number || '',
+            neighborhood: data.neighborhood || '',
+            city: data.city || '',
+            state: data.state || '',
+            zip_code: data.zip_code || '',
+            formatted_address: data.formatted_address || data.display_name || '',
+            display_name: data.formatted_address || data.display_name || '',
+            address_confidence: data.address_confidence || '',
+          };
+        } else {
+          setError(getStoreRegionErrorMessage());
+        }
+      } catch (e) {
+        console.warn('Reverse geocode failed:', e);
+      }
+
+      const locationData = { lat: latitude, lng: longitude, latitude, longitude, ...address };
+      onLocationSelect?.(locationData);
+      onAddressFound?.(address);
+    } catch (err) {
+      console.error('Location select error:', err);
+      onLocationSelect?.({ lat: latitude, lng: longitude, latitude, longitude });
+    } finally {
+      setIsLoading(false);
+    }
+  }, [enableSelection, onAddressFound, onLocationSelect]);
 
   const disposeRouteRenderer = useCallback(() => {
     if (!directionsRendererRef.current) return;
@@ -153,7 +255,7 @@ const DeliveryMapSimple = ({
         }
       }
     };
-  }, [disposeMarker, disposeRouteLine, disposeRouteRenderer, storeLocation]);
+  }, [disposeMarker, disposeRouteLine, disposeRouteRenderer, handleLocationSelected, storeLocation, enableSelection]);
 
   // Update customer marker when prop changes
   useEffect(() => {
@@ -245,67 +347,6 @@ const DeliveryMapSimple = ({
       disposeRouteLine();
     };
   }, [customerLocation, disposeRouteLine, disposeRouteRenderer, isReady, storeLocation, routePolyline]);
-
-  // Handle location selection (click / drag / GPS)
-  const handleLocationSelected = useCallback(async (lat, lng) => {
-    const latitude = Number(lat);
-    const longitude = Number(lng);
-    if (isNaN(latitude) || isNaN(longitude)) return;
-
-    if (!isSafeStoreCoordinateInput({ lat: latitude, lng: longitude })) {
-      setError(getStoreRegionErrorMessage());
-      setShowResults(false);
-      return;
-    }
-
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      if (mapRef.current) {
-        const nextPosition = { lat: latitude, lng: longitude };
-        if (customerMarkerRef.current) {
-          customerMarkerRef.current.setPosition(nextPosition);
-        } else {
-          customerMarkerRef.current = createCustomerMarker(mapRef.current, nextPosition, enableSelection);
-        }
-        mapRef.current.panTo(nextPosition);
-      }
-
-      let address = {};
-      try {
-        const backendData = await storeApi.reverseGeocode(latitude, longitude);
-        const nativeData = backendData ? null : await reverseGeocodeNative(latitude, longitude);
-        const data = [backendData, nativeData].find((candidate) => candidate && isLocalAddressCandidate(candidate));
-        if (data) {
-          address = {
-            street: data.street || '',
-            number: data.number || '',
-            neighborhood: data.neighborhood || '',
-            city: data.city || '',
-            state: data.state || '',
-            zip_code: data.zip_code || '',
-            formatted_address: data.formatted_address || data.display_name || '',
-            display_name: data.formatted_address || data.display_name || '',
-            address_confidence: data.address_confidence || '',
-          };
-        } else {
-          setError(getStoreRegionErrorMessage());
-        }
-      } catch (e) {
-        console.warn('Reverse geocode failed:', e);
-      }
-
-      const locationData = { lat: latitude, lng: longitude, latitude, longitude, ...address };
-      onLocationSelect?.(locationData);
-      onAddressFound?.(address);
-    } catch (err) {
-      console.error('Location select error:', err);
-      onLocationSelect?.({ lat: latitude, lng: longitude, latitude, longitude });
-    } finally {
-      setIsLoading(false);
-    }
-  }, [onLocationSelect, onAddressFound]);
 
   // GPS button
   const handleGetGPS = async () => {
@@ -522,6 +563,12 @@ const DeliveryMapSimple = ({
       </div>
     </div>
   );
-};
+}
 
-export default DeliveryMapSimple;
+export default function DeliveryMapSimple(props) {
+  return (
+    <DeliveryMapErrorBoundary>
+      <DeliveryMapSimpleInner {...props} />
+    </DeliveryMapErrorBoundary>
+  );
+}
