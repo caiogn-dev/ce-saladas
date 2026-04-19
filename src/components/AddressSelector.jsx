@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import { lookupCEP, geocodeBrazilianAddress } from '../services/hereMapService';
+import * as storeApi from '../services/storeApi';
 
 // HERE Maps uses browser-only APIs — must be loaded client-side only
 const InteractiveMap = dynamic(() => import('./InteractiveMap'), { ssr: false });
@@ -76,37 +76,29 @@ export default function AddressSelector({
 
     setLoadingCEP(true);
     try {
-      const cepData = await lookupCEP(cleanCEP);
-      if (cepData) {
+      const viaCepRes = await fetch(`https://viacep.com.br/ws/${cleanCEP}/json/`);
+      const cepData = await viaCepRes.json();
+      if (!cepData.erro) {
         setAddress(prev => ({
           ...prev,
-          address: cepData.address || prev.address,
-          neighborhood: cepData.neighborhood || prev.neighborhood,
-          city: cepData.city || prev.city,
-          state: cepData.state || prev.state,
+          address: cepData.logradouro || prev.address,
+          neighborhood: cepData.bairro || prev.neighborhood,
+          city: cepData.localidade || prev.city,
+          state: cepData.uf || prev.state,
         }));
 
-        // Try to geocode the address
-        const location = await geocodeBrazilianAddress(cleanCEP, {
-          address: cepData.address,
-          city: cepData.city,
-          state: cepData.state,
-        });
-
-        if (location) {
+        // Geocode via backend
+        const searchStr = [cepData.logradouro, cepData.bairro, cepData.localidade, cepData.uf, 'Brasil']
+          .filter(Boolean).join(', ');
+        const geo = await storeApi.geocodeAddress(searchStr);
+        if (geo?.latitude) {
           setAddress(prev => ({
             ...prev,
-            latitude: location.latitude,
-            longitude: location.longitude,
+            latitude: geo.latitude,
+            longitude: geo.longitude,
           }));
-          setMapLocation({
-            latitude: location.latitude,
-            longitude: location.longitude,
-          });
-          onLocationChange?.({
-            latitude: location.latitude,
-            longitude: location.longitude,
-          });
+          setMapLocation({ latitude: geo.latitude, longitude: geo.longitude });
+          onLocationChange?.({ latitude: geo.latitude, longitude: geo.longitude });
         }
       }
     } catch {

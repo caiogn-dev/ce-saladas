@@ -19,34 +19,22 @@ export const useGeolocation = () => {
   const [routeInfo, setRouteInfo] = useState(null);
   const [deliveryInfo, setDeliveryInfo] = useState(null);
 
-  // Reverse geocode using HERE Maps API
+  // Reverse geocode via backend (Google Maps)
   const reverseGeocode = useCallback(async (lat, lng) => {
-    const apiKey = process.env.NEXT_PUBLIC_HERE_API_KEY;
-    if (!apiKey) {
-      console.error('HERE API key not configured');
-      return null;
-    }
-
     try {
-      const response = await fetch(
-        `https://revgeocode.search.hereapi.com/v1/revgeocode?at=${lat},${lng}&apikey=${apiKey}`
-      );
-      const data = await response.json();
-      
-      if (data && data.items && data.items.length > 0) {
-        const item = data.items[0];
-        const addr = item.address || {};
+      const data = await storeApi.reverseGeocode(lat, lng);
+      if (data) {
         return {
-          street: addr.street || '',
-          number: addr.houseNumber || '',
-          neighborhood: addr.district || '',
-          city: addr.city || '',
-          state: addr.stateCode || getStateCode(addr.state || ''),
-          zip_code: addr.postalCode || '',
-          country: addr.countryName || 'Brasil',
-          display_name: addr.label || '',
+          street: data.street || '',
+          number: data.number || '',
+          neighborhood: data.neighborhood || '',
+          city: data.city || '',
+          state: data.state || '',
+          zip_code: data.zip_code || '',
+          country: 'Brasil',
+          display_name: data.formatted_address || data.display_name || '',
           lat,
-          lng
+          lng,
         };
       }
       return null;
