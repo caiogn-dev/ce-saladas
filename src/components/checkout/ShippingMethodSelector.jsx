@@ -1,6 +1,7 @@
 ﻿import React from 'react';
 import { MapPinned, ShoppingBag, Store } from 'lucide-react';
 import styles from '../../styles/Checkout.module.css';
+import { formatMoney, isZeroAmount } from './utils';
 
 const ShippingMethodSelector = ({
   shippingMethod,
@@ -11,8 +12,8 @@ const ShippingMethodSelector = ({
 }) => {
   const formatFee = (fee) => {
     if (fee === null || fee === undefined) return 'Calculando...';
-    if (fee === 0) return 'Grátis';
-    return `R$ ${fee.toFixed(2)}`;
+    if (isZeroAmount(fee)) return 'Grátis';
+    return `R$ ${formatMoney(fee)}`;
   };
 
   return (

@@ -3,6 +3,7 @@
  */
 import React from 'react';
 import styles from '../../styles/Checkout.module.css';
+import { formatDistanceKm, formatDurationMinutes, formatMoney, isZeroAmount } from './utils';
 
 const AddressConfirmation = ({
   detectedAddress,
@@ -14,19 +15,6 @@ const AddressConfirmation = ({
   loading
 }) => {
   if (!detectedAddress) return null;
-
-  const formatDistance = (km) => {
-    if (!km) return '';
-    return km < 1 ? `${Math.round(km * 1000)}m` : `${km.toFixed(1)}km`;
-  };
-
-  const formatDuration = (minutes) => {
-    if (!minutes) return '';
-    if (minutes < 60) return `${Math.round(minutes)} min`;
-    const hours = Math.floor(minutes / 60);
-    const mins = Math.round(minutes % 60);
-    return `${hours}h ${mins}min`;
-  };
 
   return (
     <div className={styles.addressConfirmation}>
@@ -56,10 +44,10 @@ const AddressConfirmation = ({
             {routeInfo && (
               <div className={styles.routeInfo}>
                 <span className={styles.routeIcon}>🚗</span>
-                <span>{formatDistance(routeInfo.distance_km)}</span>
+                <span>{formatDistanceKm(routeInfo.distance_km)}</span>
                 {routeInfo.duration_minutes && (
                   <span className={styles.routeDuration}>
-                    • {formatDuration(routeInfo.duration_minutes)}
+                    • {formatDurationMinutes(routeInfo.duration_minutes)}
                   </span>
                 )}
               </div>
@@ -68,10 +56,10 @@ const AddressConfirmation = ({
               <div className={styles.feeInfo}>
                 <span className={styles.feeLabel}>Taxa de entrega:</span>
                 <span className={styles.feeValue}>
-                  {deliveryInfo.fee === 0 ? (
+                  {isZeroAmount(deliveryInfo.fee) ? (
                     <span className={styles.freeDelivery}>Grátis!</span>
                   ) : (
-                    `R$ ${deliveryInfo.fee.toFixed(2)}`
+                    `R$ ${formatMoney(deliveryInfo.fee)}`
                   )}
                 </span>
                 {deliveryInfo.zone_name && (

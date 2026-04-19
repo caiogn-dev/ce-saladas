@@ -1,6 +1,7 @@
 ﻿import React from 'react';
 import { MapPinned, ShoppingCart, Store } from 'lucide-react';
 import styles from '../../styles/CheckoutModal.module.css';
+import { formatMoney, isZeroAmount, toFiniteNumber } from './utils';
 
 const OrderConfirmation = ({
   cart,
@@ -14,8 +15,9 @@ const OrderConfirmation = ({
   onProceedToPayment,
 }) => {
   const canProceed = shippingMethod === 'pickup' || (shippingMethod === 'delivery' && confirmedAddress);
-  const shippingCost = shippingMethod === 'pickup' ? 0 : (deliveryInfo?.fee || 0);
-  const total = cartTotal + shippingCost;
+  const numericCartTotal = toFiniteNumber(cartTotal, 0);
+  const shippingCost = shippingMethod === 'pickup' ? 0 : toFiniteNumber(deliveryInfo?.fee, 0);
+  const total = numericCartTotal + shippingCost;
 
   return (
     <div className={styles.orderConfirmation}>
@@ -42,7 +44,7 @@ const OrderConfirmation = ({
                   <p className={styles.itemOptions}>{Object.values(item.selectedOptions).join(', ')}</p>
                 )}
               </div>
-              <div className={styles.itemPrice}>R$ {((item.price || 0) * (item.quantity || 1)).toFixed(2)}</div>
+              <div className={styles.itemPrice}>R$ {formatMoney(toFiniteNumber(item.price, 0) * toFiniteNumber(item.quantity, 1))}</div>
             </div>
           ))}
           {combos.map((item, index) => (
@@ -61,14 +63,14 @@ const OrderConfirmation = ({
                 <p className={styles.itemQty}>Quantidade: {item.quantity}</p>
                 {item.notes && <p className={styles.itemOptions}>{item.notes}</p>}
               </div>
-              <div className={styles.itemPrice}>R$ {((item.price || 0) * (item.quantity || 1)).toFixed(2)}</div>
+              <div className={styles.itemPrice}>R$ {formatMoney(toFiniteNumber(item.price, 0) * toFiniteNumber(item.quantity, 1))}</div>
             </div>
           ))}
         </div>
 
         <div className={styles.cartSubtotal}>
           <span>Subtotal</span>
-          <span>R$ {cartTotal.toFixed(2)}</span>
+          <span>R$ {formatMoney(numericCartTotal)}</span>
         </div>
       </div>
 
@@ -97,10 +99,10 @@ const OrderConfirmation = ({
               {shippingMethod === 'delivery' && deliveryInfo && (
                 <div className={styles.deliveryFee}>
                   Taxa:{' '}
-                  {deliveryInfo.fee === 0 ? (
+                  {isZeroAmount(deliveryInfo.fee) ? (
                     <span className={styles.freeDelivery}>Grátis</span>
                   ) : (
-                    <span>R$ {deliveryInfo.fee.toFixed(2)}</span>
+                    <span>R$ {formatMoney(deliveryInfo.fee)}</span>
                   )}
                   {deliveryInfo.zone_name && <span className={styles.zoneBadge}>{deliveryInfo.zone_name}</span>}
                 </div>
@@ -180,7 +182,7 @@ const OrderConfirmation = ({
       <div className={styles.orderTotal}>
         <div className={styles.totalRow}>
           <span>Subtotal</span>
-          <span>R$ {cartTotal.toFixed(2)}</span>
+          <span>R$ {formatMoney(numericCartTotal)}</span>
         </div>
         <div className={styles.totalRow}>
           <span>Entrega</span>
@@ -188,10 +190,10 @@ const OrderConfirmation = ({
             {shippingMethod === 'pickup' ? (
               <span className={styles.freeText}>Grátis</span>
             ) : deliveryInfo ? (
-              deliveryInfo.fee === 0 ? (
+              isZeroAmount(deliveryInfo.fee) ? (
                 <span className={styles.freeText}>Grátis</span>
               ) : (
-                `R$ ${deliveryInfo.fee.toFixed(2)}`
+                `R$ ${formatMoney(deliveryInfo.fee)}`
               )
             ) : (
               <span className={styles.pendingText}>Selecione o endereço</span>
@@ -200,7 +202,7 @@ const OrderConfirmation = ({
         </div>
         <div className={`${styles.totalRow} ${styles.grandTotal}`}>
           <span>Total</span>
-          <span>R$ {total.toFixed(2)}</span>
+          <span>R$ {formatMoney(total)}</span>
         </div>
       </div>
 

@@ -1,11 +1,8 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
-import dynamic from 'next/dynamic';
 import * as storeApi from '../services/storeApi';
-
-// HERE Maps uses browser-only APIs — must be loaded client-side only
-const InteractiveMap = dynamic(() => import('./InteractiveMap'), { ssr: false });
+import SafeInteractiveMap from './SafeInteractiveMap';
 import { BRAZILIAN_STATES, formatCEP } from '../utils/brazil';
 
 /**
@@ -167,7 +164,7 @@ export default function AddressSelector({
       {/* Map section */}
       {showMap && selectionMode === 'map' && (
         <div className="map-section">
-          <InteractiveMap
+          <SafeInteractiveMap
             initialLocation={mapLocation}
             onLocationSelect={handleMapLocationSelect}
             onAddressChange={handleMapAddressChange}

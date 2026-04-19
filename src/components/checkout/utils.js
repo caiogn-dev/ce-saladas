@@ -50,6 +50,28 @@ export const formatMoney = (value) => {
   return numeric.toFixed(2);
 };
 
+export const toFiniteNumber = (value, fallback = 0) => {
+  const numeric = typeof value === 'number' ? value : Number.parseFloat(String(value ?? ''));
+  return Number.isFinite(numeric) ? numeric : fallback;
+};
+
+export const formatDistanceKm = (value) => {
+  const km = toFiniteNumber(value, 0);
+  if (km <= 0) return '';
+  return km < 1 ? `${Math.round(km * 1000)}m` : `${km.toFixed(1)}km`;
+};
+
+export const formatDurationMinutes = (value) => {
+  const minutes = toFiniteNumber(value, 0);
+  if (minutes <= 0) return '';
+  if (minutes < 60) return `${Math.round(minutes)} min`;
+  const hours = Math.floor(minutes / 60);
+  const mins = Math.round(minutes % 60);
+  return `${hours}h ${mins}min`;
+};
+
+export const isZeroAmount = (value) => toFiniteNumber(value, 0) === 0;
+
 export const splitFullName = (value) => {
   const parts = toSafeString(value).trim().split(/\s+/).filter(Boolean);
   const firstName = parts.shift() || '';

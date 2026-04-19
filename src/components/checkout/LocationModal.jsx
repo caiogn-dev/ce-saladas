@@ -3,14 +3,11 @@
  */
 'use client';
 import React, { useState, useEffect, useCallback } from 'react';
-import dynamic from 'next/dynamic';
 import { Clock3, Hand, Hash, Home, MapPin, MapPinned, Navigation, Route, Wallet } from 'lucide-react';
 import styles from '../../styles/CheckoutModal.module.css';
-import { STORE_LOCATION } from './utils';
+import { STORE_LOCATION, formatDistanceKm, formatDurationMinutes, formatMoney, isZeroAmount } from './utils';
 import SavedAddressPicker from './SavedAddressPicker';
-
-// HERE Maps uses browser-only APIs — must be loaded client-side only
-const InteractiveMap = dynamic(() => import('../InteractiveMap'), { ssr: false });
+import SafeInteractiveMap from '../SafeInteractiveMap';
 
 const resolveDetectedNumber = (value) => value?.address?.number || value?.number || '';
 
@@ -154,19 +151,6 @@ const LocationModal = ({
     routeInfo,
   ]);
 
-  const formatDistance = (km) => {
-    if (!km) return '';
-    return km < 1 ? `${Math.round(km * 1000)}m` : `${km.toFixed(1)} km`;
-  };
-
-  const formatDuration = (minutes) => {
-    if (!minutes) return '';
-    if (minutes < 60) return `${Math.round(minutes)} min`;
-    const hours = Math.floor(minutes / 60);
-    const mins = Math.round(minutes % 60);
-    return `${hours}h ${mins}min`;
-  };
-
   const isAddressReady = (
     Boolean(addressStreet.trim())
     && Boolean(addressNeighborhood.trim())
@@ -235,7 +219,7 @@ const LocationModal = ({
             </div>
 
             <div className={styles.mapContainer}>
-              <InteractiveMap
+              <SafeInteractiveMap
                 storeLocation={STORE_LOCATION}
                 customerLocation={position}
                 routePolyline={routeInfo?.polyline}
@@ -274,7 +258,7 @@ const LocationModal = ({
               onClick={handleSkipGps}
               title="Clique para ajustar a localização"
             >
-              <InteractiveMap
+              <SafeInteractiveMap
                 storeLocation={STORE_LOCATION}
                 customerLocation={position}
                 routePolyline={routeInfo?.polyline}
@@ -401,9 +385,9 @@ const LocationModal = ({
                 <span className={styles.statIcon}><Route size={16} /></span>
                 <span>
                   {routeInfo?.distance_km
-                    ? formatDistance(routeInfo.distance_km)
+                    ? formatDistanceKm(routeInfo.distance_km)
                     : detectedDeliveryInfo?.distance_km
-                    ? formatDistance(detectedDeliveryInfo.distance_km)
+                    ? formatDistanceKm(detectedDeliveryInfo.distance_km)
                     : '—'}
                 </span>
               </div>
@@ -412,9 +396,9 @@ const LocationModal = ({
                 <span className={styles.statIcon}><Clock3 size={16} /></span>
                 <span>
                   {routeInfo?.duration_minutes
-                    ? formatDuration(routeInfo.duration_minutes)
+                    ? formatDurationMinutes(routeInfo.duration_minutes)
                     : detectedDeliveryInfo?.estimated_minutes
-                    ? formatDuration(detectedDeliveryInfo.estimated_minutes)
+                    ? formatDurationMinutes(detectedDeliveryInfo.estimated_minutes)
                     : '—'}
                 </span>
               </div>
@@ -422,9 +406,9 @@ const LocationModal = ({
               <div className={`${styles.statCompact} ${styles.statFee}`}>
                 <span className={styles.statIcon}><Wallet size={16} /></span>
                 <span className={styles.feeValue}>
-                  {(detectedDeliveryInfo?.fee ?? delivery.deliveryInfo?.fee) === 0
+                  {isZeroAmount(detectedDeliveryInfo?.fee ?? delivery.deliveryInfo?.fee)
                     ? 'Grátis'
-                    : `R$ ${(detectedDeliveryInfo?.fee ?? delivery.deliveryInfo?.fee ?? 0).toFixed(2)}`}
+                    : `R$ ${formatMoney(detectedDeliveryInfo?.fee ?? delivery.deliveryInfo?.fee)}`}
                 </span>
               </div>
             </div>
@@ -454,4 +438,3 @@ const LocationModal = ({
 };
 
 export default LocationModal;
-
