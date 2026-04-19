@@ -85,17 +85,14 @@ export async function loadRoutesLibrary() {
 
   if (_routesLibraryPromise) return _routesLibraryPromise;
 
-  _routesLibraryPromise = (async () => {
-    if (typeof maps.importLibrary === 'function') {
-      return maps.importLibrary('routes');
-    }
-    return {
-      DirectionsService: maps.DirectionsService,
-      DirectionsRenderer: maps.DirectionsRenderer,
-      TravelMode: maps.TravelMode,
-      DirectionsStatus: maps.DirectionsStatus,
-    };
-  })();
+  // With traditional (callback) loading, use direct property access.
+  // importLibrary('routes') without loading=async may return an empty module.
+  _routesLibraryPromise = Promise.resolve({
+    DirectionsService: maps.DirectionsService,
+    DirectionsRenderer: maps.DirectionsRenderer,
+    TravelMode: maps.TravelMode,
+    DirectionsStatus: maps.DirectionsStatus,
+  });
 
   return _routesLibraryPromise;
 }
