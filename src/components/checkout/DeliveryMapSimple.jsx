@@ -54,6 +54,43 @@ const DeliveryMapSimple = ({
   const searchTimeoutRef = useRef(null);
   const resultsRef = useRef(null);
 
+  const disposeRouteRenderer = useCallback(() => {
+    if (!directionsRendererRef.current) return;
+
+    try {
+      directionsRendererRef.current.setMap(null);
+    } catch (err) {
+      console.warn('Failed to detach directions renderer:', err);
+    } finally {
+      directionsRendererRef.current = null;
+    }
+  }, []);
+
+  const disposeRouteLine = useCallback(() => {
+    if (!routeLineRef.current) return;
+
+    try {
+      routeLineRef.current.setMap(null);
+    } catch (err) {
+      console.warn('Failed to detach route line:', err);
+    } finally {
+      routeLineRef.current = null;
+    }
+  }, []);
+
+  const disposeMarker = useCallback((markerRef) => {
+    if (!markerRef.current) return;
+
+    try {
+      window.google?.maps?.event?.clearInstanceListeners(markerRef.current);
+      markerRef.current.setMap(null);
+    } catch (err) {
+      console.warn('Failed to detach map marker:', err);
+    } finally {
+      markerRef.current = null;
+    }
+  }, []);
+
   // Initialize map
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -97,47 +134,63 @@ const DeliveryMapSimple = ({
     initMap();
     return () => {
       mounted = false;
+      clearTimeout(searchTimeoutRef.current);
       if (resizeHandlerRef.current) {
         window.removeEventListener('resize', resizeHandlerRef.current);
         resizeHandlerRef.current = null;
       }
+      disposeRouteRenderer();
+      disposeRouteLine();
+      disposeMarker(customerMarkerRef);
+      disposeMarker(storeMarkerRef);
+      if (mapRef.current) {
+        try {
+          window.google?.maps?.event?.clearInstanceListeners(mapRef.current);
+        } catch (err) {
+          console.warn('Failed to clear map listeners:', err);
+        } finally {
+          mapRef.current = null;
+        }
+      }
     };
-  }, [storeLocation]);
+  }, [disposeMarker, disposeRouteLine, disposeRouteRenderer, storeLocation]);
 
   // Update customer marker when prop changes
   useEffect(() => {
     if (!isReady || !mapRef.current) return;
 
-    if (customerMarkerRef.current) {
-      customerMarkerRef.current.setMap(null);
-      customerMarkerRef.current = null;
-    }
+    disposeMarker(customerMarkerRef);
 
     if (!customerLocation) return;
 
-    const coords = extractLatLng(customerLocation);
-    if (!coords || !isSafeStoreCoordinateInput(coords, customerLocation)) return;
-    const { lat, lng } = coords;
+    try {
+      const coords = extractLatLng(customerLocation);
+      if (!coords || !isSafeStoreCoordinateInput(coords, customerLocation)) return;
+      const { lat, lng } = coords;
 
-    const marker = createCustomerMarker(mapRef.current, { lat, lng }, enableSelection);
-    customerMarkerRef.current = marker;
+      const marker = createCustomerMarker(mapRef.current, { lat, lng }, enableSelection);
+      customerMarkerRef.current = marker;
 
-    if (enableSelection) {
-      marker.addListener('dragend', (e) => {
-        handleLocationSelected(e.latLng.lat(), e.latLng.lng());
-      });
+      if (enableSelection) {
+        marker.addListener('dragend', (e) => {
+          handleLocationSelected(e.latLng.lat(), e.latLng.lng());
+        });
+      }
+
+      if (storeLocation?.latitude && storeLocation?.longitude) {
+        fitBounds(mapRef.current, [
+          { lat: Number(storeLocation.latitude), lng: Number(storeLocation.longitude) },
+          { lat, lng },
+        ]);
+      } else {
+        mapRef.current.setCenter({ lat, lng });
+        mapRef.current.setZoom(16);
+      }
+    } catch (err) {
+      console.error('Customer marker render error:', err);
+      setError('Erro ao atualizar os marcadores do mapa');
     }
-
-    if (storeLocation?.latitude && storeLocation?.longitude) {
-      fitBounds(mapRef.current, [
-        { lat: Number(storeLocation.latitude), lng: Number(storeLocation.longitude) },
-        { lat, lng },
-      ]);
-    } else {
-      mapRef.current.setCenter({ lat, lng });
-      mapRef.current.setZoom(16);
-    }
-  }, [customerLocation, isReady, enableSelection, storeLocation]);
+  }, [customerLocation, disposeMarker, handleLocationSelected, isReady, enableSelection, storeLocation]);
 
   // Update route polyline
   useEffect(() => {
@@ -146,16 +199,8 @@ const DeliveryMapSimple = ({
     let cancelled = false;
 
     const renderDirections = async () => {
-      if (routeLineRef.current) {
-        routeLineRef.current.setMap(null);
-        routeLineRef.current = null;
-      }
-
-      if (directionsRendererRef.current) {
-        directionsRendererRef.current.setDirections({ routes: [] });
-        directionsRendererRef.current.setMap(null);
-        directionsRendererRef.current = null;
-      }
+      disposeRouteLine();
+      disposeRouteRenderer();
 
       if (!storeLocation || !customerLocation) return;
 
@@ -196,8 +241,10 @@ const DeliveryMapSimple = ({
 
     return () => {
       cancelled = true;
+      disposeRouteRenderer();
+      disposeRouteLine();
     };
-  }, [customerLocation, isReady, storeLocation, routePolyline]);
+  }, [customerLocation, disposeRouteLine, disposeRouteRenderer, isReady, storeLocation, routePolyline]);
 
   // Handle location selection (click / drag / GPS)
   const handleLocationSelected = useCallback(async (lat, lng) => {
