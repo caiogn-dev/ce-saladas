@@ -7,7 +7,7 @@ import { Clock3, Hand, Hash, Home, MapPin, MapPinned, Navigation, Route, Wallet 
 import styles from '../../styles/CheckoutModal.module.css';
 import { STORE_LOCATION, formatDistanceKm, formatDurationMinutes, formatMoney, isZeroAmount } from './utils';
 import SavedAddressPicker from './SavedAddressPicker';
-import SafeInteractiveMap from '../SafeInteractiveMap';
+import DeliveryMapSimple from './DeliveryMapSimple';
 
 const resolveDetectedNumber = (value) => value?.address?.number || value?.number || '';
 
@@ -219,14 +219,15 @@ const LocationModal = ({
             </div>
 
             <div className={styles.mapContainer}>
-              <SafeInteractiveMap
+              <DeliveryMapSimple
                 storeLocation={STORE_LOCATION}
                 customerLocation={position}
                 routePolyline={routeInfo?.polyline}
                 onLocationSelect={handleMapLocationSelect}
+                onAddressFound={() => {}}
                 enableSelection={true}
-                showStoreMarker={true}
-                showCustomerMarker={!!position}
+                showSearch={false}
+                showGpsButton={false}
                 height="350px"
               />
             </div>
@@ -258,13 +259,14 @@ const LocationModal = ({
               onClick={handleSkipGps}
               title="Clique para ajustar a localização"
             >
-              <SafeInteractiveMap
+              <DeliveryMapSimple
                 storeLocation={STORE_LOCATION}
                 customerLocation={position}
                 routePolyline={routeInfo?.polyline}
+                onAddressFound={() => {}}
                 enableSelection={false}
-                showStoreMarker={true}
-                showCustomerMarker={true}
+                showSearch={false}
+                showGpsButton={false}
                 height="200px"
               />
               <div className={styles.mapEditOverlay}>

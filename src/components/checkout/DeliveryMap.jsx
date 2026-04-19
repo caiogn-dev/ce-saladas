@@ -4,7 +4,7 @@
 import React from 'react';
 import styles from '../../styles/Checkout.module.css';
 import { STORE_LOCATION, formatDistanceKm, formatDurationMinutes, formatMoney, isZeroAmount } from './utils';
-import SafeInteractiveMap from '../SafeInteractiveMap';
+import DeliveryMapSimple from './DeliveryMapSimple';
 
 const DeliveryMap = ({
   customerLocation,
@@ -19,16 +19,16 @@ const DeliveryMap = ({
   return (
     <div className={styles.deliveryMapContainer}>
       <div className={styles.mapWrapper} style={{ height }}>
-        <SafeInteractiveMap
+        <DeliveryMapSimple
           storeLocation={STORE_LOCATION}
           customerLocation={customerLocation}
           routePolyline={showRoute ? routeInfo?.polyline : null}
           deliveryZones={deliveryZones}
           onLocationSelect={onLocationSelect}
-          onAddressChange={onAddressChange}
+          onAddressFound={onAddressChange}
           enableSelection={true}
-          showStoreMarker={true}
-          showCustomerMarker={!!customerLocation}
+          showSearch={false}
+          showGpsButton={false}
         />
       </div>
 
