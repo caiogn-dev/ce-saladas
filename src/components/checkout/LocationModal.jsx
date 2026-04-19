@@ -35,6 +35,7 @@ const LocationModal = ({
   const [addressNeighborhood, setAddressNeighborhood] = useState('');
   const [addressNumber, setAddressNumber] = useState('');
   const [addressComplement, setAddressComplement] = useState('');
+  const [mapSelectionReady, setMapSelectionReady] = useState(false);
   // Tracks whether each field has been touched by the user — prevents GPS re-fill after manual edit
   const [touched, setTouched] = useState({ street: false, neighborhood: false, number: false, complement: false });
 
@@ -74,6 +75,7 @@ const LocationModal = ({
     setAddressNeighborhood('');
     setAddressNumber('');
     setAddressComplement('');
+    setMapSelectionReady(false);
     setTouched({ street: false, neighborhood: false, number: false, complement: false });
   }, []);
 
@@ -101,9 +103,26 @@ const LocationModal = ({
 
     if (!lat || !lng) return;
 
-    await updateLocation(lat, lng);
-    setManualMode(false);
+    const addressOverride = {
+      street: location?.street || '',
+      number: location?.number || '',
+      neighborhood: location?.neighborhood || '',
+      city: location?.city || '',
+      state: location?.state || '',
+      zip_code: location?.zip_code || '',
+      display_name: location?.display_name || location?.formatted_address || '',
+      lat,
+      lng,
+    };
+
+    await updateLocation(lat, lng, addressOverride);
+    setMapSelectionReady(true);
   }, [updateLocation]);
+
+  const handleUseSelectedPoint = useCallback(() => {
+    setManualMode(false);
+    setMapSelectionReady(false);
+  }, []);
 
   // Values used for display in the inputs — state is the source of truth after GPS pre-fill
   const resolvedStreet = addressStreet;
@@ -236,6 +255,25 @@ const LocationModal = ({
               <div className={styles.loadingOverlay}>
                 <div className={styles.spinner} />
                 <p>Buscando endereço...</p>
+              </div>
+            )}
+
+            {detectedAddress && (
+              <div className={styles.addressCardInline}>
+                <div className={styles.addressMainInfo}>
+                  <div className={styles.addressIcon}><MapPin size={18} /></div>
+                  <div className={styles.addressText}>
+                    <p className={styles.streetName}>
+                      {detectedAddress.street || detectedAddress.display_name || 'Ponto selecionado'}
+                      {detectedAddress.number && `, ${detectedAddress.number}`}
+                    </p>
+                    <p className={styles.addressSecondary}>
+                      {detectedAddress.neighborhood && `${detectedAddress.neighborhood} • `}
+                      {detectedAddress.city}
+                      {detectedAddress.state && ` - ${detectedAddress.state}`}
+                    </p>
+                  </div>
+                </div>
               </div>
             )}
           </div>
@@ -421,6 +459,19 @@ const LocationModal = ({
         </div>{/* end scrollBody */}
 
         {/* Sticky footer — confirm button always accessible, above keyboard */}
+        {currentStep === 'map' && detectedAddress && (
+          <div className={styles.stickyFooter}>
+            <button
+              onClick={handleUseSelectedPoint}
+              className={styles.confirmBtnFull}
+              disabled={!mapSelectionReady}
+            >
+              <span className={styles.confirmBtnIcon}><Navigation size={16} /></span>
+              Usar este ponto
+            </button>
+          </div>
+        )}
+
         {currentStep === 'confirm' && detectedAddress && (
           <div className={styles.stickyFooter}>
             <button

@@ -15,6 +15,7 @@ import {
   MAP_COLORS,
   createDirectionsRenderer,
   requestDirections,
+  reverseGeocodeNative,
 } from '../../services/googleMapService';
 import * as storeApi from '../../services/storeApi';
 
@@ -211,7 +212,9 @@ const DeliveryMapSimple = ({
 
       let address = {};
       try {
-        const data = await storeApi.reverseGeocode(latitude, longitude);
+        const nativeData = await reverseGeocodeNative(latitude, longitude);
+        const backendData = await storeApi.reverseGeocode(latitude, longitude);
+        const data = nativeData || backendData;
         if (data) {
           address = {
             street: data.street || '',
@@ -222,6 +225,7 @@ const DeliveryMapSimple = ({
             zip_code: data.zip_code || '',
             formatted_address: data.formatted_address || data.display_name || '',
             display_name: data.formatted_address || data.display_name || '',
+            address_confidence: data.address_confidence || '',
           };
         }
       } catch (e) {
@@ -253,6 +257,9 @@ const DeliveryMapSimple = ({
           enableHighAccuracy: true, timeout: 20000, maximumAge: 0,
         })
       );
+      if (position.coords.accuracy > 60) {
+        setError(`GPS com precisão baixa (${Math.round(position.coords.accuracy)}m). Ajuste o pino no mapa se necessário.`);
+      }
       await handleLocationSelected(position.coords.latitude, position.coords.longitude);
     } catch (err) {
       const messages = {

@@ -221,3 +221,53 @@ export async function requestDirections(origin, destination, options = {}) {
     language: options.language || 'pt-BR',
   });
 }
+
+function parseAddressComponents(result) {
+  const components = {};
+  (result?.address_components || []).forEach((component) => {
+    const types = new Set(component.types || []);
+    const longName = component.long_name || '';
+    const shortName = component.short_name || '';
+
+    if (types.has('route')) components.street = longName;
+    if (types.has('street_number')) components.number = longName;
+    if (types.has('neighborhood')) components.neighborhood = longName;
+    if ((types.has('sublocality') || types.has('sublocality_level_1')) && !components.neighborhood) {
+      components.neighborhood = longName;
+    }
+    if (types.has('locality')) components.city = longName;
+    if (types.has('administrative_area_level_1')) {
+      components.state = longName;
+      components.state_code = shortName;
+    }
+    if (types.has('postal_code')) components.zip_code = longName;
+    if (types.has('country')) components.country = longName;
+  });
+
+  return components;
+}
+
+export async function reverseGeocodeNative(lat, lng) {
+  const maps = await loadGoogleMaps();
+  const geocoder = new maps.Geocoder();
+  const response = await geocoder.geocode({
+    location: { lat, lng },
+    language: 'pt-BR',
+    region: 'BR',
+  });
+
+  const result = response?.results?.[0];
+  if (!result) return null;
+
+  const components = parseAddressComponents(result);
+  return {
+    lat,
+    lng,
+    latitude: lat,
+    longitude: lng,
+    formatted_address: result.formatted_address || '',
+    display_name: result.formatted_address || '',
+    address_confidence: result.geometry?.location_type || '',
+    ...components,
+  };
+}

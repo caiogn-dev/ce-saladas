@@ -205,12 +205,12 @@ export const useGeolocation = () => {
   }, [reverseGeocode, calculateRouteAndFee]);
 
   // Update location manually (from map click)
-  const updateLocation = useCallback(async (lat, lng) => {
+  const updateLocation = useCallback(async (lat, lng, addressOverride = null) => {
     setPosition({ lat, lng });
     setLoading(true);
 
     const address = await reverseGeocode(lat, lng);
-    const fallbackAddress = address || {
+    const fallbackAddress = addressOverride || address || {
       street: '',
       number: '',
       neighborhood: '',
