@@ -153,6 +153,62 @@ const authApi = axios.create({
   withCredentials: true,
 });
 
+const toFiniteNumber = (value) => {
+  const numeric = typeof value === 'number' ? value : Number.parseFloat(String(value ?? ''));
+  return Number.isFinite(numeric) ? numeric : null;
+};
+
+const normalizeGeoResponse = (data) => {
+  if (!data || typeof data !== 'object') {
+    return null;
+  }
+
+  const latitude = toFiniteNumber(data.latitude ?? data.lat);
+  const longitude = toFiniteNumber(data.longitude ?? data.lng);
+  const displayName = data.display_name || data.formatted_address || '';
+
+  return {
+    ...data,
+    lat: latitude ?? data.lat ?? null,
+    lng: longitude ?? data.lng ?? null,
+    latitude: latitude ?? data.latitude ?? null,
+    longitude: longitude ?? data.longitude ?? null,
+    display_name: displayName,
+    formatted_address: data.formatted_address || displayName,
+    street: data.street || data.address?.street || data.address_components?.street || '',
+    number: data.number || data.house_number || data.address?.house_number || '',
+    neighborhood: data.neighborhood || data.address?.neighborhood || data.address_components?.neighborhood || '',
+    city: data.city || data.address?.city || data.address_components?.city || '',
+    state: data.state_code || data.state || data.address?.stateCode || data.address?.state || data.address_components?.state_code || data.address_components?.state || '',
+    zip_code: data.zip_code || data.address?.zip_code || data.address?.postalCode || data.address_components?.zip_code || '',
+  };
+};
+
+const normalizeSuggestion = (suggestion) => {
+  if (!suggestion || typeof suggestion !== 'object') {
+    return null;
+  }
+
+  const latitude = toFiniteNumber(suggestion.latitude ?? suggestion.lat);
+  const longitude = toFiniteNumber(suggestion.longitude ?? suggestion.lng);
+  const displayName = suggestion.display_name
+    || suggestion.title
+    || [suggestion.main_text, suggestion.secondary_text || suggestion.subtitle].filter(Boolean).join(', ');
+
+  return {
+    ...suggestion,
+    display_name: displayName,
+    title: suggestion.title || displayName,
+    subtitle: suggestion.subtitle || suggestion.secondary_text || '',
+    main_text: suggestion.main_text || suggestion.title || displayName,
+    secondary_text: suggestion.secondary_text || suggestion.subtitle || '',
+    lat: latitude,
+    lng: longitude,
+    latitude,
+    longitude,
+  };
+};
+
 // Use central tokenStorage to read access token (keeps names consistent)
 // CRITICAL: Always read fresh from storage to capture tokens set by WhatsApp login
 export const getAuthToken = () => {
@@ -509,7 +565,12 @@ export const validateCoupon = async (code, subtotal) => {
  */
 export const calculateRoute = async (destLat, destLng) => {
   const response = await storeApi.get('/route/', { params: { dest_lat: destLat, dest_lng: destLng } });
-  return response.data;
+  const data = response.data || {};
+  return {
+    ...data,
+    distance_km: toFiniteNumber(data.distance_km) ?? 0,
+    duration_minutes: toFiniteNumber(data.duration_minutes) ?? 0,
+  };
 };
 
 /**
@@ -517,7 +578,15 @@ export const calculateRoute = async (destLat, destLng) => {
  */
 export const validateDeliveryAddress = async (lat, lng) => {
   const response = await storeApi.post('/validate-delivery/', { lat, lng });
-  return response.data;
+  const data = response.data || {};
+  return {
+    ...data,
+    distance_km: toFiniteNumber(data.distance_km) ?? 0,
+    duration_minutes: toFiniteNumber(data.duration_minutes) ?? 0,
+    estimated_minutes: toFiniteNumber(data.estimated_minutes ?? data.duration_minutes) ?? 0,
+    delivery_fee: toFiniteNumber(data.delivery_fee),
+    fee: toFiniteNumber(data.fee),
+  };
 };
 
 /**
@@ -525,7 +594,15 @@ export const validateDeliveryAddress = async (lat, lng) => {
  */
 export const validateDeliveryByAddress = async (address) => {
   const response = await storeApi.post('/validate-delivery/', { address });
-  return response.data;
+  const data = response.data || {};
+  return {
+    ...data,
+    distance_km: toFiniteNumber(data.distance_km) ?? 0,
+    duration_minutes: toFiniteNumber(data.duration_minutes) ?? 0,
+    estimated_minutes: toFiniteNumber(data.estimated_minutes ?? data.duration_minutes) ?? 0,
+    delivery_fee: toFiniteNumber(data.delivery_fee),
+    fee: toFiniteNumber(data.fee),
+  };
 };
 
 /**
@@ -545,7 +622,7 @@ export const getDeliveryZones = async (timeRanges = null) => {
  */
 export const autosuggestAddress = async (query, limit = 5) => {
   const response = await storeApi.get(`/autosuggest/?q=${encodeURIComponent(query)}&limit=${limit}`);
-  return response.data.suggestions;
+  return (response.data.suggestions || []).map(normalizeSuggestion).filter(Boolean);
 };
 
 // =============================================================================
@@ -592,16 +669,30 @@ export const toggleWishlist = async (productId) => {
  * Geocode address
  */
 export const geocodeAddress = async (address) => {
-  const response = await axios.get(`${STORES_API_URL}/maps/geocode/?address=${encodeURIComponent(address)}`);
-  return response.data;
+  try {
+    const response = await axios.get(`${STORES_API_URL}/maps/geocode/?address=${encodeURIComponent(address)}`);
+    return normalizeGeoResponse(response.data);
+  } catch (error) {
+    if (error?.response?.status === 404) {
+      return null;
+    }
+    throw error;
+  }
 };
 
 /**
  * Reverse geocode coordinates
  */
 export const reverseGeocode = async (lat, lng) => {
-  const response = await axios.get(`${STORES_API_URL}/maps/reverse-geocode/?lat=${lat}&lng=${lng}`);
-  return response.data;
+  try {
+    const response = await axios.get(`${STORES_API_URL}/maps/reverse-geocode/?lat=${lat}&lng=${lng}`);
+    return normalizeGeoResponse(response.data);
+  } catch (error) {
+    if (error?.response?.status === 404) {
+      return null;
+    }
+    throw error;
+  }
 };
 
 // =============================================================================

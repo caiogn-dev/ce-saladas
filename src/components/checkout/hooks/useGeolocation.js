@@ -11,6 +11,11 @@ const requestCurrentPosition = (options) => new Promise((resolve, reject) => {
   navigator.geolocation.getCurrentPosition(resolve, reject, options);
 });
 
+const toFiniteNumber = (value, fallback = 0) => {
+  const numeric = typeof value === 'number' ? value : Number.parseFloat(String(value ?? ''));
+  return Number.isFinite(numeric) ? numeric : fallback;
+};
+
 export const useGeolocation = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -80,11 +85,14 @@ export const useGeolocation = () => {
       // Use polyline from deliveryData (validate-delivery returns it) or routeData
       const polyline = deliveryData?.polyline || routeData?.polyline;
       console.log('🗺️ Polyline available:', !!polyline, polyline?.length);
+
+      const distanceKm = toFiniteNumber(deliveryData?.distance_km ?? routeData?.distance_km, 0);
+      const durationMinutes = toFiniteNumber(deliveryData?.duration_minutes ?? routeData?.duration_minutes, 0);
       
       // Set route info with polyline
       const routeInfoData = {
-        distance_km: deliveryData?.distance_km || routeData?.distance_km,
-        duration_minutes: deliveryData?.duration_minutes || routeData?.duration_minutes,
+        distance_km: distanceKm,
+        duration_minutes: durationMinutes,
         polyline: polyline,
         summary: routeData?.summary
       };
@@ -97,9 +105,9 @@ export const useGeolocation = () => {
           fee: fee,
           zone_name: deliveryData.delivery_zone || deliveryData.zone_name || 'Área de entrega',
           estimated_days: deliveryData.estimated_days || 0,
-          distance_km: deliveryData.distance_km,
-          duration_minutes: deliveryData.duration_minutes,
-          estimated_minutes: deliveryData.estimated_minutes || deliveryData.duration_minutes,
+          distance_km: distanceKm,
+          duration_minutes: durationMinutes,
+          estimated_minutes: toFiniteNumber(deliveryData.estimated_minutes ?? deliveryData.duration_minutes, durationMinutes),
           is_valid: deliveryData.is_valid !== false,
           polyline: polyline
         };

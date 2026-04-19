@@ -5,6 +5,11 @@ import { useState, useCallback, useEffect } from 'react';
 import * as storeApi from '../../../services/storeApi';
 import { onlyDigits, STORE_ADDRESS } from '../utils';
 
+const toFiniteNumber = (value, fallback = 0) => {
+  const numeric = typeof value === 'number' ? value : Number.parseFloat(String(value ?? ''));
+  return Number.isFinite(numeric) ? numeric : fallback;
+};
+
 export const useDelivery = () => {
   const [shippingMethod, setShippingMethod] = useState('delivery');
   const [shippingCost, setShippingCost] = useState(null);
@@ -66,11 +71,11 @@ export const useDelivery = () => {
       const data = await storeApi.calculateDeliveryFee(null, cleanCEP);
       if (data && data.fee !== undefined) {
         const info = {
-          fee: Number(data.fee) || 0,
+          fee: toFiniteNumber(data.fee, 0),
           estimated_days: Number(data.estimated_days) || 0,
           zone_name: data.zone_name || 'Área de entrega',
-          distance_km: data.distance_km,
-          estimated_minutes: data.estimated_minutes
+          distance_km: toFiniteNumber(data.distance_km, 0),
+          estimated_minutes: toFiniteNumber(data.estimated_minutes, 0)
         };
         setDeliveryInfo(info);
         setShippingCost(info.fee);
@@ -93,14 +98,16 @@ export const useDelivery = () => {
       console.log('📦 Delivery validation response:', data);
       if (data) {
         // API returns delivery_fee, not fee
-        const fee = Number(data.delivery_fee ?? data.fee ?? 0);
+        const fee = toFiniteNumber(data.delivery_fee ?? data.fee, 0);
+        const distanceKm = toFiniteNumber(data.distance_km, 0);
+        const durationMinutes = toFiniteNumber(data.duration_minutes, 0);
         const info = {
           fee: fee,
           zone_name: data.delivery_zone || data.zone_name || 'Área de entrega',
           estimated_days: data.estimated_days || 0,
-          distance_km: data.distance_km,
-          duration_minutes: data.duration_minutes,
-          estimated_minutes: data.estimated_minutes || data.duration_minutes,
+          distance_km: distanceKm,
+          duration_minutes: durationMinutes,
+          estimated_minutes: toFiniteNumber(data.estimated_minutes ?? data.duration_minutes, durationMinutes),
           is_valid: data.is_valid !== false,
           polyline: data.polyline
         };

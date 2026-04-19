@@ -118,7 +118,7 @@ export function createCircle(map, center, radiusM, options = {}) {
     strokeColor: options.strokeColor || MAP_COLORS.primary,
     strokeOpacity: options.strokeOpacity !== undefined ? options.strokeOpacity : 0.6,
     strokeWeight: options.strokeWeight || 2,
-    fillColor: options.fillColor || PASTITA_COLORS.marsala,
+    fillColor: options.fillColor || MAP_COLORS.primary,
     fillOpacity: options.fillOpacity !== undefined ? options.fillOpacity : 0.1,
   });
 }
