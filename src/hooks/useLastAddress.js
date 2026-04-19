@@ -5,6 +5,8 @@
  * (overwritten on each new confirmed address).
  */
 
+import { isSafeStoreCoordinateInput } from '../utils/storeRegion';
+
 const KEY = 'ce_last_address';
 
 function read() {
@@ -13,7 +15,15 @@ function read() {
     const raw = localStorage.getItem(KEY);
     if (!raw) return null;
     const parsed = JSON.parse(raw);
-    return parsed?.v === 1 ? parsed : null;
+    if (parsed?.v !== 1) return null;
+
+    const address = parsed?.address;
+    if (address?.lat != null && address?.lng != null && !isSafeStoreCoordinateInput(address, address)) {
+      localStorage.removeItem(KEY);
+      return null;
+    }
+
+    return parsed;
   } catch {
     return null;
   }

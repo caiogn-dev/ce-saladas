@@ -97,6 +97,22 @@ export const useDelivery = () => {
       const data = await storeApi.validateDeliveryAddress(lat, lng);
       console.log('📦 Delivery validation response:', data);
       if (data) {
+        if (data.is_valid === false) {
+          setDeliveryInfo({
+            fee: 0,
+            zone_name: data.delivery_zone || data.zone_name || 'Fora da área de entrega',
+            estimated_days: data.estimated_days || 0,
+            distance_km: toFiniteNumber(data.distance_km, 0),
+            duration_minutes: toFiniteNumber(data.duration_minutes, 0),
+            estimated_minutes: toFiniteNumber(data.estimated_minutes ?? data.duration_minutes, 0),
+            is_valid: false,
+            polyline: '',
+            message: data.message || 'Endereço fora da área de entrega.',
+          });
+          setShippingCost(null);
+          setLoadingDelivery(false);
+          return null;
+        }
         // API returns delivery_fee, not fee
         const fee = toFiniteNumber(data.delivery_fee ?? data.fee, 0);
         const distanceKm = toFiniteNumber(data.distance_km, 0);

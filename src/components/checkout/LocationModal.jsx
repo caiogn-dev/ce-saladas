@@ -115,8 +115,8 @@ const LocationModal = ({
       lng,
     };
 
-    await updateLocation(lat, lng, addressOverride);
-    setMapSelectionReady(true);
+    const updatedAddress = await updateLocation(lat, lng, addressOverride);
+    setMapSelectionReady(Boolean(updatedAddress));
   }, [updateLocation]);
 
   const handleUseSelectedPoint = useCallback(() => {
@@ -175,6 +175,7 @@ const LocationModal = ({
     && Boolean(addressNeighborhood.trim())
     && Boolean(addressNumber.trim() || !requiresNumber)
   );
+  const hasInvalidDeliverySelection = detectedDeliveryInfo?.is_valid === false;
 
   if (!isOpen) return null;
 
@@ -274,6 +275,12 @@ const LocationModal = ({
                     </p>
                   </div>
                 </div>
+              </div>
+            )}
+
+            {hasInvalidDeliverySelection && (
+              <div className={styles.errorBox}>
+                <p>{detectedDeliveryInfo?.message || error || 'Esse ponto está fora da área de entrega.'}</p>
               </div>
             )}
           </div>
@@ -420,11 +427,13 @@ const LocationModal = ({
               </div>
             </div>
 
-              <div className={styles.deliveryStatsCompact}>
+            <div className={styles.deliveryStatsCompact}>
               <div className={styles.statCompact}>
                 <span className={styles.statIcon}><Route size={16} /></span>
                 <span>
-                  {routeInfo?.distance_km
+                  {hasInvalidDeliverySelection
+                    ? 'Fora da área'
+                    : routeInfo?.distance_km
                     ? formatDistanceKm(routeInfo.distance_km)
                     : detectedDeliveryInfo?.distance_km
                     ? formatDistanceKm(detectedDeliveryInfo.distance_km)
@@ -435,7 +444,9 @@ const LocationModal = ({
               <div className={styles.statCompact}>
                 <span className={styles.statIcon}><Clock3 size={16} /></span>
                 <span>
-                  {routeInfo?.duration_minutes
+                  {hasInvalidDeliverySelection
+                    ? '—'
+                    : routeInfo?.duration_minutes
                     ? formatDurationMinutes(routeInfo.duration_minutes)
                     : detectedDeliveryInfo?.estimated_minutes
                     ? formatDurationMinutes(detectedDeliveryInfo.estimated_minutes)
@@ -446,7 +457,9 @@ const LocationModal = ({
               <div className={`${styles.statCompact} ${styles.statFee}`}>
                 <span className={styles.statIcon}><Wallet size={16} /></span>
                 <span className={styles.feeValue}>
-                  {isZeroAmount(detectedDeliveryInfo?.fee ?? delivery.deliveryInfo?.fee)
+                  {hasInvalidDeliverySelection
+                    ? 'Indisponível'
+                    : isZeroAmount(detectedDeliveryInfo?.fee ?? delivery.deliveryInfo?.fee)
                     ? 'Grátis'
                     : `R$ ${formatMoney(detectedDeliveryInfo?.fee ?? delivery.deliveryInfo?.fee)}`}
                 </span>
@@ -464,7 +477,7 @@ const LocationModal = ({
             <button
               onClick={handleUseSelectedPoint}
               className={styles.confirmBtnFull}
-              disabled={!mapSelectionReady}
+              disabled={!mapSelectionReady || hasInvalidDeliverySelection}
             >
               <span className={styles.confirmBtnIcon}><Navigation size={16} /></span>
               Usar este ponto
@@ -477,7 +490,7 @@ const LocationModal = ({
             <button
               onClick={handleConfirmLocation}
               className={styles.confirmBtnFull}
-              disabled={!isAddressReady}
+              disabled={!isAddressReady || hasInvalidDeliverySelection}
             >
               <span className={styles.confirmBtnIcon}><Navigation size={16} /></span>
               Confirmar endereço

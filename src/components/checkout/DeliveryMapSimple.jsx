@@ -18,6 +18,12 @@ import {
   reverseGeocodeNative,
 } from '../../services/googleMapService';
 import * as storeApi from '../../services/storeApi';
+import {
+  extractLatLng,
+  getStoreRegionErrorMessage,
+  isLocalAddressCandidate,
+  isSafeStoreCoordinateInput,
+} from '../../utils/storeRegion';
 
 const DeliveryMapSimple = ({
   storeLocation,
@@ -109,9 +115,9 @@ const DeliveryMapSimple = ({
 
     if (!customerLocation) return;
 
-    const lat = Number(customerLocation.lat || customerLocation.latitude);
-    const lng = Number(customerLocation.lng || customerLocation.longitude);
-    if (isNaN(lat) || isNaN(lng)) return;
+    const coords = extractLatLng(customerLocation);
+    if (!coords || !isSafeStoreCoordinateInput(coords, customerLocation)) return;
+    const { lat, lng } = coords;
 
     const marker = createCustomerMarker(mapRef.current, { lat, lng }, enableSelection);
     customerMarkerRef.current = marker;
@@ -162,7 +168,10 @@ const DeliveryMapSimple = ({
         lng: Number(customerLocation.lng || customerLocation.longitude),
       };
 
-      if ([origin.lat, origin.lng, destination.lat, destination.lng].some(Number.isNaN)) {
+      if (
+        [origin.lat, origin.lng, destination.lat, destination.lng].some(Number.isNaN)
+        || !isSafeStoreCoordinateInput(destination, customerLocation)
+      ) {
         return;
       }
 
@@ -196,6 +205,12 @@ const DeliveryMapSimple = ({
     const longitude = Number(lng);
     if (isNaN(latitude) || isNaN(longitude)) return;
 
+    if (!isSafeStoreCoordinateInput({ lat: latitude, lng: longitude })) {
+      setError(getStoreRegionErrorMessage());
+      setShowResults(false);
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
 
@@ -212,9 +227,9 @@ const DeliveryMapSimple = ({
 
       let address = {};
       try {
-        const nativeData = await reverseGeocodeNative(latitude, longitude);
         const backendData = await storeApi.reverseGeocode(latitude, longitude);
-        const data = nativeData || backendData;
+        const nativeData = backendData ? null : await reverseGeocodeNative(latitude, longitude);
+        const data = [backendData, nativeData].find((candidate) => candidate && isLocalAddressCandidate(candidate));
         if (data) {
           address = {
             street: data.street || '',
@@ -227,6 +242,8 @@ const DeliveryMapSimple = ({
             display_name: data.formatted_address || data.display_name || '',
             address_confidence: data.address_confidence || '',
           };
+        } else {
+          setError(getStoreRegionErrorMessage());
         }
       } catch (e) {
         console.warn('Reverse geocode failed:', e);
@@ -259,6 +276,11 @@ const DeliveryMapSimple = ({
       );
       if (position.coords.accuracy > 60) {
         setError(`GPS com precisão baixa (${Math.round(position.coords.accuracy)}m). Ajuste o pino no mapa se necessário.`);
+      }
+      const gpsCoords = { lat: position.coords.latitude, lng: position.coords.longitude };
+      if (!isSafeStoreCoordinateInput(gpsCoords)) {
+        setError(getStoreRegionErrorMessage());
+        return;
       }
       await handleLocationSelected(position.coords.latitude, position.coords.longitude);
     } catch (err) {
@@ -305,7 +327,7 @@ const DeliveryMapSimple = ({
         .filter(Boolean).join(', ');
 
       const geoData = await storeApi.geocodeAddress(addressStr);
-      if (geoData?.latitude) {
+      if (geoData?.latitude && isSafeStoreCoordinateInput(geoData, geoData)) {
         setSearchResults([{
           display_name: `${viaCepData.logradouro || ''}, ${viaCepData.bairro || ''}, ${viaCepData.localidade} - ${viaCepData.uf}`,
           latitude: geoData.latitude,
@@ -313,7 +335,7 @@ const DeliveryMapSimple = ({
         }]);
         setShowResults(true);
       } else {
-        setError('Endereço não encontrado para este CEP');
+        setError(getStoreRegionErrorMessage());
       }
     } catch {
       setError('Erro ao buscar CEP');
@@ -325,16 +347,43 @@ const DeliveryMapSimple = ({
   const searchByAddress = async (query) => {
     try {
       const results = await storeApi.autosuggestAddress(query);
-      if (Array.isArray(results) && results.length > 0) {
-        setSearchResults(results.map(r => ({
+      const filteredResults = Array.isArray(results)
+        ? results
+            .map(r => ({
+              display_name: r.display_name || r.title || '',
+              latitude: r.latitude || r.lat,
+              longitude: r.longitude || r.lng,
+              city: r.city || '',
+              state: r.state || '',
+              country: r.country || '',
+            }))
+            .filter((result) => result.latitude && result.longitude && isSafeStoreCoordinateInput(result, result))
+        : [];
+      if (filteredResults.length > 0) {
+        setSearchResults(filteredResults.map(r => ({
           display_name: r.display_name || r.title || '',
           latitude: r.latitude || r.lat,
           longitude: r.longitude || r.lng,
         })));
         setShowResults(true);
+        setError(null);
       } else {
-        setSearchResults([]);
-        setShowResults(false);
+        const geocoded = await storeApi.geocodeAddress(query);
+        if (geocoded?.latitude && isSafeStoreCoordinateInput(geocoded, geocoded)) {
+          setSearchResults([{
+            display_name: geocoded.display_name || geocoded.formatted_address || query,
+            latitude: geocoded.latitude,
+            longitude: geocoded.longitude,
+          }]);
+          setShowResults(true);
+          setError(null);
+        } else {
+          setSearchResults([]);
+          setShowResults(false);
+          if (query.trim().length >= 3) {
+            setError('Nenhum resultado válido em Palmas/TO foi encontrado para esta busca.');
+          }
+        }
       }
     } catch {
       setSearchResults([]);
@@ -346,8 +395,10 @@ const DeliveryMapSimple = ({
     setSearchQuery(result.display_name);
     setShowResults(false);
     setSearchResults([]);
-    if (result.latitude && result.longitude) {
+    if (result.latitude && result.longitude && isSafeStoreCoordinateInput(result, result)) {
       await handleLocationSelected(Number(result.latitude), Number(result.longitude));
+    } else {
+      setError(getStoreRegionErrorMessage());
     }
   };
 

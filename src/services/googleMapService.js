@@ -4,6 +4,8 @@
  * Only map rendering uses the Google Maps JS API loaded here.
  */
 
+import { STORE_MAP_BOUNDS, isSafeStoreCoordinateInput, isLocalAddressCandidate } from '../utils/storeRegion';
+
 const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY || '';
 export const DEFAULT_CENTER = { lat: -10.1853248, lng: -48.3037058 };
 export const DEFAULT_ZOOM = 14;
@@ -121,6 +123,13 @@ export function createMap(container, options = {}) {
   return new maps.Map(container, {
     center: options.center || DEFAULT_CENTER,
     zoom: options.zoom || DEFAULT_ZOOM,
+    minZoom: options.minZoom || 12,
+    maxZoom: options.maxZoom || 19,
+    gestureHandling: options.gestureHandling || 'greedy',
+    restriction: options.restriction || {
+      latLngBounds: STORE_MAP_BOUNDS,
+      strictBounds: true,
+    },
     streetViewControl: false,
     fullscreenControl: false,
     mapTypeControl: false,
@@ -248,6 +257,10 @@ function parseAddressComponents(result) {
 }
 
 export async function reverseGeocodeNative(lat, lng) {
+  if (!isSafeStoreCoordinateInput({ lat, lng })) {
+    return null;
+  }
+
   const maps = await loadGoogleMaps();
   const geocoder = new maps.Geocoder();
   const response = await geocoder.geocode({
@@ -260,7 +273,7 @@ export async function reverseGeocodeNative(lat, lng) {
   if (!result) return null;
 
   const components = parseAddressComponents(result);
-  return {
+  const payload = {
     lat,
     lng,
     latitude: lat,
@@ -270,4 +283,6 @@ export async function reverseGeocodeNative(lat, lng) {
     address_confidence: result.geometry?.location_type || '',
     ...components,
   };
+
+  return isLocalAddressCandidate(payload) ? payload : null;
 }

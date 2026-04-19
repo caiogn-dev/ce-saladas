@@ -4,8 +4,13 @@
  */
 import { useState, useCallback } from 'react';
 import * as storeApi from '../../../services/storeApi';
-import { getStateCode, STORE_ADDRESS, STORE_LOCATION } from '../utils';
+import { STORE_ADDRESS, STORE_LOCATION } from '../utils';
 import { getCachedRoute, cacheRoute } from '../../../utils/routeCache';
+import {
+  getStoreRegionErrorMessage,
+  isLocalAddressCandidate,
+  isSafeStoreCoordinateInput,
+} from '../../../utils/storeRegion';
 
 const requestCurrentPosition = (options) => new Promise((resolve, reject) => {
   navigator.geolocation.getCurrentPosition(resolve, reject, options);
@@ -52,6 +57,13 @@ export const useGeolocation = () => {
   // Calculate route and delivery fee with caching
   const calculateRouteAndFee = useCallback(async (lat, lng) => {
     try {
+      if (!isSafeStoreCoordinateInput({ lat, lng })) {
+        setRouteInfo(null);
+        setDeliveryInfo(null);
+        setError(getStoreRegionErrorMessage());
+        return null;
+      }
+
       const storeLat = STORE_LOCATION?.latitude;
       const storeLng = STORE_LOCATION?.longitude;
       
@@ -72,7 +84,7 @@ export const useGeolocation = () => {
         console.log('🗺️ Fetching route from API...');
         routeData = await storeApi.calculateRoute(lat, lng);
         console.log('🗺️ Route API response:', routeData);
-        if (routeData && storeLat && storeLng) {
+        if (routeData && !routeData.fallback && storeLat && storeLng) {
           cacheRoute(storeLat, storeLng, lat, lng, routeData);
         }
       }
@@ -81,6 +93,7 @@ export const useGeolocation = () => {
       console.log('🗺️ Fetching delivery validation...');
       const deliveryData = await storeApi.validateDeliveryAddress(lat, lng);
       console.log('📦 Delivery validation response:', deliveryData);
+      setError(null);
       
       // Use polyline from deliveryData (validate-delivery returns it) or routeData
       const polyline = deliveryData?.polyline || routeData?.polyline;
@@ -88,14 +101,34 @@ export const useGeolocation = () => {
 
       const distanceKm = toFiniteNumber(deliveryData?.distance_km ?? routeData?.distance_km, 0);
       const durationMinutes = toFiniteNumber(deliveryData?.duration_minutes ?? routeData?.duration_minutes, 0);
+
+      if (deliveryData?.is_valid === false) {
+        setRouteInfo(null);
+        setDeliveryInfo({
+          fee: 0,
+          zone_name: deliveryData.delivery_zone || deliveryData.zone_name || 'Fora da área de entrega',
+          estimated_days: deliveryData.estimated_days || 0,
+          distance_km: distanceKm,
+          duration_minutes: durationMinutes,
+          estimated_minutes: toFiniteNumber(deliveryData.estimated_minutes ?? deliveryData.duration_minutes, durationMinutes),
+          is_valid: false,
+          polyline: '',
+          message: deliveryData.message || getStoreRegionErrorMessage(),
+        });
+        setError(deliveryData.message || getStoreRegionErrorMessage());
+        return { routeData, deliveryData };
+      }
       
       // Set route info with polyline
-      const routeInfoData = {
-        distance_km: distanceKm,
-        duration_minutes: durationMinutes,
-        polyline: polyline,
-        summary: routeData?.summary
-      };
+      const routeInfoData = (!routeData?.fallback || polyline)
+        ? {
+            distance_km: distanceKm,
+            duration_minutes: durationMinutes,
+            polyline: polyline,
+            summary: routeData?.summary,
+            fallback: Boolean(routeData?.fallback),
+          }
+        : null;
       console.log('🗺️ Setting routeInfo:', routeInfoData);
       setRouteInfo(routeInfoData);
       
@@ -171,6 +204,15 @@ export const useGeolocation = () => {
 
       setPosition({ lat: latitude, lng: longitude });
 
+      if (!isSafeStoreCoordinateInput({ lat: latitude, lng: longitude })) {
+        setDetectedAddress(null);
+        setRouteInfo(null);
+        setDeliveryInfo(null);
+        setError(getStoreRegionErrorMessage());
+        setLoading(false);
+        return null;
+      }
+
       const address = await reverseGeocode(latitude, longitude);
       const fallbackAddress = address || {
         street: '',
@@ -208,6 +250,16 @@ export const useGeolocation = () => {
   const updateLocation = useCallback(async (lat, lng, addressOverride = null) => {
     setPosition({ lat, lng });
     setLoading(true);
+    setError(null);
+
+    if (!isSafeStoreCoordinateInput({ lat, lng }, addressOverride)) {
+      setDetectedAddress(null);
+      setRouteInfo(null);
+      setDeliveryInfo(null);
+      setError(getStoreRegionErrorMessage());
+      setLoading(false);
+      return null;
+    }
 
     const address = await reverseGeocode(lat, lng);
     const fallbackAddress = addressOverride || address || {
@@ -220,6 +272,14 @@ export const useGeolocation = () => {
       lat,
       lng,
     };
+    if (!isLocalAddressCandidate(fallbackAddress)) {
+      setDetectedAddress(null);
+      setRouteInfo(null);
+      setDeliveryInfo(null);
+      setError(getStoreRegionErrorMessage());
+      setLoading(false);
+      return null;
+    }
     setDetectedAddress(fallbackAddress);
 
     await calculateRouteAndFee(lat, lng);
