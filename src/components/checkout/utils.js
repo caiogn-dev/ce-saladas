@@ -28,8 +28,16 @@ export const formatCPF = (value) => {
   return `${numbers.slice(0, 3)}.${numbers.slice(3, 6)}.${numbers.slice(6, 9)}-${numbers.slice(9)}`;
 };
 
+export const stripCountryCode = (value) => {
+  const digits = toSafeString(value).replace(/\D/g, '');
+  // Strip Brazil country code (+55) — keeps only DDD + number (11 digits)
+  if (digits.length === 13 && digits.startsWith('55')) return digits.slice(2);
+  if (digits.length === 12 && digits.startsWith('55')) return digits.slice(2);
+  return digits;
+};
+
 export const formatPhone = (value) => {
-  const numbers = toSafeString(value).replace(/\D/g, '').slice(0, 11);
+  const numbers = stripCountryCode(value).slice(0, 11);
   if (numbers.length <= 2) return numbers;
   if (numbers.length <= 7) return `(${numbers.slice(0, 2)}) ${numbers.slice(2)}`;
   return `(${numbers.slice(0, 2)}) ${numbers.slice(2, 7)}-${numbers.slice(7)}`;
