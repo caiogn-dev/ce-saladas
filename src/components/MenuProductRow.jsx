@@ -10,6 +10,27 @@ const currencyFormatter = new Intl.NumberFormat('pt-BR', {
 
 const formatMoney = (value) => currencyFormatter.format(Number(value || 0));
 
+const normalizeTag = (t) => (t || '').toLowerCase()
+  .normalize('NFD').replace(/[̀-ͯ]/g, '');
+
+const resolveHighlight = (product) => {
+  const tags = (product.tags || []).map(normalizeTag);
+  if (tags.some((t) => t.includes('mais pedido'))) return 'maisPedido';
+  if (tags.some((t) => t.includes('recomendado'))) return 'recomendado';
+  if (tags.some((t) => t.includes('novidade'))) return 'novidade';
+  if (tags.some((t) => t.includes('edicao') && t.includes('limitada'))) return 'edicaoLimitada';
+  if (product.isCombo) return 'combo';
+  return null;
+};
+
+const HIGHLIGHT_LABEL = {
+  maisPedido: 'Mais pedido',
+  recomendado: 'Recomendado',
+  novidade: 'Novidade',
+  edicaoLimitada: 'Edição limitada',
+  combo: 'Combo pronto',
+};
+
 const MenuProductRow = ({
   product,
   onOpenDetails,
@@ -31,17 +52,7 @@ const MenuProductRow = ({
     ? Math.round((1 - Number(product.price) / Number(product.original_price)) * 100)
     : 0;
 
-  // Primary badges: category + combo
-  const badges = [
-    product.categoryLabel || product.category,
-    product.isCombo ? 'Combo pronto' : null,
-    discountPercentage > 0 ? `−${discountPercentage}%` : null,
-  ].filter(Boolean).slice(0, 2);
-
-  // Tag pills from product.tags (dietary, highlights: "vegetariano", "sem glúten", "mais pedido", etc.)
-  const tagPills = Array.isArray(product.tags)
-    ? product.tags.filter(Boolean).slice(0, 3)
-    : [];
+  const highlightType = resolveHighlight(product);
 
   const handleRowClick = () => onOpenDetails?.(product);
 
@@ -62,21 +73,18 @@ const MenuProductRow = ({
       aria-label={`Ver detalhes de ${product.name}`}
     >
       <div className={styles.content}>
-        {(badges.length > 0 || tagPills.length > 0) && (
+        {(highlightType || discountPercentage > 0) && (
           <div className={styles.badges}>
-            {badges.map((badge) => (
-              <span
-                key={badge}
-                className={`${styles.badge} ${badge.startsWith('−') ? styles.badgeAccent : ''}`}
-              >
-                {badge}
+            {highlightType && (
+              <span className={`${styles.badge} ${styles[highlightType]}`}>
+                {HIGHLIGHT_LABEL[highlightType]}
               </span>
-            ))}
-            {tagPills.map((tag) => (
-              <span key={tag} className={`${styles.badge} ${styles.badgeTag}`}>
-                {tag}
+            )}
+            {discountPercentage > 0 && (
+              <span className={`${styles.badge} ${styles.badgeDiscount}`}>
+                −{discountPercentage}%
               </span>
-            ))}
+            )}
           </div>
         )}
 

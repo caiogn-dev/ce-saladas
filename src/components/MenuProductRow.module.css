@@ -57,31 +57,50 @@
 .badge {
   display: inline-flex;
   align-items: center;
-  min-height: 22px;
-  padding: 0 8px;
-  border-radius: 8px;
-  border: 1px solid rgba(var(--clr-leaf-rgb, 100, 158, 32), 0.12);
-  background: rgba(var(--clr-leaf-rgb, 100, 158, 32), 0.08);
-  color: var(--clr-leaf-700, #375a0d);
-  font-size: 0.68rem;
+  min-height: 20px;
+  padding: 0 7px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  font-size: 0.64rem;
   font-weight: 700;
   line-height: 1;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: rgba(var(--clr-leaf-rgb, 100, 158, 32), 0.1);
+  color: var(--clr-leaf-700, #375a0d);
 }
 
-.badgeAccent {
-  border-color: rgba(var(--clr-terra-rgb, 222, 107, 54), 0.16);
+/* Highlight variants — iFood-style colored pills */
+.maisPedido {
+  background: #e8520a;
+  color: #fff;
+}
+
+.recomendado {
+  background: var(--clr-leaf-600, #4c7c14);
+  color: #fff;
+}
+
+.novidade {
+  background: #00a884;
+  color: #fff;
+}
+
+.edicaoLimitada {
+  background: #7c3aed;
+  color: #fff;
+}
+
+.combo {
+  background: rgba(var(--clr-leaf-rgb, 100, 158, 32), 0.12);
+  border-color: rgba(var(--clr-leaf-rgb, 100, 158, 32), 0.2);
+  color: var(--clr-leaf-700, #375a0d);
+}
+
+.badgeDiscount {
   background: rgba(var(--clr-terra-rgb, 222, 107, 54), 0.12);
+  border-color: rgba(var(--clr-terra-rgb, 222, 107, 54), 0.18);
   color: var(--clr-terra-600, #a04018);
-}
-
-.badgeTag {
-  border-color: rgba(var(--clr-leaf-rgb, 100, 158, 32), 0.08);
-  background: transparent;
-  color: var(--color-text-hint);
-  font-weight: 500;
-  text-transform: none;
-  letter-spacing: 0;
 }
 
 .header {
@@ -263,21 +282,22 @@
 }
 
 :global(.dark) .badge {
-  background: rgba(var(--clr-leaf-rgb), 0.12);
-  border-color: rgba(var(--clr-leaf-rgb), 0.18);
+  background: rgba(var(--clr-leaf-rgb), 0.14);
+  border-color: rgba(var(--clr-leaf-rgb), 0.2);
   color: var(--clr-leaf-300);
 }
 
-:global(.dark) .badgeAccent {
-  background: rgba(var(--clr-terra-rgb), 0.16);
-  border-color: rgba(var(--clr-terra-rgb), 0.22);
-  color: var(--clr-terra-300);
+:global(.dark) .maisPedido,
+:global(.dark) .recomendado,
+:global(.dark) .novidade,
+:global(.dark) .edicaoLimitada {
+  opacity: 0.92;
 }
 
-:global(.dark) .badgeTag {
-  color: var(--color-text-hint);
-  background: transparent;
-  border-color: rgba(255, 255, 255, 0.08);
+:global(.dark) .badgeDiscount {
+  background: rgba(var(--clr-terra-rgb), 0.18);
+  border-color: rgba(var(--clr-terra-rgb), 0.26);
+  color: var(--clr-terra-300);
 }
 
 :global(.dark) .price {
