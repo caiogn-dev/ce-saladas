@@ -9,21 +9,9 @@
   padding: 8px 0 10px;
 }
 
-.cardapio-hero__banner {
-  min-height: 34px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 14px;
-  border-radius: 12px 12px 0 0;
-  background: #11a36d;
-  color: #fff;
-  font-size: 0.78rem;
-  font-weight: 700;
-}
-
 .cardapio-hero__cover {
-  min-height: 132px;
+  min-height: 144px;
+  border-radius: 20px 20px 0 0;
   background:
     linear-gradient(180deg, rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.18)),
     linear-gradient(135deg, #7a8f33, #394914);
@@ -35,12 +23,12 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  padding: 0 16px 16px;
+  padding: 0 16px 14px;
   margin-top: -24px;
   border-radius: 24px 24px 20px 20px;
   background: #fff;
   border: 1px solid rgba(var(--color-brand-green-rgb), 0.1);
-  box-shadow: 0 12px 24px rgba(74, 89, 18, 0.08);
+  box-shadow: 0 10px 18px rgba(74, 89, 18, 0.06);
 }
 
 .cardapio-hero__brand {
@@ -91,6 +79,7 @@
   font-size: 1.24rem;
   line-height: 1.12;
   letter-spacing: -0.03em;
+  font-style: italic;
 }
 
 .cardapio-hero__intro {
@@ -98,6 +87,7 @@
   color: var(--color-text-light);
   font-size: 0.84rem;
   line-height: 1.48;
+  text-transform: lowercase;
 }
 
 .cardapio-hero__meta {
@@ -129,33 +119,6 @@
   background: rgba(var(--color-brand-green-rgb), 0.1);
   border-radius: 7px;
   box-sizing: content-box;
-}
-
-.cardapio-hero__utility-list {
-  display: grid;
-  gap: 8px;
-}
-
-.cardapio-hero__utility {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 12px 14px;
-  border-radius: 14px;
-  background: #fff;
-  border: 1px solid rgba(var(--color-brand-green-rgb), 0.08);
-}
-
-.cardapio-hero__utility strong {
-  color: var(--color-brand-green-dark);
-  font-size: 0.84rem;
-  line-height: 1.25;
-}
-
-.cardapio-hero__utility span {
-  color: var(--color-text-light);
-  font-size: 0.75rem;
-  line-height: 1.4;
 }
 
 .cardapio-hero__search-row {
@@ -226,6 +189,7 @@
     transform var(--transition-base),
     background-color var(--transition-base),
     box-shadow var(--transition-base);
+  text-transform: lowercase;
 }
 
 .cardapio-hero__cart-btn > span {
@@ -258,13 +222,13 @@
   z-index: 14;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   margin-bottom: 16px;
-  padding: 12px;
-  border-radius: 20px;
+  padding: 10px 0;
+  border-radius: 0;
   background: rgba(255, 252, 246, 0.84);
-  border: 1px solid rgba(var(--color-brand-green-rgb), 0.12);
-  box-shadow: 0 12px 24px rgba(74, 89, 18, 0.06);
+  border: none;
+  box-shadow: none;
   backdrop-filter: blur(20px) saturate(1.35);
   -webkit-backdrop-filter: blur(20px) saturate(1.35);
 }
@@ -274,12 +238,13 @@
 }
 
 .catalog-quick-nav {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  display: flex;
+  flex-wrap: nowrap;
   gap: 8px;
-  overflow: visible;
-  padding-bottom: 0;
-  scroll-padding-inline: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0 16px 2px;
+  scroll-padding-inline: 16px;
   scrollbar-width: none;
 }
 
@@ -288,19 +253,20 @@
 }
 
 .catalog-quick-nav__chip {
-  width: 100%;
-  min-height: 48px;
+  width: auto;
+  min-height: 42px;
+  flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
   padding: 10px 12px;
   border: 1px solid rgba(var(--color-brand-green-rgb), 0.14);
-  border-radius: 14px;
+  border-radius: 999px;
   background: rgba(255, 255, 255, 0.78);
   color: var(--color-brand-green-dark);
-  font-size: 0.82rem;
-  font-weight: 600;
+  font-size: 0.8rem;
+  font-weight: 700;
   cursor: pointer;
   transition:
     transform var(--transition-base),
@@ -308,10 +274,6 @@
     background-color var(--transition-base),
     box-shadow var(--transition-base),
     color var(--transition-base);
-}
-
-.catalog-quick-nav__chip:last-child:nth-child(odd) {
-  grid-column: 1 / -1;
 }
 
 .catalog-quick-nav__chip > span {
@@ -376,6 +338,10 @@
     background-color var(--transition-base),
     box-shadow var(--transition-base);
   order: -1;
+}
+
+.catalog-toolbar__actions {
+  display: none;
 }
 
 .catalog-toolbar__cart > span {
@@ -510,6 +476,16 @@
   gap: 12px;
 }
 
+.catalog-featured-mobile {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.catalog-featured-desktop {
+  display: none;
+}
+
 .catalog-skeleton-grid,
 .catalog-skeleton-rows {
   display: grid;
@@ -599,6 +575,7 @@
 
   .cardapio-hero__cover {
     min-height: 190px;
+    border-radius: 24px 24px 0 0;
   }
 
   .cardapio-hero__title {
@@ -620,10 +597,6 @@
   .cardapio-hero__meta span {
     min-height: 38px;
     font-size: 0.8rem;
-  }
-
-  .cardapio-hero__utility-list {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .cardapio-hero__search-row {
@@ -654,15 +627,15 @@
     gap: 14px;
     padding: 14px;
     border-radius: 22px;
+    border: 1px solid rgba(var(--color-brand-green-rgb), 0.12);
+    box-shadow: 0 12px 24px rgba(74, 89, 18, 0.06);
   }
 
   .catalog-quick-nav {
-    display: flex;
     flex: 1;
     min-width: 0;
     gap: 10px;
-    overflow-x: auto;
-    padding-bottom: 2px;
+    padding: 0 0 2px;
     scroll-padding-inline: 8px;
   }
 
@@ -677,23 +650,18 @@
     font-size: 0.9rem;
   }
 
-  .catalog-quick-nav__chip:last-child:nth-child(odd) {
-    grid-column: auto;
+  .catalog-toolbar__actions {
+    display: flex;
+    flex-shrink: 0;
   }
 
   .catalog-toolbar__cart {
     width: auto;
-    flex-shrink: 0;
     padding-inline: 18px;
     border-radius: 16px;
     justify-content: center;
     font-size: 0.9rem;
     order: 0;
-  }
-
-  .catalog-toolbar__cart > span {
-    flex: initial;
-    text-align: center;
   }
 
   .catalog-featured,
@@ -735,6 +703,14 @@
 
   .catalog-featured__track {
     gap: 16px;
+  }
+
+  .catalog-featured-mobile {
+    display: none;
+  }
+
+  .catalog-featured-desktop {
+    display: block;
   }
 
   .catalog-skeleton-grid {
@@ -1174,6 +1150,7 @@
   font-size: 0.84rem;
   font-weight: 600;
   text-decoration: none;
+  text-transform: lowercase;
   transition:
     transform var(--transition-base),
     border-color var(--transition-base),

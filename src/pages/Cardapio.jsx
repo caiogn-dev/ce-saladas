@@ -352,12 +352,9 @@ const Cardapio = () => {
     return store?.address || 'Retirada e entrega disponíveis';
   }, [store]);
 
-  const storeHoursLabel = store?.metadata?.business_hours_label || store?.metadata?.opening_hours || 'Pedido simples, rápido e sem cadastro obrigatório';
-  const heroDescription = store?.metadata?.catalog_pitch || 'Escolha sua refeição, ajuste os sabores e finalize em poucos toques.';
+  const storeHoursLabel = store?.metadata?.business_hours_label || store?.metadata?.opening_hours || 'pedido simples, rápido e sem cadastro obrigatório';
+  const heroDescription = store?.metadata?.catalog_pitch || 'bowls autorais e montados por você. entrega sob refrigeração em poucos minutos.';
   const heroCover = store?.metadata?.cover_image_url || featuredItems[0]?.image_url || store?.logo_url || null;
-  const deliveryHint = store?.metadata?.delivery_hint || 'Entrega grátis em pedidos a partir de R$ 40,00';
-  const loyaltyHint = store?.metadata?.loyalty_pitch || 'A cada R$ 100 em compras você acumula crédito para o próximo pedido.';
-
   const whatsappNumber = useMemo(
     () => normalizePhone(store?.whatsapp_number || store?.phone || ''),
     [store?.phone, store?.whatsapp_number]
@@ -394,8 +391,6 @@ const Cardapio = () => {
       <PageTransition animation="fadeUp" delay={0}>
         <header className="cardapio-hero">
           <div className="container">
-            <div className="cardapio-hero__banner">Você tem 1 cupom! Aproveite.</div>
-
             <div className="cardapio-hero__cover" style={heroCover ? { backgroundImage: `url(${heroCover})` } : undefined} />
 
             <div className="cardapio-hero__panel">
@@ -417,17 +412,6 @@ const Cardapio = () => {
                 </div>
               </div>
 
-              <div className="cardapio-hero__utility-list">
-                <div className="cardapio-hero__utility">
-                  <strong>Calcular taxa e tempo de entrega</strong>
-                  <span>{deliveryHint}</span>
-                </div>
-                <div className="cardapio-hero__utility">
-                  <strong>Programa de fidelidade</strong>
-                  <span>{loyaltyHint}</span>
-                </div>
-              </div>
-
               <div className="cardapio-hero__search-row">
                 <div className="cardapio-hero__search">
                   <Input
@@ -444,14 +428,16 @@ const Cardapio = () => {
                     )}
                   />
                 </div>
-                <button key={cartCount > 0 ? `hero-cart-${cartCount}` : 'hero-cart-empty'} type="button" className={`cardapio-hero__cart-btn${!hasItems ? ' cardapio-hero__cart-btn--empty' : ''}${cartCount > 0 ? ' is-pulsing' : ''}`} onClick={openCart}>
-                  <ShoppingBag size={18} />
-                  <span>{hasItems ? `Sacola (${cartCount})` : 'Abrir sacola'}</span>
-                  <ArrowRight size={16} />
-                </button>
+                {hasItems && (
+                  <button key={`hero-cart-${cartCount}`} type="button" className="cardapio-hero__cart-btn is-pulsing" onClick={openCart}>
+                    <ShoppingBag size={18} />
+                    <span>{`sacola (${cartCount})`}</span>
+                    <ArrowRight size={16} />
+                  </button>
+                )}
                 {query && (
                   <button type="button" className="cardapio-hero__clear" onClick={() => setQuery('')}>
-                    Limpar busca
+                    limpar busca
                   </button>
                 )}
               </div>
@@ -461,15 +447,15 @@ const Cardapio = () => {
                   {isAuthenticated ? (
                     <>
                       <Link href="/perfil" className="cardapio-hero__quick-link">
-                        Minha conta
+                        minha conta
                       </Link>
                       <Link href="/perfil?tab=orders" className="cardapio-hero__quick-link">
-                        Meus pedidos
+                        meus pedidos
                       </Link>
                     </>
                   ) : (
                     <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="cardapio-hero__quick-link cardapio-hero__quick-link--accent">
-                      Ajuda no WhatsApp
+                      ajuda no WhatsApp
                     </a>
                   )}
                 </div>
@@ -518,10 +504,14 @@ const Cardapio = () => {
               ))}
             </div>
 
-            <button key={cartCount > 0 ? `toolbar-cart-${cartCount}` : 'toolbar-cart-empty'} type="button" className={`catalog-toolbar__cart${!hasItems ? ' catalog-toolbar__cart--empty' : ''}${cartCount > 0 ? ' is-pulsing' : ''}`} onClick={openCart}>
-              <ShoppingBag size={18} />
-              <span>{hasItems ? `${cartCount} item(ns) — ${formatMoney(cartTotal)}` : 'Sacola vazia'}</span>
-            </button>
+            <div className="catalog-toolbar__actions">
+              {hasItems && (
+                <button key={`toolbar-cart-${cartCount}`} type="button" className="catalog-toolbar__cart is-pulsing" onClick={openCart}>
+                  <ShoppingBag size={18} />
+                  <span>{`${cartCount} item(ns) — ${formatMoney(cartTotal)}`}</span>
+                </button>
+              )}
+            </div>
           </div>
 
           {filteredItems.length === 0 && query && (
@@ -551,26 +541,42 @@ const Cardapio = () => {
                       )}
                     </div>
 
-                    {/* Featured section — keep carousel */}
+                    {/* Featured section — compact list on mobile, carousel on desktop */}
                     {section.featuredOnly && section.items.length > 0 && (
-                      <CarouselCard
-                        items={section.items}
-                        mobileCardsPerView={1}
-                        tabletCardsPerView={2.2}
-                        desktopCardsPerView={3.35}
-                        trackClassName="catalog-featured__track"
-                        renderItem={(product, index) => (
-                          <ProductCard
-                            product={product}
-                            index={index}
-                            className="catalog-product-card catalog-product-card--featured"
-                            onAddToCart={handleAddToCart}
-                            onOpenDetails={setSelectedItem}
-                            favoriteButton={product.itemType === 'product' && isAuthenticated ? <FavoriteButton productId={product.id} size="small" /> : null}
-                            stockBadge={<StockBadge quantity={product.stock_quantity} />}
+                      <>
+                        <div className="catalog-featured-mobile">
+                          {section.items.map((product, idx) => (
+                            <div key={product.id} className="reveal" data-delay={String(Math.min(idx + 1, 6))}>
+                              <MenuProductRow
+                                product={product}
+                                onOpenDetails={setSelectedItem}
+                                favoriteButton={product.itemType === 'product' && isAuthenticated ? <FavoriteButton productId={product.id} size="small" /> : null}
+                              />
+                            </div>
+                          ))}
+                        </div>
+
+                        <div className="catalog-featured-desktop">
+                          <CarouselCard
+                            items={section.items}
+                            mobileCardsPerView={1}
+                            tabletCardsPerView={2.2}
+                            desktopCardsPerView={3.35}
+                            trackClassName="catalog-featured__track"
+                            renderItem={(product, index) => (
+                              <ProductCard
+                                product={product}
+                                index={index}
+                                className="catalog-product-card catalog-product-card--featured"
+                                onAddToCart={handleAddToCart}
+                                onOpenDetails={setSelectedItem}
+                                favoriteButton={product.itemType === 'product' && isAuthenticated ? <FavoriteButton productId={product.id} size="small" /> : null}
+                                stockBadge={<StockBadge quantity={product.stock_quantity} />}
+                              />
+                            )}
                           />
-                        )}
-                      />
+                        </div>
+                      </>
                     )}
 
                     {/* Builder section (Monte sua Salada) */}
