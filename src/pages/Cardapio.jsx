@@ -2,15 +2,20 @@ import React, { useMemo, useState, useRef, useEffect, useCallback } from 'react'
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { ArrowRight, Clock3, MapPin, ShoppingBag } from 'lucide-react';
+import {
+  ArrowRight,
+  ChevronRight,
+  Clock3,
+  Gift,
+  MapPin,
+  Search,
+  ShoppingBag,
+  TicketPercent,
+} from 'lucide-react';
 import Navbar from '../components/Navbar';
 import FavoriteButton from '../components/FavoriteButton';
 import StockBadge from '../components/StockBadge';
 import MenuProductRow from '../components/MenuProductRow';
-
-// Heavy modals — loaded only when the user opens them
-const ProductDetailModal = dynamic(() => import('../components/ProductDetailModal'), { ssr: false });
-const SaladBuilder = dynamic(() => import('../components/SaladBuilder'), { ssr: false });
 import Input from '../components/ui/Input';
 import Skeleton from '../components/ui/Skeleton';
 import EmptyState from '../components/ui/EmptyState';
@@ -20,6 +25,9 @@ import PageTransition from '../components/ui/PageTransition';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useStore } from '../context/StoreContext';
+
+const ProductDetailModal = dynamic(() => import('../components/ProductDetailModal'), { ssr: false });
+const SaladBuilder = dynamic(() => import('../components/SaladBuilder'), { ssr: false });
 
 const MENU_SECTIONS = [
   {
@@ -31,22 +39,19 @@ const MENU_SECTIONS = [
   {
     key: 'monte-sua-salada',
     title: 'Monte sua Salada',
-    description: 'Monte do zero ou escolha um combo pronto — do seu jeito.',
+    description: 'Monte do zero ou escolha um combo pronto, sem sair da mesma tela.',
     isBuilder: true,
   },
   {
     key: 'saladas',
     title: 'Saladas',
-    description: 'Combinações frescas para almoço, jantar ou uma pausa leve no dia.',
+    description: 'Pratos frescos, diretos e prontos para almoço, jantar ou pausa rápida.',
   },
   {
     key: 'molhos',
     title: 'Molhos',
-    description: 'Complementos para ajustar o sabor e finalizar o pedido do seu jeito.',
+    description: 'Complementos para finalizar o pedido do seu jeito.',
   },
-  // 'ingredientes' is intentionally omitted: those products feed the SaladBuilder
-  // internally (see ingredientItems below) but are NOT displayed as a standalone
-  // section in the cardápio. Only Saladas and Molhos are shown as product lists.
 ];
 
 const normalizeText = (value) => (value || '')
@@ -71,9 +76,6 @@ const inferCatalogSection = (item) => {
     item.name,
   ].join(' '));
 
-  // Ingredient-builder products first — a product tagged "ingrediente" goes to the
-  // builder section even when its name also contains "molho" (e.g. "Molho Caesar").
-  // Standalone molho products (only tagged "molho") go to the separate molhos section.
   if (
     haystack.includes('ingrediente')
     || haystack.includes('base')
@@ -107,28 +109,36 @@ const formatMoney = (value) => Number(value || 0).toLocaleString('pt-BR', {
 const normalizePhone = (value = '') => value.replace(/\D/g, '');
 
 const ProductsSkeleton = () => (
-  <div className="catalog-main">
-    <div className="catalog-toolbar catalog-toolbar--skeleton">
-      <Skeleton variant="rect" height={52} style={{ borderRadius: '999px' }} />
+  <div className="catalog-shell catalog-shell--loading">
+    <div className="catalog-content">
+      <div className="catalog-toolbar catalog-toolbar--skeleton">
+        <Skeleton variant="rect" height={52} style={{ borderRadius: '999px' }} />
+      </div>
+
+      <div className="catalog-main">
+        {MENU_SECTIONS.filter((s) => !s.featuredOnly && !s.isBuilder).slice(0, 2).map((section, sectionIndex) => (
+          <section key={section.key} className="catalog-section catalog-section--skeleton">
+            <div className="catalog-section__header">
+              <div>
+                <h2 className="catalog-section__title">{section.title}</h2>
+                <p className="catalog-section__description">{section.description}</p>
+              </div>
+            </div>
+            <div className="catalog-skeleton-rows">
+              {Array.from({ length: 3 }, (_, index) => (
+                <Skeleton.ProductCard key={`${sectionIndex}-${index}`} index={index} />
+              ))}
+            </div>
+          </section>
+        ))}
+      </div>
     </div>
 
-    <div className="catalog-sections">
-      {MENU_SECTIONS.filter((s) => !s.featuredOnly && !s.isBuilder).slice(0, 3).map((section, sectionIndex) => (
-        <section key={section.key} className="catalog-section catalog-section--skeleton">
-          <div className="catalog-section__header">
-            <div>
-              <h2 className="catalog-section__title">{section.title}</h2>
-              <p className="catalog-section__description">{section.description}</p>
-            </div>
-          </div>
-          <div className="catalog-skeleton-rows">
-            {Array.from({ length: 3 }, (_, index) => (
-              <Skeleton.ProductCard key={`${sectionIndex}-${index}`} index={index} />
-            ))}
-          </div>
-        </section>
-      ))}
-    </div>
+    <aside className="catalog-aside">
+      <div className="catalog-aside__panel">
+        <Skeleton variant="rect" height={360} style={{ borderRadius: '24px' }} />
+      </div>
+    </aside>
   </div>
 );
 
@@ -183,6 +193,7 @@ const Cardapio = () => {
         variants: product.variants || [],
         is_in_stock: product.is_in_stock,
         is_low_stock: product.is_low_stock,
+        featured: Boolean(product.featured),
       };
 
       return {
@@ -212,6 +223,7 @@ const Cardapio = () => {
       tags: combo.featured ? ['Mais pedido'] : [],
       is_in_stock: combo.is_in_stock ?? combo.is_active,
       is_low_stock: false,
+      featured: Boolean(combo.featured),
       catalogSection: 'monte-sua-salada',
     }));
 
@@ -230,15 +242,16 @@ const Cardapio = () => {
   }, [catalogItems, query]);
 
   const featuredIds = useMemo(
-    () => new Set((featuredProducts || []).map((p) => p.id)),
+    () => new Set((featuredProducts || []).map((product) => product.id)),
     [featuredProducts]
   );
 
   const featuredItems = useMemo(() => {
     const tagged = filteredItems.filter((item) => {
       const tags = normalizeText((item.tags || []).join(' '));
-      return featuredIds.has(item.id) || tags.includes('mais pedido') || tags.includes('novidade') || tags.includes('destaque');
+      return featuredIds.has(item.id) || item.featured || tags.includes('mais pedido') || tags.includes('novidade') || tags.includes('destaque');
     });
+
     if (tagged.length > 0) return tagged.slice(0, 8);
     return filteredItems.filter((item) => item.catalogSection === 'saladas').slice(0, 8);
   }, [featuredIds, filteredItems]);
@@ -248,17 +261,16 @@ const Cardapio = () => {
     [filteredItems]
   );
 
-  const groupedSections = useMemo(() => {
-    return MENU_SECTIONS.map((section) => {
-      if (section.featuredOnly) {
-        return { ...section, items: featuredItems };
-      }
-      return {
-        ...section,
-        items: filteredItems.filter((item) => item.catalogSection === section.key),
-      };
-    }).filter((section) => section.items.length > 0 || section.isBuilder);
-  }, [filteredItems, featuredItems]);
+  const groupedSections = useMemo(() => MENU_SECTIONS.map((section) => {
+    if (section.featuredOnly) {
+      return { ...section, items: featuredItems };
+    }
+
+    return {
+      ...section,
+      items: filteredItems.filter((item) => item.catalogSection === section.key),
+    };
+  }).filter((section) => section.items.length > 0 || section.isBuilder), [featuredItems, filteredItems]);
 
   const catalogHighlights = useMemo(() => ([
     {
@@ -267,15 +279,14 @@ const Cardapio = () => {
     },
     {
       value: String(featuredItems.length).padStart(2, '0'),
-      label: 'mais pedidos',
+      label: 'em destaque',
     },
     {
-      value: hasItems ? formatMoney(cartTotal) : 'Pronta',
-      label: hasItems ? `${cartCount} item(ns) na sacola` : 'sua sacola para montar',
+      value: hasItems ? formatMoney(cartTotal) : 'Aberto',
+      label: hasItems ? `${cartCount} item(ns) na sacola` : 'retirada e entrega',
     },
-  ]), [filteredItems.length, featuredItems.length, hasItems, cartCount, cartTotal]);
+  ]), [cartCount, cartTotal, featuredItems.length, filteredItems.length, hasItems]);
 
-  // Intersection observer for active nav tab
   useEffect(() => {
     if (typeof IntersectionObserver === 'undefined') return undefined;
 
@@ -283,42 +294,44 @@ const Cardapio = () => {
     const visible = new Map();
 
     groupedSections.forEach(({ key }) => {
-      const el = sectionRefs.current[key];
-      if (!el) return;
+      const element = sectionRefs.current[key];
+      if (!element) return;
 
-      const obs = new IntersectionObserver(
+      const observer = new IntersectionObserver(
         ([entry]) => {
           visible.set(key, entry.intersectionRatio);
-          const best = [...visible.entries()].reduce((a, b) => (b[1] > a[1] ? b : a), ['', 0]);
+          const best = [...visible.entries()].reduce((acc, current) => (current[1] > acc[1] ? current : acc), ['', 0]);
           if (best[1] > 0) setActiveSection(best[0]);
         },
-        { rootMargin: '-20% 0px -60% 0px', threshold: [0, 0.1, 0.5, 1] }
+        { rootMargin: '-15% 0px -60% 0px', threshold: [0, 0.15, 0.4, 0.8] }
       );
 
-      obs.observe(el);
-      observers.push(obs);
+      observer.observe(element);
+      observers.push(observer);
     });
 
-    return () => observers.forEach((o) => o.disconnect());
+    return () => observers.forEach((observer) => observer.disconnect());
   }, [groupedSections]);
 
-  // Scroll-reveal: ativa .revealed nos elementos com classe .reveal quando entram na tela
   useEffect(() => {
     if (typeof IntersectionObserver === 'undefined') return undefined;
-    const els = document.querySelectorAll('.reveal:not(.revealed)');
-    if (!els.length) return undefined;
-    const obs = new IntersectionObserver(
-      (entries) => entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('revealed'); obs.unobserve(e.target); } }),
-      { rootMargin: '0px 0px -60px 0px', threshold: 0.08 }
+    const elements = document.querySelectorAll('.reveal:not(.revealed)');
+    if (!elements.length) return undefined;
+
+    const observer = new IntersectionObserver(
+      (entries) => entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('revealed');
+          observer.unobserve(entry.target);
+        }
+      }),
+      { rootMargin: '0px 0px -70px 0px', threshold: 0.08 }
     );
-    els.forEach((el) => obs.observe(el));
-    return () => obs.disconnect();
+
+    elements.forEach((element) => observer.observe(element));
+    return () => observer.disconnect();
   });
 
-  // Scroll active nav chip into view — horizontal only.
-  // NEVER use chip.scrollIntoView(): elements inside position:sticky containers
-  // cause the browser to scroll the page to the element's natural (pre-sticky)
-  // position, yanking the page back to the top on every section change.
   useEffect(() => {
     if (!activeSection || !navRef.current) return;
     const nav = navRef.current.querySelector('.catalog-quick-nav');
@@ -335,16 +348,13 @@ const Cardapio = () => {
     } else {
       addToCart(item);
     }
-  }, [addToCart, addComboToCart]);
+  }, [addComboToCart, addToCart]);
 
-  const handleJumpToSection = (sectionKey) => {
-    const el = sectionRefs.current[sectionKey];
-    if (!el) return;
-    // scroll-margin-top on .catalog-section already accounts for the sticky nav height.
-    // scrollIntoView uses it natively — getBoundingClientRect() would be affected by
-    // the PageTransition translateY transform and produce the wrong offset.
-    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  };
+  const handleJumpToSection = useCallback((sectionKey) => {
+    const element = sectionRefs.current[sectionKey];
+    if (!element) return;
+    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, []);
 
   const storeLocation = useMemo(() => {
     if (store?.metadata?.city && store?.metadata?.state) return `${store.metadata.city} • ${store.metadata.state}`;
@@ -353,23 +363,35 @@ const Cardapio = () => {
   }, [store]);
 
   const storeHoursLabel = store?.metadata?.business_hours_label || store?.metadata?.opening_hours || 'Pedido simples, rápido e sem cadastro obrigatório';
-  const heroDescription = store?.metadata?.catalog_pitch || 'Escolha sua refeição, ajuste os sabores e finalize em poucos toques.';
+  const heroDescription = store?.metadata?.catalog_pitch || 'Escolha sua refeição, ajuste os sabores e finalize com poucos toques.';
+  const heroSpotlight = featuredItems[0] || filteredItems[0] || null;
+  const heroCover = store?.cover_image_url || store?.metadata?.cover_image_url || heroSpotlight?.image_url || null;
+  const deliveryCta = store?.metadata?.delivery_cta || 'Calcular taxa e tempo de entrega';
+  const deliveryHint = store?.metadata?.delivery_hint || 'Entrega grátis em pedidos a partir de R$ 40,00';
+  const loyaltyHint = store?.metadata?.loyalty_pitch || 'A cada R$ 100 em compras você ganha crédito para o próximo pedido.';
+  const asideHelpLabel = hasItems ? `${cartCount} item(ns) prontos para finalizar` : 'Sua sacola ainda está vazia';
 
   const whatsappNumber = useMemo(
     () => normalizePhone(store?.whatsapp_number || store?.phone || ''),
     [store?.phone, store?.whatsapp_number]
   );
+
   const whatsappUrl = useMemo(() => (
     whatsappNumber
       ? `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(`Ola! Quero ajuda para montar meu pedido na ${store?.name || 'Ce Saladas'}.`)}`
       : '#'
   ), [store?.name, whatsappNumber]);
 
+  const bottomNavItems = [
+    { key: 'inicio', label: 'Início', onClick: () => window.scrollTo({ top: 0, behavior: 'smooth' }) },
+    { key: 'promocoes', label: 'Promoções', onClick: () => handleJumpToSection('destaques') },
+    { key: 'pedidos', label: 'Pedidos', onClick: hasItems ? openCart : () => router.push('/checkout') },
+  ];
+
   return (
     <div className="cardapio-page">
       <Navbar />
 
-      {/* Floating cart button — always visible while scrolling */}
       {hasItems && (
         <button key={`cart-fab-${cartCount}`} type="button" className="cart-fab is-pulsing" onClick={openCart} aria-label="Abrir sacola">
           <ShoppingBag size={20} />
@@ -389,99 +411,155 @@ const Cardapio = () => {
       />
 
       <PageTransition animation="fadeUp" delay={0}>
+        <section className="menu-topbar">
+          <div className="container menu-topbar__row">
+            <button type="button" className="menu-topbar__store">
+              <span className="menu-topbar__store-logo">
+                {store?.logo_url ? <img src={store.logo_url} alt={store?.name || 'Loja'} /> : 'Cê'}
+              </span>
+              <span className="menu-topbar__store-copy">
+                <strong>{store?.name || 'Cê Saladas'}</strong>
+                <small>{store?.category_label || 'Cardápio'}</small>
+              </span>
+            </button>
+
+            <div className="menu-topbar__search">
+              <Search size={17} />
+              <Input
+                type="text"
+                placeholder="Busque por um produto"
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                fullWidth
+              />
+            </div>
+
+            <nav className="menu-topbar__nav" aria-label="Atalhos do cardápio">
+              <button type="button" className="menu-topbar__nav-item is-active" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>Início</button>
+              <button type="button" className="menu-topbar__nav-item" onClick={() => handleJumpToSection('destaques')}>Promoções</button>
+              <button type="button" className="menu-topbar__nav-item" onClick={hasItems ? openCart : () => router.push('/checkout')}>Pedidos</button>
+            </nav>
+          </div>
+        </section>
+      </PageTransition>
+
+      <PageTransition animation="fadeUp" delay={40}>
         <header className="cardapio-hero">
           <div className="container">
-            <div className="cardapio-hero__panel">
-              <span className="cardapio-hero__accent" aria-hidden="true" />
+            <div className="cardapio-hero__promo">
+              <TicketPercent size={16} />
+              <span>Você tem 1 cupom! Aproveite o melhor do cardápio hoje.</span>
+            </div>
 
-              <div className="cardapio-hero__top">
-                <div className="cardapio-hero__brand">
-                  <div className="cardapio-hero__logo-shell">
-                    {store?.logo_url ? (
-                      <img src={store.logo_url} alt={store.name} className="cardapio-hero__logo" />
-                    ) : (
-                      <span className="cardapio-hero__logo-placeholder">Cê</span>
-                    )}
-                  </div>
-                  <div className="cardapio-hero__copy">
-                    <span className="cardapio-hero__eyebrow">Cardápio</span>
-                    <h1 className="cardapio-hero__title">{store?.name || 'Cê Saladas'}</h1>
-                    <p className="cardapio-hero__intro">{heroDescription}</p>
+            <div className="cardapio-hero__cover" style={heroCover ? { backgroundImage: `url(${heroCover})` } : undefined}>
+              <div className="cardapio-hero__cover-shade" />
+              <div className="cardapio-hero__identity">
+                <div className="cardapio-hero__logo-shell">
+                  {store?.logo_url ? (
+                    <img src={store.logo_url} alt={store.name} className="cardapio-hero__logo" />
+                  ) : (
+                    <span className="cardapio-hero__logo-placeholder">Cê</span>
+                  )}
+                </div>
+
+                <div className="cardapio-hero__copy">
+                  <span className="cardapio-hero__eyebrow">Cardápio aberto</span>
+                  <h1 className="cardapio-hero__title">{store?.name || 'Cê Saladas'}</h1>
+                  <p className="cardapio-hero__intro">{heroDescription}</p>
+                  <div className="cardapio-hero__meta">
+                    <span><MapPin size={16} />{storeLocation}</span>
+                    <span><Clock3 size={16} />{storeHoursLabel}</span>
                   </div>
                 </div>
 
-                <button key={cartCount > 0 ? `hero-cart-${cartCount}` : 'hero-cart-empty'} type="button" className={`cardapio-hero__cart-btn${!hasItems ? ' cardapio-hero__cart-btn--empty' : ''}${cartCount > 0 ? ' is-pulsing' : ''}`} onClick={openCart}>
+                <button
+                  key={cartCount > 0 ? `hero-cart-${cartCount}` : 'hero-cart-empty'}
+                  type="button"
+                  className={`cardapio-hero__cart-btn${!hasItems ? ' cardapio-hero__cart-btn--empty' : ''}${cartCount > 0 ? ' is-pulsing' : ''}`}
+                  onClick={openCart}
+                >
                   <ShoppingBag size={18} />
                   <span>{hasItems ? `Sacola (${cartCount})` : 'Abrir sacola'}</span>
                   <ArrowRight size={16} />
                 </button>
               </div>
+            </div>
 
-              <div className="cardapio-hero__meta">
-                <span><MapPin size={16} />{storeLocation}</span>
-                <span><Clock3 size={16} />{storeHoursLabel}</span>
-              </div>
-
-              <div className="cardapio-hero__stats" aria-label="Resumo do cardápio">
-                {catalogHighlights.map((highlight) => (
-                  <div key={highlight.label} className="cardapio-hero__stat">
-                    <strong>{highlight.value}</strong>
-                    <span>{highlight.label}</span>
-                  </div>
-                ))}
-              </div>
-
-              <div className="cardapio-hero__search-row">
-                <div className="cardapio-hero__search">
-                  <Input
-                    type="text"
-                    placeholder="Buscar saladas, molhos ou montagens"
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    fullWidth
-                    leftIcon={(
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <circle cx="11" cy="11" r="8" />
-                        <path d="M21 21l-4.35-4.35" />
-                      </svg>
-                    )}
-                  />
+            <div className="cardapio-hero__utility-grid">
+              <button type="button" className="cardapio-hero__utility cardapio-hero__utility--delivery" onClick={() => router.push('/checkout')}>
+                <div>
+                  <strong>{deliveryCta}</strong>
+                  <span>{deliveryHint}</span>
                 </div>
-                {query && (
-                  <button type="button" className="cardapio-hero__clear" onClick={() => setQuery('')}>
-                    Limpar busca
-                  </button>
-                )}
-              </div>
+                <ChevronRight size={18} />
+              </button>
 
-              <div className="cardapio-hero__quick-actions">
-                {isAuthenticated ? (
-                  <>
-                    <Link href="/perfil" className="cardapio-hero__quick-link">
-                      Minha conta
-                    </Link>
-                    <Link href="/perfil?tab=orders" className="cardapio-hero__quick-link">
-                      Meus pedidos
-                    </Link>
-                  </>
-                ) : whatsappNumber ? (
-                  <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="cardapio-hero__quick-link cardapio-hero__quick-link--accent">
-                    Ajuda no WhatsApp
-                  </a>
-                ) : null}
+              <div className="cardapio-hero__utility cardapio-hero__utility--loyalty">
+                <Gift size={18} />
+                <div>
+                  <strong>Programa de fidelidade</strong>
+                  <span>{loyaltyHint}</span>
+                </div>
               </div>
             </div>
+
+            <div className="cardapio-hero__controls">
+              <label className="cardapio-hero__select">
+                <span>Lista de categorias</span>
+                <select
+                  value={activeSection || ''}
+                  onChange={(event) => handleJumpToSection(event.target.value)}
+                >
+                  <option value="" disabled>Escolha uma seção</option>
+                  {groupedSections.map((section) => (
+                    <option key={section.key} value={section.key}>{section.title}</option>
+                  ))}
+                </select>
+              </label>
+
+              {query && (
+                <button type="button" className="cardapio-hero__clear" onClick={() => setQuery('')}>
+                  Limpar busca
+                </button>
+              )}
+            </div>
+
+            <div className="cardapio-hero__stats" aria-label="Resumo do cardápio">
+              {catalogHighlights.map((highlight) => (
+                <div key={highlight.label} className="cardapio-hero__stat">
+                  <strong>{highlight.value}</strong>
+                  <span>{highlight.label}</span>
+                </div>
+              ))}
+            </div>
+
+            {heroSpotlight && (
+              <div className="cardapio-hero__spotlight">
+                <div className="cardapio-hero__spotlight-copy">
+                  <span>Destaque do dia</span>
+                  <strong>{heroSpotlight.name}</strong>
+                  <p>{heroSpotlight.shortDescription || heroSpotlight.description || 'Escolha certeira para começar seu pedido.'}</p>
+                </div>
+                <button type="button" className="cardapio-hero__spotlight-action" onClick={() => setSelectedItem(heroSpotlight)}>
+                  Ver detalhes
+                </button>
+              </div>
+            )}
           </div>
         </header>
       </PageTransition>
 
       {loading && (
-        <div className="container"><ProductsSkeleton /></div>
+        <div className="container">
+          <ProductsSkeleton />
+        </div>
       )}
 
       {error && !loading && (
         <PageTransition animation="fadeIn" delay={100}>
-          <div className="container"><EmptyState.Error onAction={() => refreshCatalog()} /></div>
+          <div className="container">
+            <EmptyState.Error onAction={() => refreshCatalog()} />
+          </div>
         </PageTransition>
       )}
 
@@ -495,116 +573,183 @@ const Cardapio = () => {
 
       {!loading && !error && catalogItems.length > 0 && (
         <div className="container">
-          {/* Sticky category nav */}
-          <div className="catalog-toolbar" ref={navRef}>
-            <div className="catalog-quick-nav">
-              {groupedSections.map((section) => (
-                <button
-                  key={section.key}
-                  type="button"
-                  data-section={section.key}
-                  className={`catalog-quick-nav__chip ${activeSection === section.key ? 'catalog-quick-nav__chip--active' : ''}`}
-                  onClick={() => handleJumpToSection(section.key)}
-                >
-                  <span>{section.title}</span>
-                  {!section.featuredOnly && !section.isBuilder && (
-                    <strong>{section.items.length}</strong>
-                  )}
-                </button>
-              ))}
-            </div>
-
-            <button key={cartCount > 0 ? `toolbar-cart-${cartCount}` : 'toolbar-cart-empty'} type="button" className={`catalog-toolbar__cart${!hasItems ? ' catalog-toolbar__cart--empty' : ''}${cartCount > 0 ? ' is-pulsing' : ''}`} onClick={openCart}>
-              <ShoppingBag size={18} />
-              <span>{hasItems ? `${cartCount} item(ns) — ${formatMoney(cartTotal)}` : 'Sacola vazia'}</span>
-            </button>
-          </div>
-
-          {filteredItems.length === 0 && query && (
-            <PageTransition animation="fadeIn" delay={150}>
-              <EmptyState.Search query={query} onAction={() => setQuery('')} />
-            </PageTransition>
-          )}
-
-          {groupedSections.length > 0 && (
-            <main className="catalog-main">
-              {groupedSections.map((section, sectionIndex) => (
-                <PageTransition key={section.key} animation="fadeUp" delay={sectionIndex * 55}>
-                  <section
-                    id={`catalog-section-${section.key}`}
-                    ref={(el) => { sectionRefs.current[section.key] = el; }}
-                    className={`catalog-section ${section.featuredOnly ? 'catalog-section--featured' : ''}`}
-                  >
-                    <div className="catalog-section__header">
-                      <div>
-                        <h2 className="catalog-section__title">{section.title}</h2>
-                        <p className="catalog-section__description">{section.description}</p>
-                      </div>
-                      {!section.featuredOnly && !section.isBuilder && section.items.length > 0 && (
-                        <span className="catalog-section__count">
-                          {section.items.length} {section.items.length === 1 ? 'item' : 'itens'}
-                        </span>
+          <div className="catalog-shell">
+            <div className="catalog-content">
+              <div className="catalog-toolbar" ref={navRef}>
+                <div className="catalog-quick-nav">
+                  {groupedSections.map((section) => (
+                    <button
+                      key={section.key}
+                      type="button"
+                      data-section={section.key}
+                      className={`catalog-quick-nav__chip ${activeSection === section.key ? 'catalog-quick-nav__chip--active' : ''}`}
+                      onClick={() => handleJumpToSection(section.key)}
+                    >
+                      <span>{section.title}</span>
+                      {!section.featuredOnly && !section.isBuilder && (
+                        <strong>{section.items.length}</strong>
                       )}
-                    </div>
+                    </button>
+                  ))}
+                </div>
 
-                    {/* Featured section — keep carousel */}
-                    {section.featuredOnly && section.items.length > 0 && (
-                      <CarouselCard
-                        items={section.items}
-                        mobileCardsPerView={1}
-                        tabletCardsPerView={2.2}
-                        desktopCardsPerView={3.35}
-                        trackClassName="catalog-featured__track"
-                        renderItem={(product, index) => (
-                          <ProductCard
-                            product={product}
-                            index={index}
-                            className="catalog-product-card catalog-product-card--featured"
-                            onAddToCart={handleAddToCart}
-                            onOpenDetails={setSelectedItem}
-                            favoriteButton={product.itemType === 'product' && isAuthenticated ? <FavoriteButton productId={product.id} size="small" /> : null}
-                            stockBadge={<StockBadge quantity={product.stock_quantity} />}
+                <button
+                  key={cartCount > 0 ? `toolbar-cart-${cartCount}` : 'toolbar-cart-empty'}
+                  type="button"
+                  className={`catalog-toolbar__cart${!hasItems ? ' catalog-toolbar__cart--empty' : ''}${cartCount > 0 ? ' is-pulsing' : ''}`}
+                  onClick={openCart}
+                >
+                  <ShoppingBag size={18} />
+                  <span>{hasItems ? `${cartCount} item(ns) — ${formatMoney(cartTotal)}` : 'Sacola vazia'}</span>
+                </button>
+              </div>
+
+              {filteredItems.length === 0 && query && (
+                <PageTransition animation="fadeIn" delay={150}>
+                  <EmptyState.Search query={query} onAction={() => setQuery('')} />
+                </PageTransition>
+              )}
+
+              {groupedSections.length > 0 && (
+                <main className="catalog-main">
+                  {groupedSections.map((section, sectionIndex) => (
+                    <PageTransition key={section.key} animation="fadeUp" delay={sectionIndex * 55}>
+                      <section
+                        id={`catalog-section-${section.key}`}
+                        ref={(element) => { sectionRefs.current[section.key] = element; }}
+                        className={`catalog-section ${section.featuredOnly ? 'catalog-section--featured' : ''}`}
+                      >
+                        <div className="catalog-section__header">
+                          <div>
+                            <h2 className="catalog-section__title">{section.title}</h2>
+                            <p className="catalog-section__description">{section.description}</p>
+                          </div>
+                          {!section.featuredOnly && !section.isBuilder && section.items.length > 0 && (
+                            <span className="catalog-section__count">
+                              {section.items.length} {section.items.length === 1 ? 'item' : 'itens'}
+                            </span>
+                          )}
+                        </div>
+
+                        {section.featuredOnly && section.items.length > 0 && (
+                          <CarouselCard
+                            items={section.items}
+                            mobileCardsPerView={1.08}
+                            tabletCardsPerView={2.15}
+                            desktopCardsPerView={2.4}
+                            trackClassName="catalog-featured__track"
+                            renderItem={(product, index) => (
+                              <ProductCard
+                                product={product}
+                                index={index}
+                                className="catalog-product-card catalog-product-card--featured"
+                                onAddToCart={handleAddToCart}
+                                onOpenDetails={setSelectedItem}
+                                favoriteButton={product.itemType === 'product' && isAuthenticated ? <FavoriteButton productId={product.id} size="small" /> : null}
+                                stockBadge={<StockBadge quantity={product.stock_quantity} />}
+                              />
+                            )}
                           />
                         )}
-                      />
-                    )}
 
-                    {/* Builder section (Monte sua Salada) */}
-                    {section.isBuilder && (
-                      <>
-                        <SaladBuilder
-                          ingredients={ingredientItems}
-                        />
-                        {section.items.length > 0 && (
-                          <div className="catalog-section__subheader">
-                            <span>Combos prontos</span>
-                            <span>{section.items.length} {section.items.length === 1 ? 'combo' : 'combos'}</span>
+                        {section.isBuilder && (
+                          <>
+                            <SaladBuilder ingredients={ingredientItems} />
+                            {section.items.length > 0 && (
+                              <div className="catalog-section__subheader">
+                                <span>Combos prontos</span>
+                                <span>{section.items.length} {section.items.length === 1 ? 'combo' : 'combos'}</span>
+                              </div>
+                            )}
+                          </>
+                        )}
+
+                        {!section.featuredOnly && section.items.length > 0 && (
+                          <div className="catalog-row-list">
+                            {section.items.map((product, index) => (
+                              <div key={product.id} className="reveal" data-delay={String(Math.min(index + 1, 6))}>
+                                <MenuProductRow
+                                  product={product}
+                                  onOpenDetails={setSelectedItem}
+                                  favoriteButton={product.itemType === 'product' && isAuthenticated ? <FavoriteButton productId={product.id} size="small" /> : null}
+                                />
+                              </div>
+                            ))}
                           </div>
                         )}
-                      </>
-                    )}
+                      </section>
+                    </PageTransition>
+                  ))}
+                </main>
+              )}
+            </div>
 
-                    {/* Regular vertical list */}
-                    {!section.featuredOnly && section.items.length > 0 && (
-                      <div className="catalog-row-list">
-                        {section.items.map((product, idx) => (
-                          <div key={product.id} className="reveal" data-delay={String(Math.min(idx + 1, 6))}>
-                            <MenuProductRow
-                              product={product}
-                              onOpenDetails={setSelectedItem}
-                              favoriteButton={product.itemType === 'product' && isAuthenticated ? <FavoriteButton productId={product.id} size="small" /> : null}
-                            />
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </section>
-                </PageTransition>
-              ))}
-            </main>
-          )}
+            <aside className="catalog-aside">
+              <div className="catalog-aside__panel">
+                <button type="button" className="catalog-aside__delivery" onClick={() => router.push('/checkout')}>
+                  <div className="catalog-aside__delivery-copy">
+                    <strong>{deliveryCta}</strong>
+                    <span>{deliveryHint}</span>
+                  </div>
+                  <ChevronRight size={18} />
+                </button>
+
+                <div className="catalog-aside__cart">
+                  <div className="catalog-aside__cart-icon">
+                    <ShoppingBag size={34} />
+                  </div>
+                  <strong>{hasItems ? formatMoney(cartTotal) : 'Sacola vazia'}</strong>
+                  <p>{asideHelpLabel}</p>
+
+                  {hasItems ? (
+                    <div className="catalog-aside__cart-meta">
+                      <span>{cartCount} item(ns)</span>
+                      <span>Checkout rápido</span>
+                    </div>
+                  ) : (
+                    <div className="catalog-aside__cart-meta">
+                      <span>Sem cadastro obrigatório</span>
+                      <span>Entrega e retirada</span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="catalog-aside__coupon">
+                  <div>
+                    <strong>Que tal usar um cupom?</strong>
+                    <span>1 disponível</span>
+                  </div>
+                  <TicketPercent size={18} />
+                </div>
+
+                <button type="button" className="catalog-aside__cta" onClick={hasItems ? openCart : () => handleJumpToSection('destaques')}>
+                  {hasItems ? 'Abrir sacola' : 'Ver destaques'}
+                </button>
+
+                {!isAuthenticated && whatsappNumber && (
+                  <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="catalog-aside__helper">
+                    Falar no WhatsApp
+                  </a>
+                )}
+
+                {hasItems && (
+                  <Link href="/checkout" className="catalog-aside__checkout">
+                    Finalizar pedido
+                  </Link>
+                )}
+              </div>
+            </aside>
+          </div>
         </div>
       )}
+
+      <nav className="cardapio-bottom-nav" aria-label="Navegação rápida">
+        {bottomNavItems.map((item) => (
+          <button key={item.key} type="button" className={`cardapio-bottom-nav__item${item.key === 'inicio' ? ' is-active' : ''}`} onClick={item.onClick}>
+            {item.label}
+          </button>
+        ))}
+      </nav>
     </div>
   );
 };
