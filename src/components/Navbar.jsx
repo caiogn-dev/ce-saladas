@@ -1,29 +1,18 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useAuth } from '../context/AuthContext';
-import { useCart } from '../context/CartContext';
 import { useStore } from '../context/StoreContext';
 import { useTheme } from '../context/ThemeContext';
-
-const normalizePhone = (value = '') => value.replace(/\D/g, '');
 
 const Navbar = () => {
   const { store } = useStore();
   const { isAuthenticated } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { cartCount, openCart } = useCart();
   const { theme, toggleTheme } = useTheme();
   const router = useRouter();
 
   const isActive = (path) => router.pathname === path;
-  const whatsappNumber = useMemo(
-    () => normalizePhone(store?.whatsapp_number || store?.phone || ''),
-    [store?.phone, store?.whatsapp_number]
-  );
-  const whatsappUrl = whatsappNumber
-    ? `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(`Ola! Quero falar com ${store?.name || 'Ce Saladas'}.`)}`
-    : '/cardapio';
 
   useEffect(() => {
     const handleRouteChange = () => {
@@ -86,19 +75,10 @@ const Navbar = () => {
         </div>
 
         <div className="navbar-actions">
-          {isAuthenticated ? (
+          {isAuthenticated && (
             <Link href="/perfil" className="navbar-account-btn">
               Minha conta
             </Link>
-          ) : (
-            <a
-              href={whatsappUrl}
-              target={whatsappNumber ? '_blank' : undefined}
-              rel={whatsappNumber ? 'noopener noreferrer' : undefined}
-              className="navbar-account-btn"
-            >
-              WhatsApp
-            </a>
           )}
 
           <button
@@ -115,23 +95,6 @@ const Navbar = () => {
                 <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
               </svg>
             )}
-          </button>
-
-          <button
-            key={cartCount > 0 ? `navbar-cart-${cartCount}` : 'navbar-cart-empty'}
-            onClick={openCart}
-            className={`navbar-cart-btn ${cartCount > 0 ? 'pulse' : ''}`}
-            aria-label="Abrir sacola"
-          >
-            <span className="cart-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" focusable="false">
-                <path d="M6 6h15l-1.5 9h-12zM6 6l-1.5-3h-3" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                <circle cx="9" cy="20" r="1.5" fill="currentColor" />
-                <circle cx="18" cy="20" r="1.5" fill="currentColor" />
-              </svg>
-            </span>
-            <span className="cart-text">Sacola</span>
-            {cartCount > 0 && <span className="cart-badge pulse">{cartCount}</span>}
           </button>
         </div>
       </div>
@@ -157,15 +120,6 @@ const Navbar = () => {
             Meus pedidos
           </Link>
         )}
-        <a
-          href={whatsappUrl}
-          target={whatsappNumber ? '_blank' : undefined}
-          rel={whatsappNumber ? 'noopener noreferrer' : undefined}
-          className="navbar-mobile-link navbar-mobile-link--accent"
-          onClick={closeMobileMenu}
-        >
-          Falar no WhatsApp
-        </a>
       </div>
 
       {mobileMenuOpen && (

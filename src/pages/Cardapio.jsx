@@ -1,8 +1,7 @@
 import React, { useMemo, useState, useRef, useEffect, useCallback } from 'react';
 import dynamic from 'next/dynamic';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { ArrowRight, Clock3, MapPin, ShoppingBag } from 'lucide-react';
+import { Clock3, MapPin, ShoppingBag } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import FavoriteButton from '../components/FavoriteButton';
 import StockBadge from '../components/StockBadge';
@@ -18,7 +17,6 @@ import CarouselCard from '../components/ui/CarouselCard';
 import ProductCard from '../components/ui/ProductCard';
 import PageTransition from '../components/ui/PageTransition';
 import { useCart } from '../context/CartContext';
-import { useAuth } from '../context/AuthContext';
 import { useStore } from '../context/StoreContext';
 
 const MENU_SECTIONS = [
@@ -104,8 +102,6 @@ const formatMoney = (value) => Number(value || 0).toLocaleString('pt-BR', {
   currency: 'BRL',
 });
 
-const normalizePhone = (value = '') => value.replace(/\D/g, '');
-
 const ProductsSkeleton = () => (
   <div className="catalog-main">
     <div className="catalog-toolbar catalog-toolbar--skeleton">
@@ -137,7 +133,6 @@ const Cardapio = () => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [query, setQuery] = useState('');
   const [activeSection, setActiveSection] = useState(null);
-  const { isAuthenticated } = useAuth();
   const sectionRefs = useRef({});
   const navRef = useRef(null);
 
@@ -352,18 +347,9 @@ const Cardapio = () => {
     return store?.address || 'Retirada e entrega disponíveis';
   }, [store]);
 
-  const storeHoursLabel = store?.metadata?.business_hours_label || store?.metadata?.opening_hours || 'pedido simples, rápido e sem cadastro obrigatório';
+  const storeHoursLabel = store?.metadata?.business_hours_label || store?.metadata?.opening_hours || 'entrega e retirada disponíveis';
   const heroDescription = store?.metadata?.catalog_pitch || 'bowls autorais e montados por você. entrega sob refrigeração em poucos minutos.';
   const heroCover = store?.metadata?.cover_image_url || featuredItems[0]?.image_url || store?.logo_url || null;
-  const whatsappNumber = useMemo(
-    () => normalizePhone(store?.whatsapp_number || store?.phone || ''),
-    [store?.phone, store?.whatsapp_number]
-  );
-  const whatsappUrl = useMemo(() => (
-    whatsappNumber
-      ? `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(`Ola! Quero ajuda para montar meu pedido na ${store?.name || 'Ce Saladas'}.`)}`
-      : '#'
-  ), [store?.name, whatsappNumber]);
 
   return (
     <div className="cardapio-page">
@@ -428,38 +414,12 @@ const Cardapio = () => {
                     )}
                   />
                 </div>
-                {hasItems && (
-                  <button key={`hero-cart-${cartCount}`} type="button" className="cardapio-hero__cart-btn is-pulsing" onClick={openCart}>
-                    <ShoppingBag size={18} />
-                    <span>{`sacola (${cartCount})`}</span>
-                    <ArrowRight size={16} />
-                  </button>
-                )}
                 {query && (
                   <button type="button" className="cardapio-hero__clear" onClick={() => setQuery('')}>
                     limpar busca
                   </button>
                 )}
               </div>
-
-              {(isAuthenticated || whatsappNumber) && (
-                <div className="cardapio-hero__quick-actions">
-                  {isAuthenticated ? (
-                    <>
-                      <Link href="/perfil" className="cardapio-hero__quick-link">
-                        minha conta
-                      </Link>
-                      <Link href="/perfil?tab=orders" className="cardapio-hero__quick-link">
-                        meus pedidos
-                      </Link>
-                    </>
-                  ) : (
-                    <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="cardapio-hero__quick-link cardapio-hero__quick-link--accent">
-                      ajuda no WhatsApp
-                    </a>
-                  )}
-                </div>
-              )}
             </div>
           </div>
         </header>

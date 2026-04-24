@@ -61,7 +61,7 @@
 .hero {
   position: relative;
   flex-shrink: 0;
-  height: 240px;
+  height: 184px;
   overflow: hidden;
   background: var(--clr-sand-100);
 }
@@ -371,7 +371,7 @@
   }
 
   .hero {
-    height: 280px;
+    height: 216px;
     border-radius: 24px 24px 0 0;
   }
 }
