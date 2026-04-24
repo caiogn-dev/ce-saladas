@@ -17,6 +17,7 @@ import CarouselCard from '../components/ui/CarouselCard';
 import ProductCard from '../components/ui/ProductCard';
 import PageTransition from '../components/ui/PageTransition';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 import { useStore } from '../context/StoreContext';
 
 const MENU_SECTIONS = [
@@ -144,6 +145,7 @@ const Cardapio = () => {
     hasItems,
     openCart,
   } = useCart();
+  const { isAuthenticated } = useAuth();
 
   const {
     store,
