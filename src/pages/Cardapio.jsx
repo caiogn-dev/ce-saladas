@@ -545,7 +545,7 @@ const Cardapio = () => {
                     {section.featuredOnly && section.items.length > 0 && (
                       <CarouselCard
                         items={section.items}
-                        mobileCardsPerView={1.18}
+                        mobileCardsPerView={2.35}
                         tabletCardsPerView={2.15}
                         desktopCardsPerView={3.35}
                         trackClassName="catalog-featured__track"
