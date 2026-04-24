@@ -541,42 +541,26 @@ const Cardapio = () => {
                       )}
                     </div>
 
-                    {/* Featured section — compact list on mobile, carousel on desktop */}
+                    {/* Featured section — keep carousel, but smaller on mobile */}
                     {section.featuredOnly && section.items.length > 0 && (
-                      <>
-                        <div className="catalog-featured-mobile">
-                          {section.items.map((product, idx) => (
-                            <div key={product.id} className="reveal" data-delay={String(Math.min(idx + 1, 6))}>
-                              <MenuProductRow
-                                product={product}
-                                onOpenDetails={setSelectedItem}
-                                favoriteButton={product.itemType === 'product' && isAuthenticated ? <FavoriteButton productId={product.id} size="small" /> : null}
-                              />
-                            </div>
-                          ))}
-                        </div>
-
-                        <div className="catalog-featured-desktop">
-                          <CarouselCard
-                            items={section.items}
-                            mobileCardsPerView={1}
-                            tabletCardsPerView={2.2}
-                            desktopCardsPerView={3.35}
-                            trackClassName="catalog-featured__track"
-                            renderItem={(product, index) => (
-                              <ProductCard
-                                product={product}
-                                index={index}
-                                className="catalog-product-card catalog-product-card--featured"
-                                onAddToCart={handleAddToCart}
-                                onOpenDetails={setSelectedItem}
-                                favoriteButton={product.itemType === 'product' && isAuthenticated ? <FavoriteButton productId={product.id} size="small" /> : null}
-                                stockBadge={<StockBadge quantity={product.stock_quantity} />}
-                              />
-                            )}
+                      <CarouselCard
+                        items={section.items}
+                        mobileCardsPerView={1.18}
+                        tabletCardsPerView={2.15}
+                        desktopCardsPerView={3.35}
+                        trackClassName="catalog-featured__track"
+                        renderItem={(product, index) => (
+                          <ProductCard
+                            product={product}
+                            index={index}
+                            className="catalog-product-card catalog-product-card--featured"
+                            onAddToCart={handleAddToCart}
+                            onOpenDetails={setSelectedItem}
+                            favoriteButton={product.itemType === 'product' && isAuthenticated ? <FavoriteButton productId={product.id} size="small" /> : null}
+                            stockBadge={<StockBadge quantity={product.stock_quantity} />}
                           />
-                        </div>
-                      </>
+                        )}
+                      />
                     )}
 
                     {/* Builder section (Monte sua Salada) */}
