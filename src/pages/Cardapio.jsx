@@ -354,6 +354,9 @@ const Cardapio = () => {
 
   const storeHoursLabel = store?.metadata?.business_hours_label || store?.metadata?.opening_hours || 'Pedido simples, rápido e sem cadastro obrigatório';
   const heroDescription = store?.metadata?.catalog_pitch || 'Escolha sua refeição, ajuste os sabores e finalize em poucos toques.';
+  const heroCover = store?.metadata?.cover_image_url || featuredItems[0]?.image_url || store?.logo_url || null;
+  const deliveryHint = store?.metadata?.delivery_hint || 'Entrega grátis em pedidos a partir de R$ 40,00';
+  const loyaltyHint = store?.metadata?.loyalty_pitch || 'A cada R$ 100 em compras você acumula crédito para o próximo pedido.';
 
   const whatsappNumber = useMemo(
     () => normalizePhone(store?.whatsapp_number || store?.phone || ''),
@@ -391,44 +394,38 @@ const Cardapio = () => {
       <PageTransition animation="fadeUp" delay={0}>
         <header className="cardapio-hero">
           <div className="container">
-            <div className="cardapio-hero__panel">
-              <span className="cardapio-hero__accent" aria-hidden="true" />
+            <div className="cardapio-hero__banner">Você tem 1 cupom! Aproveite.</div>
 
-              <div className="cardapio-hero__top">
-                <div className="cardapio-hero__brand">
-                  <div className="cardapio-hero__logo-shell">
-                    {store?.logo_url ? (
-                      <img src={store.logo_url} alt={store.name} className="cardapio-hero__logo" />
-                    ) : (
-                      <span className="cardapio-hero__logo-placeholder">Cê</span>
-                    )}
-                  </div>
-                  <div className="cardapio-hero__copy">
-                    <span className="cardapio-hero__eyebrow">Cardápio</span>
-                    <h1 className="cardapio-hero__title">{store?.name || 'Cê Saladas'}</h1>
-                    <p className="cardapio-hero__intro">{heroDescription}</p>
+            <div className="cardapio-hero__cover" style={heroCover ? { backgroundImage: `url(${heroCover})` } : undefined} />
+
+            <div className="cardapio-hero__panel">
+              <div className="cardapio-hero__brand">
+                <div className="cardapio-hero__logo-shell">
+                  {store?.logo_url ? (
+                    <img src={store.logo_url} alt={store.name} className="cardapio-hero__logo" />
+                  ) : (
+                    <span className="cardapio-hero__logo-placeholder">Cê</span>
+                  )}
+                </div>
+                <div className="cardapio-hero__copy">
+                  <h1 className="cardapio-hero__title">{store?.name || 'Cê Saladas'}</h1>
+                  <p className="cardapio-hero__intro">{heroDescription}</p>
+                  <div className="cardapio-hero__meta">
+                    <span><MapPin size={16} />{storeLocation}</span>
+                    <span><Clock3 size={16} />{storeHoursLabel}</span>
                   </div>
                 </div>
-
-                <button key={cartCount > 0 ? `hero-cart-${cartCount}` : 'hero-cart-empty'} type="button" className={`cardapio-hero__cart-btn${!hasItems ? ' cardapio-hero__cart-btn--empty' : ''}${cartCount > 0 ? ' is-pulsing' : ''}`} onClick={openCart}>
-                  <ShoppingBag size={18} />
-                  <span>{hasItems ? `Sacola (${cartCount})` : 'Abrir sacola'}</span>
-                  <ArrowRight size={16} />
-                </button>
               </div>
 
-              <div className="cardapio-hero__meta">
-                <span><MapPin size={16} />{storeLocation}</span>
-                <span><Clock3 size={16} />{storeHoursLabel}</span>
-              </div>
-
-              <div className="cardapio-hero__stats" aria-label="Resumo do cardápio">
-                {catalogHighlights.map((highlight) => (
-                  <div key={highlight.label} className="cardapio-hero__stat">
-                    <strong>{highlight.value}</strong>
-                    <span>{highlight.label}</span>
-                  </div>
-                ))}
+              <div className="cardapio-hero__utility-list">
+                <div className="cardapio-hero__utility">
+                  <strong>Calcular taxa e tempo de entrega</strong>
+                  <span>{deliveryHint}</span>
+                </div>
+                <div className="cardapio-hero__utility">
+                  <strong>Programa de fidelidade</strong>
+                  <span>{loyaltyHint}</span>
+                </div>
               </div>
 
               <div className="cardapio-hero__search-row">
@@ -447,6 +444,11 @@ const Cardapio = () => {
                     )}
                   />
                 </div>
+                <button key={cartCount > 0 ? `hero-cart-${cartCount}` : 'hero-cart-empty'} type="button" className={`cardapio-hero__cart-btn${!hasItems ? ' cardapio-hero__cart-btn--empty' : ''}${cartCount > 0 ? ' is-pulsing' : ''}`} onClick={openCart}>
+                  <ShoppingBag size={18} />
+                  <span>{hasItems ? `Sacola (${cartCount})` : 'Abrir sacola'}</span>
+                  <ArrowRight size={16} />
+                </button>
                 {query && (
                   <button type="button" className="cardapio-hero__clear" onClick={() => setQuery('')}>
                     Limpar busca
@@ -454,22 +456,24 @@ const Cardapio = () => {
                 )}
               </div>
 
-              <div className="cardapio-hero__quick-actions">
-                {isAuthenticated ? (
-                  <>
-                    <Link href="/perfil" className="cardapio-hero__quick-link">
-                      Minha conta
-                    </Link>
-                    <Link href="/perfil?tab=orders" className="cardapio-hero__quick-link">
-                      Meus pedidos
-                    </Link>
-                  </>
-                ) : whatsappNumber ? (
-                  <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="cardapio-hero__quick-link cardapio-hero__quick-link--accent">
-                    Ajuda no WhatsApp
-                  </a>
-                ) : null}
-              </div>
+              {(isAuthenticated || whatsappNumber) && (
+                <div className="cardapio-hero__quick-actions">
+                  {isAuthenticated ? (
+                    <>
+                      <Link href="/perfil" className="cardapio-hero__quick-link">
+                        Minha conta
+                      </Link>
+                      <Link href="/perfil?tab=orders" className="cardapio-hero__quick-link">
+                        Meus pedidos
+                      </Link>
+                    </>
+                  ) : (
+                    <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="cardapio-hero__quick-link cardapio-hero__quick-link--accent">
+                      Ajuda no WhatsApp
+                    </a>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </header>
