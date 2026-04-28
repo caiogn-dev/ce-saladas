@@ -533,6 +533,41 @@ const LandingPage = () => {
         </div>
       </section>
 
+      {/* ── Localização ───────────────────────────────────────── */}
+      <section id="localizacao" className="location-section" aria-labelledby="location-title">
+        <div className="container location-section__inner">
+          <div className="location-copy">
+            <p className="section-eyebrow">Nossa localização</p>
+            <h2 id="location-title" className="section-accent-title">
+              Encontre o <em>Cê Saladas</em>
+            </h2>
+            <p>
+              Veja o endereço no mapa, pesquise a rota e venha retirar seu pedido na loja.
+            </p>
+            <a
+              href="https://www.google.com/maps/search/?api=1&query=C%C3%AA%20Saladas%20Palmas%20TO&query_place_id=ChIJ0c_zgLjNJJMRdwOAY3VKXi4"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="location-route-link"
+            >
+              Abrir rota no Google Maps
+              <ArrowRight size={18} />
+            </a>
+          </div>
+          <div className="location-map-shell" aria-label="Mapa com a localização do Cê Saladas">
+            <iframe
+              src="https://storage.googleapis.com/maps-solutions-9es6wufhru/locator-plus/1a50/locator-plus.html"
+              width="100%"
+              height="100%"
+              style={{ border: 0 }}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="Localização do Cê Saladas"
+            />
+          </div>
+        </div>
+      </section>
+
       {/* ── CTA ────────────────────────────────────────────────── */}
       <section className="cta-section">
         <svg className="cta-blob" viewBox="0 0 400 400" aria-hidden="true">

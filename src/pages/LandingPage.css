@@ -680,6 +680,72 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════
+   LOCATION
+   ═══════════════════════════════════════════════════════════════ */
+.location-section {
+  scroll-margin-top: calc(var(--header-height) + 18px);
+  padding: 88px 0;
+  background: #fff;
+}
+
+.location-section__inner {
+  display: grid;
+  grid-template-columns: minmax(280px, .78fr) minmax(0, 1.22fr);
+  gap: 32px;
+  align-items: center;
+}
+
+.location-copy p:not(.section-eyebrow) {
+  margin: 0 0 22px;
+  max-width: 520px;
+  color: var(--clr-stone-500);
+  font-size: 1rem;
+  line-height: 1.7;
+  font-weight: 300;
+}
+
+.location-route-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 20px;
+  border-radius: var(--o-radius-full);
+  background: var(--clr-terra-500);
+  color: #fff;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 12px 28px rgba(var(--clr-terra-rgb), .18);
+  transition:
+    transform var(--dur-fast) var(--ease-spring),
+    background var(--dur-fast),
+    box-shadow var(--dur-base);
+}
+
+.location-route-link:hover {
+  transform: translateY(-2px);
+  background: var(--clr-terra-600);
+  box-shadow: 0 18px 36px rgba(var(--clr-terra-rgb), .24);
+}
+
+.location-map-shell {
+  width: 100%;
+  min-height: 440px;
+  height: min(64vh, 620px);
+  overflow: hidden;
+  border-radius: 24px;
+  background: #f5f1eb;
+  border: 1px solid rgba(0,0,0,.08);
+  box-shadow: 0 18px 48px rgba(0,0,0,.10);
+}
+
+.location-map-shell iframe {
+  display: block;
+}
+
+/* ═══════════════════════════════════════════════════════════════
    CTA
    ═══════════════════════════════════════════════════════════════ */
 .cta-section {
@@ -975,6 +1041,15 @@
     max-width: 520px;
     margin: 0 auto;
   }
+
+  .location-section__inner {
+    grid-template-columns: 1fr;
+  }
+
+  .location-map-shell {
+    min-height: 420px;
+    height: 58vh;
+  }
 }
 
 /* ─── 768px ─── */
@@ -1027,6 +1102,20 @@
   .step-card, .feature-card, .promo-modal { padding: 22px 18px; }
 
   .section-header { margin-bottom: 32px; }
+
+  .location-section {
+    padding: 52px 0;
+  }
+
+  .location-map-shell {
+    min-height: 520px;
+    height: 70vh;
+    border-radius: 18px;
+  }
+
+  .location-route-link {
+    width: 100%;
+  }
 }
 
 /* ─── 400px ─── */

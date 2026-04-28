@@ -72,6 +72,9 @@ const Navbar = () => {
           <Link href="/cardapio" className={`navbar-link ${isActive('/cardapio') ? 'active' : ''}`}>
             Cardapio
           </Link>
+          <Link href="/#localizacao" className="navbar-link">
+            Localizacao
+          </Link>
         </div>
 
         <div className="navbar-actions">
@@ -109,6 +112,13 @@ const Navbar = () => {
           onClick={() => handleMobileNavigate('/cardapio')}
         >
           Cardapio
+        </button>
+        <button
+          type="button"
+          className="navbar-mobile-link"
+          onClick={() => handleMobileNavigate('/#localizacao')}
+        >
+          Localizacao
         </button>
         {isAuthenticated && (
           <Link href="/perfil" className={`navbar-mobile-link ${isActive('/perfil') ? 'active' : ''}`} onClick={closeMobileMenu}>
