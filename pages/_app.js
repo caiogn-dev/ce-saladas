@@ -63,17 +63,43 @@ export default function App({ Component, pageProps }) {
   }, []);
 
   useEffect(() => {
-    const handleRouteChange = () => {
+    const trackPixelEvent = (eventName, customData = {}, eventId = '') => {
       if (typeof window !== 'undefined' && typeof window.fbq === 'function') {
-        window.fbq('track', 'PageView');
+        window.fbq(
+          'track',
+          eventName,
+          customData,
+          eventId ? { eventID: eventId } : undefined
+        );
       }
     };
 
+    const handleRouteChange = (url) => {
+      trackPixelEvent('PageView');
+
+      if (typeof url === 'string' && url.startsWith('/cardapio')) {
+        trackPixelEvent('ViewContent', {
+          content_name: 'Cardapio Ce Saladas',
+          content_type: 'product_group',
+        });
+      }
+    };
+
+    const handleMetaEvent = (event) => {
+      const detail = event.detail || {};
+      trackPixelEvent(detail.eventName, detail.customData || {}, detail.eventId || '');
+    };
+
     router.events.on('routeChangeComplete', handleRouteChange);
+    window.addEventListener('meta:pixel-event', handleMetaEvent);
+
+    handleRouteChange(router.asPath);
+
     return () => {
       router.events.off('routeChangeComplete', handleRouteChange);
+      window.removeEventListener('meta:pixel-event', handleMetaEvent);
     };
-  }, [router.events]);
+  }, [router.asPath, router.events]);
 
   return (
     <>

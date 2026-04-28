@@ -36,6 +36,30 @@ const clearCartCacheInternal = () => {
   cartCacheTs = 0;
 };
 
+const dispatchMetaPixelEvent = (eventName, customData = {}, eventId = '') => {
+  if (typeof window === 'undefined' || !eventName) return;
+  window.dispatchEvent(new CustomEvent('meta:pixel-event', {
+    detail: { eventName, customData, eventId },
+  }));
+};
+
+const buildMetaEventId = (eventName) => {
+  if (typeof window !== 'undefined' && window.crypto && typeof window.crypto.randomUUID === 'function') {
+    return `${eventName}:${window.crypto.randomUUID()}`;
+  }
+  return `${eventName}:${Date.now()}:${Math.random().toString(36).slice(2, 10)}`;
+};
+
+const trackAddToCartPixelEvent = (item, fallback = {}) => {
+  dispatchMetaPixelEvent('AddToCart', {
+    currency: 'BRL',
+    value: Number(item?.price || item?.unit_price || fallback.price || 0),
+    content_ids: [String(item?.id || fallback.id || 'item')],
+    content_name: item?.name || item?.product_name || fallback.name || '',
+    content_type: 'product',
+  }, buildMetaEventId('AddToCart'));
+};
+
 export const CartProvider = ({ children }) => {
   const toast = useToast();
   const [cart, setCart] = useState([]);
@@ -190,6 +214,7 @@ export const CartProvider = ({ children }) => {
     });
     try {
       const data = await storeApi.addToCart(product.id, 1, {}, '');
+      trackAddToCartPixelEvent(product);
       syncCartState(data);
     } catch (error) {
       console.error('Error adding to cart:', error);
@@ -252,6 +277,11 @@ export const CartProvider = ({ children }) => {
         customizations,
         notes,
       });
+      trackAddToCartPixelEvent(null, {
+        id: 'monte-sua-salada',
+        name: 'Monte sua Salada',
+        price: unitPrice,
+      });
       syncCartState(data);
     } catch (error) {
       console.error('Error adding salad to cart:', error);
@@ -285,6 +315,7 @@ export const CartProvider = ({ children }) => {
     });
     try {
       const data = await storeApi.addComboToCart(combo.id, 1, {}, '');
+      trackAddToCartPixelEvent(combo);
       syncCartState(data);
     } catch (error) {
       console.error('Error adding combo to cart:', error);
@@ -444,4 +475,3 @@ export const CartProvider = ({ children }) => {
 };
 
 export const useCart = () => useContext(CartContext);
-

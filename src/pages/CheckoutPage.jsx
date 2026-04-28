@@ -34,6 +34,34 @@ const normalizeString = (value) => (
   typeof value === 'string' ? value.trim().toLowerCase() : ''
 );
 
+const dispatchMetaPixelEvent = (eventName, customData = {}, eventId = '') => {
+  if (typeof window === 'undefined' || !eventName) return;
+  window.dispatchEvent(new CustomEvent('meta:pixel-event', {
+    detail: { eventName, customData, eventId },
+  }));
+};
+
+const buildMetaEventId = (eventName) => {
+  if (typeof window !== 'undefined' && window.crypto && typeof window.crypto.randomUUID === 'function') {
+    return `${eventName}:${window.crypto.randomUUID()}`;
+  }
+  return `${eventName}:${Date.now()}:${Math.random().toString(36).slice(2, 10)}`;
+};
+
+const getCookieValue = (name) => {
+  if (typeof document === 'undefined' || !name) return '';
+  const cookie = document.cookie.split('; ').find((row) => row.startsWith(`${name}=`));
+  return cookie ? decodeURIComponent(cookie.slice(name.length + 1)) : '';
+};
+
+const buildMetaPurchasePayload = (eventId) => ({
+  event_name: 'Purchase',
+  event_id: eventId,
+  fbp: getCookieValue('_fbp'),
+  fbc: getCookieValue('_fbc'),
+  event_source_url: typeof window !== 'undefined' ? window.location.href : '',
+});
+
 const ALLOWED_REDIRECT_HOSTS = [
   'www.mercadopago.com.br',
   'www.mercadopago.com',
@@ -182,6 +210,10 @@ class CheckoutSubtreeBoundary extends React.Component {
 const CheckoutPage = () => {
   const router = useRouter();
   const { cart, combos, cartTotal, clearCart, hasItems } = useCart();
+  const cartItemCount = [...(cart || []), ...(combos || [])].reduce(
+    (total, item) => total + Number(item.quantity || 1),
+    0
+  );
   const { updateProfile, isAuthenticated, user, profile, signOut } = useAuth();
   const { isStoreOpen, availability } = useStore();
   const mpPublicKey = process.env.NEXT_PUBLIC_MERCADO_PAGO_PUBLIC_KEY;
@@ -379,8 +411,13 @@ const CheckoutPage = () => {
 
   // Handle proceed to payment
   const handleProceedToPayment = useCallback(() => {
+    dispatchMetaPixelEvent('InitiateCheckout', {
+      currency: 'BRL',
+      value: Number(cartTotal + (delivery.shippingCost || 0) - discountAmount),
+      num_items: Number(cartItemCount || 0),
+    }, buildMetaEventId('InitiateCheckout'));
     setCurrentStep('payment');
-  }, []);
+  }, [cartItemCount, cartTotal, delivery.shippingCost, discountAmount]);
 
   // Handle back to order
   const handleBackToOrder = useCallback(() => {
@@ -422,6 +459,13 @@ const CheckoutPage = () => {
     try {
       const resolvedPaymentMethod = resolveCheckoutPaymentMethod(paymentMethod, paymentPayload);
       const normalizedPaymentPayload = normalizePaymentPayload(paymentMethod, paymentPayload);
+      const purchaseEventId = buildMetaEventId('Purchase');
+
+      dispatchMetaPixelEvent('AddPaymentInfo', {
+        currency: 'BRL',
+        value: Number(cartTotal + (delivery.shippingCost || 0) - discountAmount),
+        payment_type: resolvedPaymentMethod,
+      }, buildMetaEventId('AddPaymentInfo'));
 
       if (normalizeString(paymentMethod) === 'card') {
         if (!mpPublicKey) {
@@ -444,7 +488,8 @@ const CheckoutPage = () => {
         delivery_method: delivery.shippingMethod,
         coupon_code: coupon.appliedCoupon ? coupon.appliedCoupon.code : '',
         payment_method: resolvedPaymentMethod,
-        payment: normalizedPaymentPayload
+        payment: normalizedPaymentPayload,
+        meta: buildMetaPurchasePayload(purchaseEventId),
       };
       
       const response = await storeApi.checkout(checkoutData);
@@ -459,6 +504,13 @@ const CheckoutPage = () => {
       const orderNumber = response.order_number;
       const accessToken = response.access_token;
 
+      dispatchMetaPixelEvent('Purchase', {
+        currency: 'BRL',
+        value: Number(response.total_amount || response.total || 0),
+        order_id: orderNumber || response.order_id || '',
+        content_type: 'product',
+        num_items: Number(cartItemCount || 0),
+      }, purchaseEventId);
 
       // Update profile if needed
       if (checkoutForm.saveAddress) {

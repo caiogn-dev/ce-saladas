@@ -3,6 +3,17 @@ import { useStore } from '../context/StoreContext';
 
 const normalizePhone = (value = '') => value.replace(/\D/g, '');
 
+const dispatchContactEvent = () => {
+  if (typeof window === 'undefined') return;
+  window.dispatchEvent(new CustomEvent('meta:pixel-event', {
+    detail: {
+      eventName: 'Contact',
+      customData: { contact_method: 'whatsapp' },
+      eventId: `Contact:${Date.now()}:${Math.random().toString(36).slice(2, 10)}`,
+    },
+  }));
+};
+
 export default function FloatingWhatsApp() {
   const { store } = useStore();
   const [hovered, setHovered] = useState(false);
@@ -27,6 +38,7 @@ export default function FloatingWhatsApp() {
       rel="noopener noreferrer"
       className={`floating-whatsapp${hovered ? ' floating-whatsapp--hovered' : ''}`}
       aria-label="Fale conosco pelo WhatsApp"
+      onClick={dispatchContactEvent}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
