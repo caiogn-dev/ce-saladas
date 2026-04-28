@@ -20,11 +20,11 @@ const securityHeaders = [
       // API + WebSocket + maps + analytics connections
       "connect-src 'self' https://backend.pastita.com.br wss://backend.pastita.com.br https://connect.facebook.net https://www.facebook.com https://www.google-analytics.com https://api.mercadopago.com https://api-static.mercadopago.com https://secure-fields.mercadopago.com https://api.mercadolibre.com https://sdk.mercadopago.com https://http2.mlstatic.com https://www.mercadolibre.com https://www.mercadolivre.com https://*.googleapis.com *.google.com https://*.gstatic.com data: blob: https://viacep.com.br",
       // Frames: Mercado Pago checkout fields and Google Maps embeds/auth flows.
-      "frame-src https://secure-fields.mercadopago.com https://www.mercadopago.com.br https://www.mercadopago.com https://sandbox.mercadopago.com.br https://api.mercadopago.com https://www.mercadolibre.com https://www.mercadolivre.com *.google.com",
+      "frame-src https://secure-fields.mercadopago.com https://www.mercadopago.com.br https://www.mercadopago.com https://sandbox.mercadopago.com.br https://api.mercadopago.com https://www.mercadolibre.com https://www.mercadolivre.com *.google.com https://storage.googleapis.com",
       // Workers: own domain + blob (Next.js)
       "worker-src 'self' blob:",
       // child-src: legacy fallback
-      "child-src 'self' blob:",
+      "child-src 'self' blob: https://storage.googleapis.com",
     ].join('; '),
   },
 ];

@@ -685,7 +685,7 @@
 .location-section {
   scroll-margin-top: calc(var(--header-height) + 18px);
   padding: 88px 0;
-  background: #fff;
+  background: var(--color-surface-page);
 }
 
 .location-section__inner {
@@ -698,10 +698,14 @@
 .location-copy p:not(.section-eyebrow) {
   margin: 0 0 22px;
   max-width: 520px;
-  color: var(--clr-stone-500);
+  color: var(--color-text-muted);
   font-size: 1rem;
   line-height: 1.7;
   font-weight: 300;
+}
+
+.location-copy .section-accent-title {
+  color: var(--color-text-strong);
 }
 
 .location-route-link {
@@ -736,9 +740,9 @@
   height: min(64vh, 620px);
   overflow: hidden;
   border-radius: 24px;
-  background: #f5f1eb;
-  border: 1px solid rgba(0,0,0,.08);
-  box-shadow: 0 18px 48px rgba(0,0,0,.10);
+  background: var(--color-surface-muted);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--o-shadow-lg);
 }
 
 .location-map-shell iframe {
