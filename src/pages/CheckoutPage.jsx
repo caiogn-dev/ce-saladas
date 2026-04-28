@@ -409,6 +409,9 @@ const CheckoutPage = () => {
     user,
   ]);
 
+  // Calculate discount
+  const discountAmount = coupon.calculateDiscount(cartTotal, delivery.shippingCost || 0);
+
   // Handle proceed to payment
   const handleProceedToPayment = useCallback(() => {
     dispatchMetaPixelEvent('InitiateCheckout', {
@@ -429,9 +432,6 @@ const CheckoutPage = () => {
     const total = cartTotal + (delivery.shippingCost || 0);
     coupon.applyCoupon(total);
   }, [cartTotal, delivery.shippingCost, coupon]);
-
-  // Calculate discount
-  const discountAmount = coupon.calculateDiscount(cartTotal, delivery.shippingCost || 0);
 
   const handleCardBrickError = useCallback((error) => {
     console.error('Erro no CardPayment Brick:', error);
