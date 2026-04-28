@@ -459,6 +459,80 @@ const LandingPage = () => {
         </div>
       </section>
 
+      {/* ── SEO local ─────────────────────────────────────────── */}
+      <section className="how-it-works" aria-labelledby="seo-local-title">
+        <div className="container how-it-works__inner">
+          <div className="section-header">
+            <p className="section-eyebrow">Saladeria em Palmas</p>
+            <h2 id="seo-local-title" className="section-accent-title">
+              Comida saudável, saladas e <em>almoço fit em Palmas</em>
+            </h2>
+          </div>
+          <div className="steps-grid">
+            {[
+              {
+                n: '01',
+                title: 'Saladas frescas em Palmas',
+                body: 'O Cê Saladas prepara saladas, bowls e pratos leves com ingredientes frescos para quem busca comida saudável no almoço ou jantar.',
+              },
+              {
+                n: '02',
+                title: 'Restaurante saudável e fit',
+                body: 'Uma opção prática para comer bem: culinária saudável, refeições equilibradas, proteínas, toppings, molhos e combinações feitas na hora.',
+              },
+              {
+                n: '03',
+                title: 'Delivery de salada',
+                body: 'Peça pelo cardápio online e receba sua salada em Palmas, com retirada na loja ou delivery conforme a região atendida.',
+              },
+            ].map(({ n, title, body }) => (
+              <article key={n} className="step-card" data-n={n}>
+                <div className="step-number">{n}</div>
+                <h3>{title}</h3>
+                <p>{body}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="why-section" aria-labelledby="seo-faq-title">
+        <div className="container why-section__inner">
+          <div className="section-header">
+            <p className="section-eyebrow">Dúvidas frequentes</p>
+            <h2 id="seo-faq-title" className="section-accent-title">
+              Perguntas sobre <em>saladas e comida saudável</em>
+            </h2>
+          </div>
+          <div className="features-grid">
+            {[
+              {
+                title: 'Onde pedir salada em Palmas?',
+                body: 'No Cê Saladas você encontra saladas frescas, bowls, comida fit e almoço saudável com pedido online.',
+              },
+              {
+                title: 'Tem almoço saudável e comida fit?',
+                body: 'Sim. O cardápio tem opções leves, ingredientes frescos, proteínas e combinações para uma rotina mais equilibrada.',
+              },
+              {
+                title: 'A loja faz delivery?',
+                body: 'Sim. Atendemos delivery e retirada em Palmas conforme a área de entrega disponível no checkout.',
+              },
+              {
+                title: 'Posso montar minha salada?',
+                body: 'Sim. Você pode escolher bases, proteínas, toppings e molhos para montar uma salada do seu jeito.',
+              },
+            ].map(({ title, body }) => (
+              <article key={title} className="feature-card">
+                <span className="feature-icon"><Leaf size={24} /></span>
+                <h3>{title}</h3>
+                <p>{body}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── CTA ────────────────────────────────────────────────── */}
       <section className="cta-section">
         <svg className="cta-blob" viewBox="0 0 400 400" aria-hidden="true">

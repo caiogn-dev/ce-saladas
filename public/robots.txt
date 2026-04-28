@@ -11,3 +11,4 @@ Disallow: /login
 Disallow: /registro
 
 Sitemap: https://cesaladas.com.br/sitemap.xml
+LLMs: https://cesaladas.com.br/llms.txt
