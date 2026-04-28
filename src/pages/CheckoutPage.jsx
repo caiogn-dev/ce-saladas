@@ -6,7 +6,7 @@
  * 2. If Delivery - Location Modal popup for GPS/address selection
  * 3. Payment Step - Customer info and payment
  */
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { initMercadoPago } from '@mercadopago/sdk-react';
@@ -225,6 +225,10 @@ const CheckoutPage = () => {
   const geolocation = useGeolocation();
   const delivery = useDelivery();
   const coupon = useCoupon();
+  const discountAmount = useMemo(
+    () => coupon.calculateDiscount(cartTotal, delivery.shippingCost || 0),
+    [coupon, cartTotal, delivery.shippingCost]
+  );
 
   // Flow state
   const [currentStep, setCurrentStep] = useState('order'); // 'order' | 'payment'
@@ -408,9 +412,6 @@ const CheckoutPage = () => {
     updateProfile,
     user,
   ]);
-
-  // Calculate discount
-  const discountAmount = coupon.calculateDiscount(cartTotal, delivery.shippingCost || 0);
 
   // Handle proceed to payment
   const handleProceedToPayment = useCallback(() => {
