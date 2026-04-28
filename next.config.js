@@ -10,7 +10,7 @@ const securityHeaders = [
     value: [
       "default-src 'self'",
       // Scripts: include Google Maps runtime domains recommended by Google CSP docs.
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: https://www.googletagmanager.com https://www.google-analytics.com https://sdk.mercadopago.com https://api.mercadopago.com https://api-static.mercadopago.com https://http2.mlstatic.com https://www.mercadolibre.com https://www.mercadolivre.com https://*.googleapis.com https://*.gstatic.com *.google.com https://*.ggpht.com *.googleusercontent.com",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: https://connect.facebook.net https://www.googletagmanager.com https://www.google-analytics.com https://sdk.mercadopago.com https://api.mercadopago.com https://api-static.mercadopago.com https://http2.mlstatic.com https://www.mercadolibre.com https://www.mercadolivre.com https://*.googleapis.com https://*.gstatic.com *.google.com https://*.ggpht.com *.googleusercontent.com",
       // Styles: own domain + inline (required by Next.js and MercadoPago) + Google Fonts + Google Maps
       "style-src 'self' 'unsafe-inline' https://http2.mlstatic.com https://fonts.googleapis.com https://maps.googleapis.com",
       // Images: include Google Maps CDN domains used for tiles and markers.
@@ -18,7 +18,7 @@ const securityHeaders = [
       // Fonts: own domain + Google Fonts CDN
       "font-src 'self' data: https://fonts.gstatic.com",
       // API + WebSocket + maps + analytics connections
-      "connect-src 'self' https://backend.pastita.com.br wss://backend.pastita.com.br https://www.google-analytics.com https://api.mercadopago.com https://api-static.mercadopago.com https://secure-fields.mercadopago.com https://api.mercadolibre.com https://sdk.mercadopago.com https://http2.mlstatic.com https://www.mercadolibre.com https://www.mercadolivre.com https://*.googleapis.com *.google.com https://*.gstatic.com data: blob: https://viacep.com.br",
+      "connect-src 'self' https://backend.pastita.com.br wss://backend.pastita.com.br https://connect.facebook.net https://www.facebook.com https://www.google-analytics.com https://api.mercadopago.com https://api-static.mercadopago.com https://secure-fields.mercadopago.com https://api.mercadolibre.com https://sdk.mercadopago.com https://http2.mlstatic.com https://www.mercadolibre.com https://www.mercadolivre.com https://*.googleapis.com *.google.com https://*.gstatic.com data: blob: https://viacep.com.br",
       // Frames: Mercado Pago checkout fields and Google Maps embeds/auth flows.
       "frame-src https://secure-fields.mercadopago.com https://www.mercadopago.com.br https://www.mercadopago.com https://sandbox.mercadopago.com.br https://api.mercadopago.com https://www.mercadolibre.com https://www.mercadolivre.com *.google.com",
       // Workers: own domain + blob (Next.js)
