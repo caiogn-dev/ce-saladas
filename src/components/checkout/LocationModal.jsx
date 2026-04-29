@@ -11,6 +11,12 @@ import DeliveryMapSimple from './DeliveryMapSimple';
 
 const resolveDetectedNumber = (value) => value?.address?.number || value?.number || '';
 
+const normalizeAddressText = (value) => String(value || '')
+  .normalize('NFD')
+  .replace(/[\u0300-\u036f]/g, '')
+  .trim()
+  .toLowerCase();
+
 const LocationModal = ({
   isOpen,
   onClose,
@@ -136,6 +142,11 @@ const LocationModal = ({
   const handleConfirmLocation = useCallback(() => {
     if (!detectedAddress) return;
 
+    const streetChanged = normalizeAddressText(resolvedStreet) !== normalizeAddressText(detectedAddress.street);
+    const neighborhoodChanged = normalizeAddressText(resolvedNeighborhood) !== normalizeAddressText(detectedAddress.neighborhood);
+    const numberChanged = normalizeAddressText(resolvedNumber) !== normalizeAddressText(detectedAddress.number);
+    const addressWasEdited = streetChanged || neighborhoodChanged || numberChanged;
+
     const mergedAddress = {
       ...detectedAddress,
       street: resolvedStreet,
@@ -143,6 +154,16 @@ const LocationModal = ({
       number: resolvedNumber,
       complement: resolvedComplement,
     };
+
+    if (addressWasEdited) {
+      delete mergedAddress.lat;
+      delete mergedAddress.lng;
+      delete mergedAddress.latitude;
+      delete mergedAddress.longitude;
+      delete mergedAddress.display_name;
+      delete mergedAddress.formatted_address;
+      delete mergedAddress.raw_address;
+    }
 
     const resolvedDeliveryInfo = detectedDeliveryInfo || delivery.deliveryInfo || {
       fee: 0,
