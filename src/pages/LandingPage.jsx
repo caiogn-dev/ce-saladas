@@ -556,7 +556,7 @@ const LandingPage = () => {
           </div>
           <div className="location-map-shell" aria-label="Mapa com a localização do Cê Saladas">
             <iframe
-              src="https://storage.googleapis.com/maps-solutions-9es6wufhru/locator-plus/1a50/locator-plus.html"
+              src="https://www.google.com/maps?q=C%C3%AA%20Saladas%20Q.%20112%20Sul%20Rua%20SR%201%20Palmas%20TO&ll=-10.1852683,-48.3036368&z=17&output=embed"
               width="100%"
               height="100%"
               style={{ border: 0 }}

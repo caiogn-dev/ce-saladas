@@ -91,6 +91,7 @@ function DeliveryMapSimpleInner({
   const [searchResults, setSearchResults] = useState([]);
   const [showResults, setShowResults] = useState(false);
   const [error, setError] = useState(null);
+  const [mapUnavailable, setMapUnavailable] = useState(false);
 
   const searchTimeoutRef = useRef(null);
   const resultsRef = useRef(null);
@@ -232,7 +233,10 @@ function DeliveryMapSimpleInner({
         if (mounted) setIsReady(true);
       } catch (err) {
         console.error('Map init error:', err);
-        if (mounted) setError('Erro ao carregar o mapa');
+        if (mounted) {
+          setMapUnavailable(true);
+          setError('O mapa não pôde ser carregado. Busque pelo CEP/endereço ou use sua localização para continuar.');
+        }
       }
     };
 
@@ -512,7 +516,7 @@ function DeliveryMapSimpleInner({
   }, []);
 
   return (
-    <div className={styles.mapContainer}>
+    <div className={`${styles.mapContainer} ${mapUnavailable ? styles.mapFallbackMode : ''}`}>
       {showSearch && (
         <div className={styles.searchWrapper} ref={resultsRef}>
           <form onSubmit={handleSearchSubmit} className={styles.searchForm}>
@@ -546,7 +550,15 @@ function DeliveryMapSimpleInner({
 
       {error && <div className={styles.errorMessage}>{error}</div>}
 
-      <div ref={mapContainerRef} className={styles.map} style={{ height }} />
+      {mapUnavailable ? (
+        <div className={styles.mapFallbackPanel} style={{ minHeight: height }}>
+          <div className={styles.mapFallbackIcon}>📍</div>
+          <strong>Selecione pelo endereço</strong>
+          <p>Digite seu CEP/endereço acima ou toque em “Usar minha localização”. A taxa será calculada normalmente pelo sistema.</p>
+        </div>
+      ) : (
+        <div ref={mapContainerRef} className={styles.map} style={{ height }} />
+      )}
 
       {isLoading && (
         <div className={styles.loadingOverlay}>
@@ -554,16 +566,18 @@ function DeliveryMapSimpleInner({
         </div>
       )}
 
-      <div className={styles.legend}>
-        <div className={styles.legendItem}>
-          <span className={styles.legendMarker} style={{ backgroundColor: MAP_COLORS.primary }}>Cê</span>
-          <span>Loja</span>
+      {!mapUnavailable && (
+        <div className={styles.legend}>
+          <div className={styles.legendItem}>
+            <span className={styles.legendMarker} style={{ backgroundColor: MAP_COLORS.primary }}>Cê</span>
+            <span>Loja</span>
+          </div>
+          <div className={styles.legendItem}>
+            <span className={styles.legendMarker} style={{ backgroundColor: MAP_COLORS.secondary }}>👤</span>
+            <span>Você</span>
+          </div>
         </div>
-        <div className={styles.legendItem}>
-          <span className={styles.legendMarker} style={{ backgroundColor: MAP_COLORS.secondary }}>👤</span>
-          <span>Você</span>
-        </div>
-      </div>
+      )}
     </div>
   );
 }
