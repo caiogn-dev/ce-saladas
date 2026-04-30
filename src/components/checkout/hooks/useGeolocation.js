@@ -67,37 +67,29 @@ export const useGeolocation = () => {
       const storeLat = STORE_LOCATION?.latitude;
       const storeLng = STORE_LOCATION?.longitude;
       
-      console.log('🗺️ calculateRouteAndFee called:', { lat, lng, storeLat, storeLng });
-      
       // Check cache first for route
       let routeData = null;
       if (storeLat && storeLng) {
         const cachedRoute = getCachedRoute(storeLat, storeLng, lat, lng);
         if (cachedRoute) {
-          console.log('🗺️ Route cache hit');
           routeData = cachedRoute;
         }
       }
       
       // If not cached, fetch from API
       if (!routeData) {
-        console.log('🗺️ Fetching route from API...');
         routeData = await storeApi.calculateRoute(lat, lng);
-        console.log('🗺️ Route API response:', routeData);
         if (routeData && !routeData.fallback && storeLat && storeLng) {
           cacheRoute(storeLat, storeLng, lat, lng, routeData);
         }
       }
 
       // Get delivery fee - API returns delivery_fee, not fee
-      console.log('🗺️ Fetching delivery validation...');
       const deliveryData = await storeApi.validateDeliveryAddress(lat, lng);
-      console.log('📦 Delivery validation response:', deliveryData);
       setError(null);
       
       // Use polyline from deliveryData (validate-delivery returns it) or routeData
       const polyline = deliveryData?.polyline || routeData?.polyline;
-      console.log('🗺️ Polyline available:', !!polyline, polyline?.length);
 
       const distanceKm = toFiniteNumber(deliveryData?.distance_km ?? routeData?.distance_km, 0);
       const durationMinutes = toFiniteNumber(deliveryData?.duration_minutes ?? routeData?.duration_minutes, 0);
@@ -129,7 +121,6 @@ export const useGeolocation = () => {
             fallback: Boolean(routeData?.fallback),
           }
         : null;
-      console.log('🗺️ Setting routeInfo:', routeInfoData);
       setRouteInfo(routeInfoData);
       
       if (deliveryData) {
@@ -144,7 +135,6 @@ export const useGeolocation = () => {
           is_valid: deliveryData.is_valid !== false,
           polyline: polyline
         };
-        console.log('📦 Setting deliveryInfo:', deliveryInfoData);
         setDeliveryInfo(deliveryInfoData);
       }
 
@@ -185,8 +175,6 @@ export const useGeolocation = () => {
           throw highAccuracyError;
         }
 
-        console.warn('High accuracy geolocation failed, retrying with relaxed settings', highAccuracyError);
-
         pos = await requestCurrentPosition({
           enableHighAccuracy: false,
           timeout: 12000,
@@ -195,12 +183,6 @@ export const useGeolocation = () => {
       }
 
       const { latitude, longitude, accuracy } = pos.coords;
-
-      console.log(`GPS Location: ${latitude}, ${longitude} (accuracy: ${accuracy}m)`);
-
-      if (accuracy > 100) {
-        console.warn(`GPS accuracy is low: ${accuracy}m`);
-      }
 
       setPosition({ lat: latitude, lng: longitude });
 
