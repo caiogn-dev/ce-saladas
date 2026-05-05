@@ -483,7 +483,8 @@ const CheckoutPage = () => {
           delivery.shippingMethod,
           enableScheduling,
           scheduledDate,
-          scheduledTimeSlot
+          scheduledTimeSlot,
+          delivery.deliveryInfo
         ),
         shipping_method: delivery.shippingMethod,
         delivery_method: delivery.shippingMethod,

@@ -311,7 +311,7 @@ export const useCheckoutForm = () => {
     return Object.keys(newErrors).length === 0;
   }, [formData, isIdentificationComplete]);
 
-  const buildCheckoutPayload = useCallback((shippingMethod, enableScheduling, scheduledDate, scheduledTimeSlot) => {
+  const buildCheckoutPayload = useCallback((shippingMethod, enableScheduling, scheduledDate, scheduledTimeSlot, deliveryInfo = null) => {
     const fullAddress = formData.number
       ? `${formData.address}, ${formData.number}${formData.complement ? ` - ${formData.complement}` : ''}`
       : formData.address;
@@ -341,6 +341,18 @@ export const useCheckoutForm = () => {
       ...(lng != null && { lng }),
     };
 
+    const deliveryDistanceKm = !isPickup && deliveryInfo?.distance_km != null
+      ? Number(deliveryInfo.distance_km)
+      : null;
+
+    const deliveryDurationMinutes = !isPickup && (
+      deliveryInfo?.duration_minutes != null
+        ? Number(deliveryInfo.duration_minutes)
+        : deliveryInfo?.estimated_minutes != null
+          ? Number(deliveryInfo.estimated_minutes)
+          : null
+    );
+
     return {
       customer_name: formData.name.trim(),
       customer_email: formData.email.trim(),
@@ -351,6 +363,8 @@ export const useCheckoutForm = () => {
       shipping_state: isPickup ? STORE_ADDRESS.state : formData.state,
       shipping_zip_code: isPickup ? onlyDigits(STORE_ADDRESS.zip_code) : onlyDigits(formData.zip_code),
       delivery_address: deliveryAddress,
+      ...(deliveryDistanceKm != null && Number.isFinite(deliveryDistanceKm) && { delivery_distance_km: deliveryDistanceKm }),
+      ...(deliveryDurationMinutes != null && Number.isFinite(deliveryDurationMinutes) && { delivery_duration_minutes: deliveryDurationMinutes }),
       scheduled_date: enableScheduling && scheduledDate ? scheduledDate : null,
       scheduled_time_slot: enableScheduling && scheduledTimeSlot ? scheduledTimeSlot : null,
     };

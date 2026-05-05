@@ -13,8 +13,7 @@ import {
   createCustomerMarker,
   fitBounds,
   MAP_COLORS,
-  createDirectionsRenderer,
-  requestDirections,
+  createPolyline,
   reverseGeocodeNative,
 } from '../../services/googleMapService';
 import * as storeApi from '../../services/storeApi';
@@ -82,7 +81,6 @@ function DeliveryMapSimpleInner({
   const storeMarkerRef = useRef(null);
   const customerMarkerRef = useRef(null);
   const routeLineRef = useRef(null);
-  const directionsRendererRef = useRef(null);
   const resizeHandlerRef = useRef(null);
 
   const [isReady, setIsReady] = useState(false);
@@ -98,7 +96,7 @@ function DeliveryMapSimpleInner({
   const handleLocationSelectedRef = useRef(null);
 
   // Handle location selection (click / drag / GPS)
-  const handleLocationSelected = useCallback(async (lat, lng) => {
+  const handleLocationSelected = useCallback(async (lat, lng, preferredAddress = null) => {
     const latitude = Number(lat);
     const longitude = Number(lng);
     if (isNaN(latitude) || isNaN(longitude)) return;
@@ -147,9 +145,24 @@ function DeliveryMapSimpleInner({
         console.warn('Reverse geocode failed:', e);
       }
 
-      const locationData = { lat: latitude, lng: longitude, latitude, longitude, ...address };
+      const preferred = preferredAddress && isLocalAddressCandidate(preferredAddress)
+        ? {
+            street: preferredAddress.street || preferredAddress.main_text || '',
+            number: preferredAddress.number || '',
+            neighborhood: preferredAddress.neighborhood || '',
+            city: preferredAddress.city || '',
+            state: preferredAddress.state || '',
+            zip_code: preferredAddress.zip_code || '',
+            formatted_address: preferredAddress.formatted_address || preferredAddress.display_name || '',
+            display_name: preferredAddress.display_name || preferredAddress.formatted_address || '',
+            place_id: preferredAddress.place_id || '',
+            address_confidence: preferredAddress.address_confidence || 'place',
+          }
+        : {};
+
+      const locationData = { lat: latitude, lng: longitude, latitude, longitude, ...address, ...preferred };
       onLocationSelect?.(locationData);
-      onAddressFound?.(address);
+      onAddressFound?.({ ...address, ...preferred });
     } catch (err) {
       console.error('Location select error:', err);
       onLocationSelect?.({ lat: latitude, lng: longitude, latitude, longitude });
@@ -159,18 +172,6 @@ function DeliveryMapSimpleInner({
   }, [enableSelection, onAddressFound, onLocationSelect]);
 
   handleLocationSelectedRef.current = handleLocationSelected;
-
-  const disposeRouteRenderer = useCallback(() => {
-    if (!directionsRendererRef.current) return;
-
-    try {
-      directionsRendererRef.current.setMap(null);
-    } catch (err) {
-      console.warn('Failed to detach directions renderer:', err);
-    } finally {
-      directionsRendererRef.current = null;
-    }
-  }, []);
 
   const disposeRouteLine = useCallback(() => {
     if (!routeLineRef.current) return;
@@ -248,7 +249,6 @@ function DeliveryMapSimpleInner({
         window.removeEventListener('resize', resizeHandlerRef.current);
         resizeHandlerRef.current = null;
       }
-      disposeRouteRenderer();
       disposeRouteLine();
       disposeMarker(customerMarkerRef);
       disposeMarker(storeMarkerRef);
@@ -262,7 +262,7 @@ function DeliveryMapSimpleInner({
         }
       }
     };
-  }, [disposeMarker, disposeRouteLine, disposeRouteRenderer, storeLocation, enableSelection]);
+  }, [disposeMarker, disposeRouteLine, storeLocation, enableSelection]);
 
   // Update customer marker when prop changes
   useEffect(() => {
@@ -305,55 +305,24 @@ function DeliveryMapSimpleInner({
   useEffect(() => {
     if (!isReady || !mapRef.current) return;
 
-    let cancelled = false;
-
-    const renderDirections = async () => {
+    const renderBackendPolyline = () => {
       disposeRouteLine();
-      disposeRouteRenderer();
 
-      if (!storeLocation || !customerLocation) return;
-
-      const origin = {
-        lat: Number(storeLocation.latitude),
-        lng: Number(storeLocation.longitude),
-      };
-      const destination = {
-        lat: Number(customerLocation.lat || customerLocation.latitude),
-        lng: Number(customerLocation.lng || customerLocation.longitude),
-      };
-
-      if (
-        [origin.lat, origin.lng, destination.lat, destination.lng].some(Number.isNaN)
-        || !isSafeStoreCoordinateInput(destination, customerLocation)
-      ) {
-        return;
-      }
+      if (!routePolyline) return;
 
       try {
-        const renderer = await createDirectionsRenderer(mapRef.current, {
-          suppressMarkers: true,
-          preserveViewport: false,
-        });
-        const directions = await requestDirections(origin, destination);
-        if (cancelled) {
-          renderer.setMap(null);
-          return;
-        }
-        renderer.setDirections(directions);
-        directionsRendererRef.current = renderer;
+        routeLineRef.current = createPolyline(mapRef.current, routePolyline);
       } catch (err) {
-        console.error('Native directions render error:', err);
+        console.error('Backend route render error:', err);
       }
     };
 
-    renderDirections();
+    renderBackendPolyline();
 
     return () => {
-      cancelled = true;
-      disposeRouteRenderer();
       disposeRouteLine();
     };
-  }, [customerLocation, disposeRouteLine, disposeRouteRenderer, isReady, storeLocation, routePolyline]);
+  }, [disposeRouteLine, isReady, routePolyline]);
 
   // GPS button
   const handleGetGPS = async () => {
@@ -448,9 +417,14 @@ function DeliveryMapSimpleInner({
               display_name: r.display_name || r.title || '',
               latitude: r.latitude || r.lat,
               longitude: r.longitude || r.lng,
+              formatted_address: r.formatted_address || r.display_name || '',
+              street: r.street || r.main_text || '',
+              number: r.number || '',
+              neighborhood: r.neighborhood || '',
               city: r.city || '',
               state: r.state || '',
-              country: r.country || '',
+              zip_code: r.zip_code || '',
+              place_id: r.place_id || '',
             }))
             .filter((result) => result.latitude && result.longitude && isSafeStoreCoordinateInput(result, result))
         : [];
@@ -459,6 +433,14 @@ function DeliveryMapSimpleInner({
           display_name: r.display_name || r.title || '',
           latitude: r.latitude || r.lat,
           longitude: r.longitude || r.lng,
+          formatted_address: r.formatted_address || r.display_name || r.title || '',
+          street: r.street || '',
+          number: r.number || '',
+          neighborhood: r.neighborhood || '',
+          city: r.city || '',
+          state: r.state || '',
+          zip_code: r.zip_code || '',
+          place_id: r.place_id || '',
         })));
         setShowResults(true);
         setError(null);
@@ -491,7 +473,7 @@ function DeliveryMapSimpleInner({
     setShowResults(false);
     setSearchResults([]);
     if (result.latitude && result.longitude && isSafeStoreCoordinateInput(result, result)) {
-      await handleLocationSelected(Number(result.latitude), Number(result.longitude));
+      await handleLocationSelected(Number(result.latitude), Number(result.longitude), result);
     } else {
       setError(getStoreRegionErrorMessage());
     }
