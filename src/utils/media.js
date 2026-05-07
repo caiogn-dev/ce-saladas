@@ -10,6 +10,9 @@ export const buildMediaUrl = (value) => {
   if (value.startsWith('http://') || value.startsWith('https://')) {
     return value;
   }
+  if (value.startsWith('/menu-visuals/')) {
+    return value;
+  }
   if (value.startsWith('/')) {
     return `${MEDIA_BASE_URL}${value}`;
   }

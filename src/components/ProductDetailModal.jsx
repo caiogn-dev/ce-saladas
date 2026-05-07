@@ -12,10 +12,10 @@ const formatCurrency = (value) => currencyFormatter.format(Number(value || 0));
 
 const getGalleryImages = (item) => {
   const rawImages = [
+    ...(Array.isArray(item?.images) ? item.images : []),
     item?.image_url,
     item?.image,
     item?.main_image_url,
-    ...(Array.isArray(item?.images) ? item.images : []),
   ];
 
   return Array.from(
@@ -117,7 +117,15 @@ const ProductDetailModal = ({
         {/* Hero image */}
         <div className={styles.hero}>
           {gallery[0] ? (
-            <img src={gallery[0]} alt={displayItem?.name} className={styles.heroImg} />
+            <img
+              src={gallery[0]}
+              alt={displayItem?.name}
+              className={styles.heroImg}
+              width="1280"
+              height="1280"
+              sizes="(max-width: 768px) 100vw, 560px"
+              decoding="async"
+            />
           ) : (
             <div className={styles.heroFallback} aria-hidden="true" />
           )}

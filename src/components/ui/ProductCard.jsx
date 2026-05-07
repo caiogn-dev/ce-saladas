@@ -93,7 +93,12 @@ const ProductCard = ({
             <img
               src={imageSrc}
               alt={product.name}
-              loading="lazy"
+              width="768"
+              height="768"
+              sizes="(max-width: 640px) 88vw, (max-width: 1024px) 42vw, 320px"
+              loading={index < 2 ? 'eager' : 'lazy'}
+              fetchPriority={index === 0 ? 'high' : 'auto'}
+              decoding="async"
               onLoad={() => setImageLoaded(true)}
               onError={() => setImageError(true)}
             />

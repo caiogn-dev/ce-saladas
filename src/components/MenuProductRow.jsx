@@ -127,7 +127,11 @@ const MenuProductRow = ({
             src={imageSrc}
             alt={product.name}
             className={styles.image}
+            width="768"
+            height="768"
+            sizes="96px"
             loading="lazy"
+            decoding="async"
             onError={() => setImageError(true)}
           />
         ) : (
