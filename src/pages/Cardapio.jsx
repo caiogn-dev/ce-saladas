@@ -6,6 +6,7 @@ import Navbar from '../components/Navbar';
 import FavoriteButton from '../components/FavoriteButton';
 import StockBadge from '../components/StockBadge';
 import MenuProductRow from '../components/MenuProductRow';
+import { getSaladVisual } from '../data/saladVisuals';
 
 // Heavy modals — loaded only when the user opens them
 const ProductDetailModal = dynamic(() => import('../components/ProductDetailModal'), { ssr: false });
@@ -159,6 +160,7 @@ const Cardapio = () => {
 
   const catalogItems = useMemo(() => {
     const transformedProducts = storeProducts.map((product) => {
+      const saladVisual = getSaladVisual(product.slug);
       const item = {
         id: product.id,
         itemType: 'product',
@@ -167,8 +169,8 @@ const Cardapio = () => {
         shortDescription: product.short_description || '',
         price: parseFloat(product.price),
         original_price: product.compare_at_price ? parseFloat(product.compare_at_price) : null,
-        image_url: product.main_image_url || product.main_image,
-        images: product.images || [],
+        image_url: saladVisual?.card || saladVisual?.hero || product.main_image_url || product.main_image,
+        images: saladVisual?.detail ? [saladVisual.detail, ...(product.images || [])] : (product.images || []),
         stock_quantity: product.stock_quantity ?? 100,
         category: product.category_name || product.category,
         categorySlug: product.category_slug || product.category,
@@ -394,8 +396,8 @@ const Cardapio = () => {
                   <h1 className="cardapio-hero__title">{store?.name || 'Cê Saladas'}</h1>
                   <p className="cardapio-hero__intro">{heroDescription}</p>
                   <div className="cardapio-hero__meta">
-                    <span><MapPin size={16} />{storeLocation}</span>
-                    <span><Clock3 size={16} />{storeHoursLabel}</span>
+                    <span><MapPin size={12} />{storeLocation}</span>
+                    <span><Clock3 size={12} />{storeHoursLabel}</span>
                   </div>
                 </div>
               </div>

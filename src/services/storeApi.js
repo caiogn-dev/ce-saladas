@@ -829,10 +829,12 @@ export const updateProfile = async (data) => {
 // =============================================================================
 
 /**
- * Create WebSocket connection for order tracking
+ * Create WebSocket connection for order tracking.
+ * Public tracking sockets require the order access token returned by checkout.
  */
-export const createOrderWebSocket = (orderId, onMessage, onError = null) => {
-  const wsUrl = `${WS_BASE_URL}/orders/${orderId}/`;
+export const createOrderWebSocket = (orderId, accessToken, onMessage, onError = null) => {
+  const query = accessToken ? `?token=${encodeURIComponent(accessToken)}` : '';
+  const wsUrl = `${WS_BASE_URL}/orders/${orderId}/${query}`;
   const ws = new WebSocket(wsUrl);
 
   ws.onmessage = (event) => {
@@ -851,30 +853,6 @@ export const createOrderWebSocket = (orderId, onMessage, onError = null) => {
 
   ws.onclose = () => {
     logger.info('WebSocket closed');
-  };
-
-  return ws;
-};
-
-/**
- * Create WebSocket connection for store orders (dashboard)
- */
-export const createStoreOrdersWebSocket = (onMessage, onError = null) => {
-  const wsUrl = `${WS_BASE_URL}/stores/${STORE_SLUG}/orders/`;
-  const ws = new WebSocket(wsUrl);
-
-  ws.onmessage = (event) => {
-    try {
-      const data = JSON.parse(event.data);
-      onMessage(data);
-    } catch (e) {
-      logger.error('WebSocket parse error', e);
-    }
-  };
-
-  ws.onerror = (error) => {
-    logger.error('WebSocket error', error);
-    if (onError) onError(error);
   };
 
   return ws;

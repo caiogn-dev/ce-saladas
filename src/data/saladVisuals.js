@@ -1,0 +1,95 @@
+export const SALAD_VISUALS = {
+  'almondega-premium': {
+    accent: '#9B4D2B',
+    source: '/menu-visuals/salads/almondega-premium/source.webp',
+    hero: '/menu-visuals/salads/almondega-premium/hero-square.webp',
+    card: '/menu-visuals/salads/almondega-premium/card.webp',
+    detail: '/menu-visuals/salads/almondega-premium/detail.webp',
+    video: '/menu-visuals/salads/almondega-premium/loop.mp4',
+    scrollFrames: {
+      base: '/menu-visuals/salads/almondega-premium/scroll/frame-',
+      count: 0,
+      ext: 'webp',
+    },
+  },
+  'basic-lombo': {
+    accent: '#B46A36',
+    source: '/menu-visuals/salads/basic-lombo/source.webp',
+    hero: '/menu-visuals/salads/basic-lombo/hero-square.webp',
+    card: '/menu-visuals/salads/basic-lombo/card.webp',
+    detail: '/menu-visuals/salads/basic-lombo/detail.webp',
+    video: '/menu-visuals/salads/basic-lombo/loop.mp4',
+    scrollFrames: {
+      base: '/menu-visuals/salads/basic-lombo/scroll/frame-',
+      count: 0,
+      ext: 'webp',
+    },
+  },
+  'especial-file-de-frango': {
+    accent: '#D18A22',
+    source: '/menu-visuals/salads/especial-file-de-frango/source.webp',
+    hero: '/menu-visuals/salads/especial-file-de-frango/hero-square.webp',
+    card: '/menu-visuals/salads/especial-file-de-frango/card.webp',
+    detail: '/menu-visuals/salads/especial-file-de-frango/detail.webp',
+    video: '/menu-visuals/salads/especial-file-de-frango/loop.mp4',
+    scrollFrames: {
+      base: '/menu-visuals/salads/especial-file-de-frango/scroll/frame-',
+      count: 0,
+      ext: 'webp',
+    },
+  },
+  'magnifico-camarao': {
+    accent: '#E4572E',
+    source: '/menu-visuals/salads/magnifico-camarao/source.webp',
+    hero: '/menu-visuals/salads/magnifico-camarao/hero-square.webp',
+    card: '/menu-visuals/salads/magnifico-camarao/card.webp',
+    detail: '/menu-visuals/salads/magnifico-camarao/detail.webp',
+    video: '/menu-visuals/salads/magnifico-camarao/loop.mp4',
+    scrollFrames: {
+      base: '/menu-visuals/salads/magnifico-camarao/scroll/frame-',
+      count: 0,
+      ext: 'webp',
+    },
+  },
+  queridinha: {
+    accent: '#F0A51A',
+    source: '/menu-visuals/salads/queridinha/source.webp',
+    hero: '/menu-visuals/salads/queridinha/hero-square.webp',
+    card: '/menu-visuals/salads/queridinha/card.webp',
+    detail: '/menu-visuals/salads/queridinha/detail.webp',
+    video: '/menu-visuals/salads/queridinha/loop.mp4',
+    scrollFrames: {
+      base: '/menu-visuals/salads/queridinha/scroll/frame-',
+      count: 0,
+      ext: 'webp',
+    },
+  },
+  'tilapia-suprema': {
+    accent: '#7E9B42',
+    source: '/menu-visuals/salads/tilapia-suprema/source.webp',
+    hero: '/menu-visuals/salads/tilapia-suprema/hero-square.webp',
+    card: '/menu-visuals/salads/tilapia-suprema/card.webp',
+    detail: '/menu-visuals/salads/tilapia-suprema/detail.webp',
+    video: '/menu-visuals/salads/tilapia-suprema/loop.mp4',
+    scrollFrames: {
+      base: '/menu-visuals/salads/tilapia-suprema/scroll/frame-',
+      count: 0,
+      ext: 'webp',
+    },
+  },
+  'salmao-premium': {
+    accent: '#E7775D',
+    source: '/menu-visuals/salads/salmao-premium/source.webp',
+    hero: '/menu-visuals/salads/salmao-premium/hero-square.webp',
+    card: '/menu-visuals/salads/salmao-premium/card.webp',
+    detail: '/menu-visuals/salads/salmao-premium/detail.webp',
+    video: '/menu-visuals/salads/salmao-premium/loop.mp4',
+    scrollFrames: {
+      base: '/menu-visuals/salads/salmao-premium/scroll/frame-',
+      count: 0,
+      ext: 'webp',
+    },
+  },
+};
+
+export const getSaladVisual = (slug) => SALAD_VISUALS[slug] || null;
