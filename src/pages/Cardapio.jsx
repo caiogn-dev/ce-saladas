@@ -11,6 +11,7 @@ import { getSaladVisual } from '../data/saladVisuals';
 // Heavy modals — loaded only when the user opens them
 const ProductDetailModal = dynamic(() => import('../components/ProductDetailModal'), { ssr: false });
 const SaladBuilder = dynamic(() => import('../components/SaladBuilder'), { ssr: false });
+const UpsellModal = dynamic(() => import('../components/UpsellModal'), { ssr: false });
 import Input from '../components/ui/Input';
 import Skeleton from '../components/ui/Skeleton';
 import EmptyState from '../components/ui/EmptyState';
@@ -43,6 +44,11 @@ const MENU_SECTIONS = [
     key: 'molhos',
     title: 'Molhos',
     description: 'Complementos para ajustar o sabor e finalizar o pedido do seu jeito.',
+  },
+  {
+    key: 'bebidas',
+    title: 'Bebidas',
+    description: 'Para acompanhar sua salada.',
   },
   // 'ingredientes' is intentionally omitted: those products feed the SaladBuilder
   // internally (see ingredientItems below) but are NOT displayed as a standalone
@@ -96,6 +102,15 @@ const inferCatalogSection = (item) => {
     return 'monte-sua-salada';
   }
 
+  if (
+    haystack.includes('bebida')
+    || haystack.includes('suco')
+    || haystack.includes('refrigerante')
+    || haystack.includes('agua')
+  ) {
+    return 'bebidas';
+  }
+
   return 'saladas';
 };
 
@@ -135,6 +150,7 @@ const Cardapio = () => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [query, setQuery] = useState('');
   const [activeSection, setActiveSection] = useState(null);
+  const [upsellOpen, setUpsellOpen] = useState(false);
   const sectionRefs = useRef({});
   const navRef = useRef(null);
 
@@ -245,6 +261,16 @@ const Cardapio = () => {
   const ingredientItems = useMemo(
     () => filteredItems.filter((item) => item.catalogSection === 'ingredientes'),
     [filteredItems]
+  );
+
+  const molhosItems = useMemo(
+    () => filteredItems.filter((item) => item.catalogSection === 'molhos'),
+    [filteredItems],
+  );
+
+  const drinksItems = useMemo(
+    () => filteredItems.filter((item) => item.catalogSection === 'bebidas'),
+    [filteredItems],
   );
 
   const groupedSections = useMemo(() => {
@@ -375,7 +401,18 @@ const Cardapio = () => {
         onAddToCart={(item) => {
           handleAddToCart(item);
           setSelectedItem(null);
+          if (item.catalogSection === 'saladas') {
+            setUpsellOpen(true);
+          }
         }}
+      />
+
+      <UpsellModal
+        isOpen={upsellOpen}
+        onClose={() => setUpsellOpen(false)}
+        onViewCart={() => { setUpsellOpen(false); openCart(); }}
+        sauces={molhosItems}
+        drinks={drinksItems}
       />
 
       <PageTransition animation="fadeUp" delay={0}>
