@@ -232,6 +232,18 @@
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
+.stepDescIncluded {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #1e6a3b;
+  background: rgba(30,106,59,0.10);
+  padding: 1px 6px;
+  border-radius: 999px;
+  margin-left: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
 .stepDescDone {
   margin-left: auto;
   font-size: 0.9rem;

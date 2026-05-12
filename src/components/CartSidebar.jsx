@@ -171,7 +171,11 @@ const CartSidebar = () => {
                           {item.name}
                         </h4>
                         {item.isSalad && item.notes && (
-                          <p className="cart-item-salad-notes">{item.notes}</p>
+                          <ul className="cart-item-salad-notes">
+                            {item.notes.split(' | ').map((part) => (
+                              <li key={part}>{part}</li>
+                            ))}
+                          </ul>
                         )}
                         <p className="cart-item-price">R$ {Number(item.price).toFixed(2)}</p>
 

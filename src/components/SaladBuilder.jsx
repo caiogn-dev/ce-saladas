@@ -25,7 +25,7 @@ const STEPS = [
   { key: 'base',        label: 'Base',         emoji: '🥬', required: true,  max: 1, hint: 'Escolha 1' },
   { key: 'proteina',    label: 'Proteína',      emoji: '🍗', required: false, max: 2, hint: 'Até 2 (opcional)' },
   { key: 'complemento', label: 'Complementos',  emoji: '🥕', required: false, max: 6, hint: 'Até 6 (opcional)' },
-  { key: 'molho',       label: 'Molho',         emoji: '🫙', required: true,  max: 1, hint: 'Escolha 1' },
+  { key: 'molho',       label: 'Molho',         emoji: '🫙', required: true,  max: 1, hint: 'Incluso · escolha 1', included: true },
 ];
 
 /* ── Ingredient image ─────────────────────────────────────── */
@@ -242,7 +242,12 @@ const SaladBuilder = ({ ingredients, onAddedToCart }) => {
     }
   };
 
-  const handleClose = () => { setIsOpen(false); setActiveStep(0); };
+  const handleClose = () => {
+    clearTimeout(advanceTimer.current);
+    setIsOpen(false);
+    setActiveStep(0);
+    setSelections({ base: [], proteina: [], complemento: [], molho: [] });
+  };
 
   useEffect(() => {
     if (!isOpen) return undefined;
@@ -256,6 +261,17 @@ const SaladBuilder = ({ ingredients, onAddedToCart }) => {
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [isOpen]);
+
+  /* Auto-skip steps that have no products (e.g. complementos not yet cadastrados) */
+  useEffect(() => {
+    if (!isOpen) return;
+    const currentStep = STEPS[activeStep];
+    if (!currentStep) return;
+    const stepItems = grouped[currentStep.key] || [];
+    if (stepItems.length === 0 && !currentStep.required) {
+      advance(currentStep.key);
+    }
+  }, [activeStep, isOpen, grouped, advance]);
 
   const hasIngredients = (ingredients || []).length > 0;
   const step = STEPS[activeStep];
@@ -396,7 +412,10 @@ const SaladBuilder = ({ ingredients, onAddedToCart }) => {
               <div>
                 <strong className={styles.stepDescTitle}>{step.label}</strong>
                 <span className={styles.stepDescMeta}> · {step.hint}</span>
-                {step.required && <span className={styles.stepDescRequired}> obrigatório</span>}
+                {step.included
+                  ? <span className={styles.stepDescIncluded}> incluso</span>
+                  : step.required && <span className={styles.stepDescRequired}> obrigatório</span>
+                }
               </div>
               {isStepDone && (
                 <span className={styles.stepDescDone}>✓</span>

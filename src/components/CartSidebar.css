@@ -357,10 +357,27 @@
 }
 
 .cart-item-salad-notes {
+  list-style: none;
+  padding: 0;
+  margin: 3px 0 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.cart-item-salad-notes li {
   font-size: 0.72rem;
   color: var(--color-text-muted);
-  margin: 2px 0 4px;
   line-height: 1.4;
+  padding-left: 10px;
+  position: relative;
+}
+
+.cart-item-salad-notes li::before {
+  content: '·';
+  position: absolute;
+  left: 2px;
+  color: var(--clr-leaf-700, #4a7c59);
 }
 
 /* ─── Upsell strip ─── */
