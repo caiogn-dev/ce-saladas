@@ -453,6 +453,23 @@
 }
 .skipBtn:hover { background: var(--clr-stone-200, #e5e7eb); color: var(--color-text-base, #1c1c1c); }
 
+.continueBtn {
+  flex-shrink: 0;
+  padding: 8px 20px;
+  background: var(--color-accent, #c25a2a);
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #fff;
+  font-family: var(--font-body, sans-serif);
+  transition: background 0.12s ease, transform 0.1s ease;
+  white-space: nowrap;
+}
+.continueBtn:hover  { background: var(--color-accent-hover, #a8451a); }
+.continueBtn:active { transform: scale(0.95); }
+
 .addToCartBtn {
   width: 100%;
   height: 52px;
@@ -523,6 +540,8 @@
 :global(.dark) .modalFooter { background: var(--color-bg-card); border-color: var(--color-border); }
 :global(.dark) .skipBtn { background: var(--color-bg-muted); color: var(--color-text-muted); }
 :global(.dark) .skipBtn:hover { background: var(--color-border); color: var(--color-text-base); }
+:global(.dark) .continueBtn { background: var(--color-accent); }
+:global(.dark) .continueBtn:hover { background: var(--color-accent-hover); }
 :global(.dark) .addToCartBtnDisabled { background: var(--color-bg-muted); color: var(--color-text-hint); }
 
 /* ── Mobile tweaks ──────────────────────────────────────────── */

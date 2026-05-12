@@ -141,11 +141,13 @@ const SaladBuilder = ({ ingredients, onAddedToCart }) => {
   const [activeStep, setActiveStep] = useState(0);
   const [adding, setAdding]     = useState(false);
   const [selections, setSelections] = useState({ base: [], proteina: [], complemento: [], molho: [] });
+  const selectionsRef = useRef({ base: [], proteina: [], complemento: [], molho: [] });
   const bodyRef = useRef(null);
   const tabsRef = useRef(null);
   const advanceTimer = useRef(null);
 
   useEffect(() => { setMounted(true); }, []);
+  useEffect(() => { selectionsRef.current = selections; }, [selections]);
 
   const grouped = useMemo(() => {
     const groups = { base: [], proteina: [], complemento: [], molho: [] };
@@ -179,6 +181,11 @@ const SaladBuilder = ({ ingredients, onAddedToCart }) => {
     });
   }, []);
 
+  const handleRemove = useCallback((step, product) => {
+    clearTimeout(advanceTimer.current);
+    removeItem(step, product);
+  }, [removeItem]);
+
   const advance = useCallback((fromStepKey) => {
     clearTimeout(advanceTimer.current);
     const nextIdx = STEPS.findIndex((s) => s.key === fromStepKey) + 1;
@@ -189,7 +196,6 @@ const SaladBuilder = ({ ingredients, onAddedToCart }) => {
     tab?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
   }, []);
 
-  /* Auto-advance: single-select → 300ms; multi-select → 1.2s debounce from last selection */
   const handleAdd = useCallback((step, product) => {
     const cfg = STEPS.find((s) => s.key === step);
     clearTimeout(advanceTimer.current);
@@ -198,12 +204,12 @@ const SaladBuilder = ({ ingredients, onAddedToCart }) => {
       setSelections((prev) => ({ ...prev, [step]: [product] }));
       advanceTimer.current = setTimeout(() => advance(step), 300);
     } else {
-      setSelections((prev) => {
-        const current = prev[step];
-        if (current.length >= cfg.max) return prev;
-        return { ...prev, [step]: [...current, product] };
-      });
-      advanceTimer.current = setTimeout(() => advance(step), 1200);
+      const currentCount = selectionsRef.current[step].length;
+      if (currentCount >= cfg.max) return;
+      setSelections((prev) => ({ ...prev, [step]: [...prev[step], product] }));
+      if (currentCount + 1 >= cfg.max) {
+        advanceTimer.current = setTimeout(() => advance(step), 300);
+      }
     }
   }, [advance]);
 
@@ -255,6 +261,9 @@ const SaladBuilder = ({ ingredients, onAddedToCart }) => {
 
   /* Footer CTA logic */
   const renderFooterCTA = () => {
+    const stepCount = stepSelections.length;
+    const atMax = stepCount >= step?.max;
+
     if (isLastStep) {
       return (
         <button
@@ -278,13 +287,30 @@ const SaladBuilder = ({ ingredients, onAddedToCart }) => {
     }
 
     if (!step?.required) {
+      if (stepCount === 0) {
+        return (
+          <div className={styles.footerSkip}>
+            <span className={styles.footerSkipHint}>Opcional — escolha ou pule</span>
+            <button type="button" className={styles.skipBtn} onClick={() => advance(step.key)}>
+              Pular →
+            </button>
+          </div>
+        );
+      }
+      if (atMax) {
+        return (
+          <p className={styles.footerRequiredHint}>
+            ✓ {stepCount} selecionado{stepCount > 1 ? 's' : ''} — avançando…
+          </p>
+        );
+      }
       return (
         <div className={styles.footerSkip}>
           <span className={styles.footerSkipHint}>
-            {isStepDone ? `${stepSelections.length} selecionado${stepSelections.length > 1 ? 's' : ''} · avançando…` : 'Opcional — escolha ou pule'}
+            {stepCount} de {step.max} selecionado{stepCount > 1 ? 's' : ''}
           </span>
-          <button type="button" className={styles.skipBtn} onClick={() => advance(step.key)}>
-            Pular →
+          <button type="button" className={styles.continueBtn} onClick={() => advance(step.key)}>
+            Continuar →
           </button>
         </div>
       );
@@ -387,8 +413,7 @@ const SaladBuilder = ({ ingredients, onAddedToCart }) => {
                   {items.map((product) => {
                     const selected = stepSelections.some((p) => p.id === product.id);
                     const count = countMap[product.id] || 0;
-                    const totalSelected = stepSelections.reduce((sum, p) => sum + (countMap[p.id] || 1), 0);
-                    const disabled = !selected && totalSelected >= step.max;
+                    const disabled = !selected && stepSelections.length >= step.max;
                     return (
                       <IngredientRow
                         key={product.id}
@@ -396,7 +421,7 @@ const SaladBuilder = ({ ingredients, onAddedToCart }) => {
                         selected={selected}
                         count={count}
                         onAdd={(p) => handleAdd(step.key, p)}
-                        onRemove={(p) => removeItem(step.key, p)}
+                        onRemove={(p) => handleRemove(step.key, p)}
                         disabled={disabled}
                         singleSelect={step.max === 1}
                       />
