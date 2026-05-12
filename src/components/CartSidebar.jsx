@@ -1,6 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
+import { Plus, Check } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { useStore } from '../context/StoreContext';
+import { buildMediaUrl } from '../utils/media';
+
+const fmtMoney = (v) =>
+  Number(v || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
 const CartSidebar = () => {
   const {
@@ -17,7 +23,29 @@ const CartSidebar = () => {
     cartCount,
     isCartOpen,
     closeCart,
+    addToCart,
   } = useCart();
+
+  const { products: storeProducts } = useStore();
+  const [addedMolhos, setAddedMolhos] = useState(new Set());
+
+  const molhosItems = useMemo(() => (storeProducts || []).filter((p) => {
+    const text = [p.name, p.category_name, p.category_slug].join(' ').toLowerCase();
+    return text.includes('molho');
+  }), [storeProducts]);
+
+  const cartHasMolho = useMemo(
+    () => cart.some((item) => (item.name || '').toLowerCase().includes('molho')),
+    [cart],
+  );
+
+  const showUpsellStrip = hasItems && !cartHasMolho && molhosItems.length > 0;
+
+  const handleAddMolho = (product) => {
+    if (addedMolhos.has(product.id)) return;
+    addToCart(product);
+    setAddedMolhos((prev) => new Set([...prev, product.id]));
+  };
 
   useEffect(() => {
     if (!isCartOpen || typeof window === 'undefined') return undefined;
@@ -175,6 +203,45 @@ const CartSidebar = () => {
             </>
           )}
         </div>
+
+        {showUpsellStrip && (
+          <div className="cart-upsell">
+            <p className="cart-upsell__label">Adicionar molho?</p>
+            <div className="cart-upsell__row">
+              {molhosItems.map((p) => {
+                const done = addedMolhos.has(p.id);
+                const imgSrc = p.main_image_url || p.main_image || p.image;
+                return (
+                  <button
+                    key={p.id}
+                    type="button"
+                    className={`cart-upsell__chip${done ? ' cart-upsell__chip--added' : ''}`}
+                    onClick={() => handleAddMolho(p)}
+                  >
+                    {imgSrc ? (
+                      <img
+                        src={buildMediaUrl(imgSrc)}
+                        alt={p.name}
+                        className="cart-upsell__img"
+                        width="34"
+                        height="34"
+                      />
+                    ) : (
+                      <div className="cart-upsell__img-fallback" />
+                    )}
+                    <div className="cart-upsell__info">
+                      <span className="cart-upsell__name">{p.name}</span>
+                      <span className="cart-upsell__price">{fmtMoney(p.price)}</span>
+                    </div>
+                    <span className={`cart-upsell__add${done ? ' cart-upsell__add--done' : ''}`} aria-hidden="true">
+                      {done ? <Check size={12} strokeWidth={2.5} /> : <Plus size={12} strokeWidth={2.5} />}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {hasItems && (
           <div className="cart-footer">

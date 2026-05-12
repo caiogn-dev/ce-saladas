@@ -41,7 +41,7 @@ const UpsellItem = ({ item, onAdd, resetKey }) => {
         aria-label={added ? 'Adicionado' : `Adicionar ${item.name}`}
       >
         {added ? <Check size={13} strokeWidth={2.5} /> : <Plus size={13} strokeWidth={2.5} />}
-        <span>{added ? 'OK' : 'Add'}</span>
+        <span>{added ? 'Adicionado' : 'Adicionar'}</span>
       </button>
     </div>
   );

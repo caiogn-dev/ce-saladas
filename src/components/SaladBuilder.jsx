@@ -115,7 +115,7 @@ const IngredientRow = ({ product, selected, onAdd, onRemove, disabled, singleSel
 };
 
 /* ── Main SaladBuilder ────────────────────────────────────── */
-const SaladBuilder = ({ ingredients }) => {
+const SaladBuilder = ({ ingredients, onAddedToCart }) => {
   const { addSaladToCart, openCart } = useCart();
   const [isOpen, setIsOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -164,7 +164,7 @@ const SaladBuilder = ({ ingredients }) => {
     await addSaladToCart(selections);
     setSelections({ base: [], proteina: [], complemento: [], molho: [] });
     setIsOpen(false);
-    openCart();
+    onAddedToCart?.();
   };
 
   const handleClose = () => setIsOpen(false);

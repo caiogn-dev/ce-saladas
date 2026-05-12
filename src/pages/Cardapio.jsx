@@ -263,14 +263,20 @@ const Cardapio = () => {
     [filteredItems]
   );
 
+  // Usa storeProducts (dados crus da API) para evitar dependência de transformações.
+  // Molhos: nome contém 'molho'. Bebidas: tag 'bebida'.
   const molhosItems = useMemo(
-    () => filteredItems.filter((item) => item.catalogSection === 'molhos'),
-    [filteredItems],
+    () => (storeProducts || [])
+      .filter((p) => (p.name || '').toLowerCase().includes('molho'))
+      .map((p) => ({ ...p, image_url: p.main_image_url || p.main_image })),
+    [storeProducts],
   );
 
   const drinksItems = useMemo(
-    () => filteredItems.filter((item) => item.catalogSection === 'bebidas'),
-    [filteredItems],
+    () => (storeProducts || [])
+      .filter((p) => (p.tags || []).includes('bebida'))
+      .map((p) => ({ ...p, image_url: p.main_image_url || p.main_image })),
+    [storeProducts],
   );
 
   const groupedSections = useMemo(() => {
@@ -569,6 +575,7 @@ const Cardapio = () => {
                       <>
                         <SaladBuilder
                           ingredients={ingredientItems}
+                          onAddedToCart={() => setUpsellOpen(true)}
                         />
                         {section.items.length > 0 && (
                           <div className="catalog-section__subheader">
