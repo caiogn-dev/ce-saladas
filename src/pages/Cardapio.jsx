@@ -365,6 +365,9 @@ const Cardapio = () => {
       addComboToCart(item);
     } else {
       addToCart(item);
+      if (item.catalogSection === 'saladas') {
+        setUpsellOpen(true);
+      }
     }
   }, [addToCart, addComboToCart]);
 
@@ -407,9 +410,6 @@ const Cardapio = () => {
         onAddToCart={(item) => {
           handleAddToCart(item);
           setSelectedItem(null);
-          if (item.catalogSection === 'saladas') {
-            setUpsellOpen(true);
-          }
         }}
       />
 

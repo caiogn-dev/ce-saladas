@@ -200,7 +200,10 @@
 .itemImgFallback {
   width: 100%;
   height: 100%;
-  background: #111;
+  background: var(--color-surface-raised, #f3ede3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .itemName {

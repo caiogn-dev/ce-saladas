@@ -31,6 +31,7 @@ const securityHeaders = [
 
 const nextConfig = {
   reactStrictMode: true,
+  allowedDevOrigins: ['openclaw.pastita.com.br'],
   // Keep tracing scoped to this app when parent folders also have lockfiles.
   outputFileTracingRoot: process.cwd(),
   env: {

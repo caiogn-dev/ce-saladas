@@ -24,7 +24,9 @@ const UpsellItem = ({ item, onAdd, resetKey }) => {
         {imgSrc ? (
           <img src={imgSrc} alt={item.name} className={styles.itemImg} width="80" height="80" />
         ) : (
-          <div className={styles.itemImgFallback} aria-hidden="true" />
+          <div className={styles.itemImgFallback} aria-hidden="true">
+            <span style={{ fontSize: '2rem', lineHeight: 1 }}>🥗</span>
+          </div>
         )}
       </div>
       <span className={styles.itemName}>{item.name}</span>

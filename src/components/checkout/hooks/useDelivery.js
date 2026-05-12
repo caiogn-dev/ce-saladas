@@ -95,7 +95,6 @@ export const useDelivery = () => {
     setLoadingDelivery(true);
     try {
       const data = await storeApi.validateDeliveryAddress(lat, lng);
-      console.log('📦 Delivery validation response:', data);
       if (data) {
         if (data.is_valid === false) {
           setDeliveryInfo({
@@ -147,7 +146,6 @@ export const useDelivery = () => {
     setLoadingDelivery(true);
     try {
       const data = await storeApi.validateDeliveryByAddress(address);
-      console.log('📦 Delivery validation by address response:', data);
 
       if (data) {
         if (data.is_valid === false) {
