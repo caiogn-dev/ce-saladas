@@ -9,9 +9,12 @@ const formatCurrency = (value) =>
     Number(value || 0),
   );
 
+const stripMolho = (name) => name.replace(/^molho\s+/i, '').trim();
+
 const UpsellItem = ({ item, onAdd, resetKey }) => {
   const [added, setAdded] = useState(false);
   const inStock = (item.stock_quantity ?? 1) > 0;
+  const displayName = stripMolho(item.name);
 
   // Reset added state when the modal reopens (resetKey changes)
   useEffect(() => { setAdded(false); }, [resetKey]);
@@ -22,14 +25,14 @@ const UpsellItem = ({ item, onAdd, resetKey }) => {
     <div className={styles.itemCard}>
       <div className={styles.itemImgWrap}>
         {imgSrc ? (
-          <img src={imgSrc} alt={item.name} className={styles.itemImg} width="80" height="80" />
+          <img src={imgSrc} alt={displayName} className={styles.itemImg} width="80" height="80" />
         ) : (
           <div className={styles.itemImgFallback} aria-hidden="true">
             <span style={{ fontSize: '2rem', lineHeight: 1 }}>🥗</span>
           </div>
         )}
       </div>
-      <span className={styles.itemName}>{item.name}</span>
+      <span className={styles.itemName}>{displayName}</span>
       <span className={styles.itemPrice}>{formatCurrency(item.price)}</span>
       <button
         type="button"
@@ -40,7 +43,7 @@ const UpsellItem = ({ item, onAdd, resetKey }) => {
           setAdded(true);
         }}
         disabled={!inStock}
-        aria-label={added ? 'Adicionado' : `Adicionar ${item.name}`}
+        aria-label={added ? 'Adicionado' : `Adicionar ${displayName}`}
       >
         {added ? <Check size={13} strokeWidth={2.5} /> : <Plus size={13} strokeWidth={2.5} />}
         <span>{added ? 'Adicionado' : 'Adicionar'}</span>
@@ -112,7 +115,7 @@ const UpsellModal = ({ isOpen, onClose, onViewCart, sauces = [], drinks = [] }) 
         <div className={styles.body}>
           {hasSauces && (
             <section className={styles.section}>
-              <h3 className={styles.sectionTitle}>Molhos</h3>
+              <h3 className={styles.sectionTitle}>Adicionar + 1 molho?</h3>
               <div className={styles.itemsRow}>
                 {sauces.map((item) => (
                   <UpsellItem
