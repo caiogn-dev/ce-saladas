@@ -231,7 +231,7 @@ export const CartProvider = ({ children }) => {
     if (cartMutexRef.current) return;
     // selections = { base: [product], proteina: [product], complemento: [product,...], molho: [product] }
     const allIngredients = Object.entries(selections).flatMap(([role, items]) =>
-      items.map((p) => ({ id: p.id, name: p.name, price: Number(p.price || 0), role }))
+      items.map((p) => ({ id: p.id, name: p.name, price: role === 'molho' ? 0 : Number(p.price || 0), role }))
     );
     if (allIngredients.length === 0) return;
 

@@ -328,6 +328,13 @@
   margin-top: 2px;
 }
 
+.ingredientPriceFree {
+  color: #1e6a3b;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
 .ingredientControl { flex-shrink: 0; }
 
 /* ── Check circle (single-select) ──────────────────────────── */

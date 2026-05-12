@@ -44,7 +44,7 @@ const IngredientImage = ({ src, alt }) => {
 };
 
 /* ── Single ingredient row (full-row tap target) ──────────── */
-const IngredientRow = ({ product, selected, count, onAdd, onRemove, disabled, singleSelect }) => {
+const IngredientRow = ({ product, selected, count, onAdd, onRemove, disabled, singleSelect, freeItem }) => {
   const imgSrc = product.image_url || product.image || product.main_image_url;
 
   const handleRowClick = () => {
@@ -79,7 +79,9 @@ const IngredientRow = ({ product, selected, count, onAdd, onRemove, disabled, si
         {product.shortDescription && (
           <span className={styles.ingredientDesc}>{product.shortDescription}</span>
         )}
-        <span className={styles.ingredientPrice}>{formatMoney(product.price)}</span>
+        <span className={`${styles.ingredientPrice} ${freeItem ? styles.ingredientPriceFree : ''}`}>
+          {freeItem ? 'Incluso' : formatMoney(product.price)}
+        </span>
       </div>
 
       <div className={styles.ingredientControl} onClick={(e) => e.stopPropagation()}>
@@ -159,7 +161,10 @@ const SaladBuilder = ({ ingredients, onAddedToCart }) => {
   }, [ingredients]);
 
   const total = useMemo(
-    () => Object.values(selections).flat().reduce((s, p) => s + Number(p.price || 0), 0),
+    () => Object.entries(selections)
+      .filter(([key]) => key !== 'molho')
+      .flatMap(([, items]) => items)
+      .reduce((s, p) => s + Number(p.price || 0), 0),
     [selections],
   );
 
@@ -424,6 +429,7 @@ const SaladBuilder = ({ ingredients, onAddedToCart }) => {
                         onRemove={(p) => handleRemove(step.key, p)}
                         disabled={disabled}
                         singleSelect={step.max === 1}
+                        freeItem={step.key === 'molho'}
                       />
                     );
                   })}
