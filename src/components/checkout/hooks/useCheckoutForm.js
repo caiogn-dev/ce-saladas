@@ -56,6 +56,32 @@ const writeCheckoutDraft = (data) => {
 
 const isValidPhone = (value) => onlyDigits(value).length === 11;
 
+const compactAddressParts = (parts) => parts
+  .map((part) => String(part || '').trim())
+  .filter(Boolean);
+
+const buildCanonicalAddressLabel = ({
+  street,
+  number,
+  complement,
+  neighborhood,
+  city,
+  state,
+  zip_code,
+}) => {
+  const streetLine = number
+    ? `${street || ''}, ${number}${complement ? ` - ${complement}` : ''}`
+    : street;
+
+  return compactAddressParts([
+    streetLine,
+    neighborhood,
+    city,
+    state,
+    zip_code ? onlyDigits(zip_code) : '',
+  ]).join(' · ');
+};
+
 export const useCheckoutForm = () => {
   const { profile, user } = useAuth();
   const deliveryAddressRef = useRef(null);
@@ -224,15 +250,14 @@ export const useCheckoutForm = () => {
     setFormData((prev) => ({ ...prev, ...updates }));
   }, []);
 
-  // Set address from geolocation — also captures lat/lng/raw_address for checkout payload.
+  // Set address from geolocation — also captures lat/lng for checkout payload.
   const setAddressFromGeo = useCallback((geoAddress) => {
     if (!geoAddress) return;
 
-    // Persist coordinates and raw label so buildCheckoutPayload can include them
     geoExtrasRef.current = {
       lat: geoAddress.lat ?? geoAddress.latitude ?? null,
       lng: geoAddress.lng ?? geoAddress.longitude ?? null,
-      raw_address: geoAddress.display_name || geoAddress.label || geoAddress.raw_address || '',
+      raw_address: '',
     };
 
     setFormData((prev) => ({
@@ -311,20 +336,22 @@ export const useCheckoutForm = () => {
   }, [formData, isIdentificationComplete]);
 
   const buildCheckoutPayload = useCallback((shippingMethod, enableScheduling, scheduledDate, scheduledTimeSlot, deliveryInfo = null) => {
-    const fullAddress = formData.number
-      ? `${formData.address}, ${formData.number}${formData.complement ? ` - ${formData.complement}` : ''}`
-      : formData.address;
-
     const isPickup = shippingMethod === 'pickup';
-    const { lat, lng, raw_address } = geoExtrasRef.current;
+    const { lat, lng } = geoExtrasRef.current;
     const hasCoordinates = lat != null && lng != null;
     const mapsUrl = hasCoordinates
       ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${lat},${lng}`)}`
       : '';
 
-    const fullAddressStr = formData.number
-      ? `${formData.address}, ${formData.number}${formData.complement ? ` - ${formData.complement}` : ''}, ${formData.neighborhood}, ${formData.city}`
-      : `${formData.address}, ${formData.neighborhood}, ${formData.city}`;
+    const canonicalAddressLabel = buildCanonicalAddressLabel({
+      street: formData.address,
+      number: formData.number,
+      complement: formData.complement,
+      neighborhood: formData.neighborhood,
+      city: formData.city,
+      state: formData.state,
+      zip_code: formData.zip_code,
+    });
 
     const deliveryAddress = isPickup ? {
       street: STORE_ADDRESS.address,
@@ -339,7 +366,8 @@ export const useCheckoutForm = () => {
       city: formData.city,
       state: formData.state,
       zip_code: onlyDigits(formData.zip_code),
-      raw_address: raw_address || fullAddressStr,
+      label: canonicalAddressLabel,
+      raw_address: canonicalAddressLabel,
       ...(lat != null && { lat }),
       ...(lng != null && { lng }),
       ...(hasCoordinates && {
@@ -366,7 +394,7 @@ export const useCheckoutForm = () => {
       customer_email: formData.email.trim(),
       customer_phone: onlyDigits(formData.phone),
       cpf: onlyDigits(formData.cpf),
-      shipping_address: isPickup ? STORE_ADDRESS.address : fullAddress,
+      shipping_address: isPickup ? STORE_ADDRESS.address : canonicalAddressLabel,
       shipping_city: isPickup ? STORE_ADDRESS.city : formData.city,
       shipping_state: isPickup ? STORE_ADDRESS.state : formData.state,
       shipping_zip_code: isPickup ? onlyDigits(STORE_ADDRESS.zip_code) : onlyDigits(formData.zip_code),

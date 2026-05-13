@@ -17,6 +17,25 @@ const normalizeAddressText = (value) => String(value || '')
   .trim()
   .toLowerCase();
 
+const compactAddressParts = (parts) => parts
+  .map((part) => String(part || '').trim())
+  .filter(Boolean);
+
+const buildDisplayAddress = (address) => {
+  if (!address) return '';
+
+  const streetLine = address.number
+    ? `${address.street || ''}, ${address.number}`
+    : address.street;
+
+  return compactAddressParts([
+    streetLine,
+    address.neighborhood,
+    address.city,
+    address.state,
+  ]).join(' · ') || address.display_name || address.formatted_address || '';
+};
+
 const LocationModal = ({
   isOpen,
   onClose,
@@ -270,8 +289,7 @@ const LocationModal = ({
                   <div className={styles.addressIcon}><MapPin size={18} /></div>
                   <div className={styles.addressText}>
                     <p className={styles.streetName}>
-                      {detectedAddress.street || detectedAddress.display_name || 'Ponto selecionado'}
-                      {detectedAddress.number && `, ${detectedAddress.number}`}
+                      {buildDisplayAddress(detectedAddress) || 'Ponto selecionado'}
                     </p>
                     <p className={styles.addressSecondary}>
                       {detectedAddress.neighborhood && `${detectedAddress.neighborhood} • `}
