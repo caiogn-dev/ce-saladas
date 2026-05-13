@@ -58,24 +58,6 @@ const LocationModal = ({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [detectedAddress]);
 
-  useEffect(() => {
-    if (!isOpen || manualMode || detectedAddress || position) return undefined;
-
-    let cancelled = false;
-
-    detectLocation().then((result) => {
-      if (cancelled) return;
-
-      if (!result || !result.address) {
-        setManualMode(true);
-      }
-    });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [isOpen, manualMode, detectedAddress, position, detectLocation]);
-
   const resetLocalState = useCallback(() => {
     setManualMode(false);
     setAddressStreet('');
@@ -95,7 +77,7 @@ const LocationModal = ({
     setManualMode(true);
   }, []);
 
-  const handleRetryGps = useCallback(() => {
+  const handleUseGps = useCallback(() => {
     setManualMode(false);
     detectLocation().then((result) => {
       if (!result || !result.address) {
@@ -228,15 +210,15 @@ const LocationModal = ({
               <div className={styles.pulseRing} />
               <div className={styles.gpsIcon}><MapPinned size={42} /></div>
             </div>
-            <h2>Detectando sua localização...</h2>
-            <p>Permita o acesso à localização para calcularmos a taxa de entrega.</p>
+            <h2>Como quer informar o endereço?</h2>
+            <p>Use sua localização atual ou busque o endereço manualmente para calcular a taxa de entrega.</p>
 
             {error ? (
               <div className={styles.errorBox}>
                 <p>{error}</p>
                 <div className={styles.errorActions}>
-                  <button onClick={handleRetryGps} className={styles.retryBtn}>
-                    Tentar novamente
+                  <button onClick={handleUseGps} className={styles.retryBtn} disabled={loading}>
+                    {loading ? 'Buscando...' : 'Usar minha localização'}
                   </button>
                   <button onClick={handleSkipGps} className={styles.skipBtn}>
                     Inserir endereço manualmente
@@ -244,9 +226,14 @@ const LocationModal = ({
                 </div>
               </div>
             ) : (
-              <button onClick={handleSkipGps} className={styles.skipLink}>
-                Prefiro inserir o endereço manualmente
-              </button>
+              <div className={styles.errorActions}>
+                <button onClick={handleUseGps} className={styles.retryBtn} disabled={loading}>
+                  {loading ? 'Buscando...' : 'Usar minha localização'}
+                </button>
+                <button onClick={handleSkipGps} className={styles.skipBtn}>
+                  Inserir endereço manualmente
+                </button>
+              </div>
             )}
           </div>
         )}

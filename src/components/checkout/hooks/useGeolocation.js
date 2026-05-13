@@ -21,6 +21,8 @@ const toFiniteNumber = (value, fallback = 0) => {
   return Number.isFinite(numeric) ? numeric : fallback;
 };
 
+const MAX_AUTO_LOCATION_ACCURACY_METERS = 250;
+
 export const useGeolocation = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -183,10 +185,22 @@ export const useGeolocation = () => {
       }
 
       const { latitude, longitude, accuracy } = pos.coords;
+      const numericAccuracy = toFiniteNumber(accuracy, Infinity);
 
-      setPosition({ lat: latitude, lng: longitude });
+      if (numericAccuracy > MAX_AUTO_LOCATION_ACCURACY_METERS) {
+        setPosition(null);
+        setDetectedAddress(null);
+        setRouteInfo(null);
+        setDeliveryInfo(null);
+        setError(
+          `Localizacao imprecisa (${Math.round(numericAccuracy)}m). Busque seu CEP/endereco ou marque o ponto no mapa.`
+        );
+        setLoading(false);
+        return null;
+      }
 
       if (!isSafeStoreCoordinateInput({ lat: latitude, lng: longitude })) {
+        setPosition(null);
         setDetectedAddress(null);
         setRouteInfo(null);
         setDeliveryInfo(null);
@@ -196,22 +210,23 @@ export const useGeolocation = () => {
       }
 
       const address = await reverseGeocode(latitude, longitude);
-      const fallbackAddress = address || {
-        street: '',
-        number: '',
-        neighborhood: '',
-        city: STORE_ADDRESS.city,
-        state: STORE_ADDRESS.state,
-        zip_code: '',
-        lat: latitude,
-        lng: longitude,
-      };
-      setDetectedAddress(fallbackAddress);
+      if (!address || !isLocalAddressCandidate(address)) {
+        setPosition(null);
+        setDetectedAddress(null);
+        setRouteInfo(null);
+        setDeliveryInfo(null);
+        setError('Nao foi possivel confirmar seu endereco automaticamente. Busque pelo CEP/endereco ou marque no mapa.');
+        setLoading(false);
+        return null;
+      }
+
+      setPosition({ lat: latitude, lng: longitude });
+      setDetectedAddress(address);
 
       await calculateRouteAndFee(latitude, longitude);
 
       setLoading(false);
-      return { lat: latitude, lng: longitude, address: fallbackAddress, accuracy };
+      return { lat: latitude, lng: longitude, address, accuracy: numericAccuracy };
     } catch (err) {
       setLoading(false);
 
