@@ -1259,3 +1259,16 @@
 .dark .cardapio-hero__quick-link:hover {
   background: rgba(var(--color-brand-orange-rgb), 0.14);
 }
+
+.catalog-section__title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-left: 3px solid var(--color-primary);
+  padding-left: 10px;
+}
+
+.catalog-section__title-icon {
+  color: var(--color-primary);
+  flex-shrink: 0;
+}

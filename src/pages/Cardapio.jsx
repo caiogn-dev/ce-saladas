@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useRef, useEffect, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
-import { Clock3, MapPin, ShoppingBag } from 'lucide-react';
+import { Clock3, MapPin, ShoppingBag, Star, ChefHat, Leaf, Droplets, GlassWater } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import FavoriteButton from '../components/FavoriteButton';
 import StockBadge from '../components/StockBadge';
@@ -28,27 +28,32 @@ const MENU_SECTIONS = [
     title: 'Destaques',
     description: 'Favoritos da casa e escolhas certeiras para começar.',
     featuredOnly: true,
+    icon: Star,
   },
   {
     key: 'monte-sua-salada',
     title: 'Monte sua Salada',
     description: 'Monte do zero ou escolha um combo pronto — do seu jeito.',
     isBuilder: true,
+    icon: ChefHat,
   },
   {
     key: 'saladas',
     title: 'Saladas',
     description: 'Combinações frescas para almoço, jantar ou uma pausa leve no dia.',
+    icon: Leaf,
   },
   {
     key: 'molhos',
     title: 'Molhos',
     description: 'Complementos para ajustar o sabor e finalizar o pedido do seu jeito.',
+    icon: Droplets,
   },
   {
     key: 'bebidas',
     title: 'Bebidas',
     description: 'Para acompanhar sua salada.',
+    icon: GlassWater,
   },
   // 'ingredientes' is intentionally omitted: those products feed the SaladBuilder
   // internally (see ingredientItems below) but are NOT displayed as a standalone
@@ -538,7 +543,10 @@ const Cardapio = () => {
                   >
                     <div className="catalog-section__header">
                       <div>
-                        <h2 className="catalog-section__title">{section.title}</h2>
+                        <div className="catalog-section__title-row">
+                          {section.icon && <section.icon size={16} className="catalog-section__title-icon" />}
+                          <h2 className="catalog-section__title">{section.title}</h2>
+                        </div>
                         <p className="catalog-section__description">{section.description}</p>
                       </div>
                       {!section.featuredOnly && !section.isBuilder && section.items.length > 0 && (
