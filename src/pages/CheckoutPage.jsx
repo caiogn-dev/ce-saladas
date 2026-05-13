@@ -671,6 +671,8 @@ const CheckoutPage = () => {
               onSelectDeliveryAddress={handleSelectDeliveryAddress}
               confirmedAddress={confirmedAddress}
               onProceedToPayment={handleProceedToPayment}
+              coupon={coupon}
+              onApplyCoupon={handleApplyCoupon}
             />
           )}
 
