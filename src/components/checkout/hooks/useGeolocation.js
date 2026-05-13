@@ -12,16 +12,77 @@ import {
   isSafeStoreCoordinateInput,
 } from '../../../utils/storeRegion';
 
-const requestCurrentPosition = (options) => new Promise((resolve, reject) => {
-  navigator.geolocation.getCurrentPosition(resolve, reject, options);
-});
-
 const toFiniteNumber = (value, fallback = 0) => {
   const numeric = typeof value === 'number' ? value : Number.parseFloat(String(value ?? ''));
   return Number.isFinite(numeric) ? numeric : fallback;
 };
 
-const MAX_AUTO_LOCATION_ACCURACY_METERS = 250;
+const TARGET_LOCATION_ACCURACY_METERS = 40;
+const MAX_AUTO_LOCATION_ACCURACY_METERS = 100;
+const LOCATION_WATCH_TIMEOUT_MS = 15000;
+
+const getAccuracy = (position) => toFiniteNumber(position?.coords?.accuracy, Infinity);
+
+const requestBestCurrentPosition = () => new Promise((resolve, reject) => {
+  let bestPosition = null;
+  let settled = false;
+  let watchId = null;
+  let timeoutId = null;
+
+  const cleanup = () => {
+    if (watchId !== null) navigator.geolocation.clearWatch(watchId);
+    if (timeoutId !== null) window.clearTimeout(timeoutId);
+  };
+
+  const finish = (position) => {
+    if (settled) return;
+    settled = true;
+    cleanup();
+    resolve(position);
+  };
+
+  const fail = (error) => {
+    if (settled) return;
+    settled = true;
+    cleanup();
+    reject(error);
+  };
+
+  timeoutId = window.setTimeout(() => {
+    if (bestPosition) {
+      finish(bestPosition);
+      return;
+    }
+
+    fail({ code: 3, message: 'Tempo esgotado ao obter localizacao precisa.' });
+  }, LOCATION_WATCH_TIMEOUT_MS);
+
+  watchId = navigator.geolocation.watchPosition(
+    (position) => {
+      const accuracy = getAccuracy(position);
+      if (!bestPosition || accuracy < getAccuracy(bestPosition)) {
+        bestPosition = position;
+      }
+
+      if (accuracy <= TARGET_LOCATION_ACCURACY_METERS) {
+        finish(position);
+      }
+    },
+    (error) => {
+      if (bestPosition) {
+        finish(bestPosition);
+        return;
+      }
+
+      fail(error);
+    },
+    {
+      enableHighAccuracy: true,
+      timeout: LOCATION_WATCH_TIMEOUT_MS,
+      maximumAge: 0,
+    },
+  );
+});
 
 export const useGeolocation = () => {
   const [loading, setLoading] = useState(false);
@@ -163,26 +224,7 @@ export const useGeolocation = () => {
     setError(null);
 
     try {
-      let pos;
-
-      try {
-        pos = await requestCurrentPosition({
-          enableHighAccuracy: true,
-          timeout: 20000,
-          maximumAge: 0,
-        });
-      } catch (highAccuracyError) {
-        const shouldRetryWithRelaxedAccuracy = [2, 3].includes(highAccuracyError?.code);
-        if (!shouldRetryWithRelaxedAccuracy) {
-          throw highAccuracyError;
-        }
-
-        pos = await requestCurrentPosition({
-          enableHighAccuracy: false,
-          timeout: 12000,
-          maximumAge: 300000,
-        });
-      }
+      const pos = await requestBestCurrentPosition();
 
       const { latitude, longitude, accuracy } = pos.coords;
       const numericAccuracy = toFiniteNumber(accuracy, Infinity);
@@ -193,7 +235,7 @@ export const useGeolocation = () => {
         setRouteInfo(null);
         setDeliveryInfo(null);
         setError(
-          `Localizacao imprecisa (${Math.round(numericAccuracy)}m). Busque seu CEP/endereco ou marque o ponto no mapa.`
+          `Localizacao imprecisa (${Math.round(numericAccuracy)}m). Digite seu CEP/endereco para evitar erro na entrega.`
         );
         setLoading(false);
         return null;
@@ -215,7 +257,7 @@ export const useGeolocation = () => {
         setDetectedAddress(null);
         setRouteInfo(null);
         setDeliveryInfo(null);
-        setError('Nao foi possivel confirmar seu endereco automaticamente. Busque pelo CEP/endereco ou marque no mapa.');
+        setError('Nao foi possivel confirmar seu endereco automaticamente. Digite seu CEP/endereco para evitar erro na entrega.');
         setLoading(false);
         return null;
       }
