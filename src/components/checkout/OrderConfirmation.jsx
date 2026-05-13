@@ -2,6 +2,7 @@
 import { MapPinned, ShoppingCart, Store } from 'lucide-react';
 import styles from '../../styles/CheckoutModal.module.css';
 import { formatMoney, isZeroAmount, toFiniteNumber } from './utils';
+import CouponInput from './CouponInput';
 
 const OrderConfirmation = ({
   cart,
@@ -13,6 +14,8 @@ const OrderConfirmation = ({
   onSelectDeliveryAddress,
   confirmedAddress,
   onProceedToPayment,
+  coupon,
+  onApplyCoupon,
 }) => {
   const hasValidDeliverySelection = (
     shippingMethod === 'delivery'
@@ -211,6 +214,21 @@ const OrderConfirmation = ({
           <span>R$ {formatMoney(total)}</span>
         </div>
       </div>
+
+      {coupon && (
+        <div className={styles.couponSection}>
+          <CouponInput
+            couponCode={coupon.couponCode}
+            couponError={coupon.couponError}
+            appliedCoupon={coupon.appliedCoupon}
+            loadingCoupon={coupon.loadingCoupon}
+            onChange={coupon.handleCouponChange}
+            onApply={onApplyCoupon}
+            onRemove={coupon.removeCoupon}
+            placeholder="DIGITE O CUPOM"
+          />
+        </div>
+      )}
 
       <button className={styles.proceedButton} onClick={onProceedToPayment} disabled={!canProceed} type="button">
         {canProceed ? 'Continuar para identificação' : 'Selecione o endereço de entrega'}
