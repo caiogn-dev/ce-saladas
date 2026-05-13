@@ -12,7 +12,8 @@ const CouponInput = ({
   onChange,
   onApply,
   onRemove,
-  disabled = false
+  disabled = false,
+  placeholder = 'Digite o código',
 }) => {
   if (appliedCoupon) {
     return (
@@ -51,7 +52,7 @@ const CouponInput = ({
           type="text"
           value={couponCode}
           onChange={onChange}
-          placeholder="Digite o código"
+          placeholder={placeholder}
           className={`${styles.input} ${couponError ? styles.inputError : ''}`}
           disabled={disabled || loadingCoupon}
         />
