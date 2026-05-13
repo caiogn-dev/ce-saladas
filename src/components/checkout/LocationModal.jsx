@@ -138,10 +138,6 @@ const LocationModal = ({
     };
 
     if (addressWasEdited) {
-      delete mergedAddress.lat;
-      delete mergedAddress.lng;
-      delete mergedAddress.latitude;
-      delete mergedAddress.longitude;
       delete mergedAddress.display_name;
       delete mergedAddress.formatted_address;
       delete mergedAddress.raw_address;

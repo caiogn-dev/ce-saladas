@@ -54,7 +54,6 @@ const writeCheckoutDraft = (data) => {
   }
 };
 
-const isValidEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value || '').trim());
 const isValidPhone = (value) => onlyDigits(value).length === 11;
 
 export const useCheckoutForm = () => {
@@ -318,6 +317,10 @@ export const useCheckoutForm = () => {
 
     const isPickup = shippingMethod === 'pickup';
     const { lat, lng, raw_address } = geoExtrasRef.current;
+    const hasCoordinates = lat != null && lng != null;
+    const mapsUrl = hasCoordinates
+      ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${lat},${lng}`)}`
+      : '';
 
     const fullAddressStr = formData.number
       ? `${formData.address}, ${formData.number}${formData.complement ? ` - ${formData.complement}` : ''}, ${formData.neighborhood}, ${formData.city}`
@@ -339,6 +342,11 @@ export const useCheckoutForm = () => {
       raw_address: raw_address || fullAddressStr,
       ...(lat != null && { lat }),
       ...(lng != null && { lng }),
+      ...(hasCoordinates && {
+        coordinates_confirmed: true,
+        coordinate_source: 'customer_selected_pin',
+        maps_url: mapsUrl,
+      }),
     };
 
     const deliveryDistanceKm = !isPickup && deliveryInfo?.distance_km != null
