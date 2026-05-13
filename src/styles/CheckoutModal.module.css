@@ -1650,3 +1650,14 @@
   color: var(--color-text-hint);
 }
 
+/* ============================================
+   Coupon Section
+   ============================================ */
+.couponSection {
+  margin: 12px 0;
+  padding: 14px;
+  background: #fff7ed;
+  border: 1px solid rgba(249, 115, 22, 0.22);
+  border-radius: 8px;
+}
+
