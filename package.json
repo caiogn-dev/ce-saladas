@@ -30,7 +30,10 @@
     "eslint": "^9.39.1",
     "eslint-plugin-react-hooks": "^7.0.1",
     "globals": "^16.5.0",
-    "postcss": "^8.5.6",
+    "postcss": "^8.5.14",
     "tailwindcss": "^4.1.18"
+  },
+  "overrides": {
+    "postcss": "$postcss"
   }
 }
