@@ -1653,11 +1653,22 @@
 /* ============================================
    Coupon Section
    ============================================ */
+@keyframes couponGlow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0); }
+  50%       { box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.25), 0 0 14px rgba(249, 115, 22, 0.2); }
+}
+
 .couponSection {
   margin: 12px 0;
   padding: 14px;
-  background: #fff7ed;
-  border: 1px solid rgba(249, 115, 22, 0.22);
+  background: var(--clr-terra-50);
+  border: 1.5px solid rgba(249, 115, 22, 0.35);
   border-radius: 8px;
+  animation: couponGlow 2.5s ease-in-out infinite;
+}
+
+:global(.dark) .couponSection {
+  background: var(--color-bg-card);
+  border-color: rgba(249, 115, 22, 0.45);
 }
 
