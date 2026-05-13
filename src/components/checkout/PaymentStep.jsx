@@ -80,18 +80,20 @@ const PaymentStep = ({
             />
           </div>
 
-          <div className={styles.stepSection}>
-            <CouponInput
-              couponCode={coupon.couponCode}
-              couponError={coupon.couponError}
-              appliedCoupon={coupon.appliedCoupon}
-              loadingCoupon={coupon.loadingCoupon}
-              onChange={coupon.handleCouponChange}
-              onApply={onApplyCoupon}
-              onRemove={coupon.removeCoupon}
-              disabled={loading}
-            />
-          </div>
+          {coupon.appliedCoupon && (
+            <div className={styles.stepSection}>
+              <CouponInput
+                couponCode={coupon.couponCode}
+                couponError={coupon.couponError}
+                appliedCoupon={coupon.appliedCoupon}
+                loadingCoupon={coupon.loadingCoupon}
+                onChange={coupon.handleCouponChange}
+                onApply={onApplyCoupon}
+                onRemove={coupon.removeCoupon}
+                disabled={loading}
+              />
+            </div>
+          )}
 
           <div className={styles.stepSection}>
             <h2 className={styles.sectionTitle}>
