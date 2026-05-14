@@ -21,6 +21,7 @@ import PageTransition from '../components/ui/PageTransition';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useStore } from '../context/StoreContext';
+import { buildMediaUrl } from '../utils/media';
 
 const MENU_SECTIONS = [
   {
@@ -393,7 +394,7 @@ const Cardapio = () => {
 
   const storeHoursLabel = store?.metadata?.business_hours_label || store?.metadata?.opening_hours || 'entrega e retirada disponíveis';
   const heroDescription = store?.metadata?.catalog_pitch || 'bowls autorais e montados por você. entrega sob refrigeração em poucos minutos.';
-  const heroCover = store?.metadata?.cover_image_url || featuredItems[0]?.image_url || store?.logo_url || null;
+  const heroCover = buildMediaUrl(store?.metadata?.cover_image_url || featuredItems[0]?.image_url || store?.logo_url || '') || null;
 
   return (
     <div className="cardapio-page">
