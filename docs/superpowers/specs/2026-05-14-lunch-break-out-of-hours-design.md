@@ -78,7 +78,7 @@ def is_open(self):
 | Fora do horário (ex: 22h) + qualquer mensagem que não seja pedido | Responde normalmente |
 | Fora do horário + intent de pedido | Avisa fechado + link do site |
 
-**Intents bloqueados fora do horário:** `ADD_TO_CART`, `CREATE_ORDER`, `DELIVERY_METHOD`, e qualquer handler que avance o fluxo de pedido.
+**Handlers bloqueados fora do horário:** `_handle_add_to_cart`, `_handle_create_order`, `_handle_delivery_method_selection`, `_handle_address_input`, `_handle_payment_method_selection`. Cobre também sessões que iniciaram antes da pausa e ficaram em `awaiting_*`.
 
 **Intents que continuam funcionando:** `MENU`, `BUSINESS_HOURS`, `DELIVERY_INFO`, `GREETING`, `HUMAN_HANDOFF`, `UNKNOWN`/fallback.
 
@@ -141,6 +141,18 @@ def _handle_create_order(self, message, data, session):
     # ... lógica existente ...
 
 def _handle_delivery_method_selection(self, message, data, session):
+    blocked = self._check_order_allowed()
+    if blocked:
+        return blocked
+    # ... lógica existente ...
+
+def _handle_address_input(self, message, data, session):
+    blocked = self._check_order_allowed()
+    if blocked:
+        return blocked
+    # ... lógica existente ...
+
+def _handle_payment_method_selection(self, message, data, session):
     blocked = self._check_order_allowed()
     if blocked:
         return blocked
