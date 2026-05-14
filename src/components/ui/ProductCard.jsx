@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import Button from './Button';
 import Badge from './Badge';
+import { buildMediaUrl } from '../../utils/media';
 
 const currencyFormatter = new Intl.NumberFormat('pt-BR', {
   style: 'currency',
@@ -22,7 +23,7 @@ const ProductCard = ({
   const [imageError, setImageError] = useState(false);
 
   const inStock = Number(product.stock_quantity) > 0;
-  const imageSrc = product.image || product.image_url;
+  const imageSrc = buildMediaUrl(product.main_image_url || product.image || product.image_url);
   const animationDelay = `${index * 50}ms`;
   const formattedPrice = currencyFormatter.format(Number(product.price || 0));
   const formattedOriginalPrice = product.original_price

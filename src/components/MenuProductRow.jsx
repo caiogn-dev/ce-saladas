@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import styles from './MenuProductRow.module.css';
+import { buildMediaUrl } from '../utils/media';
 
 const currencyFormatter = new Intl.NumberFormat('pt-BR', {
   style: 'currency',
@@ -42,7 +43,7 @@ const MenuProductRow = ({
   const cartItem = cart.find((item) => item.id === product.id);
   const quantity = cartItem?.quantity || 0;
 
-  const imageSrc = product.image_url || product.image || product.main_image_url;
+  const imageSrc = buildMediaUrl(product.main_image_url || product.image_url || product.image);
   const inStock = (product.is_in_stock ?? true) || (product.stock_quantity ?? 1) > 0;
   const price = formatMoney(product.price);
   const hasDiscount = product.original_price && Number(product.original_price) > Number(product.price);
