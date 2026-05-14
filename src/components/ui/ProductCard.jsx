@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useRef, useEffect, useState } from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import Button from './Button';
 import Badge from './Badge';
@@ -21,9 +21,18 @@ const ProductCard = ({
 }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const imgRef = useRef(null);
 
   const inStock = Number(product.stock_quantity) > 0;
   const imageSrc = buildMediaUrl(product.main_image_url || product.image || product.image_url);
+
+  // Catch images that loaded before React attached onLoad (fast CDN / hydration race)
+  useEffect(() => {
+    const img = imgRef.current;
+    if (!img) return;
+    if (img.complete && img.naturalWidth > 0) setImageLoaded(true);
+    else if (img.complete && img.naturalWidth === 0) setImageError(true);
+  }, [imageSrc]);
   const animationDelay = `${index * 50}ms`;
   const formattedPrice = currencyFormatter.format(Number(product.price || 0));
   const formattedOriginalPrice = product.original_price
@@ -92,6 +101,7 @@ const ProductCard = ({
         <div className={`product-card__image ${imageLoaded ? 'loaded' : ''} ${imageError ? 'error' : ''}`}>
           {!imageError && imageSrc ? (
             <img
+              ref={imgRef}
               src={imageSrc}
               alt={product.name}
               width="768"
