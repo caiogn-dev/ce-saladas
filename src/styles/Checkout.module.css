@@ -815,6 +815,64 @@
 /* ============================================
    Coupon Input
    ============================================ */
+
+/* Collapsed toggle button */
+.couponToggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: #fafaf8;
+  border: 1.5px dashed #d1c4a8;
+  border-radius: var(--o-radius-md);
+  color: #7a6a4f;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  text-align: left;
+}
+
+.couponToggle:hover:not(:disabled) {
+  background: #f5f0e8;
+  border-color: #b8a47e;
+  color: #5a4a30;
+}
+
+.couponToggleIcon {
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.couponToggleArrow {
+  margin-left: auto;
+  font-size: 1.1rem;
+  color: #b8a47e;
+}
+
+/* Header row of expanded input (label + close link) */
+.couponInputHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.375rem;
+}
+
+.couponCollapseLink {
+  background: none;
+  border: none;
+  font-size: 0.8rem;
+  color: #999;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.couponCollapseLink:hover {
+  color: #555;
+}
+
 .couponInput {
   margin-bottom: 1rem;
 }
