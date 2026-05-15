@@ -14,15 +14,15 @@ const ComboCard = ({ combo }) => {
 
   const nome = combo.name || combo.nome;
   const descricao = combo.description || combo.descricao;
-  const preco = combo.price || combo.preco;
-  const preco_original = combo.original_price || combo.preco_original;
+  const preco = combo.price ?? combo.preco;
+  const preco_original = combo.original_price ?? combo.preco_original;
   const rawImageUrl = combo.main_image_url || combo.image_url || combo.imagem_url || combo.image;
   const imagem_url = buildMediaUrl(rawImageUrl);
   const destaque = combo.is_featured || combo.destaque;
   const molhos_inclusos = combo.molhos_inclusos || combo.sauces || [];
   const carne_inclusa = combo.carne_inclusa || combo.meat;
   const rondelli_incluso = combo.rondelli_incluso || combo.rondelli;
-  const economia = combo.savings || combo.economia;
+  const economia = combo.savings ?? combo.economia;
   const percentual_desconto = combo.discount_percent || combo.percentual_desconto;
 
   // Catch images that loaded before React attached onLoad (fast CDN / hydration race)
@@ -63,7 +63,7 @@ const ComboCard = ({ combo }) => {
             ref={imgRef}
             src={imagem_url}
             alt={nome}
-            className={`absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 transition-opacity duration-300 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+            className={`absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-all duration-300 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
             loading="lazy"
             onLoad={() => setImageLoaded(true)}
             onError={() => setImageError(true)}
