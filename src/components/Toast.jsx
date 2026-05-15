@@ -2,7 +2,7 @@
  * Toast Notification System
  * Provides global toast notifications for the application
  */
-import React, { createContext, useCallback, useContext, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 
 const ToastContext = createContext(null);
 
@@ -10,22 +10,34 @@ const TOAST_DURATION = 4000;
 
 export function ToastProvider({ children }) {
   const [toasts, setToasts] = useState([]);
+  const timersRef = useRef(new Map());
+
+  useEffect(() => {
+    const timers = timersRef.current;
+    return () => timers.forEach(clearTimeout);
+  }, []);
 
   const addToast = useCallback((message, type = 'info', duration = TOAST_DURATION) => {
     const id = Date.now() + Math.random();
     const toast = { id, message, type };
-    
+
     setToasts((prev) => [...prev, toast]);
 
-    // Auto remove after duration
-    setTimeout(() => {
+    const timerId = setTimeout(() => {
+      timersRef.current.delete(id);
       setToasts((prev) => prev.filter((t) => t.id !== id));
     }, duration);
+    timersRef.current.set(id, timerId);
 
     return id;
   }, []);
 
   const removeToast = useCallback((id) => {
+    const timerId = timersRef.current.get(id);
+    if (timerId !== undefined) {
+      clearTimeout(timerId);
+      timersRef.current.delete(id);
+    }
     setToasts((prev) => prev.filter((t) => t.id !== id));
   }, []);
 

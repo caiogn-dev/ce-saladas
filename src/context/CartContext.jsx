@@ -342,6 +342,7 @@ export const CartProvider = ({ children }) => {
     } catch (error) {
       console.error('Error removing from cart:', error);
       setCart(previousCart);
+      toast.error('Erro ao remover da sacola.');
     }
   };
 
@@ -360,6 +361,7 @@ export const CartProvider = ({ children }) => {
     } catch (error) {
       console.error('Error removing combo from cart:', error);
       setCombos(previousCombos);
+      toast.error('Erro ao remover item da sacola.');
     }
   };
 
@@ -386,6 +388,7 @@ export const CartProvider = ({ children }) => {
     } catch (error) {
       console.error('Error updating quantity:', error);
       setCart(previousCart);
+      toast.error('Erro ao atualizar quantidade.');
     }
   };
 
@@ -412,6 +415,7 @@ export const CartProvider = ({ children }) => {
     } catch (error) {
       console.error('Error updating combo quantity:', error);
       setCombos(previousCombos);
+      toast.error('Erro ao atualizar quantidade.');
     }
   };
 
@@ -423,6 +427,7 @@ export const CartProvider = ({ children }) => {
       clearCartCacheInternal();
     } catch (error) {
       console.error('Error clearing cart:', error);
+      toast.error('Erro ao limpar sacola.');
     }
   };
 

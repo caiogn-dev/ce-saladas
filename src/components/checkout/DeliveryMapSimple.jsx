@@ -94,6 +94,7 @@ function DeliveryMapSimpleInner({
   const searchTimeoutRef = useRef(null);
   const resultsRef = useRef(null);
   const handleLocationSelectedRef = useRef(null);
+  const gpsAbortedRef = useRef(false);
 
   // Handle location selection (click / drag / GPS)
   const handleLocationSelected = useCallback(async (lat, lng, preferredAddress = null) => {
@@ -324,12 +325,20 @@ function DeliveryMapSimpleInner({
     };
   }, [disposeRouteLine, isReady, routePolyline]);
 
+  // GPS cancel
+  const cancelGPS = useCallback(() => {
+    gpsAbortedRef.current = true;
+    setIsLoading(false);
+    setError(null);
+  }, []);
+
   // GPS button
   const handleGetGPS = async () => {
     if (!navigator.geolocation) {
       setError('Geolocalização não suportada pelo navegador');
       return;
     }
+    gpsAbortedRef.current = false;
     setIsLoading(true);
     setError(null);
     try {
@@ -338,6 +347,7 @@ function DeliveryMapSimpleInner({
           enableHighAccuracy: true, timeout: 20000, maximumAge: 0,
         })
       );
+      if (gpsAbortedRef.current) return;
       if (position.coords.accuracy > 60) {
         setError(`GPS com precisão baixa (${Math.round(position.coords.accuracy)}m). Ajuste o pino no mapa se necessário.`);
       }
@@ -348,6 +358,7 @@ function DeliveryMapSimpleInner({
       }
       await handleLocationSelected(position.coords.latitude, position.coords.longitude);
     } catch (err) {
+      if (gpsAbortedRef.current) return;
       const messages = {
         1: 'Permissão de localização negada.',
         2: 'Localização indisponível.',
@@ -355,7 +366,7 @@ function DeliveryMapSimpleInner({
       };
       setError(messages[err.code] || 'Erro ao obter localização');
     } finally {
-      setIsLoading(false);
+      if (!gpsAbortedRef.current) setIsLoading(false);
     }
   };
 
@@ -545,6 +556,13 @@ function DeliveryMapSimpleInner({
       {isLoading && (
         <div className={styles.loadingOverlay}>
           <div className={styles.spinner} />
+          <button
+            type="button"
+            onClick={cancelGPS}
+            className={styles.cancelGpsButton}
+          >
+            Cancelar
+          </button>
         </div>
       )}
 
