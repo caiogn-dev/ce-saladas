@@ -48,6 +48,9 @@ export const useCoupon = () => {
         setCouponError('');
         setLoadingCoupon(false);
         return true;
+      } else {
+        setCouponError(data.error || 'Cupom inválido');
+        setAppliedCoupon(null);
       }
     } catch (error) {
       const errorMsg = error.response?.data?.error || 'Cupom inválido';
