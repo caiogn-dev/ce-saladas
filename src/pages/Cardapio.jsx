@@ -265,7 +265,9 @@ const Cardapio = () => {
   }, [featuredIds, filteredItems]);
 
   const ingredientItems = useMemo(
-    () => filteredItems.filter((item) => item.catalogSection === 'ingredientes'),
+    () => filteredItems.filter((item) =>
+      item.catalogSection === 'ingredientes' || item.catalogSection === 'molhos'
+    ),
     [filteredItems]
   );
 
