@@ -5,6 +5,7 @@
  */
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import * as storeApi from '../services/storeApi';
+import { setStoreSlug } from '../services/storeApi';
 
 const StoreContext = createContext();
 
@@ -13,7 +14,11 @@ const CATALOG_CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutes
 let catalogCache = null;
 let catalogCacheTs = 0;
 
-export const StoreProvider = ({ children, initialCatalog = null }) => {
+export const StoreProvider = ({ children, initialCatalog = null, storeConfig = null }) => {
+  // Aplicar slug antes de qualquer fetch para que os URLs de API sejam corretos
+  if (storeConfig?.slug) {
+    setStoreSlug(storeConfig.slug);
+  }
   const [store, setStore] = useState(initialCatalog?.store || null);
   const [categories, setCategories] = useState(initialCatalog?.categories || []);
   const [products, setProducts] = useState(initialCatalog?.products || []);
@@ -76,6 +81,17 @@ export const StoreProvider = ({ children, initialCatalog = null }) => {
       setIsLoading(false);
     }
   }, []);
+
+  // Aplicar branding do storeConfig imediatamente (antes do catalog carregar)
+  useEffect(() => {
+    if (!storeConfig) return;
+    if (storeConfig.primary_color) {
+      document.documentElement.style.setProperty('--primary-color', storeConfig.primary_color);
+    }
+    if (storeConfig.secondary_color) {
+      document.documentElement.style.setProperty('--secondary-color', storeConfig.secondary_color);
+    }
+  }, [storeConfig]);
 
   // Fetch availability
   useEffect(() => {
@@ -143,6 +159,8 @@ export const StoreProvider = ({ children, initialCatalog = null }) => {
       // Store info
       store,
       storeSlug: storeApi.STORE_SLUG,
+      storeConfig,
+      storeTemplate: storeConfig?.template || 'fresh',
 
       // Catalog data
       categories,

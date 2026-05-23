@@ -14,17 +14,17 @@ module.exports = {
         display: ['Playfair Display', 'Georgia', 'serif'],
       },
       colors: {
-        // Cê Saladas Brand Colors - Fresh Green Palette
+        // Brand primary — cor controlada por CSS var para suporte multi-tenant
         primary: {
-          DEFAULT: '#2D6A4F',
+          DEFAULT: 'var(--primary-color, #2D6A4F)',
           50: '#F0FDF4',
           100: '#DCFCE7',
           200: '#BBF7D0',
           300: '#86EFAC',
           400: '#4ADE80',
-          500: '#2D6A4F',
-          600: '#1B4332',
-          700: '#14532D',
+          500: 'var(--primary-color, #2D6A4F)',
+          600: 'var(--secondary-color, #1B4332)',
+          700: 'var(--secondary-color, #1B4332)',
           800: '#166534',
           900: '#052E16',
           950: '#022C22',

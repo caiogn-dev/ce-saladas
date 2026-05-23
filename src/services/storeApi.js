@@ -84,7 +84,16 @@ export const getStoreSlug = () => {
   return process.env.NEXT_PUBLIC_STORE_SLUG || 'ce-saladas';
 };
 
-const STORE_SLUG = getStoreSlug();
+export let STORE_SLUG = getStoreSlug();
+
+// Chamado pelo StoreProvider quando recebe storeConfig do servidor
+export function setStoreSlug(slug) {
+  if (slug && slug !== STORE_SLUG) {
+    STORE_SLUG = slug;
+    STORE_API_URL = `${STORES_API_URL}/${slug}`;
+    PUBLIC_STORE_API_URL = `${API_ROOT}/public/${slug}`;
+  }
+}
 
 const isLikelyJwt = (token) => (
   typeof token === 'string'
@@ -101,8 +110,8 @@ const buildAuthHeader = (token) => {
 const DEFAULT_API_URL = 'http://localhost:8000/api/v1';
 const API_ROOT = (process.env.NEXT_PUBLIC_API_URL || DEFAULT_API_URL).replace(/\/+$/, '');
 const STORES_API_URL = `${API_ROOT}/stores`;
-const STORE_API_URL = `${STORES_API_URL}/${STORE_SLUG}`;
-const PUBLIC_STORE_API_URL = `${API_ROOT}/public/${STORE_SLUG}`;
+let STORE_API_URL = `${STORES_API_URL}/${STORE_SLUG}`;
+let PUBLIC_STORE_API_URL = `${API_ROOT}/public/${STORE_SLUG}`;
 const AUTH_API_URL = `${API_ROOT}`;
 
 // WebSocket URL

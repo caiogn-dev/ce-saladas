@@ -3,7 +3,15 @@ import { Html, Head, Main, NextScript } from 'next/document';
 export default function Document() {
   return (
     <Html lang="pt-BR">
-      <Head />
+      <Head>
+        {/* CSS vars default para evitar flash antes do storeConfig chegar */}
+        <style>{`
+          :root {
+            --primary-color: #2D6A4F;
+            --secondary-color: #1B4332;
+          }
+        `}</style>
+      </Head>
       <body>
         {/* Anti-FOUC: apply dark class before first paint */}
         <script
