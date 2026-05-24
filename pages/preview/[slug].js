@@ -1,26 +1,10 @@
 import axios from 'axios';
-import Cardapio from '../../src/pages/Cardapio';
+import GenericStorefront from '../../src/components/GenericStorefront';
 import { getStoreConfigBySlug } from '../../src/lib/getStoreConfig';
 
-export default function PreviewPage({ previewStoreConfig }) {
-  return (
-    <>
-      <div
-        style={{
-          background: '#f59e0b',
-          color: '#1c1917',
-          padding: '8px 16px',
-          textAlign: 'center',
-          fontSize: '13px',
-          fontWeight: 600,
-          letterSpacing: '0.01em',
-        }}
-      >
-        Modo preview — {previewStoreConfig?.name}
-      </div>
-      <Cardapio />
-    </>
-  );
+export default function PreviewPage({ catalog }) {
+  const storeName = catalog?.store?.name;
+  return <GenericStorefront catalog={catalog} previewLabel={storeName} />;
 }
 
 export async function getServerSideProps({ params }) {
@@ -31,17 +15,20 @@ export async function getServerSideProps({ params }) {
     getStoreConfigBySlug(slug),
     axios
       .get(`${apiUrl}/stores/${slug}/catalog/`, { timeout: 5000 })
-      .then((r) => r.data)
+      .then(r => r.data)
       .catch(() => null),
   ]);
 
   const previewStoreConfig = configResult.status === 'fulfilled' ? configResult.value : null;
   if (!previewStoreConfig) return { notFound: true };
 
+  const catalog = catalogResult.status === 'fulfilled' ? catalogResult.value : null;
+
   return {
     props: {
       previewStoreConfig,
-      initialCatalog: catalogResult.status === 'fulfilled' ? catalogResult.value : null,
+      initialCatalog: catalog,
+      catalog,
     },
   };
 }
