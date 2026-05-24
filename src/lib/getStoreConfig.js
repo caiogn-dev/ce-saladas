@@ -45,3 +45,15 @@ export async function getStoreConfig(domain) {
     return null;
   }
 }
+
+export async function getStoreConfigBySlug(slug) {
+  const baseUrl = API_URL.replace(/\/api\/v1\/?$/, '');
+  try {
+    const res = await fetch(`${baseUrl}/api/v1/public/${slug}/`, { cache: 'no-store' });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch (err) {
+    console.error('[getStoreConfigBySlug] erro:', err.message);
+    return null;
+  }
+}

@@ -132,7 +132,7 @@ gtag('config', '${GA_ID}');`}
       <ErrorBoundary>
         <ThemeProvider>
           <AuthProvider>
-            <StoreProvider initialCatalog={pageProps.initialCatalog || null} storeConfig={storeConfig}>
+            <StoreProvider initialCatalog={pageProps.initialCatalog || null} storeConfig={pageProps.previewStoreConfig || storeConfig}>
               <StoreHead />
               <ToastProvider>
                 <WishlistProvider>
