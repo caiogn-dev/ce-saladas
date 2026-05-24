@@ -4,7 +4,6 @@ import { useCart } from '../../context/CartContext';
 import { useStore } from '../../context/StoreContext';
 import Navbar from '../Navbar';
 import { buildMediaUrl } from '../../utils/media';
-import './GenericStorefront.css';
 
 const fmt = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
 

@@ -9,6 +9,7 @@ import '../src/styles/forms.css';
 import '../src/styles/status-pages.css';
 
 // Component styles
+import '../src/components/GenericStorefront/GenericStorefront.css';
 import '../src/components/Navbar.css';
 import '../src/components/CartSidebar.css';
 import '../src/components/LoginModal.css';
