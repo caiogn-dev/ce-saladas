@@ -65,8 +65,7 @@ const OrderDetailModal = ({ order, onClose, onReorder }) => {
   // Generate payment link using secure access_token
   const getPaymentLink = () => {
     if (accessToken) {
-      const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || (typeof window !== 'undefined' ? window.location.origin : '');
-      return `${baseUrl}/pendente?token=${accessToken}`;
+      return `/pendente?token=${accessToken}`;
     }
     return null;
   };

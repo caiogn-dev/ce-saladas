@@ -112,7 +112,7 @@ export const useGeolocation = () => {
       }
       return null;
     } catch (err) {
-      console.error('Reverse geocode error:', err);
+      console.error('Reverse geocode error');
       return null;
     }
   }, []);
@@ -203,7 +203,7 @@ export const useGeolocation = () => {
 
       return { routeData, deliveryData };
     } catch (err) {
-      console.error('Route calculation error:', err);
+      console.error('Route calculation error');
       return null;
     }
   }, []);
