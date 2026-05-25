@@ -50,6 +50,23 @@ const CustomerForm = ({
         </div>
 
         <div className={styles.formGroup}>
+          <label className={styles.label}>E-mail (opcional)</label>
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={onChange}
+            placeholder="seu@email.com"
+            className={`${styles.input} ${errors.email ? styles.inputError : ''}`}
+            disabled={disabled || existingFields.email}
+            autoComplete="email"
+            inputMode="email"
+          />
+          {errors.email && <span className={styles.errorText}>{errors.email}</span>}
+          {existingFields.email && <span className={styles.savedFieldHint}>E-mail já cadastrado</span>}
+        </div>
+
+        <div className={styles.formGroup}>
           <label className={styles.label}>CPF (opcional)</label>
           <input
             type="text"

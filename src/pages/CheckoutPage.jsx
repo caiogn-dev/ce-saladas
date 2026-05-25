@@ -454,6 +454,24 @@ const CheckoutPage = () => {
     }
     setPaymentError('');
 
+    // Guard: se já existe um pedido criado nos últimos 5 min, redireciona ao invés de criar duplicata.
+    // Resolve problema de duplo-submit em browsers embutidos (ex: links de Instagram/WhatsApp).
+    try {
+      const _stored = localStorage.getItem('ce_last_checkout');
+      if (_stored) {
+        const _last = JSON.parse(_stored);
+        if (_last?.orderNumber && Date.now() - _last.ts < 5 * 60 * 1000) {
+          if (_last.accessToken) {
+            try { sessionStorage.setItem('ce_order_access_token', _last.accessToken); } catch {}
+          }
+          const _op = `order=${_last.orderNumber}`;
+          const _tp = _last.accessToken ? `&token=${encodeURIComponent(_last.accessToken)}` : '';
+          router.push(`/pendente?${_op}${_tp}`);
+          return;
+        }
+      }
+    } catch { /* ignore */ }
+
     setLoading(true);
     setPaymentError('');
 
@@ -540,13 +558,23 @@ const CheckoutPage = () => {
         }
       }
 
-      // Store access token in sessionStorage to avoid exposing it in the URL.
-      // Success/pending pages read from sessionStorage first, then fall back to
-      // the order number (which is safe to expose).
+      // Salva token no sessionStorage E na URL — sessionStorage não persiste em alguns
+      // browsers embutidos (ex: Instagram IAB), então o token vai na URL como fallback.
       if (accessToken) {
         try { sessionStorage.setItem('ce_order_access_token', accessToken); } catch { /* ignore */ }
       }
+
+      // Persiste dados do pedido no localStorage para guard de duplo submit (TTL 5 min)
+      try {
+        localStorage.setItem('ce_last_checkout', JSON.stringify({
+          orderNumber,
+          accessToken,
+          ts: Date.now(),
+        }));
+      } catch { /* ignore */ }
+
       const orderParam = orderNumber ? `order=${orderNumber}` : '';
+      const tokenParam = accessToken ? `&token=${encodeURIComponent(accessToken)}` : '';
 
       if (payment) {
         const paymentStatus = payment.status;
@@ -569,22 +597,22 @@ const CheckoutPage = () => {
 
         // Cash payment goes directly to success
         if (paymentMethod === 'cash') {
-          router.push(`/sucesso?${orderParam}&method=cash`);
+          router.push(`/sucesso?${orderParam}&method=cash${tokenParam}`);
           return;
         }
 
         if (paymentStatus === 'approved') {
-          router.push(`/sucesso?${orderParam}`);
+          router.push(`/sucesso?${orderParam}${tokenParam}`);
           return;
         }
 
         if (paymentStatus === 'rejected') {
           const errorCode = payment.status_detail || '';
-          router.push(`/erro?${orderParam}&error=${errorCode}`);
+          router.push(`/erro?${orderParam}&error=${errorCode}${tokenParam}`);
           return;
         }
 
-        router.push(`/pendente?${orderParam}`);
+        router.push(`/pendente?${orderParam}${tokenParam}`);
         return;
       }
 
@@ -600,7 +628,7 @@ const CheckoutPage = () => {
       }
 
       if (orderNumber) {
-        router.push(`/pendente?${orderParam}`);
+        router.push(`/pendente?${orderParam}${tokenParam}`);
       }
     } catch (error) {
       setPaymentError(error.message || 'Erro ao processar pedido');

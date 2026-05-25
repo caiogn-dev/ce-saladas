@@ -62,7 +62,7 @@ const PaymentStep = ({
 
       {!isIdentificationComplete && (
         <div className={styles.paymentLockedHint}>
-          Continue com e-mail e celular para liberar entrega, cupom e pagamento.
+          Digite seu celular com DDD para liberar entrega, cupom e pagamento.
         </div>
       )}
 
