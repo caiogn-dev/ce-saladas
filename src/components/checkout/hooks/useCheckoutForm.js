@@ -322,9 +322,10 @@ export const useCheckoutForm = () => {
     }
 
     if (shippingMethod === 'delivery') {
+      const hasGps = geoExtrasRef.current.lat != null && geoExtrasRef.current.lng != null;
       if (!formData.address.trim()) newErrors.address = 'Endereço é obrigatório';
-      if (!formData.number.trim()) newErrors.number = 'Número é obrigatório';
-      if (!formData.neighborhood.trim()) newErrors.neighborhood = 'Bairro é obrigatório';
+      // number e neighborhood opcionais quando GPS confirmou a localização
+      if (!hasGps && !formData.number.trim()) newErrors.number = 'Número é obrigatório';
       if (!formData.city.trim()) newErrors.city = 'Cidade é obrigatória';
       if (!formData.state) newErrors.state = 'Estado é obrigatório';
       if (!formData.zip_code.trim()) newErrors.zip_code = 'CEP é obrigatório';
