@@ -46,6 +46,10 @@
 .splash__logo {
   border-radius: 50%;
   display: block;
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  flex-shrink: 0;
   animation: splash-logo 2s ease-in-out infinite;
   box-shadow:
     0 0 0 8px rgba(255, 107, 53, 0.15),
