@@ -52,12 +52,11 @@ import FloatingWhatsApp from '../src/components/FloatingWhatsApp';
 import { ToastProvider } from '../src/components/Toast';
 import { fetchCsrfToken } from '../src/services/storeApi';
 import StoreHead from '../src/components/StoreHead';
-import { getStoreConfig } from '../src/lib/getStoreConfig';
-
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID || 'G-7Z5V0N2EE4';
 const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID || '1301947998542003';
 
-export default function App({ Component, pageProps, storeConfig }) {
+export default function App({ Component, pageProps }) {
+  const storeConfig = pageProps.previewStoreConfig || null;
   const router = useRouter();
 
   useEffect(() => {
@@ -133,7 +132,7 @@ gtag('config', '${GA_ID}');`}
       <ErrorBoundary>
         <ThemeProvider>
           <AuthProvider>
-            <StoreProvider initialCatalog={pageProps.initialCatalog || null} storeConfig={pageProps.previewStoreConfig || storeConfig}>
+            <StoreProvider initialCatalog={pageProps.initialCatalog || null} storeConfig={storeConfig}>
               <StoreHead />
               <ToastProvider>
                 <WishlistProvider>
@@ -152,18 +151,3 @@ gtag('config', '${GA_ID}');`}
   );
 }
 
-App.getInitialProps = async (appContext) => {
-  try {
-    const { ctx } = appContext;
-    let storeConfig = null;
-
-    if (ctx.req) {
-      const domain = ctx.req.headers['x-store-domain'] || (ctx.req.headers.host || '').split(':')[0];
-      storeConfig = await getStoreConfig(domain);
-    }
-
-    return { storeConfig };
-  } catch {
-    return { storeConfig: null };
-  }
-};
