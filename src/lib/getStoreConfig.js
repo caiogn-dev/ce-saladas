@@ -27,10 +27,17 @@ export async function getStoreConfig(domain) {
 
   try {
     const baseUrl = API_URL.replace(/\/api\/v1\/?$/, '');
-    const res = await fetch(
-      `${baseUrl}/api/v1/public/store-by-domain/?domain=${encodeURIComponent(domain)}`,
-      { cache: 'no-store' }
-    );
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
+    let res;
+    try {
+      res = await fetch(
+        `${baseUrl}/api/v1/public/store-by-domain/?domain=${encodeURIComponent(domain)}`,
+        { cache: 'no-store', signal: controller.signal }
+      );
+    } finally {
+      clearTimeout(timeoutId);
+    }
 
     if (!res.ok) {
       console.error(`[getStoreConfig] ${res.status} para domain=${domain}`);
