@@ -31,8 +31,8 @@ import '../src/components/ui/OrderTimeline.css';
 import '../src/components/ui/PixPayment.css';
 import '../src/components/ui/Skeleton.css';
 import '../src/components/ui/ProductCard.css';
-import '../src/components/ui/ShaderBackground.css';
 import '../src/components/ui/CarouselCard.css';
+import '../src/components/SplashScreen.css';
 
 // Page styles
 import '../src/pages/LandingPage.css';
@@ -153,13 +153,17 @@ gtag('config', '${GA_ID}');`}
 }
 
 App.getInitialProps = async (appContext) => {
-  const { ctx } = appContext;
-  let storeConfig = null;
+  try {
+    const { ctx } = appContext;
+    let storeConfig = null;
 
-  if (ctx.req) {
-    const domain = ctx.req.headers['x-store-domain'] || (ctx.req.headers.host || '').split(':')[0];
-    storeConfig = await getStoreConfig(domain);
+    if (ctx.req) {
+      const domain = ctx.req.headers['x-store-domain'] || (ctx.req.headers.host || '').split(':')[0];
+      storeConfig = await getStoreConfig(domain);
+    }
+
+    return { storeConfig };
+  } catch {
+    return { storeConfig: null };
   }
-
-  return { storeConfig };
 };

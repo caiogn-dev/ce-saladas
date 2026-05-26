@@ -1,4 +1,4 @@
-import { useEffect, useRef, useSyncExternalStore, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import {
   ArrowRight,
@@ -12,20 +12,11 @@ import {
   Zap,
 } from 'lucide-react';
 import Navbar from '../components/Navbar';
+import SplashScreen from '../components/SplashScreen';
 import { useStore } from '../context/StoreContext';
 
-/* ─────────────────────────────────────────────────────────────
-   Promo store sync
-───────────────────────────────────────────────────────────── */
-const PROMO_STORAGE_KEY = 'storefrontPromoSeen';
+const SPLASH_KEY = 'ce_splash_seen';
 const PROMO_EVENT = 'storefront-promo';
-function subscribePromo(cb) {
-  window.addEventListener(PROMO_EVENT, cb);
-  return () => window.removeEventListener(PROMO_EVENT, cb);
-}
-function getPromoSnapshot() { return sessionStorage.getItem(PROMO_STORAGE_KEY); }
-function getPromoServerSnapshot() { return null; }
-
 /* ─────────────────────────────────────────────────────────────
    Fotos dos pratos — mix-blend-mode: multiply elimina o fundo branco
    Salve as imagens em /public/dishes/ com esses nomes exatos.
@@ -66,19 +57,18 @@ const MaskTitle = ({ text, className }) => {
 ══════════════════════════════════════════════════════════════ */
 const LandingPage = () => {
   const { store, isLoading } = useStore();
-  const hasSeenPromo = useSyncExternalStore(subscribePromo, getPromoSnapshot, getPromoServerSnapshot);
-  const [promoDismissed, setPromoDismissed] = useState(false);
+  const [splashDone, setSplashDone] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    return Boolean(sessionStorage.getItem(SPLASH_KEY));
+  });
   const pageRef = useRef(null);
   const cursorGlowRef = useRef(null);
 
   const showPromo = !hasSeenPromo && !promoDismissed;
 
-  const handleClosePromo = () => {
-    if (typeof window !== 'undefined') {
-      sessionStorage.setItem(PROMO_STORAGE_KEY, '1');
-      window.dispatchEvent(new Event(PROMO_EVENT));
-    }
-    setPromoDismissed(true);
+  const handleSplashDone = () => {
+    if (typeof window !== 'undefined') sessionStorage.setItem(SPLASH_KEY, '1');
+    setSplashDone(true);
   };
 
   /* ── GSAP ────────────────────────────────────────────────── */
@@ -280,7 +270,11 @@ const LandingPage = () => {
     };
   }, [store]);
 
-  if (isLoading || !store) return <div className="loading-screen">Carregando...</div>;
+  if (isLoading || !store) {
+    return !splashDone
+      ? <SplashScreen store={store} onDone={handleSplashDone} />
+      : <div className="loading-screen" />;
+  }
 
   const whatsappNumber = store.whatsapp_number || store.phone || '';
   const whatsappUrl = whatsappNumber ? `https://api.whatsapp.com/send?phone=${whatsappNumber}` : '#';
@@ -290,25 +284,11 @@ const LandingPage = () => {
 
   return (
     <div className="landing-page" ref={pageRef}>
+      {!splashDone && (
+        <SplashScreen store={store} onDone={handleSplashDone} />
+      )}
       {/* Cursor glow — segue o mouse, visível apenas em dispositivos com hover */}
       <div className="hero-cursor-glow" ref={cursorGlowRef} aria-hidden="true" />
-      <Navbar />
-
-      {/* ── Promo ─────────────────────────────────────────────── */}
-      {showPromo && (
-        <div className="promo-modal-overlay" onClick={handleClosePromo} role="presentation">
-          <div className="promo-modal" role="dialog" aria-modal="true" aria-label="Fluxo de checkout" onClick={(e) => e.stopPropagation()}>
-            <button className="promo-close" onClick={handleClosePromo} aria-label="Fechar">×</button>
-            <div className="promo-badge">Novo fluxo</div>
-            <h3>Agora o pedido termina com menos atrito</h3>
-            <p>Adicione itens, informe e-mail e celular, e siga para um checkout direto com entrega e pagamento organizados.</p>
-            <div className="promo-actions">
-              <Link href="/cardapio" className="btn-primary">Explorar o cardápio</Link>
-              <button type="button" className="btn-secondary" onClick={handleClosePromo}>Fechar</button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* ══════════════════════════════════════════════════════
           HERO — Food Theater
@@ -560,7 +540,6 @@ const LandingPage = () => {
               width="100%"
               height="100%"
               style={{ border: 0 }}
-              loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
               title="Localização do Cê Saladas"
             />
