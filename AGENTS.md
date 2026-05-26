@@ -12,7 +12,7 @@ Next.js customer-facing storefront for the Cê Saladas e-commerce store (saladas
 | Styling | CSS custom properties system + Tailwind CSS v4 + CSS Modules (for scoped component styles) |
 | State / Data | React Context API + SWR (not heavily used) |
 | Payment | MercadoPago SDK React (`@mercadopago/sdk-react`) |
-| Maps | HERE Maps API (HERE Routing + HERE Map tiles) |
+| Maps | Google Maps JS for rendering + server2 GeoService for geocode/route/delivery fee |
 | HTTP | Axios (two instances: `storeApi` and `authApi`) |
 | Icons | Lucide React |
 | Analytics | Google Analytics 4 (GA_ID: `G-F6RDSM45Q0`) |
@@ -48,8 +48,7 @@ ce-saladas/
 │   ├── services/
 │   │   ├── storeApi.js       # PRIMARY API client — all HTTP calls go here
 │   │   ├── tokenStorage.js   # localStorage token persistence
-│   │   ├── hereMapService.js # HERE Maps tile/geocode service
-│   │   ├── hereRoutingService.js # HERE routing (distance/ETA)
+│   │   ├── googleMapService.js # Google Maps rendering helpers
 │   │   └── logger.js         # Structured client-side logging
 │   ├── components/
 │   │   ├── Navbar.jsx / .css
@@ -63,7 +62,7 @@ ce-saladas/
 │   │   ├── FavoriteButton.jsx
 │   │   ├── StockBadge.jsx
 │   │   ├── Toast.jsx / .css        # Toast notification system (ToastProvider)
-│   │   ├── InteractiveMap.jsx      # HERE map embedded component
+│   │   ├── InteractiveMap.jsx      # Google map embedded component
 │   │   ├── ErrorBoundary.jsx
 │   │   ├── checkout/               # Checkout flow components (see below)
 │   │   └── ui/                     # Reusable primitives
@@ -85,7 +84,7 @@ ce-saladas/
 │   │   └── DeliveryMap.module.css
 │   └── utils/
 │       ├── media.js          # buildMediaUrl() — prepends API base URL to media paths
-│       └── routeCache.js     # HERE route cache utility
+│       └── routeCache.js     # Route cache utility
 │
 ├── next.config.js
 ├── tailwind.config.js
@@ -118,7 +117,7 @@ npm start
 | `NEXT_PUBLIC_API_URL` | Backend API base URL | `https://backend.pastita.com.br/api/v1` |
 | `NEXT_PUBLIC_STORE_SLUG` | Store identifier (fallback) | `ce-saladas` |
 | `NEXT_PUBLIC_MERCADO_PAGO_PUBLIC_KEY` | MercadoPago public key | `APP_USR-xxx` |
-| `NEXT_PUBLIC_HERE_API_KEY` | HERE Maps API key | `xxx` |
+| `NEXT_PUBLIC_GOOGLE_MAPS_KEY` | Google Maps JS API key | `xxx` |
 | `NEXT_PUBLIC_WS_URL` | WebSocket server URL (optional) | `wss://backend.pastita.com.br/ws` |
 
 The `next.config.js` resolves `NEXT_PUBLIC_API_URL` from `NEXT_PUBLIC_API_URL`, `API_BASE_URL`, or `API_URL` (in that priority order), so any of those env var names will work.
@@ -614,7 +613,7 @@ ce-saladas and pastita-3d share the same backend. Store isolation is done by `ST
 
 10. **MercadoPago integration**: The `CardPayment` component from `@mercadopago/sdk-react` is used inside `PaymentStep`. It requires `NEXT_PUBLIC_MERCADO_PAGO_PUBLIC_KEY` to be set.
 
-11. **HERE Maps**: Two services — `hereMapService.js` (tile map display via `InteractiveMap`) and `hereRoutingService.js` (route/distance calculation). Both require `NEXT_PUBLIC_HERE_API_KEY`. The backend also has HERE integration for server-side geocoding via the `/autosuggest/`, `/route/`, and `/validate-delivery/` endpoints.
+11. **Google Maps only**: `googleMapService.js` handles map rendering. Backend `server2`/`GeoService` owns geocode, reverse geocode, route, delivery fee and out-of-area decisions via `/autosuggest/`, `/route/`, `/delivery-fee/` and `/validate-delivery/`. Do not add HERE dependencies back.
 
 12. **`outputFileTracingRoot`**: Set to `process.cwd()` in `next.config.js` to prevent Next.js from tracing files from parent directories (the monorepo root has multiple `package-lock.json` files).
 

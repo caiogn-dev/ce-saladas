@@ -15,6 +15,7 @@ Storefront Next.js da loja Cê Saladas. Frontend de cliente para cardápio, Sala
 - Axios — `src/services/storeApi.js` (instância principal + publicApi)
 - `@mercadopago/sdk-react`
 - GSAP 3 (lazy, apenas na LandingPage)
+- WebGL GLSL shader — `src/components/ui/ShaderBackground.jsx` (splash screen)
 - `NEXT_PUBLIC_STORE_SLUG` define o tenant (fallback: `ce-saladas`)
 
 ## Commands
@@ -34,25 +35,23 @@ npm run start    # serve build
 - **checkout_draft**: estado do formulário persiste em `checkout_draft:{store_slug}`
 - **CPF**: opcional — só valida se preenchido
 - **Auth JWT**: `tokenStorage.js` é a fonte de verdade; `setTokens` do tokenStorage deve ser chamado em toda autenticação para garantir sync entre storeApi e authApi
+- **App.getInitialProps removido**: `_app.js` não tem mais `getInitialProps` — `/pendente`, `/erro`, `/sucesso` são páginas estáticas (○ Static). Não reintroduzir `App.getInitialProps`.
+- **storeConfig**: multi-tenant via `pageProps.previewStoreConfig` (injetado pelo `preview/[slug]` com `getServerSideProps`). Na home normal, StoreContext busca config client-side.
 
 ## Arquivos-chave
 
 | Arquivo | Responsabilidade |
 |---|---|
-| `src/services/storeApi.js` | API client unificado (896 linhas) |
+| `src/services/storeApi.js` | API client unificado |
 | `src/context/AuthContext.jsx` | Auth com cache TTL, WhatsApp OTP |
 | `src/context/CartContext.jsx` | Carrinho com mutex e updates otimistas |
 | `src/hooks/useGuestInfo.js` | Persistência guest 90 dias |
 | `src/components/checkout/IdentificationStep.jsx` | Identificação por celular |
 | `src/components/checkout/hooks/useCheckoutForm.js` | Form state completo do checkout |
 | `src/utils/brazil.js` | Formatadores canônicos (CPF, telefone, CEP, estados) |
-
-## Problemas conhecidos
-
-- `Profile.jsx:68` tem URL hardcoded `https://ce-saladas.com.br/pendente?token=...` — quebra em staging
-- `useGeolocation.js` tem `console.log` com coordenadas GPS indo para produção
-- HERE Maps (`hereMapService.js`) e Google Maps (`googleMapService.js`) coexistem — escolher um
-- `ShaderBackground.jsx` é dead code (componente WebGL nunca importado)
+| `src/components/SplashScreen.jsx` | Intro splash 2s — shader WebGL + logo |
+| `src/components/ui/ShaderBackground.jsx` | Canvas WebGL com GLSL fbm noise (usado pela SplashScreen) |
+| `src/lib/getStoreConfig.js` | Fetch de config por domain/slug (usado só em preview/[slug]) |
 
 ## Contratos com server2
 
@@ -61,6 +60,10 @@ npm run start    # serve build
 - `GET /api/v1/stores/orders/by-token/{token}/` — acesso pós-compra sem login
 - `GET /api/v1/public/{slug}/availability/` — endpoint público sem auth
 
+## Geocodificação
+
+Google Maps é o provider canônico. Não reintroduzir HERE. O backend `server2`/`GeoService` decide geocode, rota, taxa de entrega e fora de área.
+
 ## Diferenças em relação ao pastita-3d
 
 ce-saladas é a versão mais avançada. Features que ce-saladas tem e pastita-3d não:
@@ -68,3 +71,4 @@ ce-saladas é a versão mais avançada. Features que ce-saladas tem e pastita-3d
 - `src/utils/brazil.js` centralizado (pastita-3d usa formatadores inline)
 - `CartContext` com mutex e syncCartState
 - `AuthContext` com caching TTL e `signInWithWhatsApp`
+- Splash screen com shader WebGL

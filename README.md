@@ -1,6 +1,6 @@
 # CE Saladas - Customer Frontend
 
-Next.js storefront for CE Saladas integrated with the unified `server` API.
+Next.js storefront for CE Saladas integrated with the canonical `server2` API.
 
 ## Quick Start
 
@@ -22,11 +22,13 @@ NEXT_PUBLIC_MEDIA_URL=http://localhost:8000
 NEXT_PUBLIC_STORE_SLUG=ce-saladas
 
 NEXT_PUBLIC_MERCADO_PAGO_PUBLIC_KEY=TEST-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
-NEXT_PUBLIC_HERE_API_KEY=your-here-api-key
+NEXT_PUBLIC_GOOGLE_MAPS_KEY=your-google-maps-api-key
 
 NEXT_PUBLIC_CONTACT_EMAIL=contato@cesaladas.com.br
 NEXT_PUBLIC_WHATSAPP_NUMBER=5511999999999
 ```
+
+Geo/delivery rule: Google is the only maps provider for this frontend. Final delivery fee, geocode, reverse geocode, route and delivery-zone decisions come from `server2`/`GeoService`; the frontend only renders Google Maps and sends user address/location input.
 
 ## API Contract
 
@@ -71,7 +73,7 @@ NEXT_PUBLIC_MEDIA_URL=https://SEU_BACKEND
 NEXT_PUBLIC_WS_URL=wss://SEU_BACKEND/ws
 NEXT_PUBLIC_STORE_SLUG=ce-saladas
 NEXT_PUBLIC_MERCADO_PAGO_PUBLIC_KEY=APP_USR-ou-TEST
-NEXT_PUBLIC_HERE_API_KEY=sua-chave
+NEXT_PUBLIC_GOOGLE_MAPS_KEY=sua-chave-google
 NEXT_PUBLIC_SITE_URL=https://SEU_FRONTEND
 ```
 
