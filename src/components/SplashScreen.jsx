@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import Image from 'next/image';
 import ShaderBackground from './ui/ShaderBackground';
 
 const SPLASH_MS = 2000;
@@ -36,12 +35,12 @@ const SplashScreen = ({ store, onDone }) => {
 
       <div className="splash__center">
         <div className="splash__ring" />
-        <Image
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
           src={logoSrc}
           alt={name}
           width={120}
           height={120}
-          priority
           className="splash__logo"
           onError={(e) => { e.currentTarget.src = '/icon-512.png'; }}
         />
