@@ -16,7 +16,6 @@ import SplashScreen from '../components/SplashScreen';
 import { useStore } from '../context/StoreContext';
 
 const SPLASH_KEY = 'ce_splash_seen';
-const PROMO_EVENT = 'storefront-promo';
 /* ─────────────────────────────────────────────────────────────
    Fotos dos pratos — mix-blend-mode: multiply elimina o fundo branco
    Salve as imagens em /public/dishes/ com esses nomes exatos.
@@ -63,8 +62,6 @@ const LandingPage = () => {
   });
   const pageRef = useRef(null);
   const cursorGlowRef = useRef(null);
-
-  const showPromo = !hasSeenPromo && !promoDismissed;
 
   const handleSplashDone = () => {
     if (typeof window !== 'undefined') sessionStorage.setItem(SPLASH_KEY, '1');
