@@ -1,0 +1,350 @@
+<h2>Como melhorar a navegação do cardápio para usuários 30+?</h2>
+<p class="subtitle">Foco: clareza imediata — a pessoa precisa saber onde está, o que tem e como chegar lá sem pensar</p>
+
+<style>
+.nav-mockup {
+  background: #111;
+  border-radius: 10px;
+  overflow: hidden;
+  font-size: 12px;
+  color: #eee;
+  margin-bottom: 8px;
+  border: 1px solid #2a2a2a;
+}
+/* Sticky nav strip */
+.cat-nav {
+  display: flex;
+  gap: 6px;
+  padding: 8px 10px;
+  background: #0d0d0d;
+  border-bottom: 1px solid #222;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.chip {
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  white-space: nowrap;
+  cursor: pointer;
+  border: 1px solid #333;
+  background: #1a1a1a;
+  color: #888;
+}
+.chip.active {
+  background: #1a2f1a;
+  border-color: #4caf50;
+  color: #90ee90;
+  font-weight: 700;
+}
+/* Current chips — text only */
+.chip-icon {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  white-space: nowrap;
+  cursor: pointer;
+  border: 1.5px solid #333;
+  background: #1a1a1a;
+  color: #888;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 32px;
+}
+.chip-icon.active {
+  background: #1a2f1a;
+  border-color: #4caf50;
+  color: #90ee90;
+  font-weight: 700;
+}
+.chip-icon .icon { font-size: 14px; }
+
+/* Section header */
+.section-header {
+  padding: 10px 12px 6px;
+  border-bottom: 1px solid #1e1e1e;
+}
+.section-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 2px;
+}
+.section-desc { font-size: 10px; color: #666; }
+
+/* Section banner */
+.section-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: linear-gradient(90deg, #142014 0%, #0d150d 100%);
+  border-bottom: 1px solid #1e3a1e;
+  margin-bottom: 2px;
+}
+.banner-icon {
+  width: 36px;
+  height: 36px;
+  background: #1e3a1e;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.banner-copy .banner-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+}
+.banner-copy .banner-sub {
+  font-size: 10px;
+  color: #4caf50;
+  margin-top: 1px;
+}
+
+/* Product row mock */
+.product-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-bottom: 1px solid #1a1a1a;
+}
+.product-thumb {
+  width: 40px;
+  height: 40px;
+  background: #222;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+.product-name {
+  font-size: 11px;
+  color: #ddd;
+  font-weight: 600;
+}
+.product-price {
+  font-size: 10px;
+  color: #4caf50;
+  margin-top: 2px;
+}
+.add-btn {
+  margin-left: auto;
+  background: #2d6a2d;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  color: #fff;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* Onboarding hint bar */
+.hint-bar {
+  background: #1a2a1a;
+  border-bottom: 1px solid #2d4a2d;
+  padding: 7px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  color: #90ee90;
+}
+.hint-bar .x-btn {
+  margin-left: auto;
+  color: #444;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+/* Progress indicator */
+.section-indicator {
+  padding: 4px 12px 2px;
+  font-size: 9px;
+  color: #666;
+  background: #0d0d0d;
+  border-bottom: 1px solid #1a1a1a;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+</style>
+
+<div class="cards">
+
+  <!-- OPÇÃO A: Enhanced chips com emoji + hint bar -->
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-body" style="padding-bottom:0">
+      <h3>A — Chips com emoji + barra de contexto</h3>
+      <p>Cada categoria ganha um ícone visual. Uma barra fina acima indica "você está em: Saladas". Primeira visita: hint animado "use as abas abaixo para navegar".</p>
+    </div>
+    <div class="card-image" style="padding:12px">
+      <div class="nav-mockup">
+        <!-- Hint bar (first visit) -->
+        <div class="hint-bar">
+          <span>👆</span>
+          <span>Use as abas para navegar pelas seções do cardápio</span>
+          <span class="x-btn">✕</span>
+        </div>
+        <!-- Nav chips com emoji -->
+        <div class="cat-nav">
+          <div class="chip-icon active"><span class="icon">⭐</span>Destaques</div>
+          <div class="chip-icon"><span class="icon">🥗</span>Monte sua Salada</div>
+          <div class="chip-icon"><span class="icon">🥙</span>Saladas</div>
+          <div class="chip-icon"><span class="icon">🥣</span>Molhos</div>
+          <div class="chip-icon"><span class="icon">🥤</span>Bebidas</div>
+        </div>
+        <!-- Indicador de seção atual -->
+        <div class="section-indicator">📍 Você está em: Destaques</div>
+        <div class="section-header">
+          <div class="section-title">⭐ Destaques</div>
+          <div class="section-desc">Favoritos da casa e escolhas certeiras para começar.</div>
+        </div>
+        <div class="product-row">
+          <div class="product-thumb"></div>
+          <div><div class="product-name">Salada César com Frango</div><div class="product-price">R$ 34,90</div></div>
+          <div class="add-btn">+</div>
+        </div>
+        <div class="product-row">
+          <div class="product-thumb"></div>
+          <div><div class="product-name">Bowl Mediterrâneo</div><div class="product-price">R$ 38,90</div></div>
+          <div class="add-btn">+</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="pros-cons">
+        <div class="pros"><h4>A favor</h4><ul>
+          <li>Emojis identificam categoria de relance — sem ler</li>
+          <li>Indicador "você está em" elimina dúvida de localização</li>
+          <li>Hint desaparece após 1 visita — não polui retornos</li>
+          <li>Mudança mínima no código — só adicionar ícone + indicador</li>
+        </ul></div>
+        <div class="cons"><h4>Contra</h4><ul>
+          <li>Chips ficam um pouco maiores (mais altura)</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OPÇÃO B: Section banners -->
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-body" style="padding-bottom:0">
+      <h3>B — Banners de entrada por seção</h3>
+      <p>Cada seção começa com um banner visual (ícone grande + título + subtítulo explicativo). Quem não sabe o que é "Monte sua Salada" lê na hora.</p>
+    </div>
+    <div class="card-image" style="padding:12px">
+      <div class="nav-mockup">
+        <div class="cat-nav">
+          <div class="chip active">Destaques</div>
+          <div class="chip">Monte sua Salada</div>
+          <div class="chip">Saladas</div>
+          <div class="chip">Molhos</div>
+          <div class="chip">Bebidas</div>
+        </div>
+        <!-- Section banner -->
+        <div class="section-banner">
+          <div class="banner-icon">🥗</div>
+          <div class="banner-copy">
+            <div class="banner-title">Monte sua Salada</div>
+            <div class="banner-sub">Escolha base, proteína e complementos — do seu jeito</div>
+          </div>
+        </div>
+        <div class="product-row">
+          <div class="product-thumb"></div>
+          <div><div class="product-name">Bowl de Quinoa</div><div class="product-price">R$ 36,90</div></div>
+          <div class="add-btn">+</div>
+        </div>
+        <!-- Another section banner -->
+        <div class="section-banner" style="margin-top:4px">
+          <div class="banner-icon">🥙</div>
+          <div class="banner-copy">
+            <div class="banner-title">Saladas Prontas</div>
+            <div class="banner-sub">Combinações frescas — é só escolher e pedir</div>
+          </div>
+        </div>
+        <div class="product-row">
+          <div class="product-thumb"></div>
+          <div><div class="product-name">Salada César com Frango</div><div class="product-price">R$ 34,90</div></div>
+          <div class="add-btn">+</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="pros-cons">
+        <div class="pros"><h4>A favor</h4><ul>
+          <li>Explica cada seção on-the-fly conforme o usuário rola</li>
+          <li>Excelente para "Monte sua Salada" — seção mais complexa</li>
+          <li>Hierarquia visual muito clara ao fazer scroll</li>
+        </ul></div>
+        <div class="cons"><h4>Contra</h4><ul>
+          <li>Mais espaço vertical — menu fica maior</li>
+          <li>Usuários frequentes podem achar verboso</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OPÇÃO C: Combinação A+B -->
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-body" style="padding-bottom:0">
+      <h3>C — Combinação: chips com emoji + banner só no "Monte sua Salada"</h3>
+      <p>Emojis em todos os chips. Banner explicativo apenas na seção complexa ("Monte sua Salada"). Outras seções sem banner — mantém fluência.</p>
+    </div>
+    <div class="card-image" style="padding:12px">
+      <div class="nav-mockup">
+        <div class="cat-nav">
+          <div class="chip-icon"><span class="icon">⭐</span>Destaques</div>
+          <div class="chip-icon active"><span class="icon">🥗</span>Monte sua Salada</div>
+          <div class="chip-icon"><span class="icon">🥙</span>Saladas</div>
+          <div class="chip-icon"><span class="icon">🥣</span>Molhos</div>
+          <div class="chip-icon"><span class="icon">🥤</span>Bebidas</div>
+        </div>
+        <!-- Section indicator -->
+        <div class="section-indicator">📍 Você está em: Monte sua Salada</div>
+        <!-- Banner ONLY for complex section -->
+        <div class="section-banner">
+          <div class="banner-icon">🥗</div>
+          <div class="banner-copy">
+            <div class="banner-title">Monte sua Salada</div>
+            <div class="banner-sub">Escolha base → proteína → complementos → adiciona à sacola</div>
+          </div>
+        </div>
+        <div class="product-row">
+          <div class="product-thumb" style="background:#1a2f1a;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px">🥗</div>
+          <div><div class="product-name">Montar minha salada</div><div class="product-price" style="color:#4caf50">Personalizar →</div></div>
+        </div>
+        <!-- Regular section (no banner) -->
+        <div class="section-header" style="margin-top:6px;border-top:1px solid #1a1a1a">
+          <div class="section-title">🥙 Saladas Prontas</div>
+          <div class="section-desc">Combinações frescas para almoço ou jantar</div>
+        </div>
+        <div class="product-row">
+          <div class="product-thumb"></div>
+          <div><div class="product-name">Salada César com Frango</div><div class="product-price">R$ 34,90</div></div>
+          <div class="add-btn">+</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="pros-cons">
+        <div class="pros"><h4>A favor</h4><ul>
+          <li>Melhor custo-benefício — resolve o ponto mais crítico (Monte sua Salada) sem verbosidade nas seções simples</li>
+          <li>Emojis nos chips ajudam a todos sem poluir</li>
+          <li>Indicador "você está em" resolve desorientação de scroll</li>
+        </ul></div>
+        <div class="cons"><h4>Contra</h4><ul>
+          <li>Ligeiramente inconsistente (banner só em uma seção)</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<p class="subtitle" style="margin-top:16px">💡 Objetivo: alguém de 35 anos sem experiência com o site entende o cardápio em 10 segundos, sem precisar pedir ajuda</p>

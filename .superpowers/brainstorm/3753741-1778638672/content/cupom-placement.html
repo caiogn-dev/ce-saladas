@@ -1,0 +1,302 @@
+<h2>Onde e como mostrar o cupom de desconto?</h2>
+<p class="subtitle">Foco: conversão para usuários 30+ — o cupom precisa aparecer no momento certo, sem surpresa nem esconder</p>
+
+<style>
+.mockup-mini {
+  background: #111;
+  border-radius: 10px;
+  overflow: hidden;
+  font-size: 12px;
+  color: #eee;
+  margin-bottom: 8px;
+  border: 1px solid #2a2a2a;
+}
+.mockup-mini-header {
+  background: #1a1a1a;
+  padding: 8px 12px;
+  font-size: 11px;
+  color: #888;
+  border-bottom: 1px solid #222;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.mockup-mini-body {
+  padding: 12px;
+}
+.cart-item-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px solid #1e1e1e;
+  color: #ccc;
+  font-size: 11px;
+}
+.cart-total-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0 4px;
+  font-weight: 700;
+  color: #fff;
+  font-size: 12px;
+}
+.coupon-box {
+  background: #1c2a1c;
+  border: 1px dashed #4caf50;
+  border-radius: 6px;
+  padding: 8px 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0;
+  font-size: 11px;
+  color: #90ee90;
+}
+.coupon-tag-icon { font-size: 14px; }
+.coupon-input-row {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+}
+.coupon-input-mini {
+  flex: 1;
+  background: #222;
+  border: 1px solid #444;
+  border-radius: 4px;
+  padding: 5px 8px;
+  color: #ccc;
+  font-size: 11px;
+}
+.coupon-btn-mini {
+  background: #2d6a2d;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 5px 10px;
+  font-size: 11px;
+  cursor: pointer;
+}
+.coupon-link {
+  color: #90ee90;
+  text-decoration: underline;
+  font-size: 11px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 6px 0;
+}
+.checkout-step-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  color: #fff;
+  font-size: 12px;
+  padding: 10px 12px;
+  background: #181818;
+  border-bottom: 1px solid #222;
+}
+.step-num {
+  width: 20px; height: 20px;
+  background: #4caf50;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700; color: #000; flex-shrink: 0;
+}
+.step-num.done { background: #333; color: #888; }
+.payment-form-section {
+  padding: 10px 12px;
+  border-bottom: 1px solid #1e1e1e;
+}
+.form-label { color: #888; font-size: 10px; margin-bottom: 3px; display: block; }
+.form-field-mock {
+  background: #1e1e1e;
+  border: 1px solid #333;
+  border-radius: 4px;
+  height: 28px;
+  width: 100%;
+  margin-bottom: 6px;
+}
+.badge-novo { background: #b45309; color: #fff; font-size: 9px; padding: 2px 5px; border-radius: 3px; margin-left: 4px; }
+.highlight-box {
+  background: #1a2518;
+  border: 1.5px solid #4caf50;
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin: 8px 12px;
+}
+.highlight-box-label {
+  font-size: 10px;
+  color: #90ee90;
+  font-weight: 700;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.step-flow {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  color: #666;
+  margin: 6px 12px;
+}
+.step-flow-item {
+  padding: 3px 7px;
+  border-radius: 10px;
+  background: #1e1e1e;
+  color: #888;
+  font-size: 10px;
+}
+.step-flow-item.active { background: #1a2518; color: #4caf50; font-weight: 700; }
+.step-flow-arrow { color: #444; }
+.tag-icon { font-size: 12px; }
+</style>
+
+<div class="cards">
+
+  <!-- OPÇÃO A -->
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-body" style="padding-bottom:0">
+      <h3>A — Cupom na sacola (CartSidebar)</h3>
+      <p>Usuário insere o cupom antes de ir ao checkout. Vê o desconto aplicado já na sacola.</p>
+    </div>
+    <div class="card-image" style="padding:12px">
+      <div class="mockup-mini">
+        <div class="mockup-mini-header">🛒 Sua sacola</div>
+        <div class="mockup-mini-body">
+          <div class="cart-item-row"><span>Salada César com Frango</span><span>R$ 34,90</span></div>
+          <div class="cart-item-row"><span>Molho Tahine</span><span>R$ 6,00</span></div>
+          <div style="height:6px"></div>
+          <!-- COUPON SECTION -->
+          <div class="coupon-box">
+            <span class="coupon-tag-icon">🏷️</span>
+            <div style="flex:1">
+              <div style="font-size:10px;color:#aaa;margin-bottom:4px">Tem um cupom de desconto?</div>
+              <div class="coupon-input-row">
+                <input class="coupon-input-mini" placeholder="CÓDIGO" readonly />
+                <button class="coupon-btn-mini">Aplicar</button>
+              </div>
+            </div>
+          </div>
+          <div class="cart-total-row"><span>Total</span><span>R$ 40,90</span></div>
+          <div style="background:#4caf50;color:#000;padding:8px;text-align:center;border-radius:6px;font-weight:700;margin-top:8px;font-size:12px">Finalizar pedido →</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="pros-cons">
+        <div class="pros"><h4>A favor</h4><ul>
+          <li>Vê o desconto antes de decidir finalizar</li>
+          <li>Ponto natural — sacola já resume o pedido</li>
+          <li>Reduz abandono: não precisa chegar no pagamento</li>
+        </ul></div>
+        <div class="cons"><h4>Contra</h4><ul>
+          <li>Mais um campo no sidebar (já tem upsell de molhos)</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OPÇÃO B -->
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-body" style="padding-bottom:0">
+      <h3>B — Destaque no checkout (passo 1)</h3>
+      <p>Cupom aparece em destaque no resumo do pedido (OrderConfirmation), antes de endereço e pagamento. Link "Tenho cupom" expande o campo.</p>
+    </div>
+    <div class="card-image" style="padding:12px">
+      <div class="mockup-mini">
+        <div class="step-flow">
+          <span class="step-flow-item active">1 Resumo</span>
+          <span class="step-flow-arrow">›</span>
+          <span class="step-flow-item">2 Endereço</span>
+          <span class="step-flow-arrow">›</span>
+          <span class="step-flow-item">3 Pagamento</span>
+        </div>
+        <div class="mockup-mini-header"><span class="step-num">1</span> Confirmar pedido</div>
+        <div class="mockup-mini-body">
+          <div class="cart-item-row"><span>Salada César com Frango</span><span>R$ 34,90</span></div>
+          <div class="cart-item-row"><span>Molho Tahine</span><span>R$ 6,00</span></div>
+          <!-- CUPOM LINK -->
+          <div class="highlight-box">
+            <div class="highlight-box-label"><span class="tag-icon">🏷️</span> Tem um cupom de desconto?</div>
+            <div class="coupon-input-row">
+              <input class="coupon-input-mini" placeholder="Digite o código" readonly />
+              <button class="coupon-btn-mini">Aplicar</button>
+            </div>
+          </div>
+          <div class="cart-total-row"><span>Subtotal</span><span>R$ 40,90</span></div>
+          <div style="background:#4caf50;color:#000;padding:8px;text-align:center;border-radius:6px;font-weight:700;margin-top:8px;font-size:12px">Continuar →</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="pros-cons">
+        <div class="pros"><h4>A favor</h4><ul>
+          <li>Aparece no momento de revisão — antes de compromisso</li>
+          <li>Fluxo natural: confirma itens → aplica desconto → endereço → paga</li>
+          <li>Destaque visual diferencia do formulário comum</li>
+        </ul></div>
+        <div class="cons"><h4>Contra</h4><ul>
+          <li>Adiciona uma interação antes de continuar</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OPÇÃO C -->
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-body" style="padding-bottom:0">
+      <h3>C — Manter no pagamento, mas muito mais visível</h3>
+      <p>Mantém o cupom onde está (PaymentStep), mas troca o campo discreto por uma seção com destaque verde e tamanho de fonte maior.</p>
+    </div>
+    <div class="card-image" style="padding:12px">
+      <div class="mockup-mini">
+        <div class="step-flow">
+          <span class="step-flow-item done">1 Resumo</span>
+          <span class="step-flow-arrow">›</span>
+          <span class="step-flow-item done">2 Endereço</span>
+          <span class="step-flow-arrow">›</span>
+          <span class="step-flow-item active">3 Pagamento</span>
+        </div>
+        <div class="mockup-mini-header"><span class="step-num done">3</span> Pagamento</div>
+        <div class="payment-form-section">
+          <span class="form-label">Nome</span><div class="form-field-mock"></div>
+          <span class="form-label">Celular</span><div class="form-field-mock" style="margin-bottom:0"></div>
+        </div>
+        <!-- CUPOM SEÇÃO DESTAQUE -->
+        <div class="highlight-box" style="margin-top:0">
+          <div class="highlight-box-label"><span class="tag-icon">🏷️</span> Cupom de desconto <span class="badge-novo">OPCIONAL</span></div>
+          <div class="coupon-input-row">
+            <input class="coupon-input-mini" placeholder="Ex: SALADA10" readonly />
+            <button class="coupon-btn-mini">Aplicar</button>
+          </div>
+        </div>
+        <div class="payment-form-section" style="border:none">
+          <span class="form-label" style="font-size:11px;color:#aaa">Forma de pagamento</span>
+          <div style="display:flex;gap:6px;margin-top:4px">
+            <div style="background:#1e1e1e;border:1.5px solid #4caf50;border-radius:5px;padding:5px 8px;font-size:10px;color:#4caf50">● PIX</div>
+            <div style="background:#1e1e1e;border:1px solid #333;border-radius:5px;padding:5px 8px;font-size:10px;color:#666">Cartão</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="pros-cons">
+        <div class="pros"><h4>A favor</h4><ul>
+          <li>Zero mudança estrutural no fluxo atual</li>
+          <li>Menor risco de regressão</li>
+        </ul></div>
+        <div class="cons"><h4>Contra</h4><ul>
+          <li>Usuário só vê o desconto no último passo — depois de já ter passado pelo endereço</li>
+          <li>Maior chance de abandono se o cupom não funcionar</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<p class="subtitle" style="margin-top:16px">💡 Dica: A e B podem ser combinadas (cupom na sacola <em>e</em> no checkout como fallback)</p>

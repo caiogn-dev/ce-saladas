@@ -1,0 +1,197 @@
+<h2>Banner de seção — compacto</h2>
+<p class="subtitle">Só o título com destaque — sem subtítulo, sem aumentar a rolagem</p>
+
+<style>
+:root {
+  --terra: #f97316;
+  --terra-light: #fff7ed;
+  --terra-border: rgba(249,115,22,0.18);
+  --leaf: #7fb52e;
+  --sand: #fdfbf7;
+  --sand-100: #f8f3eb;
+  --sand-200: #efe4d1;
+  --stone-800: #36332f;
+  --stone-600: #726c66;
+  --stone-400: #b8b2aa;
+  --stone-200: #e8e6e2;
+}
+.page-mock {
+  background: var(--sand);
+  border-radius: 10px;
+  overflow: hidden;
+  font-size: 12px;
+  color: var(--stone-800);
+  border: 1px solid var(--stone-200);
+  box-shadow: 0 2px 8px rgba(0,0,0,.06);
+  margin-bottom: 8px;
+}
+.product-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--stone-200);
+  background: #fff;
+}
+.product-thumb {
+  width: 38px; height: 38px;
+  background: var(--sand-200);
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+.product-name { font-size: 11px; color: var(--stone-800); font-weight: 600; }
+.product-price { font-size: 10px; color: var(--leaf); font-weight: 700; margin-top: 1px; }
+.add-btn {
+  margin-left: auto;
+  background: var(--terra);
+  border: none;
+  border-radius: 50%;
+  width: 24px; height: 24px;
+  color: #fff; font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.gap { height: 8px; background: var(--sand-100); }
+
+/* OPÇÃO A — barra lateral colorida + negrito */
+.sh-a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 12px;
+  background: #fff;
+  border-left: 3px solid var(--terra);
+  border-bottom: 1px solid var(--stone-200);
+}
+.sh-a-title { font-size: 13px; font-weight: 700; color: var(--stone-800); }
+.sh-a-icon { font-size: 15px; line-height: 1; }
+
+/* OPÇÃO B — fundo terra-light fino */
+.sh-b {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--terra-light);
+  border-bottom: 1px solid var(--terra-border);
+}
+.sh-b-title { font-size: 13px; font-weight: 700; color: var(--stone-800); }
+.sh-b-icon { font-size: 15px; line-height: 1; }
+
+/* OPÇÃO C — linha separadora + ícone inline */
+.sh-c {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px 6px;
+  background: #fff;
+  border-bottom: 2px solid var(--terra);
+}
+.sh-c-title { font-size: 13px; font-weight: 700; color: var(--terra); }
+.sh-c-icon { font-size: 15px; line-height: 1; }
+</style>
+
+<div class="cards">
+
+  <!-- A: Barra lateral -->
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-body" style="padding-bottom:0"><h3>A — Barra lateral terra</h3><p>Borda esquerda laranja + ícone + título em negrito. Fundo branco — zero altura extra.</p></div>
+    <div class="card-image" style="padding:12px">
+      <div class="page-mock">
+        <!-- seção anterior (conteúdo) -->
+        <div class="product-row">
+          <div class="product-thumb"></div>
+          <div><div class="product-name">Bowl Mediterrâneo</div><div class="product-price">R$ 38,90</div></div>
+          <div class="add-btn">+</div>
+        </div>
+        <div class="gap"></div>
+        <!-- header novo -->
+        <div class="sh-a"><span class="sh-a-icon">🥙</span><span class="sh-a-title">Saladas</span></div>
+        <div class="product-row">
+          <div class="product-thumb"></div>
+          <div><div class="product-name">Salada César com Frango</div><div class="product-price">R$ 34,90</div></div>
+          <div class="add-btn">+</div>
+        </div>
+        <div class="product-row">
+          <div class="product-thumb"></div>
+          <div><div class="product-name">Salada Caprese</div><div class="product-price">R$ 31,90</div></div>
+          <div class="add-btn">+</div>
+        </div>
+        <div class="gap"></div>
+        <div class="sh-a"><span class="sh-a-icon">🥣</span><span class="sh-a-title">Molhos</span></div>
+        <div class="product-row">
+          <div class="product-thumb"></div>
+          <div><div class="product-name">Molho Tahine</div><div class="product-price">R$ 6,00</div></div>
+          <div class="add-btn">+</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- B: Fundo terra-light -->
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-body" style="padding-bottom:0"><h3>B — Fundo creme/terra</h3><p>Ícone + título sobre fundo #fff7ed. Subtil, separa seções visualmente sem ocupar espaço.</p></div>
+    <div class="card-image" style="padding:12px">
+      <div class="page-mock">
+        <div class="product-row">
+          <div class="product-thumb"></div>
+          <div><div class="product-name">Bowl Mediterrâneo</div><div class="product-price">R$ 38,90</div></div>
+          <div class="add-btn">+</div>
+        </div>
+        <div class="gap"></div>
+        <div class="sh-b"><span class="sh-b-icon">🥙</span><span class="sh-b-title">Saladas</span></div>
+        <div class="product-row">
+          <div class="product-thumb"></div>
+          <div><div class="product-name">Salada César com Frango</div><div class="product-price">R$ 34,90</div></div>
+          <div class="add-btn">+</div>
+        </div>
+        <div class="product-row">
+          <div class="product-thumb"></div>
+          <div><div class="product-name">Salada Caprese</div><div class="product-price">R$ 31,90</div></div>
+          <div class="add-btn">+</div>
+        </div>
+        <div class="gap"></div>
+        <div class="sh-b"><span class="sh-b-icon">🥣</span><span class="sh-b-title">Molhos</span></div>
+        <div class="product-row">
+          <div class="product-thumb"></div>
+          <div><div class="product-name">Molho Tahine</div><div class="product-price">R$ 6,00</div></div>
+          <div class="add-btn">+</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- C: Título laranja + underline -->
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-body" style="padding-bottom:0"><h3>C — Título laranja + underline</h3><p>Título na cor terra com uma borda inferior grossa. Sem fundo diferente — mais limpo, mais ousado.</p></div>
+    <div class="card-image" style="padding:12px">
+      <div class="page-mock">
+        <div class="product-row">
+          <div class="product-thumb"></div>
+          <div><div class="product-name">Bowl Mediterrâneo</div><div class="product-price">R$ 38,90</div></div>
+          <div class="add-btn">+</div>
+        </div>
+        <div class="gap"></div>
+        <div class="sh-c"><span class="sh-c-icon">🥙</span><span class="sh-c-title">Saladas</span></div>
+        <div class="product-row">
+          <div class="product-thumb"></div>
+          <div><div class="product-name">Salada César com Frango</div><div class="product-price">R$ 34,90</div></div>
+          <div class="add-btn">+</div>
+        </div>
+        <div class="product-row">
+          <div class="product-thumb"></div>
+          <div><div class="product-name">Salada Caprese</div><div class="product-price">R$ 31,90</div></div>
+          <div class="add-btn">+</div>
+        </div>
+        <div class="gap"></div>
+        <div class="sh-c"><span class="sh-c-icon">🥣</span><span class="sh-c-title">Molhos</span></div>
+        <div class="product-row">
+          <div class="product-thumb"></div>
+          <div><div class="product-name">Molho Tahine</div><div class="product-price">R$ 6,00</div></div>
+          <div class="add-btn">+</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

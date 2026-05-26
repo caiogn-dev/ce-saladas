@@ -1,9 +1,10 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import Link from 'next/link';
-import { Plus, Check } from 'lucide-react';
+import { Plus, Check, Tag, X } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useStore } from '../context/StoreContext';
 import { buildMediaUrl } from '../utils/media';
+import { validateCoupon } from '../services/storeApi';
 
 const fmtMoney = (v) =>
   Number(v || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -28,6 +29,56 @@ const CartSidebar = () => {
 
   const { products: storeProducts } = useStore();
   const [addedMolhos, setAddedMolhos] = useState(new Set());
+
+  // ── Coupon state ──────────────────────────────────────────────────
+  const [couponOpen, setCouponOpen] = useState(false);
+  const [couponCode, setCouponCode] = useState('');
+  const [couponError, setCouponError] = useState('');
+  const [couponLoading, setCouponLoading] = useState(false);
+  const [appliedCoupon, setAppliedCoupon] = useState(() => {
+    try {
+      const saved = typeof window !== 'undefined' && localStorage.getItem('ce_cart_coupon');
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+
+  const handleApplyCoupon = useCallback(async () => {
+    const code = couponCode.trim().toUpperCase();
+    if (!code) { setCouponError('Digite um código de cupom'); return; }
+    setCouponLoading(true);
+    setCouponError('');
+    try {
+      const data = await validateCoupon(code, cartTotal);
+      if (data.valid) {
+        const c = data.coupon;
+        const applied = {
+          code: c.code,
+          description: c.description || '',
+          discount_type: c.discount_type,
+          discount_value: Number(c.discount_value) || 0,
+          discount_amount: Number(c.calculated_discount) || 0,
+        };
+        setAppliedCoupon(applied);
+        localStorage.setItem('ce_cart_coupon', JSON.stringify(applied));
+        setCouponOpen(false);
+        setCouponCode('');
+      } else {
+        setCouponError(data.error || 'Cupom inválido');
+      }
+    } catch (err) {
+      setCouponError(err?.response?.data?.error || 'Cupom inválido');
+    }
+    setCouponLoading(false);
+  }, [couponCode, cartTotal]);
+
+  const handleRemoveCoupon = useCallback(() => {
+    setAppliedCoupon(null);
+    setCouponCode('');
+    setCouponError('');
+    localStorage.removeItem('ce_cart_coupon');
+  }, []);
 
   const molhosItems = useMemo(() => (storeProducts || []).filter((p) => {
     const text = [p.name, p.category_name, p.category_slug].join(' ').toLowerCase();
@@ -244,6 +295,60 @@ const CartSidebar = () => {
                 );
               })}
             </div>
+          </div>
+        )}
+
+        {hasItems && (
+          <div className="cart-coupon">
+            {appliedCoupon ? (
+              <div className="cart-coupon__applied">
+                <Tag size={14} className="cart-coupon__icon cart-coupon__icon--green" />
+                <div className="cart-coupon__info">
+                  <span className="cart-coupon__code">{appliedCoupon.code}</span>
+                  {appliedCoupon.description && (
+                    <span className="cart-coupon__desc">{appliedCoupon.description}</span>
+                  )}
+                </div>
+                <span className="cart-coupon__discount">
+                  {appliedCoupon.discount_type === 'percentage'
+                    ? `-${appliedCoupon.discount_value}%`
+                    : `-R$ ${(appliedCoupon.discount_amount || appliedCoupon.discount_value).toFixed(2)}`}
+                </span>
+                <button type="button" className="cart-coupon__remove" onClick={handleRemoveCoupon}>
+                  <X size={13} />
+                </button>
+              </div>
+            ) : couponOpen ? (
+              <div className="cart-coupon__form">
+                <input
+                  type="text"
+                  className={`cart-coupon__input${couponError ? ' cart-coupon__input--error' : ''}`}
+                  placeholder="Código do cupom"
+                  value={couponCode}
+                  onChange={(e) => { setCouponCode(e.target.value.toUpperCase()); setCouponError(''); }}
+                  onKeyDown={(e) => e.key === 'Enter' && couponCode.trim() && handleApplyCoupon()}
+                  autoFocus
+                  autoComplete="off"
+                />
+                <button
+                  type="button"
+                  className="cart-coupon__apply"
+                  onClick={handleApplyCoupon}
+                  disabled={couponLoading || !couponCode.trim()}
+                >
+                  {couponLoading ? '...' : 'Aplicar'}
+                </button>
+                <button type="button" className="cart-coupon__cancel" onClick={() => { setCouponOpen(false); setCouponError(''); }}>
+                  <X size={14} />
+                </button>
+                {couponError && <span className="cart-coupon__error">{couponError}</span>}
+              </div>
+            ) : (
+              <button type="button" className="cart-coupon__toggle" onClick={() => setCouponOpen(true)}>
+                <Tag size={13} />
+                Tenho um cupom
+              </button>
+            )}
           </div>
         )}
 

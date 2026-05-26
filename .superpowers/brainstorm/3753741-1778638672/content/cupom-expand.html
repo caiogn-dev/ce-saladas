@@ -1,0 +1,207 @@
+<h2>Como o campo de cupom deve aparecer no checkout?</h2>
+<p class="subtitle">No passo 1 (Confirmar Pedido) — aberto ou colapsado?</p>
+
+<style>
+:root {
+  --terra: #f97316;
+  --terra-light: #fff7ed;
+  --terra-border: rgba(249,115,22,0.22);
+  --leaf: #7fb52e;
+  --sand: #fdfbf7;
+  --sand-100: #f8f3eb;
+  --sand-200: #efe4d1;
+  --stone-800: #36332f;
+  --stone-600: #726c66;
+  --stone-400: #b8b2aa;
+  --stone-200: #e8e6e2;
+}
+.co-mockup {
+  background: var(--sand);
+  border-radius: 10px;
+  overflow: hidden;
+  font-size: 12px;
+  color: var(--stone-800);
+  border: 1px solid var(--stone-200);
+  box-shadow: 0 2px 8px rgba(0,0,0,.06);
+}
+.co-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  color: var(--stone-800);
+  font-size: 12px;
+  padding: 10px 12px;
+  background: #fff;
+  border-bottom: 1px solid var(--stone-200);
+}
+.step-num {
+  width: 20px; height: 20px;
+  background: var(--terra);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700; color: #fff; flex-shrink: 0;
+}
+.cart-item-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 7px 12px;
+  border-bottom: 1px solid var(--stone-200);
+  background: #fff;
+  color: var(--stone-800);
+  font-size: 11px;
+}
+.cart-total-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 12px;
+  font-weight: 700;
+  color: var(--stone-800);
+  font-size: 12px;
+  background: var(--sand-100);
+}
+/* Cupom SEMPRE ABERTO */
+.coupon-open {
+  background: var(--terra-light);
+  border-top: 1px solid var(--terra-border);
+  border-bottom: 1px solid var(--terra-border);
+  padding: 10px 12px;
+}
+.coupon-open-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--terra);
+  margin-bottom: 7px;
+}
+.coupon-input-row {
+  display: flex;
+  gap: 6px;
+}
+.coupon-input {
+  flex: 1;
+  background: #fff;
+  border: 1.5px solid var(--stone-200);
+  border-radius: 6px;
+  padding: 6px 10px;
+  color: var(--stone-800);
+  font-size: 11px;
+}
+.coupon-btn {
+  background: var(--terra);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+/* Cupom COLAPSADO */
+.coupon-collapsed {
+  border-top: 1px solid var(--stone-200);
+  border-bottom: 1px solid var(--stone-200);
+  background: #fff;
+}
+.coupon-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 12px;
+  font-size: 11px;
+  color: var(--terra);
+  cursor: pointer;
+  font-weight: 600;
+}
+.coupon-toggle .chevron { color: var(--terra); font-size: 10px; margin-left: auto; }
+/* Continue btn */
+.continue-btn {
+  background: var(--terra);
+  color: #fff;
+  padding: 10px;
+  text-align: center;
+  border-radius: 0 0 10px 10px;
+  font-weight: 700;
+  font-size: 12px;
+  margin: 0;
+}
+.price-tag {
+  color: var(--leaf);
+  font-weight: 700;
+}
+.note-text {
+  font-size: 9px;
+  color: var(--stone-400);
+  padding: 0 12px 6px;
+  background: #fff;
+}
+</style>
+
+<div class="split">
+
+  <!-- OPÇÃO A: Sempre aberto -->
+  <div class="mockup" data-choice="a" onclick="toggleSelect(this)" style="cursor:pointer">
+    <div class="mockup-header">A — Sempre expandido</div>
+    <div class="mockup-body" style="padding:0">
+      <div class="co-mockup">
+        <div class="co-header"><span class="step-num">1</span> Confirmar pedido</div>
+        <div class="cart-item-row"><span>Salada César com Frango</span><span class="price-tag">R$ 34,90</span></div>
+        <div class="cart-item-row"><span>Molho Tahine</span><span class="price-tag">R$ 6,00</span></div>
+
+        <!-- CUPOM — sempre visível -->
+        <div class="coupon-open">
+          <div class="coupon-open-label">🏷️ Tem um cupom de desconto?</div>
+          <div class="coupon-input-row">
+            <input class="coupon-input" placeholder="Ex: SALADA10" readonly />
+            <button class="coupon-btn">Aplicar</button>
+          </div>
+        </div>
+
+        <div class="cart-total-row"><span>Total</span><span>R$ 40,90</span></div>
+        <div class="continue-btn">Continuar →</div>
+      </div>
+
+      <div style="margin-top:12px;font-size:11px;color:#444;line-height:1.5">
+        <strong>Quando usar:</strong><br>
+        Quando você espera que <em>muitos usuários</em> tenham cupons — ex: campanha ativa, primeiro pedido, indicação. O campo imediato acelera a jornada de quem tem o código.
+        <br><br>
+        <span style="color:#b45309">⚠ Risco:</span> usuários <em>sem</em> cupom podem sentir que estão "perdendo desconto" e sair para procurar um código.
+      </div>
+    </div>
+  </div>
+
+  <!-- OPÇÃO B: Colapsado com toggle -->
+  <div class="mockup" data-choice="b" onclick="toggleSelect(this)" style="cursor:pointer">
+    <div class="mockup-header">B — Colapsado "Tenho um cupom"</div>
+    <div class="mockup-body" style="padding:0">
+      <div class="co-mockup">
+        <div class="co-header"><span class="step-num">1</span> Confirmar pedido</div>
+        <div class="cart-item-row"><span>Salada César com Frango</span><span class="price-tag">R$ 34,90</span></div>
+        <div class="cart-item-row"><span>Molho Tahine</span><span class="price-tag">R$ 6,00</span></div>
+
+        <!-- CUPOM — colapsado -->
+        <div class="coupon-collapsed">
+          <div class="coupon-toggle">
+            <span>🏷️</span>
+            <span>Tenho um cupom de desconto</span>
+            <span class="chevron">›</span>
+          </div>
+        </div>
+
+        <div class="cart-total-row"><span>Total</span><span>R$ 40,90</span></div>
+        <div class="continue-btn">Continuar →</div>
+      </div>
+
+      <div style="margin-top:12px;font-size:11px;color:#444;line-height:1.5">
+        <strong>Quando usar:</strong><br>
+        Quando a <em>maioria</em> dos pedidos não usa cupom. O link é visível mas discreto — quem tem o código vê e clica; quem não tem não pensa no assunto.
+        <br><br>
+        <span style="color:#2d6a2d">✓ Padrão do mercado</span> (iFood, Rappi, Amazon). Evita o efeito "cadê meu desconto?" nos usuários sem cupom.
+      </div>
+    </div>
+  </div>
+
+</div>

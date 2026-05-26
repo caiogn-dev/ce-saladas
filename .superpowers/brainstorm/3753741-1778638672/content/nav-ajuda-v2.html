@@ -1,0 +1,367 @@
+<h2>Como melhorar a navegação do cardápio para usuários 30+?</h2>
+<p class="subtitle">Paleta real do projeto — terra/laranja #f97316, verde folha #7fb52e, fundo creme</p>
+
+<style>
+/* Paleta Ce-Saladas */
+:root {
+  --terra: #f97316;
+  --terra-light: #fff7ed;
+  --terra-border: rgba(249,115,22,0.25);
+  --leaf: #7fb52e;
+  --leaf-light: #f0f7e6;
+  --sand: #fdfbf7;
+  --sand-100: #f8f3eb;
+  --sand-200: #efe4d1;
+  --stone-800: #36332f;
+  --stone-600: #726c66;
+  --stone-400: #b8b2aa;
+  --stone-200: #e8e6e2;
+}
+
+.nav-mockup {
+  background: var(--sand);
+  border-radius: 10px;
+  overflow: hidden;
+  font-size: 12px;
+  color: var(--stone-800);
+  margin-bottom: 8px;
+  border: 1px solid var(--stone-200);
+  box-shadow: 0 2px 8px rgba(0,0,0,.06);
+}
+
+/* Sticky nav strip */
+.cat-nav {
+  display: flex;
+  gap: 5px;
+  padding: 8px 10px;
+  background: #fff;
+  border-bottom: 1px solid var(--stone-200);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.chip {
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 10px;
+  white-space: nowrap;
+  cursor: pointer;
+  border: 1px solid var(--stone-200);
+  background: var(--sand-100);
+  color: var(--stone-600);
+  font-family: 'Inter', sans-serif;
+}
+.chip.active {
+  background: var(--terra-light);
+  border-color: var(--terra);
+  color: var(--terra);
+  font-weight: 700;
+}
+.chip-icon {
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 10px;
+  white-space: nowrap;
+  cursor: pointer;
+  border: 1.5px solid var(--stone-200);
+  background: var(--sand-100);
+  color: var(--stone-600);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 28px;
+}
+.chip-icon.active {
+  background: var(--terra-light);
+  border-color: var(--terra);
+  color: var(--terra);
+  font-weight: 700;
+}
+.chip-icon .icon { font-size: 13px; line-height: 1; }
+
+/* Section header */
+.section-header {
+  padding: 10px 12px 6px;
+  border-bottom: 1px solid var(--stone-200);
+}
+.section-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--stone-800);
+  margin-bottom: 1px;
+}
+.section-desc { font-size: 10px; color: var(--stone-600); }
+
+/* Section banner */
+.section-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--terra-light);
+  border-bottom: 1px solid var(--terra-border);
+}
+.banner-icon {
+  width: 36px;
+  height: 36px;
+  background: #fff;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+  border: 1px solid var(--terra-border);
+}
+.banner-copy .banner-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--stone-800);
+}
+.banner-copy .banner-sub {
+  font-size: 10px;
+  color: var(--terra);
+  margin-top: 1px;
+}
+
+/* Product row mock */
+.product-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--stone-200);
+  background: #fff;
+}
+.product-thumb {
+  width: 38px;
+  height: 38px;
+  background: var(--sand-200);
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+.product-name {
+  font-size: 11px;
+  color: var(--stone-800);
+  font-weight: 600;
+}
+.product-price {
+  font-size: 10px;
+  color: var(--leaf);
+  margin-top: 2px;
+  font-weight: 700;
+}
+.add-btn {
+  margin-left: auto;
+  background: var(--terra);
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  color: #fff;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* Hint bar */
+.hint-bar {
+  background: var(--leaf-light);
+  border-bottom: 1px solid rgba(127,181,46,.25);
+  padding: 6px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  color: #4c7c14;
+}
+.hint-bar .x-btn {
+  margin-left: auto;
+  color: var(--stone-400);
+  font-size: 11px;
+  cursor: pointer;
+}
+
+/* Section indicator */
+.section-indicator {
+  padding: 3px 12px 3px;
+  font-size: 9px;
+  color: var(--terra);
+  background: var(--terra-light);
+  border-bottom: 1px solid var(--terra-border);
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+</style>
+
+<div class="cards">
+
+  <!-- OPÇÃO A: Chips com emoji + indicador de seção -->
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-body" style="padding-bottom:0">
+      <h3>A — Chips com emoji + "você está em"</h3>
+      <p>Chips ganham ícones visuais. Uma faixa fina mostra a seção ativa. Hint verde aparece só na primeira visita.</p>
+    </div>
+    <div class="card-image" style="padding:12px">
+      <div class="nav-mockup">
+        <div class="hint-bar">
+          <span>👆</span>
+          <span>Use as abas para navegar pelas seções do cardápio</span>
+          <span class="x-btn">✕</span>
+        </div>
+        <div class="cat-nav">
+          <div class="chip-icon active"><span class="icon">⭐</span>Destaques</div>
+          <div class="chip-icon"><span class="icon">🥗</span>Monte sua Salada</div>
+          <div class="chip-icon"><span class="icon">🥙</span>Saladas</div>
+          <div class="chip-icon"><span class="icon">🥣</span>Molhos</div>
+          <div class="chip-icon"><span class="icon">🥤</span>Bebidas</div>
+        </div>
+        <div class="section-indicator">📍 Você está em: Destaques</div>
+        <div class="section-header">
+          <div class="section-title">⭐ Destaques</div>
+          <div class="section-desc">Favoritos da casa e escolhas certeiras para começar.</div>
+        </div>
+        <div class="product-row">
+          <div class="product-thumb"></div>
+          <div><div class="product-name">Salada César com Frango</div><div class="product-price">R$ 34,90</div></div>
+          <div class="add-btn">+</div>
+        </div>
+        <div class="product-row">
+          <div class="product-thumb"></div>
+          <div><div class="product-name">Bowl Mediterrâneo</div><div class="product-price">R$ 38,90</div></div>
+          <div class="add-btn">+</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="pros-cons">
+        <div class="pros"><h4>A favor</h4><ul>
+          <li>Emojis: reconhecimento imediato sem ler texto</li>
+          <li>Indicador de seção elimina desorientação no scroll</li>
+          <li>Hint some após 1ª visita — não polui usuário frequente</li>
+          <li>Mudança pequena no código existente</li>
+        </ul></div>
+        <div class="cons"><h4>Contra</h4><ul>
+          <li>Chips ficam levemente mais altos</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OPÇÃO B: Section banners -->
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-body" style="padding-bottom:0">
+      <h3>B — Banners de entrada por seção</h3>
+      <p>Cada seção abre com um banner em terra/areia — ícone grande + subtítulo explicativo. Ideal para "Monte sua Salada".</p>
+    </div>
+    <div class="card-image" style="padding:12px">
+      <div class="nav-mockup">
+        <div class="cat-nav">
+          <div class="chip active">Destaques</div>
+          <div class="chip">Monte sua Salada</div>
+          <div class="chip">Saladas</div>
+          <div class="chip">Molhos</div>
+        </div>
+        <div class="section-banner">
+          <div class="banner-icon">🥗</div>
+          <div class="banner-copy">
+            <div class="banner-title">Monte sua Salada</div>
+            <div class="banner-sub">Escolha base → proteína → complementos → sacola</div>
+          </div>
+        </div>
+        <div class="product-row">
+          <div class="product-thumb" style="background:var(--terra-light);display:flex;align-items:center;justify-content:center;font-size:16px">🥗</div>
+          <div><div class="product-name">Montar minha salada</div><div class="product-price" style="color:var(--terra)">Personalizar →</div></div>
+        </div>
+        <div class="section-banner" style="margin-top:0;border-top:1px solid var(--stone-200)">
+          <div class="banner-icon">🥙</div>
+          <div class="banner-copy">
+            <div class="banner-title">Saladas Prontas</div>
+            <div class="banner-sub">Combinações frescas — é só escolher e pedir</div>
+          </div>
+        </div>
+        <div class="product-row">
+          <div class="product-thumb"></div>
+          <div><div class="product-name">Salada César com Frango</div><div class="product-price">R$ 34,90</div></div>
+          <div class="add-btn">+</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="pros-cons">
+        <div class="pros"><h4>A favor</h4><ul>
+          <li>Explica cada seção conforme o usuário rola</li>
+          <li>Fundamental para "Monte sua Salada"</li>
+        </ul></div>
+        <div class="cons"><h4>Contra</h4><ul>
+          <li>Menu fica verticalmente maior</li>
+          <li>Repetitivo para usuário frequente</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OPÇÃO C: Chips com emoji + banner só em Monte sua Salada (recomendada) -->
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-body" style="padding-bottom:0">
+      <h3>C — Chips com emoji + banner só em "Monte sua Salada" ⭐ Recomendada</h3>
+      <p>Melhor custo-benefício. Emojis em todos os chips. Banner explicativo só na seção mais complexa. Demais seções: limpas.</p>
+    </div>
+    <div class="card-image" style="padding:12px">
+      <div class="nav-mockup">
+        <div class="cat-nav">
+          <div class="chip-icon"><span class="icon">⭐</span>Destaques</div>
+          <div class="chip-icon active"><span class="icon">🥗</span>Monte sua Salada</div>
+          <div class="chip-icon"><span class="icon">🥙</span>Saladas</div>
+          <div class="chip-icon"><span class="icon">🥣</span>Molhos</div>
+          <div class="chip-icon"><span class="icon">🥤</span>Bebidas</div>
+        </div>
+        <div class="section-indicator">📍 Você está em: Monte sua Salada</div>
+        <!-- Banner ONLY for complex section -->
+        <div class="section-banner">
+          <div class="banner-icon">🥗</div>
+          <div class="banner-copy">
+            <div class="banner-title">Monte sua Salada</div>
+            <div class="banner-sub">Escolha base → proteína → complementos → adiciona à sacola</div>
+          </div>
+        </div>
+        <div class="product-row">
+          <div class="product-thumb" style="background:var(--terra-light);display:flex;align-items:center;justify-content:center;font-size:16px">🥗</div>
+          <div><div class="product-name">Montar minha salada</div><div class="product-price" style="color:var(--terra)">Personalizar →</div></div>
+        </div>
+        <!-- Regular section (no banner, clean) -->
+        <div class="section-header" style="border-top:1px solid var(--stone-200)">
+          <div class="section-title">🥙 Saladas Prontas</div>
+          <div class="section-desc">Combinações frescas para almoço ou jantar</div>
+        </div>
+        <div class="product-row">
+          <div class="product-thumb"></div>
+          <div><div class="product-name">Salada César com Frango</div><div class="product-price">R$ 34,90</div></div>
+          <div class="add-btn">+</div>
+        </div>
+        <div class="product-row">
+          <div class="product-thumb"></div>
+          <div><div class="product-name">Bowl Mediterrâneo</div><div class="product-price">R$ 38,90</div></div>
+          <div class="add-btn">+</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="pros-cons">
+        <div class="pros"><h4>A favor</h4><ul>
+          <li>Resolve o ponto crítico sem exagerar no resto</li>
+          <li>Emojis: scanner visual rápido para 30+</li>
+          <li>Indicador "você está em" resolve scroll-desorientação</li>
+          <li>Menor impacto no layout geral</li>
+        </ul></div>
+        <div class="cons"><h4>Contra</h4><ul>
+          <li>Banner só em uma seção — levemente inconsistente</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<p class="subtitle" style="margin-top:16px">💡 Todos os mockups usam a paleta real do Ce-Saladas: terra/laranja + verde folha + creme/areia</p>
