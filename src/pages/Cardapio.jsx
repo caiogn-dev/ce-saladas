@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useRef, useEffect, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
-import { Clock3, MapPin, ShoppingBag, Star, ChefHat, Leaf, Droplets, GlassWater, Plus, ArrowUpRight } from 'lucide-react';
+import { Clock3, MapPin, ShoppingBag, Star, ChefHat, Leaf, Droplets, GlassWater } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import FavoriteButton from '../components/FavoriteButton';
 import StockBadge from '../components/StockBadge';
@@ -156,7 +156,6 @@ const Cardapio = () => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [query, setQuery] = useState('');
   const [activeSection, setActiveSection] = useState(null);
-  const [activeSaladSlug, setActiveSaladSlug] = useState(null);
   const [upsellOpen, setUpsellOpen] = useState(false);
   const sectionRefs = useRef({});
   const navRef = useRef(null);
@@ -186,7 +185,6 @@ const Cardapio = () => {
       const saladVisual = getSaladVisual(product.slug);
       const item = {
         id: product.id,
-        slug: product.slug,
         itemType: 'product',
         name: product.name,
         description: product.description || product.short_description,
@@ -204,7 +202,6 @@ const Cardapio = () => {
         typeAttributes: product.type_attributes || {},
         tags: product.tags || [],
         variants: product.variants || [],
-        visual: saladVisual,
         is_in_stock: product.is_in_stock,
         is_low_stock: product.is_low_stock,
       };
@@ -301,26 +298,6 @@ const Cardapio = () => {
       };
     }).filter((section) => section.items.length > 0 || section.isBuilder);
   }, [filteredItems, featuredItems]);
-
-  const saladSlideItems = useMemo(
-    () => filteredItems.filter((item) => item.catalogSection === 'saladas' && item.visual?.slideWide),
-    [filteredItems]
-  );
-
-  const activeSalad = useMemo(() => {
-    if (saladSlideItems.length === 0) return null;
-    return saladSlideItems.find((item) => item.slug === activeSaladSlug) || saladSlideItems[0];
-  }, [activeSaladSlug, saladSlideItems]);
-
-  useEffect(() => {
-    if (saladSlideItems.length === 0) {
-      setActiveSaladSlug(null);
-      return;
-    }
-    if (!activeSaladSlug || !saladSlideItems.some((item) => item.slug === activeSaladSlug)) {
-      setActiveSaladSlug(saladSlideItems[0].slug);
-    }
-  }, [activeSaladSlug, saladSlideItems]);
 
   const catalogHighlights = useMemo(() => ([
     {
@@ -556,65 +533,6 @@ const Cardapio = () => {
             <PageTransition animation="fadeIn" delay={150}>
               <EmptyState.Search query={query} onAction={() => setQuery('')} />
             </PageTransition>
-          )}
-
-          {activeSalad && saladSlideItems.length > 0 && (
-            <section className="salad-stage" aria-label="Saladas em destaque">
-              <div className="salad-stage__media">
-                <picture>
-                  <source media="(max-width: 720px)" srcSet={buildMediaUrl(activeSalad.visual.slideVertical)} />
-                  <img
-                    key={activeSalad.slug}
-                    src={buildMediaUrl(activeSalad.visual.slideWide)}
-                    alt={activeSalad.name}
-                    className="salad-stage__image"
-                    width="2560"
-                    height="1440"
-                    decoding="async"
-                  />
-                </picture>
-              </div>
-
-              <div className="salad-stage__content">
-                <div className="salad-stage__eyebrow">
-                  <Leaf size={14} />
-                  <span>salada em foco</span>
-                </div>
-                <h2 className="salad-stage__title">{activeSalad.name}</h2>
-                {activeSalad.description && (
-                  <p className="salad-stage__description">{activeSalad.description}</p>
-                )}
-                <div className="salad-stage__footer">
-                  <strong className="salad-stage__price">{formatMoney(activeSalad.price)}</strong>
-                  <div className="salad-stage__actions">
-                    <button type="button" className="salad-stage__secondary" onClick={() => setSelectedItem(activeSalad)}>
-                      <span>detalhes</span>
-                      <ArrowUpRight size={15} />
-                    </button>
-                    <button type="button" className="salad-stage__primary" onClick={() => handleAddToCart(activeSalad)}>
-                      <Plus size={16} />
-                      <span>adicionar</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <div className="salad-stage__rail" role="tablist" aria-label="Escolher salada">
-                {saladSlideItems.map((item) => (
-                  <button
-                    key={item.slug}
-                    type="button"
-                    role="tab"
-                    aria-selected={item.slug === activeSalad.slug}
-                    className={`salad-stage__tab ${item.slug === activeSalad.slug ? 'salad-stage__tab--active' : ''}`}
-                    onClick={() => setActiveSaladSlug(item.slug)}
-                  >
-                    <img src={buildMediaUrl(item.visual.card)} alt="" width="64" height="64" loading="lazy" decoding="async" />
-                    <span>{item.name}</span>
-                  </button>
-                ))}
-              </div>
-            </section>
           )}
 
           {groupedSections.length > 0 && (

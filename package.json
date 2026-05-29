@@ -7,7 +7,6 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "visuals:salads": "node scripts/ce-saladas-visual-pipeline.mjs",
     "lint": "next lint"
   },
   "dependencies": {
