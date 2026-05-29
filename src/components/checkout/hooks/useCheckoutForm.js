@@ -316,6 +316,9 @@ export const useCheckoutForm = () => {
 
     if (!formData.name.trim()) newErrors.name = 'Nome é obrigatório';
 
+    if (!formData.email.trim()) newErrors.email = 'Email é obrigatório';
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) newErrors.email = 'Email inválido';
+
     const normalizedCpf = onlyDigits(formData.cpf);
     if (normalizedCpf && !validateCPF(formData.cpf)) {
       newErrors.cpf = 'CPF inválido';
