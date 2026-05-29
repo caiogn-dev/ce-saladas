@@ -5,6 +5,8 @@ export const SALAD_VISUALS = {
     hero: '/menu-visuals/salads/almondega-premium/hero-square.webp',
     card: '/menu-visuals/salads/almondega-premium/card.webp',
     detail: '/menu-visuals/salads/almondega-premium/detail.webp',
+    slideWide: '/menu-visuals/salads/almondega-premium/slide-wide.webp',
+    slideVertical: '/menu-visuals/salads/almondega-premium/slide-vertical.webp',
     video: '/menu-visuals/salads/almondega-premium/loop.mp4',
     scrollFrames: {
       base: '/menu-visuals/salads/almondega-premium/scroll/frame-',
@@ -18,6 +20,8 @@ export const SALAD_VISUALS = {
     hero: '/menu-visuals/salads/basic-lombo/hero-square.webp',
     card: '/menu-visuals/salads/basic-lombo/card.webp',
     detail: '/menu-visuals/salads/basic-lombo/detail.webp',
+    slideWide: '/menu-visuals/salads/basic-lombo/slide-wide.webp',
+    slideVertical: '/menu-visuals/salads/basic-lombo/slide-vertical.webp',
     video: '/menu-visuals/salads/basic-lombo/loop.mp4',
     scrollFrames: {
       base: '/menu-visuals/salads/basic-lombo/scroll/frame-',
@@ -31,6 +35,8 @@ export const SALAD_VISUALS = {
     hero: '/menu-visuals/salads/especial-file-de-frango/hero-square.webp',
     card: '/menu-visuals/salads/especial-file-de-frango/card.webp',
     detail: '/menu-visuals/salads/especial-file-de-frango/detail.webp',
+    slideWide: '/menu-visuals/salads/especial-file-de-frango/slide-wide.webp',
+    slideVertical: '/menu-visuals/salads/especial-file-de-frango/slide-vertical.webp',
     video: '/menu-visuals/salads/especial-file-de-frango/loop.mp4',
     scrollFrames: {
       base: '/menu-visuals/salads/especial-file-de-frango/scroll/frame-',
@@ -44,6 +50,8 @@ export const SALAD_VISUALS = {
     hero: '/menu-visuals/salads/magnifico-camarao/hero-square.webp',
     card: '/menu-visuals/salads/magnifico-camarao/card.webp',
     detail: '/menu-visuals/salads/magnifico-camarao/detail.webp',
+    slideWide: '/menu-visuals/salads/magnifico-camarao/slide-wide.webp',
+    slideVertical: '/menu-visuals/salads/magnifico-camarao/slide-vertical.webp',
     video: '/menu-visuals/salads/magnifico-camarao/loop.mp4',
     scrollFrames: {
       base: '/menu-visuals/salads/magnifico-camarao/scroll/frame-',
@@ -57,6 +65,8 @@ export const SALAD_VISUALS = {
     hero: '/menu-visuals/salads/queridinha/hero-square.webp',
     card: '/menu-visuals/salads/queridinha/card.webp',
     detail: '/menu-visuals/salads/queridinha/detail.webp',
+    slideWide: '/menu-visuals/salads/queridinha/slide-wide.webp',
+    slideVertical: '/menu-visuals/salads/queridinha/slide-vertical.webp',
     video: '/menu-visuals/salads/queridinha/loop.mp4',
     scrollFrames: {
       base: '/menu-visuals/salads/queridinha/scroll/frame-',
@@ -70,6 +80,8 @@ export const SALAD_VISUALS = {
     hero: '/menu-visuals/salads/tilapia-suprema/hero-square.webp',
     card: '/menu-visuals/salads/tilapia-suprema/card.webp',
     detail: '/menu-visuals/salads/tilapia-suprema/detail.webp',
+    slideWide: '/menu-visuals/salads/tilapia-suprema/slide-wide.webp',
+    slideVertical: '/menu-visuals/salads/tilapia-suprema/slide-vertical.webp',
     video: '/menu-visuals/salads/tilapia-suprema/loop.mp4',
     scrollFrames: {
       base: '/menu-visuals/salads/tilapia-suprema/scroll/frame-',
@@ -83,6 +95,8 @@ export const SALAD_VISUALS = {
     hero: '/menu-visuals/salads/salmao-premium/hero-square.webp',
     card: '/menu-visuals/salads/salmao-premium/card.webp',
     detail: '/menu-visuals/salads/salmao-premium/detail.webp',
+    slideWide: '/menu-visuals/salads/salmao-premium/slide-wide.webp',
+    slideVertical: '/menu-visuals/salads/salmao-premium/slide-vertical.webp',
     video: '/menu-visuals/salads/salmao-premium/loop.mp4',
     scrollFrames: {
       base: '/menu-visuals/salads/salmao-premium/scroll/frame-',

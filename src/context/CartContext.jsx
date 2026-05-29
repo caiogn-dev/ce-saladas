@@ -146,7 +146,9 @@ export const CartProvider = ({ children }) => {
         const data = await storeApi.getCart();
         return syncCartState(data);
       } catch (error) {
-        console.error('Error fetching cart:', error);
+        console.warn('Cart fetch skipped:', error?.message || error);
+        setCart([]);
+        setCombos([]);
         return null;
       } finally {
         if (cartFetchPromise === requestPromise) {

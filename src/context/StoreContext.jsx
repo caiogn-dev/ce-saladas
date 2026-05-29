@@ -74,7 +74,7 @@ export const StoreProvider = ({ children, initialCatalog = null, storeConfig = n
 
       return data;
     } catch (err) {
-      console.error('Error fetching catalog:', err);
+      console.warn('Catalog fetch failed:', err?.message || err);
       setError('Erro ao carregar catálogo. Tente novamente.');
       return null;
     } finally {
