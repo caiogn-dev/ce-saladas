@@ -210,21 +210,27 @@ export const useGeolocation = () => {
 
   // Detect user location
   const detectLocation = useCallback(async () => {
+    console.log('[DEBUG] detectLocation called');
     if (!navigator.geolocation) {
+      console.error('[ERROR] Geolocation not supported');
       setError('Geolocalizacao nao suportada pelo navegador');
       return null;
     }
 
     if (typeof window !== 'undefined' && !window.isSecureContext) {
+      console.error('[ERROR] Not secure context (HTTPS required)');
       setError('A localizacao do navegador so funciona em conexao segura (HTTPS).');
       return null;
     }
 
     setLoading(true);
     setError(null);
+    console.log('[DEBUG] Starting geolocation request...');
 
     try {
+      console.log('[DEBUG] Requesting position...');
       const pos = await requestBestCurrentPosition();
+      console.log('[DEBUG] Position received:', pos.coords);
 
       const { latitude, longitude, accuracy } = pos.coords;
       const numericAccuracy = toFiniteNumber(accuracy, Infinity);
@@ -241,7 +247,9 @@ export const useGeolocation = () => {
         return null;
       }
 
+      console.log('[DEBUG] Calling reverseGeocode with:', { latitude, longitude });
       if (!isSafeStoreCoordinateInput({ lat: latitude, lng: longitude })) {
+        console.error('[ERROR] Not in safe store coordinate area');
         setPosition(null);
         setDetectedAddress(null);
         setRouteInfo(null);
@@ -252,7 +260,9 @@ export const useGeolocation = () => {
       }
 
       const address = await reverseGeocode(latitude, longitude);
+      console.log('[DEBUG] Reverse geocode result:', address);
       if (!address || !isLocalAddressCandidate(address)) {
+        console.error('[ERROR] Address not found or not local candidate:', address);
         setPosition(null);
         setDetectedAddress(null);
         setRouteInfo(null);
@@ -262,6 +272,7 @@ export const useGeolocation = () => {
         return null;
       }
 
+      console.log('[DEBUG] Address confirmed, setting position and address');
       setPosition({ lat: latitude, lng: longitude });
       setDetectedAddress(address);
 
