@@ -1,0 +1,48 @@
+{
+  "createdAt": "2026-05-29T01:06:52.837Z",
+  "execute": false,
+  "brandContext": "Cê Saladas, delivery de saladas frescas e completas. Visual premium, natural, apetitoso, limpo e consistente para cardápio digital. Todas as saladas devem parecer da mesma família: mesmo bowl claro, mesma luz suave, mesmo fundo claro quente, sem texto e sem logo dentro da imagem.",
+  "products": [
+    {
+      "slug": "tilapia-suprema",
+      "name": "Tilápia Suprema",
+      "source": "/home/graco/ftp-data/cardapio-cesaladas/ce-saladas/tilapia.webp",
+      "accent": "tilápia, chips de moranga e lemon pepper em destaque"
+    }
+  ],
+  "jobs": [
+    {
+      "key": "slide-vertical",
+      "mode": "moodboard_pin",
+      "aspectRatio": "9:16",
+      "count": 2,
+      "intent": "imagem vertical para slide mobile, reels e transições suaves"
+    }
+  ],
+  "results": [
+    {
+      "label": "tilapia-suprema/slide-vertical",
+      "status": "dry-run",
+      "command": [
+        "product-photoshoot",
+        "create",
+        "--mode",
+        "moodboard_pin",
+        "--prompt",
+        "imagem vertical para slide mobile, reels e transições suaves para Tilápia Suprema",
+        "--image",
+        "/home/graco/ftp-data/cardapio-cesaladas/ce-saladas/tilapia.webp",
+        "--count",
+        "2",
+        "--aspect_ratio",
+        "9:16",
+        "--brand_context",
+        "Cê Saladas, delivery de saladas frescas e completas. Visual premium, natural, apetitoso, limpo e consistente para cardápio digital. Todas as saladas devem parecer da mesma família: mesmo bowl claro, mesma luz suave, mesmo fundo claro quente, sem texto e sem logo dentro da imagem.",
+        "--product_context",
+        "Tilápia Suprema: preservar ingredientes reais e identidade visual da foto de referência; tilápia, chips de moranga e lemon pepper em destaque.",
+        "--timeout",
+        "20m"
+      ]
+    }
+  ]
+}

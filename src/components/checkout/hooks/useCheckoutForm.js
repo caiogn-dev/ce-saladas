@@ -396,6 +396,7 @@ export const useCheckoutForm = () => {
           : null
     );
 
+    const { lat, lng } = geoExtrasRef.current;
     return {
       customer_name: formData.name.trim(),
       customer_email: formData.email.trim(),
@@ -408,6 +409,8 @@ export const useCheckoutForm = () => {
       delivery_address: deliveryAddress,
       ...(deliveryDistanceKm != null && Number.isFinite(deliveryDistanceKm) && { delivery_distance_km: deliveryDistanceKm }),
       ...(deliveryDurationMinutes != null && Number.isFinite(deliveryDurationMinutes) && { delivery_duration_minutes: deliveryDurationMinutes }),
+      ...(lat != null && { lat }),
+      ...(lng != null && { lng }),
       scheduled_date: enableScheduling && scheduledDate ? scheduledDate : null,
       scheduled_time_slot: enableScheduling && scheduledTimeSlot ? scheduledTimeSlot : null,
     };
