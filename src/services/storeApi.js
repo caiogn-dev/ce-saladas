@@ -652,7 +652,7 @@ export const geocodeAddress = async (address) => {
  */
 export const reverseGeocode = async (lat, lng) => {
   try {
-    const response = await axios.get(`${STORES_API_URL}/maps/reverse-geocode/?lat=${lat}&lng=${lng}`);
+    const response = await axios.get(`${API_ROOT}/maps/reverse-geocode/`, { params: { lat, lng } });
     return normalizeGeoResponse(response.data);
   } catch (error) {
     if (error?.response?.status === 404) {
