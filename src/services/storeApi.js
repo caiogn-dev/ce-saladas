@@ -569,50 +569,8 @@ export const validateCoupon = async (code, subtotal) => {
 // MAPS & DELIVERY
 // =============================================================================
 
-/**
- * Calculate route from store to destination
- */
-export const calculateRoute = async (destLat, destLng) => {
-  const response = await storeApi.get('/route/', { params: { dest_lat: destLat, dest_lng: destLng } });
-  const data = response.data || {};
-  return {
-    ...data,
-    distance_km: toFiniteNumber(data.distance_km) ?? 0,
-    duration_minutes: toFiniteNumber(data.duration_minutes) ?? 0,
-  };
-};
-
-/**
- * Validate delivery address
- */
-export const validateDeliveryAddress = async (lat, lng) => {
-  const response = await storeApi.post('/validate-delivery/', { lat, lng });
-  const data = response.data || {};
-  return {
-    ...data,
-    distance_km: toFiniteNumber(data.distance_km) ?? 0,
-    duration_minutes: toFiniteNumber(data.duration_minutes) ?? 0,
-    estimated_minutes: toFiniteNumber(data.estimated_minutes ?? data.duration_minutes) ?? 0,
-    delivery_fee: toFiniteNumber(data.delivery_fee),
-    fee: toFiniteNumber(data.fee),
-  };
-};
-
-/**
- * Validate delivery address by address string
- */
-export const validateDeliveryByAddress = async (address) => {
-  const response = await storeApi.post('/validate-delivery/', { address });
-  const data = response.data || {};
-  return {
-    ...data,
-    distance_km: toFiniteNumber(data.distance_km) ?? 0,
-    duration_minutes: toFiniteNumber(data.duration_minutes) ?? 0,
-    estimated_minutes: toFiniteNumber(data.estimated_minutes ?? data.duration_minutes) ?? 0,
-    delivery_fee: toFiniteNumber(data.delivery_fee),
-    fee: toFiniteNumber(data.fee),
-  };
-};
+// Frontend no longer calculates delivery routes/fees — backend does it at checkout time
+// These endpoints are deprecated and should not be called from the frontend.
 
 /**
  * Get delivery zones (isolines)

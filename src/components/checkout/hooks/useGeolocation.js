@@ -127,81 +127,11 @@ export const useGeolocation = () => {
         return null;
       }
 
-      const storeLat = STORE_LOCATION?.latitude;
-      const storeLng = STORE_LOCATION?.longitude;
-      
-      // Check cache first for route
-      let routeData = null;
-      if (storeLat && storeLng) {
-        const cachedRoute = getCachedRoute(storeLat, storeLng, lat, lng);
-        if (cachedRoute) {
-          routeData = cachedRoute;
-        }
-      }
-      
-      // If not cached, fetch from API
-      if (!routeData) {
-        routeData = await storeApi.calculateRoute(lat, lng);
-        if (routeData && !routeData.fallback && storeLat && storeLng) {
-          cacheRoute(storeLat, storeLng, lat, lng, routeData);
-        }
-      }
-
-      // Get delivery fee - API returns delivery_fee, not fee
-      const deliveryData = await storeApi.validateDeliveryAddress(lat, lng);
+      // Frontend no longer calculates route/fee — backend does it at checkout
       setError(null);
-      
-      // Use polyline from deliveryData (validate-delivery returns it) or routeData
-      const polyline = deliveryData?.polyline || routeData?.polyline;
-
-      const distanceKm = toFiniteNumber(deliveryData?.distance_km ?? routeData?.distance_km, 0);
-      const durationMinutes = toFiniteNumber(deliveryData?.duration_minutes ?? routeData?.duration_minutes, 0);
-
-      if (deliveryData?.is_valid === false) {
-        setRouteInfo(null);
-        setDeliveryInfo({
-          fee: 0,
-          zone_name: deliveryData.delivery_zone || deliveryData.zone_name || 'Fora da área de entrega',
-          estimated_days: deliveryData.estimated_days || 0,
-          distance_km: distanceKm,
-          duration_minutes: durationMinutes,
-          estimated_minutes: toFiniteNumber(deliveryData.estimated_minutes ?? deliveryData.duration_minutes, durationMinutes),
-          is_valid: false,
-          polyline: '',
-          message: deliveryData.message || getStoreRegionErrorMessage(),
-        });
-        setError(deliveryData.message || getStoreRegionErrorMessage());
-        return { routeData, deliveryData };
-      }
-      
-      // Set route info with polyline
-      const routeInfoData = (!routeData?.fallback || polyline)
-        ? {
-            distance_km: distanceKm,
-            duration_minutes: durationMinutes,
-            polyline: polyline,
-            summary: routeData?.summary,
-            fallback: Boolean(routeData?.fallback),
-          }
-        : null;
-      setRouteInfo(routeInfoData);
-      
-      if (deliveryData) {
-        const fee = Number(deliveryData.delivery_fee ?? deliveryData.fee ?? 0);
-        const deliveryInfoData = {
-          fee: fee,
-          zone_name: deliveryData.delivery_zone || deliveryData.zone_name || 'Área de entrega',
-          estimated_days: deliveryData.estimated_days || 0,
-          distance_km: distanceKm,
-          duration_minutes: durationMinutes,
-          estimated_minutes: toFiniteNumber(deliveryData.estimated_minutes ?? deliveryData.duration_minutes, durationMinutes),
-          is_valid: deliveryData.is_valid !== false,
-          polyline: polyline
-        };
-        setDeliveryInfo(deliveryInfoData);
-      }
-
-      return { routeData, deliveryData };
+      setRouteInfo(null);
+      setDeliveryInfo(null);
+      return null;
     } catch (err) {
       console.error('Route calculation error');
       return null;

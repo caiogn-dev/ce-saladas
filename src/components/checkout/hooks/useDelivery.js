@@ -90,105 +90,15 @@ export const useDelivery = () => {
     return null;
   }, []);
 
-  // Calculate delivery fee by coordinates
+  // Calculate delivery fee by coordinates — delegated to backend at checkout time
   const calculateDeliveryFeeByCoords = useCallback(async (lat, lng) => {
-    setLoadingDelivery(true);
-    try {
-      const data = await storeApi.validateDeliveryAddress(lat, lng);
-      if (data) {
-        if (data.is_valid === false) {
-          setDeliveryInfo({
-            fee: 0,
-            zone_name: data.delivery_zone || data.zone_name || 'Fora da área de entrega',
-            estimated_days: data.estimated_days || 0,
-            distance_km: toFiniteNumber(data.distance_km, 0),
-            duration_minutes: toFiniteNumber(data.duration_minutes, 0),
-            estimated_minutes: toFiniteNumber(data.estimated_minutes ?? data.duration_minutes, 0),
-            is_valid: false,
-            polyline: '',
-            message: data.message || 'Endereço fora da área de entrega.',
-          });
-          setShippingCost(null);
-          setLoadingDelivery(false);
-          return null;
-        }
-        // API returns delivery_fee, not fee
-        const fee = toFiniteNumber(data.delivery_fee ?? data.fee, 0);
-        const distanceKm = toFiniteNumber(data.distance_km, 0);
-        const durationMinutes = toFiniteNumber(data.duration_minutes, 0);
-        const info = {
-          fee: fee,
-          zone_name: data.delivery_zone || data.zone_name || 'Área de entrega',
-          estimated_days: data.estimated_days || 0,
-          distance_km: distanceKm,
-          duration_minutes: durationMinutes,
-          estimated_minutes: toFiniteNumber(data.estimated_minutes ?? data.duration_minutes, durationMinutes),
-          is_valid: data.is_valid !== false,
-          polyline: data.polyline
-        };
-        setDeliveryInfo(info);
-        setShippingCost(fee);
-        setLoadingDelivery(false);
-        return info;
-      }
-    } catch (err) {
-      console.error('❌ Delivery validation error:', err);
-      setShippingCost(null);
-      setDeliveryInfo(null);
-    }
-    setLoadingDelivery(false);
+    // Frontend no longer calculates delivery fee — backend does it at checkout
     return null;
   }, []);
 
+  // Calculate delivery fee by address — delegated to backend at checkout time
   const calculateDeliveryFeeByAddress = useCallback(async (address) => {
-    if (!address || !String(address).trim()) return null;
-
-    setLoadingDelivery(true);
-    try {
-      const data = await storeApi.validateDeliveryByAddress(address);
-
-      if (data) {
-        if (data.is_valid === false) {
-          setDeliveryInfo({
-            fee: 0,
-            zone_name: data.delivery_zone || data.zone_name || 'Fora da área de entrega',
-            estimated_days: data.estimated_days || 0,
-            distance_km: toFiniteNumber(data.distance_km, 0),
-            duration_minutes: toFiniteNumber(data.duration_minutes, 0),
-            estimated_minutes: toFiniteNumber(data.estimated_minutes ?? data.duration_minutes, 0),
-            is_valid: false,
-            polyline: '',
-            message: data.message || 'Endereço fora da área de entrega.',
-          });
-          setShippingCost(null);
-          setLoadingDelivery(false);
-          return null;
-        }
-
-        const fee = toFiniteNumber(data.delivery_fee ?? data.fee, 0);
-        const distanceKm = toFiniteNumber(data.distance_km, 0);
-        const durationMinutes = toFiniteNumber(data.duration_minutes, 0);
-        const info = {
-          fee,
-          zone_name: data.delivery_zone || data.zone_name || 'Área de entrega',
-          estimated_days: data.estimated_days || 0,
-          distance_km: distanceKm,
-          duration_minutes: durationMinutes,
-          estimated_minutes: toFiniteNumber(data.estimated_minutes ?? data.duration_minutes, durationMinutes),
-          is_valid: data.is_valid !== false,
-          polyline: data.polyline,
-        };
-        setDeliveryInfo(info);
-        setShippingCost(fee);
-        setLoadingDelivery(false);
-        return info;
-      }
-    } catch (err) {
-      console.error('❌ Delivery validation by address error:', err);
-      setShippingCost(null);
-      setDeliveryInfo(null);
-    }
-    setLoadingDelivery(false);
+    // Frontend no longer calculates delivery fee — backend does it at checkout
     return null;
   }, []);
 
