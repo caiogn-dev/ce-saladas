@@ -344,7 +344,7 @@ export const useCheckoutForm = () => {
 
   const buildCheckoutPayload = useCallback((shippingMethod, enableScheduling, scheduledDate, scheduledTimeSlot, deliveryInfo = null) => {
     const isPickup = shippingMethod === 'pickup';
-    const { lat, lng } = geoExtrasRef.current;
+    const { lat, lng } = geoExtrasRef.current || {};
     const hasCoordinates = lat != null && lng != null;
     const mapsUrl = hasCoordinates
       ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${lat},${lng}`)}`
@@ -396,7 +396,6 @@ export const useCheckoutForm = () => {
           : null
     );
 
-    const { lat, lng } = geoExtrasRef.current || {};
     return {
       customer_name: formData.name.trim(),
       customer_email: formData.email.trim(),
