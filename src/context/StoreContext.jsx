@@ -87,9 +87,15 @@ export const StoreProvider = ({ children, initialCatalog = null, storeConfig = n
     if (!storeConfig) return;
     if (storeConfig.primary_color) {
       document.documentElement.style.setProperty('--primary-color', storeConfig.primary_color);
+      document.documentElement.style.setProperty('--color-primary', storeConfig.primary_color);
+      document.documentElement.style.setProperty('--color-brand-green', storeConfig.primary_color);
+      document.documentElement.style.setProperty('--color-brand-green-dark', storeConfig.primary_color);
     }
     if (storeConfig.secondary_color) {
       document.documentElement.style.setProperty('--secondary-color', storeConfig.secondary_color);
+      document.documentElement.style.setProperty('--color-secondary', storeConfig.secondary_color);
+      document.documentElement.style.setProperty('--color-brand-orange', storeConfig.secondary_color);
+      document.documentElement.style.setProperty('--color-brand-orange-dark', storeConfig.secondary_color);
     }
   }, [storeConfig]);
 
@@ -110,9 +116,15 @@ export const StoreProvider = ({ children, initialCatalog = null, storeConfig = n
     if (store && typeof document !== 'undefined') {
       if (store.primary_color) {
         document.documentElement.style.setProperty('--primary-color', store.primary_color);
+        document.documentElement.style.setProperty('--color-primary', store.primary_color);
+        document.documentElement.style.setProperty('--color-brand-green', store.primary_color);
+        document.documentElement.style.setProperty('--color-brand-green-dark', store.primary_color);
       }
       if (store.secondary_color) {
         document.documentElement.style.setProperty('--secondary-color', store.secondary_color);
+        document.documentElement.style.setProperty('--color-secondary', store.secondary_color);
+        document.documentElement.style.setProperty('--color-brand-orange', store.secondary_color);
+        document.documentElement.style.setProperty('--color-brand-orange-dark', store.secondary_color);
       }
       // Update theme color meta tag
       const metaThemeColor = document.querySelector('meta[name="theme-color"]');
