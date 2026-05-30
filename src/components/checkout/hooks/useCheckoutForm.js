@@ -396,7 +396,7 @@ export const useCheckoutForm = () => {
           : null
     );
 
-    const { lat, lng } = geoExtrasRef.current;
+    const { lat, lng } = geoExtrasRef.current || {};
     return {
       customer_name: formData.name.trim(),
       customer_email: formData.email.trim(),
