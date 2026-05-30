@@ -652,13 +652,24 @@ export const geocodeAddress = async (address) => {
  */
 export const reverseGeocode = async (lat, lng) => {
   try {
-    const response = await axios.get(`${API_ROOT}/maps/reverse-geocode/`, { params: { lat, lng } });
-    return normalizeGeoResponse(response.data);
-  } catch (error) {
-    if (error?.response?.status === 404) {
-      return null;
-    }
-    throw error;
+    const response = await axios.get('https://nominatim.openstreetmap.org/reverse', {
+      params: { lat, lng, format: 'json', addressdetails: 1 },
+      headers: { 'Accept-Language': 'pt-BR' },
+    });
+    const d = response.data?.address || {};
+    return {
+      street: d.road || d.pedestrian || '',
+      number: d.house_number || '',
+      neighborhood: d.suburb || d.neighbourhood || d.city_district || '',
+      city: d.city || d.town || d.village || d.municipality || '',
+      state: d.state || '',
+      zip_code: (d.postcode || '').replace(/\D/g, ''),
+      lat,
+      lng,
+      display_name: response.data?.display_name || '',
+    };
+  } catch {
+    return null;
   }
 };
 
