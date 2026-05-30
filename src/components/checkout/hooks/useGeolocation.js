@@ -206,8 +206,6 @@ export const useGeolocation = () => {
       setPosition({ lat: latitude, lng: longitude });
       setDetectedAddress(address);
 
-      await calculateRouteAndFee(latitude, longitude);
-
       setLoading(false);
       return { lat: latitude, lng: longitude, address, accuracy: numericAccuracy };
     } catch (err) {
@@ -224,7 +222,7 @@ export const useGeolocation = () => {
       }
       return null;
     }
-  }, [reverseGeocode, calculateRouteAndFee]);
+  }, [reverseGeocode]);
 
   // Update location manually (from map click)
   const updateLocation = useCallback(async (lat, lng, addressOverride = null) => {
@@ -266,7 +264,7 @@ export const useGeolocation = () => {
     setLoading(false);
 
     return fallbackAddress;
-  }, [reverseGeocode, calculateRouteAndFee]);
+  }, [reverseGeocode]);
 
   // Clear all data
   const clearLocation = useCallback(() => {
@@ -287,7 +285,6 @@ export const useGeolocation = () => {
     detectLocation,
     updateLocation,
     clearLocation,
-    calculateRouteAndFee,
     setDeliveryInfo,
     setDetectedAddress,
     setPosition
