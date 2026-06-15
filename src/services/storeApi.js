@@ -462,10 +462,11 @@ export const getCart = async () => {
 /**
  * Add product to cart
  */
-export const addToCart = async (productId, quantity = 1, options = {}, notes = '') => {
+export const addToCart = async (productId, quantity = 1, options = {}, notes = '', variantId = null) => {
   const response = await storeApi.post('/cart/add/', {
     product_id: productId,
     quantity,
+    variant_id: variantId,
     options,
     notes,
   });

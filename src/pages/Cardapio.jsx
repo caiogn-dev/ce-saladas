@@ -69,9 +69,21 @@ const normalizeText = (value) => (value || '')
   .replace(/[^a-z0-9]+/g, ' ')
   .trim();
 
+// Fixed category slugs used by the Salad Builder. `base`, `complemento`, `proteina`
+// are builder-only (is_builder_group=true, hidden from menu); `molhos` is visible
+// in the menu AND used as the molho step in the builder.
+const BUILDER_INGREDIENT_SLUGS = new Set(['base', 'complemento', 'proteina', 'molhos']);
+
 const inferCatalogSection = (item) => {
   if (item.itemType === 'combo' || item.isCombo) {
     return 'monte-sua-salada';
+  }
+
+  const slug = (item.categorySlug || '').toLowerCase();
+
+  // Builder ingredients are grouped by fixed category slug.
+  if (BUILDER_INGREDIENT_SLUGS.has(slug)) {
+    return slug === 'molhos' ? 'molhos' : 'ingredientes';
   }
 
   const haystack = normalizeText([
@@ -82,31 +94,6 @@ const inferCatalogSection = (item) => {
     ...(Array.isArray(item.tags) ? item.tags : []),
     item.name,
   ].join(' '));
-
-  // Ingredient-builder products first — a product tagged "ingrediente" goes to the
-  // builder section even when its name also contains "molho" (e.g. "Molho Caesar").
-  // Standalone molho products (only tagged "molho") go to the separate molhos section.
-  if (
-    haystack.includes('ingrediente')
-    || haystack.includes('base')
-    || haystack.includes('complemento')
-    || haystack.includes('proteina')
-  ) {
-    return 'ingredientes';
-  }
-
-  if (haystack.includes('molho')) {
-    return 'molhos';
-  }
-
-  if (
-    haystack.includes('monte sua salada')
-    || haystack.includes('monte')
-    || haystack.includes('personaliz')
-    || haystack.includes('custom')
-  ) {
-    return 'monte-sua-salada';
-  }
 
   if (
     haystack.includes('bebida')
@@ -174,11 +161,29 @@ const Cardapio = () => {
     store,
     products: storeProducts,
     combos,
+    categories,
     featuredProducts,
     isLoading,
     error,
     refreshCatalog,
   } = useStore();
+
+  // Builder-group categories (is_builder_group=true) must never surface as menu
+  // sections — their products are only used inside the SaladBuilder.
+  const builderGroupSlugs = useMemo(
+    () => new Set(
+      (categories || [])
+        .filter((c) => c.is_builder_group === true)
+        .map((c) => (c.slug || '').toLowerCase())
+    ),
+    [categories]
+  );
+
+  // Fixed base price of a built salad = price of the `monte-sua-salada` combo.
+  const saladBasePrice = useMemo(() => {
+    const base = (combos || []).find((c) => c.slug === 'monte-sua-salada');
+    return base ? parseFloat(base.price) || 0 : 0;
+  }, [combos]);
 
   const catalogItems = useMemo(() => {
     const transformedProducts = storeProducts.map((product) => {
@@ -212,7 +217,11 @@ const Cardapio = () => {
       };
     });
 
-    const transformedCombos = combos.map((combo) => ({
+    const transformedCombos = combos
+      // The `monte-sua-salada` combo is only the fixed base price source for the
+      // SaladBuilder — never render it as a regular combo card.
+      .filter((combo) => combo.slug !== 'monte-sua-salada')
+      .map((combo) => ({
       id: combo.id,
       itemType: 'combo',
       isCombo: true,
@@ -256,18 +265,43 @@ const Cardapio = () => {
   );
 
   const featuredItems = useMemo(() => {
+    const notBuilderGroup = (item) =>
+      !builderGroupSlugs.has((item.categorySlug || '').toLowerCase());
     const tagged = filteredItems.filter((item) => {
+      if (!notBuilderGroup(item)) return false;
       const tags = normalizeText((item.tags || []).join(' '));
       return featuredIds.has(item.id) || tags.includes('mais pedido') || tags.includes('novidade') || tags.includes('destaque');
     });
     if (tagged.length > 0) return tagged.slice(0, 8);
-    return filteredItems.filter((item) => item.catalogSection === 'saladas').slice(0, 8);
-  }, [featuredIds, filteredItems]);
+    return filteredItems.filter((item) => item.catalogSection === 'saladas' && notBuilderGroup(item)).slice(0, 8);
+  }, [featuredIds, filteredItems, builderGroupSlugs]);
 
+  // SaladBuilder ingredients = products whose category slug is one of the fixed
+  // builder slugs: base, complemento, proteina, molhos.
   const ingredientItems = useMemo(
-    () => filteredItems.filter((item) =>
-      item.catalogSection === 'ingredientes' || item.catalogSection === 'molhos'
-    ),
+    () => filteredItems
+      .filter((item) =>
+        item.itemType !== 'combo'
+        && BUILDER_INGREDIENT_SLUGS.has((item.categorySlug || '').toLowerCase())
+      )
+      // Molho é 1 produto com variantes (sabores): expande cada variante numa
+      // opção selecionável, pro cliente escolher 1 entre os sabores. No builder
+      // o molho é incluso (1 grátis) → preço 0.
+      .flatMap((item) => {
+        const slug = (item.categorySlug || '').toLowerCase();
+        const variants = Array.isArray(item.variants) ? item.variants : [];
+        if (slug.includes('molho') && variants.length > 0) {
+          return variants.map((v) => ({
+            ...item,
+            id: v.id,
+            name: v.name,
+            price: 0,
+            image_url: v.image_url || item.image_url,
+            variants: [],
+          }));
+        }
+        return [item];
+      }),
     [filteredItems]
   );
 
@@ -276,7 +310,26 @@ const Cardapio = () => {
   const molhosItems = useMemo(
     () => (storeProducts || [])
       .filter((p) => (p.name || '').toLowerCase().includes('molho'))
-      .map((p) => ({ ...p, image_url: p.main_image_url || p.main_image })),
+      // Expande as variantes (sabores) em opções individuais para o upsell.
+      .flatMap((p) => {
+        const variants = Array.isArray(p.variants) ? p.variants : [];
+        if (variants.length > 0) {
+          // No upsell o molho é um EXTRA → herda o preço do produto quando a
+          // variante não tem preço próprio. id = PRODUTO (cart faz lookup de
+          // StoreProduct) + variant_id = sabor.
+          const parentPrice = parseFloat(p.price) || 0;
+          return variants.map((v) => ({
+            id: p.id,
+            variant_id: v.id,
+            variant_name: v.name,
+            name: v.name,
+            price: v.price != null && v.price !== '' ? parseFloat(v.price) : parentPrice,
+            image_url: v.image_url || p.main_image_url || p.main_image,
+            category_slug: p.category_slug,
+          }));
+        }
+        return [{ ...p, image_url: p.main_image_url || p.main_image }];
+      }),
     [storeProducts],
   );
 
@@ -294,10 +347,15 @@ const Cardapio = () => {
       }
       return {
         ...section,
-        items: filteredItems.filter((item) => item.catalogSection === section.key),
+        items: filteredItems.filter((item) =>
+          item.catalogSection === section.key
+          // Defensive: never let a builder-group category (base/complemento/
+          // proteina) leak into a visible menu section. molhos stays visible.
+          && !builderGroupSlugs.has((item.categorySlug || '').toLowerCase())
+        ),
       };
     }).filter((section) => section.items.length > 0 || section.isBuilder);
-  }, [filteredItems, featuredItems]);
+  }, [filteredItems, featuredItems, builderGroupSlugs]);
 
   const catalogHighlights = useMemo(() => ([
     {
@@ -586,6 +644,7 @@ const Cardapio = () => {
                       <>
                         <SaladBuilder
                           ingredients={ingredientItems}
+                          basePrice={saladBasePrice}
                           onAddedToCart={() => setUpsellOpen(true)}
                         />
                         {section.items.length > 0 && (

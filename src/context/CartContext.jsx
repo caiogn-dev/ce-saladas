@@ -198,10 +198,20 @@ export const CartProvider = ({ children }) => {
     cartMutexRef.current = true;
     setIsLoading(true);
     const previousCart = cartRef.current.products;
-    
+    // Variante (ex.: sabor de molho): product.id é o StoreProduct, variant_id o sabor.
+    const variantId = product.variant_id || product.selectedVariant?.id || null;
+    const selectedOptions = {
+      ...(product.options || {}),
+      ...(product.variant_name || product.selectedVariant?.name
+        ? { variant: product.variant_name || product.selectedVariant?.name }
+        : {}),
+    };
+
     // Optimistic update
     setCart((prevCart) => {
-      const existingIndex = prevCart.findIndex((item) => item.id === product.id);
+      const existingIndex = prevCart.findIndex(
+        (item) => item.id === product.id && (item.variant_id || null) === (variantId || null)
+      );
       if (existingIndex >= 0) {
         const updated = [...prevCart];
         updated[existingIndex] = {
@@ -210,10 +220,10 @@ export const CartProvider = ({ children }) => {
         };
         return updated;
       }
-      return [...prevCart, buildOptimisticItem(product, 1)];
+      return [...prevCart, buildOptimisticItem({ ...product, variant_id: variantId, options: selectedOptions }, 1)];
     });
     try {
-      const data = await storeApi.addToCart(product.id, 1, {}, '');
+      const data = await storeApi.addToCart(product.id, 1, selectedOptions, '', variantId);
       trackAddToCartPixelEvent(product);
       syncCartState(data);
     } catch (error) {
@@ -227,7 +237,7 @@ export const CartProvider = ({ children }) => {
   };
 
   // Add salad builder selections as a single virtual combo cart item
-  const addSaladToCart = async (selections) => {
+  const addSaladToCart = async (selections, basePrice = 0) => {
     if (cartMutexRef.current) return;
     // selections = { base: [product], proteina: [product], complemento: [product,...], molho: [product] }
     const allIngredients = Object.entries(selections).flatMap(([role, items]) =>
@@ -235,7 +245,10 @@ export const CartProvider = ({ children }) => {
     );
     if (allIngredients.length === 0) return;
 
-    const unitPrice = allIngredients.reduce((s, p) => s + p.price, 0);
+    // Pricing model: total = fixed base price (monte-sua-salada combo) +
+    // Σ(complemento prices) + Σ(proteina prices). Base/molho are free.
+    const safeBasePrice = Number(basePrice) || 0;
+    const unitPrice = safeBasePrice + allIngredients.reduce((s, p) => s + p.price, 0);
 
     // Human-readable notes for print/display
     const roleLabels = { base: 'Base', proteina: 'Proteína', complemento: 'Complementos', molho: 'Molho' };
@@ -246,6 +259,7 @@ export const CartProvider = ({ children }) => {
 
     const customizations = {
       is_salad_builder: true,
+      base_price: safeBasePrice,
       ingredients: allIngredients,
     };
 
