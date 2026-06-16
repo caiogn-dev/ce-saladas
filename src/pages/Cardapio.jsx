@@ -238,7 +238,15 @@ const Cardapio = () => {
       categorySlug: 'monte-sua-salada',
       categoryLabel: 'Monte sua Salada',
       productTypeName: 'Monte sua Salada',
-      comboItems: combo.items || [],
+      // combo.items é o StoreComboItem MORTO (sempre vazio). O dado canônico
+      // são os groups (ComboProductGroup). Mapeia groups -> itens p/ o modal
+      // mostrar o conteúdo (antes ficava vazio = "opções não aparecem").
+      comboItems: (Array.isArray(combo.items) && combo.items.length > 0)
+        ? combo.items
+        : (combo.groups || []).map((g) => ({
+            product_name: g.product_name,
+            quantity: 1,
+          })),
       tags: combo.featured ? ['Mais pedido'] : [],
       is_in_stock: combo.is_in_stock ?? combo.is_active,
       is_low_stock: false,
