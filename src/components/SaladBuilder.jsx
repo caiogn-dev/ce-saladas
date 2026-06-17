@@ -6,26 +6,23 @@ import styles from './SaladBuilder.module.css';
 const fmt = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
 const formatMoney = (v) => fmt.format(Number(v || 0));
 
-const inferIngredientStep = (product) => {
-  const haystack = [
-    product.categorySlug,
-    product.categoryLabel,
-    product.productTypeName,
-    ...(product.tags || []),
-    product.name,
-  ].join(' ').toLowerCase().replace(/[^\w\s]/g, '');
-
-  if (/base|folha|rucula|alface|couve|espinafre|quinoa|repolho/.test(haystack)) return 'base';
-  if (/prote|frango|atum|salmao|tofu|ovo|grao|feijao/.test(haystack)) return 'proteina';
-  if (/molho|tempero|vinagrete|shoyu|azeite|tahini/.test(haystack)) return 'molho';
-  return 'complemento';
+// Map a product's category slug to the builder step key.
+// Category slugs are fixed by the backend: base, complemento, proteina, molhos.
+// The internal step key for molho is 'molho' (category slug 'molhos').
+const CATEGORY_SLUG_TO_STEP = {
+  base: 'base',
+  proteina: 'proteina',
+  complemento: 'complemento',
+  molhos: 'molho',
 };
 
+const inferIngredientStep = (product) => CATEGORY_SLUG_TO_STEP[product.categorySlug] || null;
+
 const STEPS = [
-  { key: 'base',        label: 'Base',         emoji: '🥬', required: true,  max: 1, hint: 'Escolha 1' },
-  { key: 'proteina',    label: 'Proteína',      emoji: '🍗', required: false, max: 2, hint: 'Até 2 (opcional)' },
-  { key: 'complemento', label: 'Complementos',  emoji: '🥕', required: false, max: 6, hint: 'Até 6 (opcional)' },
-  { key: 'molho',       label: 'Molho',         emoji: '🫙', required: true,  max: 1, hint: 'Incluso · escolha 1', included: true },
+  { key: 'base',        label: 'Base',         emoji: '🥬', required: true,  max: 1,  hint: 'Escolha 1' },
+  { key: 'proteina',    label: 'Proteína',      emoji: '🍗', required: false, max: 3,  hint: 'Até 3 (opcional)' },
+  { key: 'complemento', label: 'Complementos',  emoji: '🥕', required: false, max: 20, hint: 'Até 20 (opcional)' },
+  { key: 'molho',       label: 'Molho',         emoji: '🫙', required: true,  max: 1,  hint: 'Incluso · escolha 1', included: true },
 ];
 
 /* ── Ingredient image ─────────────────────────────────────── */
@@ -136,7 +133,7 @@ const StepTab = ({ step, idx, active, done, count, onClick }) => (
 );
 
 /* ── Main SaladBuilder ────────────────────────────────────── */
-const SaladBuilder = ({ ingredients, onAddedToCart }) => {
+const SaladBuilder = ({ ingredients, basePrice = 0, onAddedToCart }) => {
   const { addSaladToCart } = useCart();
   const [isOpen, setIsOpen]     = useState(false);
   const [mounted, setMounted]   = useState(false);
@@ -155,17 +152,20 @@ const SaladBuilder = ({ ingredients, onAddedToCart }) => {
     const groups = { base: [], proteina: [], complemento: [], molho: [] };
     (ingredients || []).forEach((p) => {
       const step = inferIngredientStep(p);
-      if (groups[step]) groups[step].push(p);
+      if (step && groups[step]) groups[step].push(p);
     });
     return groups;
   }, [ingredients]);
 
+  // Total = fixed base price (monte-sua-salada combo) + sum of selected
+  // complementos/proteínas. Base (alface) = R$0, molho is free/included.
+  const safeBasePrice = Number(basePrice) || 0;
   const total = useMemo(
-    () => Object.entries(selections)
+    () => safeBasePrice + Object.entries(selections)
       .filter(([key]) => key !== 'molho')
       .flatMap(([, items]) => items)
       .reduce((s, p) => s + Number(p.price || 0), 0),
-    [selections],
+    [selections, safeBasePrice],
   );
 
   const isValid = selections.base.length > 0 && selections.molho.length > 0;
@@ -232,7 +232,7 @@ const SaladBuilder = ({ ingredients, onAddedToCart }) => {
     if (!isValid || adding) return;
     setAdding(true);
     try {
-      await addSaladToCart(selections);
+      await addSaladToCart(selections, safeBasePrice);
       setSelections({ base: [], proteina: [], complemento: [], molho: [] });
       setActiveStep(0);
       setIsOpen(false);
