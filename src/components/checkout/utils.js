@@ -139,18 +139,45 @@ export const TIME_SLOTS = [
   { value: '18:00-20:00', label: '18:00 - 20:00' },
 ];
 
+export const MIN_LEAD_MINUTES = 60;
+
+export const toLocalISODate = (date) => {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+};
+
+// fim do slot "HH:MM-HH:MM" em minutos desde meia-noite
+const slotEndMinutes = (slotValue) => {
+  const end = slotValue.split('-')[1] || '';
+  const [h, mi] = end.split(':').map((n) => parseInt(n, 10));
+  return (h || 0) * 60 + (mi || 0);
+};
+
+export const getAvailableTimeSlots = (selectedDateStr) => {
+  const now = new Date();
+  const todayStr = toLocalISODate(now);
+  if (selectedDateStr !== todayStr) return TIME_SLOTS;
+  const cutoff = now.getHours() * 60 + now.getMinutes() + MIN_LEAD_MINUTES;
+  return TIME_SLOTS.filter((slot) => slotEndMinutes(slot.value) > cutoff);
+};
+
 export const getAvailableDates = () => {
   const dates = [];
   const today = new Date();
-  for (let i = 1; i <= 7; i++) {
+  for (let i = 0; i <= 7; i++) {
     const date = new Date(today);
     date.setDate(today.getDate() + i);
-    if (date.getDay() !== 0) {
-      dates.push({
-        value: date.toISOString().split('T')[0],
-        label: date.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })
-      });
-    }
+    if (date.getDay() === 0) continue;                 // pula domingo
+    const value = toLocalISODate(date);
+    if (i === 0 && getAvailableTimeSlots(value).length === 0) continue; // hoje sem slot
+    dates.push({
+      value,
+      label: i === 0
+        ? 'Hoje'
+        : date.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' }),
+    });
   }
   return dates;
 };

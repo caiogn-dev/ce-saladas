@@ -1,9 +1,9 @@
 /**
  * Scheduling section component
  */
-import React from 'react';
+import React, { useEffect } from 'react';
 import styles from '../../styles/Checkout.module.css';
-import { getAvailableDates, TIME_SLOTS } from './utils';
+import { getAvailableDates, getAvailableTimeSlots } from './utils';
 
 const SchedulingSection = ({
   enableScheduling,
@@ -15,6 +15,13 @@ const SchedulingSection = ({
   disabled = false
 }) => {
   const availableDates = getAvailableDates();
+  const slotOptions = getAvailableTimeSlots(scheduledDate);
+
+  useEffect(() => {
+    if (scheduledTimeSlot && !slotOptions.some((s) => s.value === scheduledTimeSlot)) {
+      onTimeSlotChange('');
+    }
+  }, [scheduledDate]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className={styles.schedulingSection}>
@@ -59,7 +66,7 @@ const SchedulingSection = ({
               disabled={disabled || !scheduledDate}
             >
               <option value="">Selecione um horário</option>
-              {TIME_SLOTS.map((slot) => (
+              {slotOptions.map((slot) => (
                 <option key={slot.value} value={slot.value}>
                   {slot.label}
                 </option>

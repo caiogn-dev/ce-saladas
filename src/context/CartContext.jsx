@@ -7,6 +7,7 @@ import React, { createContext, useCallback, useContext, useEffect, useRef, useSt
 import * as storeApi from '../services/storeApi';
 import { buildMediaUrl } from '../utils/media';
 import { useToast } from '../components/Toast';
+import { useStore } from './StoreContext';
 
 const CartContext = createContext();
 
@@ -62,13 +63,27 @@ const trackAddToCartPixelEvent = (item, fallback = {}) => {
 
 export const CartProvider = ({ children }) => {
   const toast = useToast();
+  const { isStoreOpen } = useStore();
   const [cart, setCart] = useState([]);
   const [combos, setCombos] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [schedulingNoticeOpen, setSchedulingNoticeOpen] = useState(false);
   const cartRef = useRef({ products: [], combos: [] });
   // Mutex: prevents concurrent cart mutations from creating inconsistent state
   const cartMutexRef = useRef(false);
+
+  // Mostra modal de agendamento uma única vez por dispositivo quando a loja está fechada
+  const maybeShowSchedulingNotice = () => {
+    if (typeof window === 'undefined') return;
+    if (isStoreOpen) return;
+    const storageKey = `cdx_scheduling_notice_dismissed:${storeApi.STORE_SLUG || 'default'}`;
+    if (localStorage.getItem(storageKey)) return;
+    localStorage.setItem(storageKey, '1');
+    setSchedulingNoticeOpen(true);
+  };
+
+  const dismissSchedulingNotice = () => setSchedulingNoticeOpen(false);
 
   useEffect(() => {
     cartRef.current = { products: cart, combos };
@@ -226,6 +241,7 @@ export const CartProvider = ({ children }) => {
       const data = await storeApi.addToCart(product.id, 1, selectedOptions, '', variantId);
       trackAddToCartPixelEvent(product);
       syncCartState(data);
+      maybeShowSchedulingNotice();
     } catch (error) {
       console.error('Error adding to cart:', error);
       setCart(previousCart);
@@ -297,6 +313,7 @@ export const CartProvider = ({ children }) => {
         price: unitPrice,
       });
       syncCartState(data);
+      maybeShowSchedulingNotice();
     } catch (error) {
       console.error('Error adding salad to cart:', error);
       setCombos(previousCombos);
@@ -331,6 +348,7 @@ export const CartProvider = ({ children }) => {
       const data = await storeApi.addComboToCart(combo.id, 1, {}, '');
       trackAddToCartPixelEvent(combo);
       syncCartState(data);
+      maybeShowSchedulingNotice();
     } catch (error) {
       console.error('Error adding combo to cart:', error);
       setCombos(previousCombos);
@@ -487,6 +505,10 @@ export const CartProvider = ({ children }) => {
       clearCart,
       fetchCart,
       refreshCartState,
+
+      // Scheduling notice (loja fechada — modal 1x por dispositivo)
+      schedulingNoticeOpen,
+      dismissSchedulingNotice,
     }}>
       {children}
     </CartContext.Provider>
