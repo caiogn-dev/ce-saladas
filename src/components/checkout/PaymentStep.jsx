@@ -34,6 +34,17 @@ const PaymentStep = ({
 }) => {
   const total = Math.max(0, cartTotal + (shippingCost || 0) - discount);
 
+  // O CardPayment Brick REMONTA (e apaga o que o cliente digitou) sempre que a
+  // identidade de initialization/onSubmit/onError muda — objeto inline + handler
+  // novo a cada render do checkout resetavam o formulário no meio da digitação.
+  const cardInitialization = React.useMemo(() => ({ amount: total }), [total]);
+  const onSubmitRef = React.useRef(onSubmit);
+  const onCardErrorRef = React.useRef(onCardError);
+  onSubmitRef.current = onSubmit;
+  onCardErrorRef.current = onCardError;
+  const handleCardSubmit = React.useCallback((data) => onSubmitRef.current?.(data), []);
+  const handleCardError = React.useCallback((err) => onCardErrorRef.current?.(err), []);
+
   return (
     <div className={styles.paymentStep}>
       <button className={styles.backButton} onClick={onBack} type="button">
@@ -107,9 +118,9 @@ const PaymentStep = ({
             {paymentMethod === 'card' && mpPublicKey && (
               <div className={styles.cardPaymentContainer}>
                 <CardPayment
-                  initialization={{ amount: total }}
-                  onSubmit={onSubmit}
-                  onError={onCardError}
+                  initialization={cardInitialization}
+                  onSubmit={handleCardSubmit}
+                  onError={handleCardError}
                 />
               </div>
             )}
