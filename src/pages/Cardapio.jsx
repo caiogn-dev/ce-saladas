@@ -275,11 +275,11 @@ const Cardapio = () => {
   const featuredItems = useMemo(() => {
     const notBuilderGroup = (item) =>
       !builderGroupSlugs.has((item.categorySlug || '').toLowerCase());
-    const tagged = filteredItems.filter((item) => {
-      if (!notBuilderGroup(item)) return false;
-      const tags = normalizeText((item.tags || []).join(' '));
-      return featuredIds.has(item.id) || tags.includes('mais pedido') || tags.includes('novidade') || tags.includes('destaque');
-    });
+    // Destaque é controlado exclusivamente pelo campo `featured` (painel);
+    // tags não promovem item a destaque.
+    const tagged = filteredItems.filter(
+      (item) => notBuilderGroup(item) && (featuredIds.has(item.id) || item.featured)
+    );
     if (tagged.length > 0) return tagged.slice(0, 8);
     return filteredItems.filter((item) => item.catalogSection === 'saladas' && notBuilderGroup(item)).slice(0, 8);
   }, [featuredIds, filteredItems, builderGroupSlugs]);
