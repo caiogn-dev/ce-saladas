@@ -80,22 +80,42 @@ const CartSidebar = () => {
     localStorage.removeItem('ce_cart_coupon');
   }, []);
 
-  const molhosItems = useMemo(() => (storeProducts || []).filter((p) => {
-    const text = [p.name, p.category_name, p.category_slug].join(' ').toLowerCase();
-    return text.includes('molho');
-  }), [storeProducts]);
+  // Expande as variantes (sabores) em chips individuais — adicionar o produto
+  // "Molho" cru criava item no pedido SEM o sabor escolhido (variant NULL).
+  const molhosItems = useMemo(() => (storeProducts || [])
+    .filter((p) => {
+      const text = [p.name, p.category_name, p.category_slug].join(' ').toLowerCase();
+      return text.includes('molho');
+    })
+    .flatMap((p) => {
+      const variants = Array.isArray(p.variants) ? p.variants.filter((v) => v.is_active !== false) : [];
+      if (variants.length === 0) return [p];
+      const parentPrice = parseFloat(p.price) || 0;
+      return variants.map((v) => ({
+        ...p,
+        upsell_key: `${p.id}:${v.id}`,
+        variant_id: v.id,
+        variant_name: v.name,
+        name: v.name,
+        price: v.price != null && v.price !== '' ? parseFloat(v.price) : parentPrice,
+        main_image_url: v.image_url || p.main_image_url || p.main_image,
+      }));
+    }), [storeProducts]);
 
-  const cartHasMolho = useMemo(
-    () => cart.some((item) => (item.name || '').toLowerCase().includes('molho')),
-    [cart],
-  );
+  const cartHasMolho = useMemo(() => {
+    const molhoIds = new Set(molhosItems.map((p) => String(p.id)));
+    return cart.some(
+      (item) => (item.name || '').toLowerCase().includes('molho') || molhoIds.has(String(item.id)),
+    );
+  }, [cart, molhosItems]);
 
   const showUpsellStrip = hasItems && !cartHasMolho && molhosItems.length > 0;
 
   const handleAddMolho = (product) => {
-    if (addedMolhos.has(product.id)) return;
+    const key = product.upsell_key || product.id;
+    if (addedMolhos.has(key)) return;
     addToCart(product);
-    setAddedMolhos((prev) => new Set([...prev, product.id]));
+    setAddedMolhos((prev) => new Set([...prev, key]));
   };
 
   useEffect(() => {
@@ -264,11 +284,11 @@ const CartSidebar = () => {
             <p className="cart-upsell__label">Adicionar molho?</p>
             <div className="cart-upsell__row">
               {molhosItems.map((p) => {
-                const done = addedMolhos.has(p.id);
+                const done = addedMolhos.has(p.upsell_key || p.id);
                 const imgSrc = p.main_image_url || p.main_image || p.image;
                 return (
                   <button
-                    key={p.id}
+                    key={p.upsell_key || p.id}
                     type="button"
                     className={`cart-upsell__chip${done ? ' cart-upsell__chip--added' : ''}`}
                     onClick={() => handleAddMolho(p)}
