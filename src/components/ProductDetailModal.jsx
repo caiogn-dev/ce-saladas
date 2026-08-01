@@ -1,6 +1,7 @@
 import React, { useMemo, useState, useEffect, useRef } from 'react';
 import { X, Minus, Plus } from 'lucide-react';
 import { buildMediaUrl } from '../utils/media';
+import { parseDescriptionBlocks } from '../utils/productDescription';
 import styles from './ProductDetailModal.module.css';
 
 const currencyFormatter = new Intl.NumberFormat('pt-BR', {
@@ -167,7 +168,20 @@ const ProductDetailModal = ({
             </div>
 
             {description && (
-              <p className={styles.description}>{description}</p>
+              <div className={styles.description}>
+                {parseDescriptionBlocks(description).map((block, i) => (
+                  block.type === 'ul' ? (
+                    <ul key={i} className={styles.descriptionList}>
+                      {block.items.map((item, j) => <li key={j}>{item}</li>)}
+                    </ul>
+                  ) : (
+                    <p key={i}>
+                      {block.label && <strong>{block.label}: </strong>}
+                      {block.text}
+                    </p>
+                  )
+                ))}
+              </div>
             )}
 
             {isCombo

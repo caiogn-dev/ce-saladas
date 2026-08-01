@@ -1,4 +1,5 @@
 import React, { useMemo, useRef, useEffect, useState } from 'react';
+import { descriptionPreview } from '../../utils/productDescription';
 import { ArrowUpRight } from 'lucide-react';
 import Button from './Button';
 import Badge from './Badge';
@@ -51,7 +52,8 @@ const ProductCard = ({
     );
   }, [isCombo, product.categoryLabel, product.productTypeName, product.tags]);
 
-  const description = product.shortDescription || product.description;
+  // Preview = 1º parágrafo limpo — 'Modo de preparo:' e afins ficam só no modal.
+  const description = descriptionPreview(product.shortDescription || product.description);
 
   const secondaryMeta = useMemo(() => {
     const meta = [];

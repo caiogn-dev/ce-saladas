@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { descriptionPreview } from '../utils/productDescription';
 import { ArrowUpRight } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import styles from './MenuProductRow.module.css';
@@ -48,7 +49,8 @@ const MenuProductRow = ({
   const price = formatMoney(product.price);
   const hasDiscount = product.original_price && Number(product.original_price) > Number(product.price);
   const originalPrice = hasDiscount ? formatMoney(product.original_price) : null;
-  const description = product.shortDescription || product.description;
+  // Preview = 1º parágrafo limpo — 'Modo de preparo:' e afins ficam só no modal.
+  const description = descriptionPreview(product.shortDescription || product.description);
   const discountPercentage = hasDiscount
     ? Math.round((1 - Number(product.price) / Number(product.original_price)) * 100)
     : 0;
