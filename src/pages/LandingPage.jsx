@@ -13,6 +13,8 @@ import {
 } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import SplashScreen from '../components/SplashScreen';
+import VideoStage from '../components/landing/VideoStage';
+import { useLenis } from '../components/landing/useLenis';
 import { useStore } from '../context/StoreContext';
 
 const SPLASH_KEY = 'ce_splash_seen';
@@ -62,6 +64,12 @@ const LandingPage = () => {
   });
   const pageRef = useRef(null);
   const cursorGlowRef = useRef(null);
+
+  // Scroll suave da página inteira. O hook já liga lenis.on('scroll') no
+  // ScrollTrigger.update e casa o lenis.raf com o gsap.ticker — é isso que
+  // mantém o scrub em fase com a posição interpolada, em vez de meio quadro
+  // atrás. Respeita prefers-reduced-motion por conta própria.
+  useLenis();
 
   const handleSplashDone = () => {
     if (typeof window !== 'undefined') sessionStorage.setItem(SPLASH_KEY, '1');
@@ -382,6 +390,9 @@ const LandingPage = () => {
           ))}
         </div>
       </section>
+
+      {/* ── Camarão em cena — vídeo dirigido pelo scroll ────────── */}
+      <VideoStage />
 
       {/* ── Como funciona ──────────────────────────────────────── */}
       <section id="como-funciona" className="how-it-works">
