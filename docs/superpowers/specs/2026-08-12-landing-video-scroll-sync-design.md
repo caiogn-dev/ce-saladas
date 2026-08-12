@@ -17,36 +17,51 @@ O que falta:
 2. Não existe vídeo. O usuário tem um vídeo do **camarão salada** e quer ele
    sincronizado ao scroll.
 
-## Estado do arquivo de vídeo — pendência declarada
+## O arquivo de vídeo
 
-Em 12/ago/2026 a pasta `/home/graco/WORK/ftp-data/ce-saladas-video` **não existe**.
-`/home/graco/WORK/ftp-data/` pertence ao `root`, então o upload provavelmente
-precisa de `sudo` ou de ir por outro caminho.
+Origem: `/home/graco/ftp-data/ce-saladas-video.mp4` (2,36 MB).
 
-A seção será construída **completa e com poster**, atrás de uma constante única de
-caminho. Quando o arquivo entrar e passar pelo pipeline abaixo, a seção acende sem
-mudança de código.
+Medido com `ffprobe` em 12/ago:
 
-### Pipeline de preparo do vídeo
+| Propriedade | Valor |
+|---|---|
+| Resolução | 720 × 1280 (vertical) |
+| Duração | 10,005 s |
+| Frames | 240 @ 24 fps |
+| Codec | h264 + faixa de áudio AAC |
+| **Keyframes** | **1 em 240** |
 
-Vídeo cru de celular **não serve** pra seek por scroll: os keyframes são esparsos,
-então cada `currentTime = x` força o decoder a reconstruir do keyframe anterior e o
-resultado é travado. O arquivo precisa ser reencodado com keyframe em todo frame.
+Esse último número é o motivo do reencode ser obrigatório: com um keyframe só, cada
+`currentTime = x` obriga o decoder a reconstruir desde o frame 0 e o scroll travaria.
+
+### Pipeline de preparo
 
 ```bash
-ffmpeg -i camarao-cru.mp4 \
-  -an \                          # sem áudio: nunca toca, e áudio atrapalha o seek
-  -vf "scale=-2:1080,fps=30" \
+ffmpeg -i /home/graco/ftp-data/ce-saladas-video.mp4 \
+  -an \                                  # sem áudio: nunca toca, e atrapalha o seek
+  -vf "scale=720:-2,fps=12" \
   -c:v libx264 -profile:v high -pix_fmt yuv420p \
   -g 1 -keyint_min 1 -sc_threshold 0 \   # todo frame é keyframe → seek instantâneo
-  -crf 26 -preset slow \
+  -crf 28 -preset medium \
   -movflags +faststart \
   public/video/camarao-salada.mp4
 ```
 
-Metas: **3 a 5 segundos**, **abaixo de 4 MB**. Acima disso o custo de rede mata o
-ganho. Se o vídeo cru for mais longo, cortar o melhor trecho — não tentar sincronizar
-20 segundos de scroll.
+Variantes medidas de verdade antes de escolher:
+
+| Variante | Tamanho |
+|---|---|
+| 720p @ 24 fps, crf 26 | 5,8 MB |
+| 720p @ 24 fps, crf 30 | 4,1 MB |
+| **720p @ 12 fps, crf 28** | **3,0 MB** ← escolhida |
+| 540p @ 12 fps, crf 26 | 2,5 MB |
+
+**12 fps basta** porque quem controla o tempo é o dedo, não o relógio: os 120 frames
+se espalham pelo palco, cada um ocupando ~2% da rolagem. Manter os 720p do original
+custa 0,5 MB a mais que cair pra 540p, e é a diferença entre o camarão parecer nítido
+ou não. Resultado: 2,36 MB → 3,0 MB.
+
+Os 10 segundos são mantidos inteiros — não há corte.
 
 Também gerar o poster (primeiro frame), que é o que aparece antes do vídeo carregar
 e é o fallback permanente em conexão lenta:
