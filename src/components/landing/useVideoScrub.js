@@ -38,6 +38,24 @@ export function useVideoScrub({ palcoRef, videoRef, ativo }) {
       video.currentTime = t;
     };
 
+    // O laço só roda com o palco em cena. Fora de cena o scroll continua
+    // gerando onUpdate (é o que atualiza --p para as legendas), mas não há
+    // motivo pra manter um rAF batendo pra sempre num notebook enquanto o
+    // usuário já rolou pra longe — desperdício de CPU sem efeito visível.
+    const ligarLaco = () => {
+      if (raf !== null) return; // já está rodando, não duplica
+      if (typeof requestAnimationFrame === 'function') {
+        raf = requestAnimationFrame(laco);
+      }
+    };
+
+    const desligarLaco = () => {
+      if (raf !== null) {
+        cancelAnimationFrame(raf);
+        raf = null;
+      }
+    };
+
     (async () => {
       const [{ gsap }, { ScrollTrigger }] = await Promise.all([
         import('gsap'),
@@ -59,17 +77,27 @@ export function useVideoScrub({ palcoRef, videoRef, ativo }) {
             alvo = self.progress * video.duration;
           }
         },
+        // Liga/desliga o laço de rAF conforme o palco entra e sai da tela.
+        // Usa os callbacks do próprio ScrollTrigger em vez de um
+        // IntersectionObserver à parte: é a mesma fonte de verdade que já
+        // decide "o palco está em cena", uma peça móvel a menos.
+        onEnter: ligarLaco,
+        onEnterBack: ligarLaco,
+        onLeave: desligarLaco,
+        onLeaveBack: desligarLaco,
       });
 
-      if (typeof requestAnimationFrame === 'function') {
-        raf = requestAnimationFrame(laco);
+      // O palco pode já nascer em cena (ex.: reload com scroll no meio da
+      // seção) — nesse caso onEnter não dispara, porque não houve cruzamento.
+      if (trigger.isActive) {
+        ligarLaco();
       }
     })();
 
     return () => {
       cancelado = true;
       trigger?.kill();
-      if (raf !== null) cancelAnimationFrame(raf);
+      desligarLaco();
     };
   }, [palcoRef, videoRef, ativo]);
 }
