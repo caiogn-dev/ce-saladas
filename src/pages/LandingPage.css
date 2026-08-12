@@ -1384,3 +1384,136 @@
     transparent 68%
   );
 }
+
+/* ══════════════════════════════════════════════════════════
+   VIDEO STAGE — camarão dirigido pelo scroll
+   ══════════════════════════════════════════════════════════ */
+
+/*
+  --p é escrito pelo useVideoScrub. Default 0 porque, ao contrário do palco do
+  Cardapidex, aqui o estado inicial correto é o primeiro frame.
+*/
+.video-stage {
+  --p: 0;
+  position: relative;
+  background: #0f1a12;
+}
+
+/* Só o modo sync gasta altura de scroll. Loop e poster são seções normais. */
+.video-stage--sync { height: 260vh; }
+
+.video-stage--loop,
+.video-stage--poster {
+  height: auto;
+  padding: 0;
+}
+
+.video-stage__sticky {
+  position: relative;
+  overflow: hidden;
+}
+
+.video-stage--sync .video-stage__sticky {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+}
+
+.video-stage--loop .video-stage__sticky,
+.video-stage--poster .video-stage__sticky {
+  height: min(78svh, 620px);
+}
+
+.video-stage__midia {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Escurece a base pra as legendas terem contraste sem caixa. */
+.video-stage__sticky::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    to top,
+    rgba(15, 26, 18, .88) 0%,
+    rgba(15, 26, 18, .32) 42%,
+    rgba(15, 26, 18, .12) 100%
+  );
+}
+
+.video-stage__legendas {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  bottom: clamp(36px, 9vh, 96px);
+  transform: translateX(-50%);
+  width: min(92vw, 640px);
+  text-align: center;
+  color: #f4fbf5;
+}
+
+.video-stage__legenda {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.video-stage__legenda strong {
+  font-size: clamp(24px, 4vw, 44px);
+  line-height: 1.04;
+  letter-spacing: -.03em;
+}
+
+.video-stage__legenda span {
+  font-size: clamp(14px, 1.7vw, 18px);
+  color: rgba(244, 251, 245, .74);
+}
+
+/*
+  No modo sync as três legendas ocupam o MESMO lugar e trocam por opacidade,
+  conforme a faixa de --p. Empilhadas em grid pra não haver salto de altura.
+*/
+.video-stage--sync .video-stage__legendas {
+  display: grid;
+}
+
+.video-stage--sync .video-stage__legenda {
+  grid-area: 1 / 1;
+  transition: opacity .25s linear;
+}
+
+.video-stage--sync .video-stage__legenda[data-indice='0'] {
+  opacity: clamp(0, (0.33 - var(--p)) / 0.08, 1);
+}
+
+.video-stage--sync .video-stage__legenda[data-indice='1'] {
+  opacity: min(
+    clamp(0, (var(--p) - 0.33) / 0.06, 1),
+    clamp(0, (0.66 - var(--p)) / 0.06, 1)
+  );
+}
+
+.video-stage--sync .video-stage__legenda[data-indice='2'] {
+  opacity: clamp(0, (var(--p) - 0.66) / 0.08, 1);
+}
+
+/* Nos modos baratos, as três aparecem empilhadas de uma vez. */
+.video-stage--loop .video-stage__legendas,
+.video-stage--poster .video-stage__legendas {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.video-stage--loop .video-stage__legenda strong,
+.video-stage--poster .video-stage__legenda strong {
+  font-size: clamp(19px, 5vw, 26px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .video-stage--sync .video-stage__legenda { transition: none; }
+}
