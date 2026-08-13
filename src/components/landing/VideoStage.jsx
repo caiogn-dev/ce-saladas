@@ -65,17 +65,56 @@ export default function VideoStage() {
     const video = videoRef.current;
     if (!video) return undefined;
 
-    // HAVE_FUTURE_DATA: já dá pra pular pelos quadros sem esperar rede.
-    const conferir = () => {
-      if (video.readyState >= 3) setPronto(true);
-    };
-    conferir();
+    let vivo = true;
 
-    video.addEventListener('canplaythrough', conferir);
+    /*
+      🚨 iOS: um vídeo que NUNCA tocou não pinta quadro nenhum quando recebe
+      `currentTime`. Como este palco é inteiramente dirigido pelo scroll e
+      jamais chama play(), no Safari o decodificador nunca acordava: o
+      readyState empacava e ficava só o pôster, para sempre. Um play() seguido
+      de pause() imediato ativa o elemento sem que nada chegue a se mover.
+
+      No desktop isso nunca apareceu porque só o motor do Safari se comporta
+      assim — inclusive no Chrome do iPhone, que por baixo é Safari.
+    */
+    const acordar = async () => {
+      try {
+        await video.play();
+        video.pause();
+      } catch {
+        // Autoplay negado (Modo de Baixo Consumo do iOS): fica pro gesto abaixo.
+      }
+    };
+
+    // HAVE_CURRENT_DATA: já há quadro pra mostrar. Exigir HAVE_FUTURE_DATA aqui
+    // travava o iOS, que segura o readyState até o elemento ser ativado.
+    const conferir = () => {
+      if (vivo && video.readyState >= 2) setPronto(true);
+    };
+
+    const acordarEConferir = async () => {
+      await acordar();
+      conferir();
+    };
+
+    if (video.readyState >= 1) acordarEConferir();
+
+    video.addEventListener('loadedmetadata', acordarEConferir);
     video.addEventListener('loadeddata', conferir);
+    video.addEventListener('canplay', conferir);
+
+    // Rede de segurança: com o Modo de Baixo Consumo ligado, o iOS recusa
+    // autoplay até existir um gesto do usuário. O primeiro toque na página
+    // serve como gesto — e um toque sempre acontece antes de rolar.
+    const aoTocar = () => { acordarEConferir(); };
+    window.addEventListener('touchstart', aoTocar, { once: true, passive: true });
+
     return () => {
-      video.removeEventListener('canplaythrough', conferir);
+      vivo = false;
+      video.removeEventListener('loadedmetadata', acordarEConferir);
       video.removeEventListener('loadeddata', conferir);
+      video.removeEventListener('canplay', conferir);
+      window.removeEventListener('touchstart', aoTocar);
     };
   }, [modo]);
 

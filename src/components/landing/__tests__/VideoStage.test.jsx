@@ -19,6 +19,16 @@ function fingirVideoPronto(pronto) {
   });
 }
 
+// jsdom não implementa play/pause. O palco precisa chamar os dois pra acordar o
+// decodificador do iOS, então eles viram espiões.
+function espionarPlayPause() {
+  const play = vi.fn().mockResolvedValue(undefined);
+  const pause = vi.fn();
+  window.HTMLMediaElement.prototype.play = play;
+  window.HTMLMediaElement.prototype.pause = pause;
+  return { play, pause };
+}
+
 function preparar({ largura, reducedMotion = false, conexao = null, videoPronto = true }) {
   window.innerWidth = largura;
   window.matchMedia = vi.fn().mockImplementation((query) => ({
@@ -43,7 +53,8 @@ afterEach(() => {
 });
 
 describe('VideoStage', () => {
-  it('no desktop, ativa o scrub e o vídeo não tem autoplay', () => {
+  it('no desktop, ativa o scrub e o vídeo não tem autoplay', async () => {
+    espionarPlayPause();
     preparar({ largura: 1440 });
     const { container } = render(<VideoStage />);
     const video = container.querySelector('video');
@@ -51,15 +62,19 @@ describe('VideoStage', () => {
     expect(video).not.toBeNull();
     expect(video.hasAttribute('autoplay')).toBe(false);
     expect(video.hasAttribute('loop')).toBe(false);
-    expect(scrubSpy).toHaveBeenCalledWith(expect.objectContaining({ ativo: true }));
+    // Assíncrono: o palco só assume o scroll depois de acordar o decodificador.
+    await vi.waitFor(() =>
+      expect(scrubSpy).toHaveBeenCalledWith(expect.objectContaining({ ativo: true })));
   });
 
-  it('no celular também sincroniza — o arquivo é retrato', () => {
+  it('no celular também sincroniza — o arquivo é retrato', async () => {
+    espionarPlayPause();
     preparar({ largura: 390 });
     const { container } = render(<VideoStage />);
 
     expect(container.querySelector('video').hasAttribute('autoplay')).toBe(false);
-    expect(scrubSpy).toHaveBeenCalledWith(expect.objectContaining({ ativo: true }));
+    await vi.waitFor(() =>
+      expect(scrubSpy).toHaveBeenCalledWith(expect.objectContaining({ ativo: true })));
   });
 
   it('não dirige o vídeo pelo scroll enquanto ele não tem buffer', () => {
@@ -120,6 +135,28 @@ describe('VideoStage', () => {
     expect(cta).not.toBeNull();
     expect(cta.getAttribute('href')).toBe('/cardapio');
     expect(cta.textContent).toMatch(/ver cardápio/i);
+  });
+
+  it('acorda o decodificador com play+pause — sem isso o iOS só mostra o pôster', async () => {
+    // No Safari um vídeo que nunca tocou não pinta quadro ao receber
+    // currentTime. Como o palco jamais chama play(), sem este empurrão o
+    // iPhone ficava eternamente no pôster.
+    const { play, pause } = espionarPlayPause();
+    preparar({ largura: 390 });
+    render(<VideoStage />);
+
+    await vi.waitFor(() => expect(play).toHaveBeenCalled());
+    expect(pause).toHaveBeenCalled();
+  });
+
+  it('autoplay negado (baixo consumo) não quebra o palco', async () => {
+    const play = vi.fn().mockRejectedValue(new Error('NotAllowedError'));
+    window.HTMLMediaElement.prototype.play = play;
+    window.HTMLMediaElement.prototype.pause = vi.fn();
+    preparar({ largura: 390 });
+
+    expect(() => render(<VideoStage />)).not.toThrow();
+    await vi.waitFor(() => expect(play).toHaveBeenCalled());
   });
 
   it('a seção é rotulada pelo próprio título, sem título fantasma', () => {
