@@ -9,6 +9,13 @@ const REDUZIDO = '(prefers-reduced-motion: reduce)';
  *
  * Tudo por import() dinâmico: nenhum KB entra no bundle inicial da landing.
  * Sob prefers-reduced-motion nada é carregado e stop/start viram no-op.
+ *
+ * ⚠️ NÃO importe `lenis/dist/lenis.css` aqui. A documentação pede, mas essa
+ * folha traz `.lenis.lenis-smooth iframe { pointer-events: none }` — e esta
+ * landing tem o mapa do Google no rodapé, que ficaria morto ao toque. A única
+ * regra dela que realmente importa é neutralizar `scroll-behavior: smooth`, e
+ * isso já está resolvido na raiz: o html não declara mais scroll-behavior
+ * (src/index.css), justamente porque ele disputava a rolagem com o Lenis.
  */
 export function useLenis() {
   const lenisRef = useRef(null);

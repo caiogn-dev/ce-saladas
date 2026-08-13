@@ -1440,9 +1440,21 @@
   margin: 0 auto;
   padding: clamp(24px, 4vw, 64px);
   display: grid;
-  grid-template-columns: 1fr auto;
+  /*
+    `1fr auto` deixava a coluna de texto esticar até 669px pra um conteúdo de
+    ~460px: sobravam 300px de vão morto entre o texto e o vídeo, e as duas
+    colunas liam como dois elementos soltos em vez de uma composição. Agora
+    cada coluna tem a largura do próprio conteúdo e o par é centrado.
+  */
+  grid-template-columns: auto auto;
+  justify-content: center;
   align-items: center;
-  gap: clamp(32px, 6vw, 96px);
+  gap: clamp(36px, 5vw, 92px);
+}
+
+/* Medida de leitura: linha longa demais cansa, curta demais pica o texto. */
+.video-stage__texto {
+  width: min(44ch, 470px);
 }
 
 /* ── Coluna do texto ─────────────────────────────────────────────────── */
@@ -1594,7 +1606,9 @@
 .video-stage__blob {
   position: relative;
   z-index: 1;
-  height: min(74svh, 660px);
+  /* Maior: a 74svh o vídeo ficava com 356px numa tela de 1536 e não segurava
+     o próprio lado da composição. */
+  height: min(86svh, 780px);
   aspect-ratio: 9 / 13;
   overflow: hidden;
   /* O pôster também como fundo do blob: enquanto o vídeo não pinta o primeiro
@@ -1703,6 +1717,7 @@
   }
 
   .video-stage__texto {
+    width: auto;
     position: relative;
     z-index: 1;
     padding: clamp(20px, 5vw, 34px);
