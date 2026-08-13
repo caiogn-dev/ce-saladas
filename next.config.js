@@ -30,6 +30,10 @@ const securityHeaders = [
 ];
 
 const nextConfig = {
+  // Permite compilar num diretório separado (NEXT_DIST_DIR=.next-preview) para
+  // conferir o resultado sem sobrescrever os chunks que o processo em execução
+  // ainda está servindo.
+  distDir: process.env.NEXT_DIST_DIR || '.next',
   reactStrictMode: true,
   allowedDevOrigins: ['openclaw.pastita.com.br'],
   // Keep tracing scoped to this app when parent folders also have lockfiles.

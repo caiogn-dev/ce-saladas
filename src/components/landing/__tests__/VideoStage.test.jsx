@@ -43,8 +43,17 @@ describe('VideoStage', () => {
     expect(scrubSpy).toHaveBeenCalledWith(expect.objectContaining({ ativo: true }));
   });
 
-  it('no mobile, cai em loop e não ativa o scrub', () => {
+  it('no celular também sincroniza — o arquivo é retrato', () => {
     preparar({ largura: 390 });
+    const { container } = render(<VideoStage />);
+    const video = container.querySelector('video');
+
+    expect(video.hasAttribute('autoplay')).toBe(false);
+    expect(scrubSpy).toHaveBeenCalledWith(expect.objectContaining({ ativo: true }));
+  });
+
+  it('em rede econômica cai em loop e não gasta seek', () => {
+    preparar({ largura: 390, conexao: { saveData: true } });
     const { container } = render(<VideoStage />);
     const video = container.querySelector('video');
 

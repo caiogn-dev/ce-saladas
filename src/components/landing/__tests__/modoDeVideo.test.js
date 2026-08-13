@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { MODOS, modoDeVideo, LARGURA_MINIMA_SYNC } from '../modoDeVideo';
+import { MODOS, modoDeVideo, modoForcadoDaUrl } from '../modoDeVideo';
 
 const base = { largura: 1440, reducedMotion: false, conexao: null };
 
@@ -14,17 +14,14 @@ describe('modoDeVideo', () => {
       .toBe(MODOS.POSTER);
   });
 
-  it('abaixo de 768 cai em loop', () => {
-    expect(modoDeVideo({ ...base, largura: 767 })).toBe(MODOS.LOOP);
-    expect(modoDeVideo({ ...base, largura: 390 })).toBe(MODOS.LOOP);
+  it('celular também sincroniza — o arquivo é retrato, é lá que ele encaixa', () => {
+    expect(modoDeVideo({ ...base, largura: 390 })).toBe(MODOS.SYNC);
+    expect(modoDeVideo({ ...base, largura: 320 })).toBe(MODOS.SYNC);
   });
 
-  it('768 exato ainda sincroniza', () => {
-    expect(modoDeVideo({ ...base, largura: LARGURA_MINIMA_SYNC })).toBe(MODOS.SYNC);
-  });
-
-  it('saveData cai em loop mesmo no desktop', () => {
+  it('saveData cai em loop em qualquer tela', () => {
     expect(modoDeVideo({ ...base, conexao: { saveData: true } })).toBe(MODOS.LOOP);
+    expect(modoDeVideo({ ...base, largura: 390, conexao: { saveData: true } })).toBe(MODOS.LOOP);
   });
 
   it('conexão lenta cai em loop', () => {
@@ -37,8 +34,29 @@ describe('modoDeVideo', () => {
     expect(modoDeVideo({ ...base, conexao: { effectiveType: '4g' } })).toBe(MODOS.SYNC);
   });
 
-  it('largura ausente ou inválida cai em loop, nunca quebra', () => {
-    expect(modoDeVideo({ ...base, largura: undefined })).toBe(MODOS.LOOP);
-    expect(modoDeVideo({ ...base, largura: NaN })).toBe(MODOS.LOOP);
+  it('largura ausente não degrada mais — o modo sync não depende dela', () => {
+    expect(modoDeVideo({ ...base, largura: undefined })).toBe(MODOS.SYNC);
+    expect(modoDeVideo({ ...base, largura: NaN })).toBe(MODOS.SYNC);
+  });
+
+  it('o override da URL vence inclusive reduced motion', () => {
+    expect(modoDeVideo({ ...base, reducedMotion: true, forcado: 'sync' })).toBe(MODOS.SYNC);
+    expect(modoDeVideo({ ...base, forcado: 'poster' })).toBe(MODOS.POSTER);
+  });
+
+  it('override inválido é ignorado em vez de quebrar o palco', () => {
+    expect(modoDeVideo({ ...base, forcado: 'seiLa' })).toBe(MODOS.SYNC);
+  });
+});
+
+describe('modoForcadoDaUrl', () => {
+  it('lê ?palco= quando o valor é um modo conhecido', () => {
+    expect(modoForcadoDaUrl('?palco=loop')).toBe('loop');
+    expect(modoForcadoDaUrl('?a=1&palco=poster')).toBe('poster');
+  });
+
+  it('devolve null pra ausente ou desconhecido', () => {
+    expect(modoForcadoDaUrl('')).toBeNull();
+    expect(modoForcadoDaUrl('?palco=xpto')).toBeNull();
   });
 });

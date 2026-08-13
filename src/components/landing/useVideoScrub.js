@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { proximoTempo } from './proximoTempo';
+import { tempoDoProgresso } from './janelaDoVideo';
 
 /**
  * Converte o progresso do palco em posição no vídeo.
@@ -11,7 +12,7 @@ import { proximoTempo } from './proximoTempo';
  * separação é o que permite pular frames quando há seek pendente, em vez de
  * empilhar seeks e travar o decoder.
  */
-export function useVideoScrub({ palcoRef, videoRef, ativo }) {
+export function useVideoScrub({ palcoRef, videoRef, ativo, fps }) {
   useEffect(() => {
     if (!ativo) return undefined;
 
@@ -32,6 +33,7 @@ export function useVideoScrub({ palcoRef, videoRef, ativo }) {
         alvo,
         seeking: video.seeking,
         duracao: video.duration,
+        fps,
       });
       if (t === null) return; // frame pulado de propósito
       atual = t;
@@ -73,9 +75,7 @@ export function useVideoScrub({ palcoRef, videoRef, ativo }) {
         onUpdate: (self) => {
           // As legendas leem --p direto no CSS.
           palco.style.setProperty('--p', self.progress.toFixed(4));
-          if (Number.isFinite(video.duration)) {
-            alvo = self.progress * video.duration;
-          }
+          alvo = tempoDoProgresso({ progresso: self.progress, duracao: video.duration });
         },
         // Liga/desliga o laço de rAF conforme o palco entra e sai da tela.
         // Usa os callbacks do próprio ScrollTrigger em vez de um
@@ -99,5 +99,5 @@ export function useVideoScrub({ palcoRef, videoRef, ativo }) {
       trigger?.kill();
       desligarLaco();
     };
-  }, [palcoRef, videoRef, ativo]);
+  }, [palcoRef, videoRef, ativo, fps]);
 }

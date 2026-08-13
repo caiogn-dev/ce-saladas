@@ -1399,8 +1399,12 @@
   background: #0f1a12;
 }
 
-/* Só o modo sync gasta altura de scroll. Loop e poster são seções normais. */
-.video-stage--sync { height: 260vh; }
+/*
+  Só o modo sync gasta altura de scroll. 340vh (era 260) porque são 10s de
+  vídeo: pista curta obrigava o dedo a correr, e era isso que dava a sensação
+  de "fora de sincronia" — o vídeo terminava antes de a seção acabar.
+*/
+.video-stage--sync { height: 340vh; }
 
 .video-stage--loop,
 .video-stage--poster {
@@ -1411,6 +1415,9 @@
 .video-stage__sticky {
   position: relative;
   overflow: hidden;
+  /* Centra a moldura retrato na área disponível. */
+  display: grid;
+  place-items: center;
 }
 
 .video-stage--sync .video-stage__sticky {
@@ -1421,7 +1428,54 @@
 
 .video-stage--loop .video-stage__sticky,
 .video-stage--poster .video-stage__sticky {
-  height: min(78svh, 620px);
+  height: min(88svh, 720px);
+}
+
+/*
+  Preenche a largura sobrando ao lado do vídeo retrato. É o pôster ampliado e
+  desfocado: pode esticar sem parecer ruim, porque desfoque não tem nitidez a
+  perder. `scale` cobre a borda que o blur come nas extremidades.
+*/
+.video-stage__fundo {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  filter: blur(48px) saturate(1.15) brightness(.55);
+  transform: scale(1.18);
+  pointer-events: none;
+}
+
+/*
+  A moldura tem a proporção do arquivo (9:16) e é limitada pela ALTURA da tela.
+  Assim o vídeo nunca é ampliado além do tamanho nativo (720px de largura) —
+  que era exatamente a causa da imagem borrada no desktop.
+*/
+.video-stage__moldura {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  aspect-ratio: 9 / 16;
+  max-width: 100%;
+  overflow: hidden;
+  border-radius: clamp(0px, 2vw, 22px);
+  box-shadow: 0 30px 90px rgba(0, 0, 0, .55);
+}
+
+/*
+  No celular a tela já é retrato: a moldura ocupa tudo, sem cantos nem sombra,
+  e o vídeo preenche de ponta a ponta como um story.
+*/
+@media (max-aspect-ratio: 10 / 16) {
+  .video-stage__moldura {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: auto;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .video-stage__fundo { display: none; }
 }
 
 .video-stage__midia {
@@ -1431,8 +1485,12 @@
   display: block;
 }
 
-/* Escurece a base pra as legendas terem contraste sem caixa. */
-.video-stage__sticky::after {
+/*
+  Escurece a base pra as legendas terem contraste sem caixa. Fica DENTRO da
+  moldura: aplicado no palco inteiro, escurecia também o fundo desfocado e a
+  seção virava um borrão cinza.
+*/
+.video-stage__moldura::after {
   content: '';
   position: absolute;
   inset: 0;
@@ -1454,6 +1512,24 @@
   width: min(92vw, 640px);
   text-align: center;
   color: #f4fbf5;
+}
+
+/*
+  Telas largas: a moldura é estreita e centrada, então legenda por cima dela
+  fica espremida. Aqui o texto vai pra faixa da esquerda, que antes era só
+  espaço vazio, e o palco passa a ler como uma composição em vez de um vídeo
+  solto no meio da página.
+*/
+@media (min-aspect-ratio: 1 / 1) and (min-width: 1024px) {
+  .video-stage__legendas {
+    left: clamp(32px, 7vw, 120px);
+    right: auto;
+    bottom: 50%;
+    transform: translateY(50%);
+    width: min(38vw, 460px);
+    text-align: left;
+    text-shadow: 0 2px 24px rgba(0, 0, 0, .6);
+  }
 }
 
 .video-stage__legenda {

@@ -18,14 +18,25 @@ POSTER="public/video/camarao-salada-poster.jpg"
 
 mkdir -p public/video
 
-# 720p mantém a nitidez do original; 12 fps basta porque quem controla o tempo é
-# o dedo, não o relógio. Medido: 3,0 MB (contra 5,8 MB a 24 fps).
+# 720×1280 é a resolução nativa do original — não faz sentido subir, e descer
+# custaria nitidez no celular, onde o vídeo ocupa a tela inteira.
+#
+# 24 fps (era 12). A conta de 12 parecia boa no papel — "quem controla o tempo é
+# o dedo" — mas na prática o palco tem ~340vh de pista e o dedo percorre isso
+# em poucos segundos: com 120 quadros dava pra contar os degraus. 24 fps são os
+# mesmos quadros do arquivo original, então o movimento volta a ser contínuo.
+#
+# Medido: 5,8 MB a 24 fps / crf 26 (contra 3,0 MB a 12 fps / crf 28). O preço da
+# suavidade. Conexão lenta ou saveData nem baixa isso — cai no modo loop.
+#
+# ⚠️ Mudou o fps aqui? Atualize FPS em src/components/landing/VideoStage.jsx —
+# é ele que define a grade onde os seeks são encaixados.
 ffmpeg -y -i "$ORIGEM" \
   -an \
-  -vf "scale=720:-2,fps=12" \
+  -vf "scale=720:-2,fps=24" \
   -c:v libx264 -profile:v high -pix_fmt yuv420p \
   -g 1 -keyint_min 1 -sc_threshold 0 \
-  -crf 28 -preset medium \
+  -crf 26 -preset slow \
   -movflags +faststart \
   "$DESTINO"
 

@@ -94,9 +94,25 @@ const ShaderBackground = ({ className, style }) => {
     const uTime = gl.getUniformLocation(prog, 'u_time');
     const uRes  = gl.getUniformLocation(prog, 'u_res');
 
+    // O custo deste shader é POR PIXEL: são duas passadas de fbm de 6 oitavas,
+    // ou seja algumas dezenas de sin() em cada pixel, 60 vezes por segundo. Em
+    // tela cheia num 1080p isso é ordem de 10^8 operações transcendentais por
+    // segundo — o suficiente pra saturar uma GPU integrada e congelar a aba.
+    //
+    // A saída é nuvem desfocada, sem uma única aresta: renderizar num buffer
+    // pequeno e deixar o CSS ampliar é visualmente indistinguível e corta o
+    // trabalho por um fator de ~10.
+    const LADO_MAXIMO = 480;
+
     const resize = () => {
-      const w = canvas.offsetWidth;
-      const h = canvas.offsetHeight;
+      const larguraCss = canvas.offsetWidth;
+      const alturaCss = canvas.offsetHeight;
+      if (!larguraCss || !alturaCss) return;
+
+      const escala = Math.min(1, LADO_MAXIMO / Math.max(larguraCss, alturaCss));
+      const w = Math.max(1, Math.round(larguraCss * escala));
+      const h = Math.max(1, Math.round(alturaCss * escala));
+
       if (canvas.width !== w || canvas.height !== h) {
         canvas.width = w;
         canvas.height = h;
@@ -115,11 +131,30 @@ const ShaderBackground = ({ className, style }) => {
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
       raf = requestAnimationFrame(draw);
     };
+
+    // Aba em segundo plano não precisa de nuvem animada. O rAF já é pausado
+    // pelo navegador na maioria dos casos, mas não quando a aba está visível
+    // atrás de outra janela — e aí o shader seguia queimando GPU à toa.
+    const aoTrocarVisibilidade = () => {
+      if (document.hidden) {
+        cancelAnimationFrame(raf);
+      } else {
+        cancelAnimationFrame(raf);
+        raf = requestAnimationFrame(draw);
+      }
+    };
+    document.addEventListener('visibilitychange', aoTrocarVisibilidade);
+
     draw();
 
     return () => {
       cancelAnimationFrame(raf);
       ro.disconnect();
+      document.removeEventListener('visibilitychange', aoTrocarVisibilidade);
+      // Devolve o contexto WebGL na hora. Sem isso, cada montagem do splash
+      // numa navegação SPA deixa um contexto vivo, e o Chrome derruba o mais
+      // antigo depois de ~16 — o canvas some sem erro nenhum no console.
+      gl.getExtension('WEBGL_lose_context')?.loseContext();
     };
   }, []);
 
