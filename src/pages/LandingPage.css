@@ -1714,12 +1714,15 @@
     border-radius: 0;
     box-shadow: none;
     animation: none;
+    /* Sem isto o blob herda o z-index: 1 do desktop e empata com o texto —
+       e como ele vem DEPOIS no DOM, o empate cobre o texto inteiro. */
+    z-index: 0;
   }
 
   .video-stage__texto {
     width: auto;
     position: relative;
-    z-index: 1;
+    z-index: 2;
     padding: clamp(20px, 5vw, 34px);
     padding-top: clamp(80px, 22vh, 200px);
     background: linear-gradient(
