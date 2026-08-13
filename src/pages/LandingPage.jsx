@@ -316,7 +316,7 @@ const LandingPage = () => {
               <Link href="/cardapio" className="btn-hero-main">
                 Ver cardápio <ArrowRight size={18} />
               </Link>
-              <a href="#como-funciona" className="btn-hero-ghost">Como funciona</a>
+              <a href="#como-funciona" className="btn-hero-ghost">Como pedir</a>
             </div>
 
             <div className="hero-stats">
@@ -568,7 +568,7 @@ const LandingPage = () => {
           </div>
           <div className="cta-btn-wrap">
             <Link href="/cardapio" className="btn-cta-primary">
-              Ir para o cardápio
+              Ver cardápio
               <ArrowRight size={20} />
             </Link>
           </div>

@@ -1,5 +1,6 @@
 // src/components/landing/VideoStage.jsx
 import { useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
 import { MODOS, modoDeVideo, modoForcadoDaUrl } from './modoDeVideo';
 import { useVideoScrub } from './useVideoScrub';
 
@@ -11,12 +12,21 @@ const POSTER = '/video/camarao-salada-poster.jpg';
 // Mantenha em sincronia com scripts/preparar-video.sh.
 export const FPS = 24;
 
-// A sequência real de um pedido — é ela que o vídeo mostra acontecendo, e é por
-// isso que numerar aqui se justifica: a ordem carrega informação.
-const PASSOS = [
-  { titulo: 'Você escolhe', detalhe: 'Cada ingrediente, do jeito que você come.' },
-  { titulo: 'A gente monta na hora', detalhe: 'Nada pronto de véspera esperando na geladeira.' },
-  { titulo: 'Chega em Palmas', detalhe: 'Entrega própria, sem app cobrando por cima.' },
+/*
+  Três afirmações sobre O PRATO, não sobre o processo.
+  A versão anterior listava "escolhe / monta / recebe" — exatamente os mesmos
+  três passos da seção "Como pedir", que fica logo abaixo. Dizer a mesma coisa
+  duas vezes seguidas gasta a atenção do leitor e faz a página parecer sem
+  rumo. Aqui o vídeo mostra o prato sendo feito; então o texto fala do prato.
+
+  Sem numeração: numerar só se presta quando a ordem carrega informação, e
+  estas três não são uma sequência — são provas. Quem marca o avanço é o ponto
+  da trilha, que acende junto com o vídeo.
+*/
+const PROVAS = [
+  { titulo: 'Camarão graúdo', detalhe: 'Salteado na hora, não descongelado em cima do prato.' },
+  { titulo: 'Molho da casa', detalhe: 'Feito no dia, na receita que é nossa.' },
+  { titulo: 'Montada quando você pede', detalhe: 'Nada esperando pronto na geladeira desde ontem.' },
 ];
 
 /**
@@ -119,16 +129,25 @@ export default function VideoStage() {
               Camarão <em>de verdade</em>.
             </h2>
 
-            <ol className="video-stage__passos">
-              {PASSOS.map((passo, i) => (
-                <li key={passo.titulo} className="video-stage__passo" data-indice={i}>
+            <ul className="video-stage__passos">
+              {PROVAS.map((prova, i) => (
+                <li key={prova.titulo} className="video-stage__passo" data-indice={i}>
                   <span className="video-stage__marcador" aria-hidden="true" />
-                  <span className="video-stage__numero">{String(i + 1).padStart(2, '0')}</span>
-                  <strong>{passo.titulo}</strong>
-                  <span className="video-stage__detalhe">{passo.detalhe}</span>
+                  <strong>{prova.titulo}</strong>
+                  <span className="video-stage__detalhe">{prova.detalhe}</span>
                 </li>
               ))}
-            </ol>
+            </ul>
+
+            {/*
+              A seção que mais convence era a única sem saída. O rótulo é o
+              MESMO usado no hero e no CTA final: três nomes diferentes pro
+              mesmo destino fazem parecer que são três lugares.
+            */}
+            <Link href="/cardapio" className="video-stage__cta">
+              Ver cardápio
+              <span aria-hidden="true">→</span>
+            </Link>
           </div>
 
           {/*

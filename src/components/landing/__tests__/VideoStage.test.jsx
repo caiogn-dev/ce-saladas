@@ -98,19 +98,28 @@ describe('VideoStage', () => {
     expect(video.hasAttribute('playsinline')).toBe(true);
   });
 
-  it('mostra os três passos do pedido, numerados, em qualquer modo', () => {
+  it('fala do PRATO, não repete os passos da seção "Como pedir"', () => {
     preparar({ largura: 390 });
     const { container } = render(<VideoStage />);
 
-    expect(screen.getByText(/você escolhe/i)).toBeInTheDocument();
-    expect(screen.getByText(/a gente monta na hora/i)).toBeInTheDocument();
-    expect(screen.getByText(/chega em palmas/i)).toBeInTheDocument();
+    expect(screen.getByText(/camarão graúdo/i)).toBeInTheDocument();
+    expect(screen.getByText(/molho da casa/i)).toBeInTheDocument();
+    expect(screen.getByText(/montada quando você pede/i)).toBeInTheDocument();
+    expect(container.querySelectorAll('.video-stage__passo')).toHaveLength(3);
 
-    // A numeração é conteúdo, não enfeite: é a ordem real de um pedido.
-    const passos = container.querySelectorAll('.video-stage__passo');
-    expect(passos).toHaveLength(3);
-    expect([...container.querySelectorAll('.video-stage__numero')].map((n) => n.textContent))
-      .toEqual(['01', '02', '03']);
+    // Sem numeração: estas três não são uma sequência, e a página já tem uma
+    // seção numerada logo abaixo com os passos de verdade.
+    expect(container.querySelector('.video-stage__numero')).toBeNull();
+  });
+
+  it('oferece saída pro cardápio com o MESMO rótulo do resto da página', () => {
+    preparar({ largura: 1440 });
+    const { container } = render(<VideoStage />);
+    const cta = container.querySelector('.video-stage__cta');
+
+    expect(cta).not.toBeNull();
+    expect(cta.getAttribute('href')).toBe('/cardapio');
+    expect(cta.textContent).toMatch(/ver cardápio/i);
   });
 
   it('a seção é rotulada pelo próprio título, sem título fantasma', () => {

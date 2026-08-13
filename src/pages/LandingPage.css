@@ -1543,16 +1543,6 @@
   transition: transform .35s cubic-bezier(.2, .8, .2, 1);
 }
 
-.video-stage__numero {
-  display: block;
-  font-family: var(--font-body);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: .16em;
-  color: var(--palco-tinta-fraca);
-  margin-bottom: 5px;
-}
-
 .video-stage__passo strong {
   display: block;
   font-family: var(--font-display);
@@ -1613,6 +1603,35 @@
   border-radius: 58% 42% 48% 52% / 52% 46% 54% 48%;
   animation: blob-morph 12s ease-in-out infinite;
   box-shadow: 0 40px 90px -24px rgba(0, 0, 0, .75);
+}
+
+/* ── A saída ─────────────────────────────────────────────────────────────
+   Discreto de propósito: o CTA cheio da página é o do fim. Aqui basta uma
+   porta pra quem já se convenceu no vídeo e não quer rolar mais.
+*/
+.video-stage__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: clamp(24px, 4vh, 40px);
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(255, 107, 53, .45);
+  font-family: var(--font-body);
+  font-size: clamp(14px, 1.2vw, 16px);
+  font-weight: 600;
+  color: var(--palco-tinta);
+  text-decoration: none;
+  transition: gap .25s ease, border-color .25s ease;
+}
+
+.video-stage__cta:hover {
+  gap: 16px;
+  border-color: var(--palco-brasa);
+}
+
+.video-stage__cta:focus-visible {
+  outline: 2px solid var(--palco-brasa);
+  outline-offset: 6px;
 }
 
 /* ── Pinceladas ──────────────────────────────────────────────────────────
