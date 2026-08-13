@@ -1395,29 +1395,32 @@
 */
 .video-stage {
   --p: 0;
+  /* Verde de bancada, mais fundo que o forest da marca: o vídeo é o ponto
+     claro da seção e precisa de um chão que não dispute com ele. */
+  --palco-chao: #0c1710;
+  --palco-linha: rgba(244, 251, 245, .16);
+  --palco-tinta: #f4fbf5;
+  --palco-tinta-fraca: rgba(244, 251, 245, .58);
+  --palco-brasa: #ff6b35;
+
   position: relative;
-  background: #0f1a12;
+  background: var(--palco-chao);
+  color: var(--palco-tinta);
 }
 
 /*
-  Só o modo sync gasta altura de scroll. 340vh (era 260) porque são 10s de
-  vídeo: pista curta obrigava o dedo a correr, e era isso que dava a sensação
-  de "fora de sincronia" — o vídeo terminava antes de a seção acabar.
+  Só o modo sync gasta altura de scroll. 340vh porque são 10s de vídeo: pista
+  curta obriga o dedo a correr, e é isso que dá a impressão de dessincronia.
 */
 .video-stage--sync { height: 340vh; }
 
 .video-stage--loop,
-.video-stage--poster {
-  height: auto;
-  padding: 0;
-}
+.video-stage--poster { height: auto; }
 
 .video-stage__sticky {
   position: relative;
   overflow: hidden;
-  /* Centra a moldura retrato na área disponível. */
-  display: grid;
-  place-items: center;
+  height: min(92svh, 780px);
 }
 
 .video-stage--sync .video-stage__sticky {
@@ -1426,56 +1429,229 @@
   height: 100svh;
 }
 
-.video-stage--loop .video-stage__sticky,
-.video-stage--poster .video-stage__sticky {
-  height: min(88svh, 720px);
+/* ── A grade: texto de um lado, prato do outro ───────────────────────────
+   O arquivo é 9:16. Centralizar um retrato numa tela larga com fundo borrado
+   é o que Reels faz por obrigação — lê como erro. Aqui ele ocupa uma COLUNA,
+   que é o que uma proporção alta pede, e a coluna vizinha carrega o processo.
+*/
+.video-stage__grade {
+  height: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: clamp(24px, 4vw, 64px);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: clamp(32px, 6vw, 96px);
+}
+
+/* ── Coluna do texto ─────────────────────────────────────────────────── */
+.video-stage__olho {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--palco-brasa);
+  margin: 0 0 clamp(12px, 2vh, 22px);
+}
+
+.video-stage__titulo {
+  font-family: var(--font-display);
+  font-size: clamp(34px, 4.6vw, 62px);
+  line-height: 1.02;
+  letter-spacing: -.025em;
+  font-weight: 500;
+  margin: 0 0 clamp(28px, 5vh, 52px);
+  max-width: 12ch;
+  /* A regra global de h2 pinta com a tinta escura da página clara. Aqui o
+     chão é escuro: sem isto o título some no fundo. */
+  color: var(--palco-tinta);
+}
+
+.video-stage__titulo em {
+  font-style: italic;
+  color: var(--palco-brasa);
 }
 
 /*
-  Preenche a largura sobrando ao lado do vídeo retrato. É o pôster ampliado e
-  desfocado: pode esticar sem parecer ruim, porque desfoque não tem nitidez a
-  perder. `scale` cobre a borda que o blur come nas extremidades.
+  O texto sobe um pouco ao longo do palco. É pouco de propósito: o movimento
+  serve pra dizer que a seção está viva enquanto o vídeo corre, não pra chamar
+  atenção pra si.
 */
-.video-stage__fundo {
+.video-stage--sync .video-stage__texto {
+  transform: translate3d(0, calc(var(--p) * -3vh), 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .video-stage--sync .video-stage__texto { transform: none; }
+}
+
+/* ── A trilha do processo ────────────────────────────────────────────────
+   Numerar só se presta quando a ordem carrega informação. Aqui carrega: é a
+   sequência real de um pedido, e é ela que o vídeo mostra acontecendo.
+*/
+.video-stage__passos {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: relative;
+}
+
+.video-stage__passo {
+  position: relative;
+  padding: 0 0 clamp(22px, 3.4vh, 38px) 40px;
+  /* O passo inativo não some: fica de lado, legível, esperando a vez. */
+  transition: opacity .35s ease, color .35s ease;
+}
+
+.video-stage__passo:last-child { padding-bottom: 0; }
+
+/* O trilho vertical que liga os três marcadores. */
+.video-stage__passo::before {
+  content: '';
   position: absolute;
-  inset: 0;
-  background-size: cover;
-  background-position: center;
-  filter: blur(48px) saturate(1.15) brightness(.55);
-  transform: scale(1.18);
-  pointer-events: none;
+  left: 8px;
+  top: 18px;
+  bottom: 0;
+  width: 1px;
+  background: var(--palco-linha);
+}
+
+.video-stage__passo:last-child::before { display: none; }
+
+.video-stage__marcador {
+  position: absolute;
+  left: 0;
+  top: 5px;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  border: 1px solid var(--palco-linha);
+  display: grid;
+  place-items: center;
+  transition: border-color .35s ease, background .35s ease;
+}
+
+.video-stage__marcador::after {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--palco-brasa);
+  transform: scale(0);
+  transition: transform .35s cubic-bezier(.2, .8, .2, 1);
+}
+
+.video-stage__numero {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .16em;
+  color: var(--palco-tinta-fraca);
+  margin-bottom: 5px;
+}
+
+.video-stage__passo strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: clamp(18px, 1.9vw, 25px);
+  font-weight: 500;
+  line-height: 1.15;
+  margin-bottom: 4px;
+}
+
+.video-stage__passo span.video-stage__detalhe {
+  display: block;
+  font-family: var(--font-body);
+  font-size: clamp(13px, 1.15vw, 15px);
+  line-height: 1.5;
+  color: var(--palco-tinta-fraca);
+  max-width: 34ch;
 }
 
 /*
-  A moldura tem a proporção do arquivo (9:16) e é limitada pela ALTURA da tela.
-  Assim o vídeo nunca é ampliado além do tamanho nativo (720px de largura) —
-  que era exatamente a causa da imagem borrada no desktop.
+  Qual passo está aceso é função de --p, direto no CSS. Passar isso pelo React
+  faria o componente re-renderizar durante a rolagem — o número muda 60x por
+  segundo e nada disso precisa de reconciliação.
 */
-.video-stage__moldura {
+.video-stage--sync .video-stage__passo { opacity: .38; }
+
+.video-stage--sync .video-stage__passo[data-indice='0'] { opacity: clamp(.38, (0.4 - var(--p)) / 0.06 + .38, 1); }
+.video-stage--sync .video-stage__passo[data-indice='1'] {
+  opacity: clamp(.38, min((var(--p) - 0.3) / 0.06, (0.72 - var(--p)) / 0.06) + .38, 1);
+}
+.video-stage--sync .video-stage__passo[data-indice='2'] { opacity: clamp(.38, (var(--p) - 0.62) / 0.06 + .38, 1); }
+
+.video-stage--sync .video-stage__passo[data-indice='0'] .video-stage__marcador::after { transform: scale(1); }
+.video-stage--sync .video-stage__passo[data-indice='1'] .video-stage__marcador::after {
+  transform: scale(clamp(0, (var(--p) - 0.3) / 0.06, 1));
+}
+.video-stage--sync .video-stage__passo[data-indice='2'] .video-stage__marcador::after {
+  transform: scale(clamp(0, (var(--p) - 0.62) / 0.06, 1));
+}
+
+/* ── O blob: o vídeo recortado em forma orgânica ─────────────────────────
+   A página já mostra comida assim (.hero-food-blob). Reaproveitar a mesma
+   forma faz o palco pertencer à landing em vez de parecer um pedaço colado —
+   e o recorte em curva dissolve a questão do 9:16: sem retângulo na tela,
+   não há proporção "errada" pra notar.
+
+   A altura é fixa em unidades de tela: quem manda no tamanho é o container,
+   nunca o comprimento da rolagem.
+*/
+.video-stage__blob {
   position: relative;
   z-index: 1;
-  height: 100%;
-  aspect-ratio: 9 / 16;
-  max-width: 100%;
+  height: min(74svh, 660px);
+  aspect-ratio: 9 / 13;
   overflow: hidden;
-  border-radius: clamp(0px, 2vw, 22px);
-  box-shadow: 0 30px 90px rgba(0, 0, 0, .55);
+  /* O pôster também como fundo do blob: enquanto o vídeo não pinta o primeiro
+     quadro, a forma mostra o prato em vez de um vazio preto. */
+  background: #0c1710 url('/video/camarao-salada-poster.jpg') center / cover;
+  border-radius: 58% 42% 48% 52% / 52% 46% 54% 48%;
+  animation: blob-morph 12s ease-in-out infinite;
+  box-shadow: 0 40px 90px -24px rgba(0, 0, 0, .75);
 }
 
-/*
-  No celular a tela já é retrato: a moldura ocupa tudo, sem cantos nem sombra,
-  e o vídeo preenche de ponta a ponta como um story.
+/* ── Pinceladas ──────────────────────────────────────────────────────────
+   Deslizam com --p, em sentidos opostos. Blur alto e opacidade baixa: são
+   atmosfera, não elemento — se forem notadas isoladamente, estão fortes demais.
 */
-@media (max-aspect-ratio: 10 / 16) {
-  .video-stage__moldura {
-    width: 100%;
-    height: 100%;
-    aspect-ratio: auto;
-    border-radius: 0;
-    box-shadow: none;
-  }
+.video-stage__pincelada {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  pointer-events: none;
+  will-change: transform;
+}
 
-  .video-stage__fundo { display: none; }
+.video-stage__pincelada[data-lado='a'] {
+  width: 46vw;
+  height: 46vw;
+  max-width: 620px;
+  max-height: 620px;
+  top: -14%;
+  left: -8%;
+  background: rgba(255, 107, 53, .30);
+  transform: translate3d(calc(var(--p) * 16vw), calc(var(--p) * -6vh), 0);
+}
+
+.video-stage__pincelada[data-lado='b'] {
+  width: 38vw;
+  height: 38vw;
+  max-width: 520px;
+  max-height: 520px;
+  bottom: -18%;
+  right: -6%;
+  background: rgba(45, 106, 79, .55);
+  transform: translate3d(calc(var(--p) * -14vw), calc(var(--p) * 8vh), 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .video-stage__blob { animation: none; }
+  .video-stage__pincelada { transform: none; }
 }
 
 .video-stage__midia {
@@ -1485,111 +1661,61 @@
   display: block;
 }
 
-/*
-  Escurece a base pra as legendas terem contraste sem caixa. Fica DENTRO da
-  moldura: aplicado no palco inteiro, escurecia também o fundo desfocado e a
-  seção virava um borrão cinza.
+/* ── Celular: o retrato finalmente em casa ───────────────────────────────
+   Aqui a tela JÁ é 9:16. O vídeo toma tudo e o processo se empilha embaixo,
+   sobre um véu que só existe onde há texto.
 */
-.video-stage__moldura::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: linear-gradient(
-    to top,
-    rgba(15, 26, 18, .88) 0%,
-    rgba(15, 26, 18, .32) 42%,
-    rgba(15, 26, 18, .12) 100%
-  );
-}
-
-.video-stage__legendas {
-  position: absolute;
-  z-index: 2;
-  left: 50%;
-  bottom: clamp(36px, 9vh, 96px);
-  transform: translateX(-50%);
-  width: min(92vw, 640px);
-  text-align: center;
-  color: #f4fbf5;
-}
-
-/*
-  Telas largas: a moldura é estreita e centrada, então legenda por cima dela
-  fica espremida. Aqui o texto vai pra faixa da esquerda, que antes era só
-  espaço vazio, e o palco passa a ler como uma composição em vez de um vídeo
-  solto no meio da página.
-*/
-@media (min-aspect-ratio: 1 / 1) and (min-width: 1024px) {
-  .video-stage__legendas {
-    left: clamp(32px, 7vw, 120px);
-    right: auto;
-    bottom: 50%;
-    transform: translateY(50%);
-    width: min(38vw, 460px);
-    text-align: left;
-    text-shadow: 0 2px 24px rgba(0, 0, 0, .6);
+@media (max-width: 900px), (max-aspect-ratio: 10 / 16) {
+  .video-stage__grade {
+    grid-template-columns: 1fr;
+    align-items: end;
+    padding: 0;
+    gap: 0;
   }
+
+  .video-stage__blob {
+    position: absolute;
+    inset: 0;
+    height: 100%;
+    aspect-ratio: auto;
+    border-radius: 0;
+    box-shadow: none;
+    animation: none;
+  }
+
+  .video-stage__texto {
+    position: relative;
+    z-index: 1;
+    padding: clamp(20px, 5vw, 34px);
+    padding-top: clamp(80px, 22vh, 200px);
+    background: linear-gradient(
+      to top,
+      rgba(12, 23, 16, .94) 0%,
+      rgba(12, 23, 16, .82) 45%,
+      rgba(12, 23, 16, 0) 100%
+    );
+  }
+
+  .video-stage__titulo { margin-bottom: clamp(20px, 3.5vh, 32px); }
+
+  .video-stage__passo {
+    padding-bottom: clamp(14px, 2.2vh, 22px);
+  }
+
+  .video-stage__passo span.video-stage__detalhe { max-width: none; }
 }
 
-.video-stage__legenda {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.video-stage__legenda strong {
-  font-size: clamp(24px, 4vw, 44px);
-  line-height: 1.04;
-  letter-spacing: -.03em;
-}
-
-.video-stage__legenda span {
-  font-size: clamp(14px, 1.7vw, 18px);
-  color: rgba(244, 251, 245, .74);
-}
-
-/*
-  No modo sync as três legendas ocupam o MESMO lugar e trocam por opacidade,
-  conforme a faixa de --p. Empilhadas em grid pra não haver salto de altura.
+/* ── Modos baratos ───────────────────────────────────────────────────────
+   Sem scroll dirigindo, não há passo "atual": os três valem igual.
 */
-.video-stage--sync .video-stage__legendas {
-  display: grid;
-}
+.video-stage--loop .video-stage__passo,
+.video-stage--poster .video-stage__passo { opacity: 1; }
 
-.video-stage--sync .video-stage__legenda {
-  grid-area: 1 / 1;
-  transition: opacity .25s linear;
-}
-
-.video-stage--sync .video-stage__legenda[data-indice='0'] {
-  opacity: clamp(0, (0.33 - var(--p)) / 0.08, 1);
-}
-
-.video-stage--sync .video-stage__legenda[data-indice='1'] {
-  opacity: min(
-    clamp(0, (var(--p) - 0.33) / 0.06, 1),
-    clamp(0, (0.66 - var(--p)) / 0.06, 1)
-  );
-}
-
-.video-stage--sync .video-stage__legenda[data-indice='2'] {
-  opacity: clamp(0, (var(--p) - 0.66) / 0.08, 1);
-}
-
-/* Nos modos baratos, as três aparecem empilhadas de uma vez. */
-.video-stage--loop .video-stage__legendas,
-.video-stage--poster .video-stage__legendas {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.video-stage--loop .video-stage__legenda strong,
-.video-stage--poster .video-stage__legenda strong {
-  font-size: clamp(19px, 5vw, 26px);
-}
+.video-stage--loop .video-stage__marcador::after,
+.video-stage--poster .video-stage__marcador::after { transform: scale(1); }
 
 @media (prefers-reduced-motion: reduce) {
-  .video-stage--sync .video-stage__legenda { transition: none; }
+  .video-stage__passo,
+  .video-stage__marcador,
+  .video-stage__marcador::after { transition: none; }
 }

@@ -11,6 +11,9 @@ vi.mock('gsap/ScrollTrigger', () => ({
       capturado = config;
       return { kill, isActive: true };
     }),
+    // O hook remede o palco após o load: a landing cresce depois da primeira
+    // pintura e as âncoras da seção mudam de lugar.
+    refresh: vi.fn(),
   },
 }));
 

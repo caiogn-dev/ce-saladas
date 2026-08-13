@@ -25,6 +25,7 @@ export function useVideoScrub({ palcoRef, videoRef, ativo, fps }) {
     let raf = null;
     let alvo = 0;
     let atual = 0;
+    let remedir = null;
 
     const laco = () => {
       raf = requestAnimationFrame(laco);
@@ -72,6 +73,11 @@ export function useVideoScrub({ palcoRef, videoRef, ativo, fps }) {
         start: 'top top',
         end: 'bottom bottom',
         scrub: true,
+        // A landing cresce depois da primeira pintura: fontes, imagens preguiçosas
+        // e o mapa do rodapé mudam a altura do documento. Sem reavaliar, o palco
+        // continua ancorado na posição que tinha na medição antiga e o vídeo
+        // dispara longe de onde a seção realmente está.
+        invalidateOnRefresh: true,
         onUpdate: (self) => {
           // As legendas leem --p direto no CSS.
           palco.style.setProperty('--p', self.progress.toFixed(4));
@@ -87,6 +93,15 @@ export function useVideoScrub({ palcoRef, videoRef, ativo, fps }) {
         onLeaveBack: desligarLaco,
       });
 
+      // Uma remedição logo após o load pega tudo que entrou na página depois
+      // da montagem deste hook.
+      remedir = () => ScrollTrigger.refresh();
+      if (document.readyState === 'complete') {
+        remedir();
+      } else {
+        window.addEventListener('load', remedir, { once: true });
+      }
+
       // O palco pode já nascer em cena (ex.: reload com scroll no meio da
       // seção) — nesse caso onEnter não dispara, porque não houve cruzamento.
       if (trigger.isActive) {
@@ -96,6 +111,7 @@ export function useVideoScrub({ palcoRef, videoRef, ativo, fps }) {
 
     return () => {
       cancelado = true;
+      if (remedir) window.removeEventListener('load', remedir);
       trigger?.kill();
       desligarLaco();
     };

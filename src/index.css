@@ -277,11 +277,15 @@
 *, *::before, *::after { box-sizing: border-box; }
 
 html {
-  scroll-behavior: smooth;
+  /*
+    Sem `scroll-behavior: smooth` aqui: o Lenis já faz a suavização e os dois
+    juntos disputam o mesmo scroll, o que deixa a rolagem elástica e atrasa o
+    ScrollTrigger em relação ao que está na tela.
+  */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-size: 16px;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 body {
@@ -293,7 +297,15 @@ body {
   line-height: var(--leading-base);
   color: var(--color-text-base);
   background-color: var(--color-bg);
-  overflow-x: hidden;
+  /*
+    🚨 `overflow-x: hidden` aqui QUEBRA position: sticky na página inteira.
+    Ele transforma o body num contêiner de rolagem próprio; qualquer sticky
+    passa a se prender a um scrollport que nunca rola, então nunca gruda — a
+    seção fica com a altura reservada e o conteúdo vai embora, deixando um
+    bloco vazio. `clip` corta o transbordo horizontal do mesmo jeito SEM criar
+    contêiner de rolagem.
+  */
+  overflow-x: clip;
 }
 
 #__next { min-height: 100vh; color: var(--color-text-base); }
@@ -692,3 +704,10 @@ input:focus, textarea:focus, select:focus { outline: none; }
 .truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+.cookie-consent { position: fixed; z-index: 9999; left: 16px; right: 16px; bottom: 16px; display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 16px 20px; color: #fff; background: #161616; border: 1px solid #3f3f46; border-radius: 14px; box-shadow: 0 16px 40px rgba(0,0,0,.3); }
+.cookie-consent p { margin: 0; line-height: 1.45; }
+.cookie-consent__actions { display: flex; gap: 8px; flex-shrink: 0; }
+.cookie-consent button { border: 1px solid #52525b; border-radius: 999px; padding: 9px 18px; color: #fff; background: transparent; cursor: pointer; font-weight: 700; }
+.cookie-consent .cookie-consent__accept { border-color: transparent; background: var(--color-primary, #2d6a4f); }
+@media (max-width: 640px) { .cookie-consent { flex-direction: column; align-items: stretch; } .cookie-consent__actions { justify-content: flex-end; } }

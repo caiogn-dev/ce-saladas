@@ -524,13 +524,15 @@ const CheckoutPage = () => {
       const orderNumber = response.order_number;
       const accessToken = response.access_token;
 
-      dispatchMetaPixelEvent('Purchase', {
-        currency: 'BRL',
-        value: Number(response.total_amount || response.total || 0),
-        order_id: orderNumber || response.order_id || '',
-        content_type: 'product',
-        num_items: Number(cartItemCount || 0),
-      }, purchaseEventId);
+      if (response.payment?.status === 'approved' || response.payment_status === 'paid') {
+        dispatchMetaPixelEvent('Purchase', {
+          currency: 'BRL',
+          value: Number(response.total_amount || response.total || 0),
+          order_id: orderNumber || response.order_id || '',
+          content_type: 'product',
+          num_items: Number(cartItemCount || 0),
+        }, purchaseEventId);
+      }
 
       // Update profile if needed
       if (checkoutForm.saveAddress) {

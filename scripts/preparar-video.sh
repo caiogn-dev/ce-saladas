@@ -3,10 +3,19 @@
 #
 # Prepara um vídeo pra ser dirigido por scroll.
 #
-# O ponto crítico é `-g 1 -keyint_min 1 -sc_threshold 0`: força TODO frame a ser
-# keyframe. Sem isso, cada `video.currentTime = x` obriga o decoder a reconstruir
-# a partir do keyframe anterior — e o vídeo entregue tinha UM keyframe em 240
-# frames, o que faria o scroll travar por completo.
+# O ponto crítico é o intervalo entre keyframes (`-g`). Cada
+# `video.currentTime = x` obriga o decodificador a reconstruir a imagem a partir
+# do keyframe anterior — e o vídeo entregue tinha UM keyframe em 240 frames, o
+# que faz o scroll travar por completo.
+#
+# A primeira versão foi ao extremo oposto (`-g 1`: todo frame é keyframe) e
+# custou caro: 5,8 MB, tempo de buffer longo, e enquanto o arquivo baixava os
+# seeks caíam fora do buffer — o vídeo só reagia quando o download terminava,
+# muito depois do ponto do scroll onde deveria ter começado.
+#
+# GOP de 12 (meio segundo) é o equilíbrio: um seek decodifica no máximo 12
+# quadros de 720p, o que é instantâneo, e o arquivo cai pra 2,8 MB COM mais
+# qualidade (crf 24 contra 26).
 #
 # Uso: ./scripts/preparar-video.sh /caminho/do/video-cru.mp4
 
@@ -26,8 +35,7 @@ mkdir -p public/video
 # em poucos segundos: com 120 quadros dava pra contar os degraus. 24 fps são os
 # mesmos quadros do arquivo original, então o movimento volta a ser contínuo.
 #
-# Medido: 5,8 MB a 24 fps / crf 26 (contra 3,0 MB a 12 fps / crf 28). O preço da
-# suavidade. Conexão lenta ou saveData nem baixa isso — cai no modo loop.
+# Medido: 2,8 MB. Conexão lenta ou saveData nem baixa isso — cai no modo loop.
 #
 # ⚠️ Mudou o fps aqui? Atualize FPS em src/components/landing/VideoStage.jsx —
 # é ele que define a grade onde os seeks são encaixados.
@@ -35,8 +43,8 @@ ffmpeg -y -i "$ORIGEM" \
   -an \
   -vf "scale=720:-2,fps=24" \
   -c:v libx264 -profile:v high -pix_fmt yuv420p \
-  -g 1 -keyint_min 1 -sc_threshold 0 \
-  -crf 26 -preset slow \
+  -g 12 -keyint_min 12 -sc_threshold 0 \
+  -crf 24 -preset slow \
   -movflags +faststart \
   "$DESTINO"
 

@@ -9,7 +9,17 @@ vi.mock('../useVideoScrub', () => ({
 
 import VideoStage from '../VideoStage';
 
-function preparar({ largura, reducedMotion = false, conexao = null }) {
+// jsdom não decodifica vídeo: readyState fica 0 pra sempre. Como o palco agora
+// só assume o scroll quando há material em buffer, os testes precisam dizer
+// explicitamente se o vídeo está pronto.
+function fingirVideoPronto(pronto) {
+  Object.defineProperty(window.HTMLMediaElement.prototype, 'readyState', {
+    configurable: true,
+    get: () => (pronto ? 4 : 0),
+  });
+}
+
+function preparar({ largura, reducedMotion = false, conexao = null, videoPronto = true }) {
   window.innerWidth = largura;
   window.matchMedia = vi.fn().mockImplementation((query) => ({
     matches: reducedMotion,
@@ -21,6 +31,7 @@ function preparar({ largura, reducedMotion = false, conexao = null }) {
     value: conexao,
     configurable: true,
   });
+  fingirVideoPronto(videoPronto);
 }
 
 beforeEach(() => {
@@ -46,10 +57,18 @@ describe('VideoStage', () => {
   it('no celular também sincroniza — o arquivo é retrato', () => {
     preparar({ largura: 390 });
     const { container } = render(<VideoStage />);
-    const video = container.querySelector('video');
 
-    expect(video.hasAttribute('autoplay')).toBe(false);
+    expect(container.querySelector('video').hasAttribute('autoplay')).toBe(false);
     expect(scrubSpy).toHaveBeenCalledWith(expect.objectContaining({ ativo: true }));
+  });
+
+  it('não dirige o vídeo pelo scroll enquanto ele não tem buffer', () => {
+    // Esta é a regressão que fazia o vídeo "acordar" só depois de o usuário
+    // ter rolado a seção inteira: os seeks começavam com o arquivo baixando.
+    preparar({ largura: 1440, videoPronto: false });
+    render(<VideoStage />);
+
+    expect(scrubSpy).not.toHaveBeenCalledWith(expect.objectContaining({ ativo: true }));
   });
 
   it('em rede econômica cai em loop e não gasta seek', () => {
@@ -79,11 +98,28 @@ describe('VideoStage', () => {
     expect(video.hasAttribute('playsinline')).toBe(true);
   });
 
-  it('renderiza as três legendas em qualquer modo', () => {
+  it('mostra os três passos do pedido, numerados, em qualquer modo', () => {
     preparar({ largura: 390 });
-    render(<VideoStage />);
-    expect(screen.getByText(/camarão de verdade/i)).toBeInTheDocument();
-    expect(screen.getByText(/montada na hora do pedido/i)).toBeInTheDocument();
-    expect(screen.getByText(/na sua mesa em palmas/i)).toBeInTheDocument();
+    const { container } = render(<VideoStage />);
+
+    expect(screen.getByText(/você escolhe/i)).toBeInTheDocument();
+    expect(screen.getByText(/a gente monta na hora/i)).toBeInTheDocument();
+    expect(screen.getByText(/chega em palmas/i)).toBeInTheDocument();
+
+    // A numeração é conteúdo, não enfeite: é a ordem real de um pedido.
+    const passos = container.querySelectorAll('.video-stage__passo');
+    expect(passos).toHaveLength(3);
+    expect([...container.querySelectorAll('.video-stage__numero')].map((n) => n.textContent))
+      .toEqual(['01', '02', '03']);
+  });
+
+  it('a seção é rotulada pelo próprio título, sem título fantasma', () => {
+    preparar({ largura: 1440 });
+    const { container } = render(<VideoStage />);
+    const secao = container.querySelector('section');
+    const titulo = container.querySelector('#video-stage-titulo');
+
+    expect(secao.getAttribute('aria-labelledby')).toBe('video-stage-titulo');
+    expect(titulo.tagName).toBe('H2');
   });
 });
