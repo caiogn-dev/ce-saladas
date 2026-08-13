@@ -1756,6 +1756,15 @@
     padding-bottom: clamp(11px, 1.7vh, 18px);
   }
 
+  /*
+    As pinceladas somem no celular. Não é escolha estética: ali o vídeo ocupa a
+    tela inteira e é pintado DEPOIS delas, então elas ficam 100% encobertas —
+    invisíveis. E não eram baratas: duas camadas grandes com blur(90px) sendo
+    recompostas a cada quadro por cima de um vídeo que está sendo buscado
+    quadro a quadro. Era trabalho de GPU para nada, e o Android sentia.
+  */
+  .video-stage__pincelada { display: none; }
+
   .video-stage__passo span.video-stage__detalhe { max-width: none; }
 }
 

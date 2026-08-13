@@ -13,6 +13,17 @@ const POSTER = '/video/camarao-salada-poster.jpg';
 export const FPS = 24;
 
 /*
+  No celular o scrub passa a andar em meia grade: 12 seeks por segundo em vez
+  de 24. Cada seek é uma decodificação e uma pintura de um quadro 720x1280, e
+  num Android mediano isso não cabe no orçamento de um quadro — a rolagem
+  engasgava. 12 divide 24 exatamente, então os tempos continuam caindo sobre
+  quadros reais do arquivo; o movimento fica um degrau mais grosso e MUITO
+  mais fluido, que é a troca certa aqui.
+*/
+export const FPS_CELULAR = 12;
+export const LARGURA_CELULAR = 900;
+
+/*
   Três afirmações sobre O PRATO, não sobre o processo.
   A versão anterior listava "escolhe / monta / recebe" — exatamente os mesmos
   três passos da seção "Como pedir", que fica logo abaixo. Dizer a mesma coisa
@@ -41,6 +52,7 @@ export default function VideoStage() {
   const videoRef = useRef(null);
   const [modo, setModo] = useState(MODOS.POSTER);
   const [pronto, setPronto] = useState(false);
+  const [fps, setFps] = useState(FPS);
 
   useEffect(() => {
     setModo(
@@ -51,6 +63,7 @@ export default function VideoStage() {
         forcado: modoForcadoDaUrl(window.location.search),
       }),
     );
+    setFps(window.innerWidth < LARGURA_CELULAR ? FPS_CELULAR : FPS);
   }, []);
 
   /*
@@ -122,7 +135,7 @@ export default function VideoStage() {
     palcoRef,
     videoRef,
     ativo: modo === MODOS.SYNC && pronto,
-    fps: FPS,
+    fps,
   });
 
   const midia = modo === MODOS.POSTER ? (

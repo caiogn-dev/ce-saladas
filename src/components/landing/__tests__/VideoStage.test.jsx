@@ -159,6 +159,22 @@ describe('VideoStage', () => {
     await vi.waitFor(() => expect(play).toHaveBeenCalled());
   });
 
+  it('no celular pede metade dos seeks — é o que trava o Android', async () => {
+    espionarPlayPause();
+    preparar({ largura: 390 });
+    render(<VideoStage />);
+    await vi.waitFor(() =>
+      expect(scrubSpy).toHaveBeenCalledWith(expect.objectContaining({ ativo: true, fps: 12 })));
+  });
+
+  it('no desktop mantém a grade cheia do arquivo', async () => {
+    espionarPlayPause();
+    preparar({ largura: 1440 });
+    render(<VideoStage />);
+    await vi.waitFor(() =>
+      expect(scrubSpy).toHaveBeenCalledWith(expect.objectContaining({ ativo: true, fps: 24 })));
+  });
+
   it('a seção é rotulada pelo próprio título, sem título fantasma', () => {
     preparar({ largura: 1440 });
     const { container } = render(<VideoStage />);
