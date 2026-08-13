@@ -1724,7 +1724,7 @@
     position: relative;
     z-index: 2;
     padding: clamp(20px, 5vw, 34px);
-    padding-top: clamp(80px, 22vh, 200px);
+    padding-top: clamp(48px, 12vh, 120px);
     background: linear-gradient(
       to top,
       rgba(12, 23, 16, .94) 0%,
@@ -1733,10 +1733,27 @@
     );
   }
 
-  .video-stage__titulo { margin-bottom: clamp(20px, 3.5vh, 32px); }
+  /*
+    No celular o bloco inteiro tem que caber na tela, senão o fim (inclusive o
+    link pro cardápio) é cortado pelo overflow do sticky. Três economias:
+    o título deixa de quebrar em três linhas por causa de um max-width pensado
+    pra coluna estreita do desktop; o respiro do topo encolhe; e os passos se
+    aproximam.
+  */
+  .video-stage__titulo {
+    max-width: none;
+    font-size: clamp(27px, 7.6vw, 40px);
+    margin-bottom: clamp(16px, 2.6vh, 26px);
+  }
+
+  .video-stage__olho { margin-bottom: 10px; }
+
+  .video-stage__passo strong { font-size: clamp(17px, 4.6vw, 21px); }
+
+  .video-stage__cta { margin-top: clamp(16px, 2.6vh, 26px); }
 
   .video-stage__passo {
-    padding-bottom: clamp(14px, 2.2vh, 22px);
+    padding-bottom: clamp(11px, 1.7vh, 18px);
   }
 
   .video-stage__passo span.video-stage__detalhe { max-width: none; }
