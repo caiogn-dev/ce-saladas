@@ -5,7 +5,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Clock3, Hand, Hash, Home, MapPin, MapPinned, Navigation, Route, Wallet } from 'lucide-react';
 import styles from '../../styles/CheckoutModal.module.css';
-import { STORE_LOCATION, formatDistanceKm, formatDurationMinutes, formatMoney, isZeroAmount } from './utils';
+import { STORE_LOCATION, formatDistanceKm, formatDurationMinutes, formatMoney, rotuloDoFrete } from './utils';
 import SavedAddressPicker from './SavedAddressPicker';
 import DeliveryMapSimple from './DeliveryMapSimple';
 
@@ -480,11 +480,9 @@ const LocationModal = ({
               <div className={`${styles.statCompact} ${styles.statFee}`}>
                 <span className={styles.statIcon}><Wallet size={16} /></span>
                 <span className={styles.feeValue}>
-                  {hasInvalidDeliverySelection
-                    ? 'Indisponível'
-                    : isZeroAmount(detectedDeliveryInfo?.fee ?? delivery.deliveryInfo?.fee)
-                    ? 'Grátis'
-                    : `R$ ${formatMoney(detectedDeliveryInfo?.fee ?? delivery.deliveryInfo?.fee)}`}
+                  {/* A decisão mora em `rotuloDoFrete`. A ternária que existia
+                      aqui lia cotação ausente como zero e escrevia 'Grátis'. */}
+                  {rotuloDoFrete(detectedDeliveryInfo ?? delivery.deliveryInfo)}
                 </span>
               </div>
             </div>

@@ -719,6 +719,7 @@ const CheckoutPage = () => {
               onSignOut={signOut}
               paymentMethod={paymentMethod}
               onPaymentMethodChange={setPaymentMethod}
+              shippingMethod={delivery.shippingMethod}
               coupon={coupon}
               onApplyCoupon={handleApplyCoupon}
               scheduling={{

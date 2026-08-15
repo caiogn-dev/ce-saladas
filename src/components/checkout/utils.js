@@ -80,6 +80,71 @@ export const formatDurationMinutes = (value) => {
 
 export const isZeroAmount = (value) => toFiniteNumber(value, 0) === 0;
 
+/**
+ * O frete tem TRÊS estados, e confundi-los foi o bug mais caro do ano.
+ *
+ * `isZeroAmount(null)` é `true`: `toFiniteNumber` transforma ausência em zero.
+ * Então "ainda não calculei", "a cotação falhou" e "não cobro" viravam a mesma
+ * coisa na tela, e a loja entregava de graça sem ter escolhido isso. Cada tela
+ * repetia a ternária `fee > 0 ? valor : 'Grátis'` e errava do seu jeito — em
+ * 12/ago duas foram consertadas à mão e o LocationModal ficou para trás, então
+ * o `— • — • Grátis` voltou em 15/ago.
+ *
+ * A saída não é mais uma ternária: é tirar a decisão das telas. Aqui os
+ * estados têm nome, e o único caminho até a palavra "Grátis" passa por uma
+ * cotação que comprovadamente aconteceu.
+ *
+ *   'pendente'     — ninguém cotou ainda (ou a resposta veio sem número)
+ *   'indisponivel' — cotou e não deu: fora de área, erro do provedor
+ *   'gratis'       — cotação válida de valor zero (promoção, zona sem taxa)
+ *   'cobrado'      — cotação válida com valor
+ */
+export const estadoDoFrete = (deliveryInfo) => {
+  const info = deliveryInfo ?? {};
+
+  // Um "não" explícito do backend é resposta, não ausência — e é mais
+  // informativo que "pendente", então vem antes.
+  if (info.is_valid === false || info.available === false) return 'indisponivel';
+
+  // `null`, `undefined`, `''` e lixo não-numérico NÃO são zero. Sem sentinela
+  // aqui, o fallback de `toFiniteNumber` reintroduz o bug inteiro.
+  const bruto = info.fee;
+  if (bruto === null || bruto === undefined || bruto === '') return 'pendente';
+  const valor = toFiniteNumber(bruto, Number.NaN);
+  if (!Number.isFinite(valor)) return 'pendente';
+
+  if (valor > 0) return 'cobrado';
+
+  // Zero é o caso perigoso: só vira "Grátis" com prova de que a cotação rodou.
+  // `is_valid` nem sempre vem; distância ou duração preenchidas servem de prova.
+  const cotou = info.is_valid === true
+    || toFiniteNumber(info.distance_km, 0) > 0
+    || toFiniteNumber(info.duration_minutes, 0) > 0;
+  return cotou ? 'gratis' : 'pendente';
+};
+
+/**
+ * Texto curto do frete — derivado de `estadoDoFrete`.
+ *
+ * A CLASSIFICAÇÃO é única; a PALAVRA muda por tela, e só ela. No checkout o
+ * pendente é "Calculando..." (a cotação está a caminho); no modal de endereço é
+ * "Calcular" (é um convite a agir). Deixar cada tela reescrever a classificação
+ * para trocar uma palavra foi exatamente como o bug se espalhou.
+ */
+export const rotuloDoFrete = (deliveryInfo, textos = {}) => {
+  switch (estadoDoFrete(deliveryInfo)) {
+    case 'indisponivel':
+      return textos.indisponivel ?? 'Indisponível';
+    case 'gratis':
+      return textos.gratis ?? 'Grátis';
+    case 'cobrado':
+      return `R$ ${formatMoney(deliveryInfo.fee)}`;
+    default:
+      // Convida a tentar de novo em vez de inventar um preço.
+      return textos.pendente ?? 'Calcular';
+  }
+};
+
 export const splitFullName = (value) => {
   const parts = toSafeString(value).trim().split(/\s+/).filter(Boolean);
   const firstName = parts.shift() || '';

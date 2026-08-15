@@ -3,7 +3,7 @@
  */
 import React from 'react';
 import styles from '../../styles/Checkout.module.css';
-import { formatDistanceKm, formatDurationMinutes, formatMoney, isZeroAmount } from './utils';
+import { formatDistanceKm, formatDurationMinutes, formatMoney, rotuloDoFrete } from './utils';
 
 const AddressConfirmation = ({
   detectedAddress,
@@ -56,10 +56,10 @@ const AddressConfirmation = ({
               <div className={styles.feeInfo}>
                 <span className={styles.feeLabel}>Taxa de entrega:</span>
                 <span className={styles.feeValue}>
-                  {isZeroAmount(deliveryInfo.fee) ? (
+                  {rotuloDoFrete(deliveryInfo, { pendente: 'Calculando...' }) === 'Grátis' ? (
                     <span className={styles.freeDelivery}>Grátis!</span>
                   ) : (
-                    `R$ ${formatMoney(deliveryInfo.fee)}`
+                    rotuloDoFrete(deliveryInfo, { pendente: 'Calculando...' })
                   )}
                 </span>
                 {deliveryInfo.zone_name && (

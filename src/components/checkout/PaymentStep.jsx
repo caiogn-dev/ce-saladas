@@ -19,6 +19,7 @@ const PaymentStep = ({
   onSignOut,
   paymentMethod,
   onPaymentMethodChange,
+  shippingMethod,
   coupon,
   onApplyCoupon,
   scheduling,
@@ -112,6 +113,7 @@ const PaymentStep = ({
             <PaymentMethodSelector
               paymentMethod={paymentMethod}
               onChange={onPaymentMethodChange}
+              shippingMethod={shippingMethod}
               disabled={loading}
             />
 

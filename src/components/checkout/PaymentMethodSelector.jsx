@@ -2,7 +2,26 @@
 import { Banknote, CreditCard, QrCode } from 'lucide-react';
 import styles from '../../styles/Checkout.module.css';
 
-const methods = [
+/**
+ * "Dinheiro" respondia COM O QUÊ o cliente paga; a dúvida dele no checkout é
+ * ONDE e QUANDO. E a tela já sabe a resposta — ele acabou de escolher entrega
+ * ou retirada —, então mandá-lo ler "na entrega ou retirada" e descobrir qual
+ * é o caso dele é devolver uma pergunta que já estava respondida.
+ *
+ * Sem método de envio definido o rótulo fica neutro: prometer "na entrega"
+ * para quem ainda não escolheu seria adivinhação.
+ */
+const rotuloPresencial = (shippingMethod) => {
+  if (shippingMethod === 'delivery') {
+    return { name: 'Pagar na entrega', description: 'Você paga quando o pedido chegar' };
+  }
+  if (shippingMethod === 'pickup') {
+    return { name: 'Pagar na retirada', description: 'Você paga quando buscar o pedido na loja' };
+  }
+  return { name: 'Pagamento presencial', description: 'Você paga no encontro, não agora' };
+};
+
+const buildMethods = (shippingMethod) => [
   {
     value: 'pix',
     icon: QrCode,
@@ -18,18 +37,21 @@ const methods = [
   {
     value: 'cash',
     icon: Banknote,
-    name: 'Dinheiro',
-    description: 'Pagamento na entrega ou retirada',
+    // O `value` continua 'cash': mudar o texto não pode virar mudança de
+    // contrato com o backend.
+    ...rotuloPresencial(shippingMethod),
   },
 ];
+
 
 const PaymentMethodSelector = ({
   paymentMethod,
   onChange,
   disabled = false,
+  shippingMethod = null,
 }) => (
   <div className={styles.paymentMethodSelector}>
-    {methods.map((method) => {
+    {buildMethods(shippingMethod).map((method) => {
       const Icon = method.icon;
 
       return (

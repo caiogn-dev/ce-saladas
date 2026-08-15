@@ -1,7 +1,7 @@
 ﻿import React from 'react';
 import { MapPinned, ShoppingBag, Store } from 'lucide-react';
 import styles from '../../styles/Checkout.module.css';
-import { formatMoney, isZeroAmount } from './utils';
+import { formatMoney, rotuloDoFrete } from './utils';
 
 const ShippingMethodSelector = ({
   shippingMethod,
@@ -10,11 +10,9 @@ const ShippingMethodSelector = ({
   loadingDelivery,
   disabled = false,
 }) => {
-  const formatFee = (fee) => {
-    if (fee === null || fee === undefined) return 'Calculando...';
-    if (isZeroAmount(fee)) return 'Grátis';
-    return `R$ ${formatMoney(fee)}`;
-  };
+  // A classificação vem de `estadoDoFrete` (fonte única); aqui só a palavra
+  // do pendente muda — no checkout a cotação está a caminho.
+  const formatFee = (info) => rotuloDoFrete(info, { pendente: 'Calculando...' });
 
   return (
     <div className={styles.shippingMethodSelector}>

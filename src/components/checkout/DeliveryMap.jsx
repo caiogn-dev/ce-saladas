@@ -3,7 +3,7 @@
  */
 import React from 'react';
 import styles from '../../styles/Checkout.module.css';
-import { STORE_LOCATION, formatDistanceKm, formatDurationMinutes, formatMoney, isZeroAmount } from './utils';
+import { STORE_LOCATION, formatDistanceKm, formatDurationMinutes, formatMoney, rotuloDoFrete } from './utils';
 import DeliveryMapSimple from './DeliveryMapSimple';
 
 const DeliveryMap = ({
@@ -54,7 +54,7 @@ const DeliveryMap = ({
               <div className={styles.routeMetric}>
                 <span className={styles.metricIcon}>💰</span>
                 <span className={styles.metricValue}>
-                  {isZeroAmount(deliveryInfo.fee) ? 'Grátis' : `R$ ${formatMoney(deliveryInfo.fee)}`}
+                  {rotuloDoFrete(deliveryInfo, { pendente: 'Calculando...' })}
                 </span>
                 <span className={styles.metricLabel}>taxa de entrega</span>
               </div>
