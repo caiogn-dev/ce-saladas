@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Head from 'next/head';
 import Script from 'next/script';
 import { useRouter } from 'next/router';
@@ -54,6 +54,9 @@ import { ToastProvider } from '../src/components/Toast';
 import { fetchCsrfToken } from '../src/services/storeApi';
 import StoreHead from '../src/components/StoreHead';
 import StoreClosedSchedulingModal from '../src/components/StoreClosedSchedulingModal';
+import MetaPixel from '../src/components/MetaPixel';
+import CookieConsentBanner from '../src/components/CookieConsentBanner';
+import { hasTrackingConsent } from '../src/utils/cookieConsent';
 
 // Componente separado para acessar useCart() dentro do CartProvider
 function SchedulingNoticeMount() {
@@ -71,81 +74,28 @@ function SchedulingNoticeMount() {
   );
 }
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID || 'G-7Z5V0N2EE4';
-const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID || '1301947998542003';
 
 export default function App({ Component, pageProps }) {
   const storeConfig = pageProps.previewStoreConfig || null;
-  const router = useRouter();
+  const [trackingOk, setTrackingOk] = useState(false);
+
+  useEffect(() => { setTrackingOk(hasTrackingConsent()); }, []);
 
   useEffect(() => {
     fetchCsrfToken();
   }, []);
 
-  useEffect(() => {
-    const trackPixelEvent = (eventName, customData = {}, eventId = '') => {
-      if (typeof window !== 'undefined' && typeof window.fbq === 'function') {
-        window.fbq(
-          'track',
-          eventName,
-          customData,
-          eventId ? { eventID: eventId } : undefined
-        );
-      }
-    };
-
-    const handleRouteChange = (url) => {
-      trackPixelEvent('PageView');
-
-      if (typeof url === 'string' && url.startsWith('/cardapio')) {
-        trackPixelEvent('ViewContent', {
-          content_name: 'Cardapio Ce Saladas',
-          content_type: 'product_group',
-        });
-      }
-    };
-
-    const handleMetaEvent = (event) => {
-      const detail = event.detail || {};
-      trackPixelEvent(detail.eventName, detail.customData || {}, detail.eventId || '');
-    };
-
-    router.events.on('routeChangeComplete', handleRouteChange);
-    window.addEventListener('meta:pixel-event', handleMetaEvent);
-
-    handleRouteChange(router.asPath);
-
-    return () => {
-      router.events.off('routeChangeComplete', handleRouteChange);
-      window.removeEventListener('meta:pixel-event', handleMetaEvent);
-    };
-  }, [router.asPath, router.events]);
-
   return (
     <>
-      <Head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `!function(f,b,e,v,n,t,s)
-{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-n.queue=[];t=b.createElement(e);t.async=!0;
-t.src=v;s=b.getElementsByTagName(e)[0];
-s.parentNode.insertBefore(t,s)}(window, document,'script',
-'https://connect.facebook.net/en_US/fbevents.js');
-fbq('init', '${META_PIXEL_ID}');
-fbq('track', 'PageView');`,
-          }}
-        />
-      </Head>
+      <Head />
 
-      <Script src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} strategy="afterInteractive" />
-      <Script id="gtag-init" strategy="afterInteractive">
+      {trackingOk && <Script src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} strategy="afterInteractive" />}
+      {trackingOk && <Script id="gtag-init" strategy="afterInteractive">
         {`window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
 gtag('config', '${GA_ID}');`}
-      </Script>
+      </Script>}
 
       <ErrorBoundary>
         <ThemeProvider>
@@ -155,6 +105,7 @@ gtag('config', '${GA_ID}');`}
               storeConfig={storeConfig}
               appConfig={pageProps.appConfig || null}
             >
+              <MetaPixel consent={trackingOk} />
               <StoreHead />
               <ToastProvider>
                 <WishlistProvider>
@@ -168,9 +119,9 @@ gtag('config', '${GA_ID}');`}
               </ToastProvider>
             </StoreProvider>
           </AuthProvider>
+          <CookieConsentBanner onDecision={value => setTrackingOk(value === 'accepted')} />
         </ThemeProvider>
       </ErrorBoundary>
     </>
   );
 }
-
