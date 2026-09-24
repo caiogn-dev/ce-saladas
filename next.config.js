@@ -29,6 +29,10 @@ const securityHeaders = [
   },
 ];
 
+// Vitrine canônica da loja na plataforma; é ela que serve TUDO.
+export const STOREFRONT_CANONICO = 'https://cardapidex.com.br/ce-saladas';
+export const CAMINHOS_DA_PLATAFORMA = ['/orders', '/carteira', '/promos'];
+
 const nextConfig = {
   // Permite compilar num diretório separado (NEXT_DIST_DIR=.next-preview) para
   // conferir o resultado sem sobrescrever os chunks que o processo em execução
@@ -52,6 +56,18 @@ const nextConfig = {
         headers: securityHeaders,
       },
     ];
+  },
+  // O domínio próprio serve só a vitrine (cardápio, checkout, perfil). "Meus
+  // pedidos", carteira e promoções vivem no storefront canônico da plataforma
+  // — e o convite de avaliação, o link da carteira e o "acompanhar pedido"
+  // apontam para esses caminhos. Sem isto, 81 avaliações renderam 2 comentários:
+  // o cliente batia num 404. Redirect permanente, com o caminho preservado.
+  async redirects() {
+    return CAMINHOS_DA_PLATAFORMA.map((caminho) => ({
+      source: `${caminho}/:path*`,
+      destination: `${STOREFRONT_CANONICO}${caminho}/:path*`,
+      permanent: true,
+    }));
   },
 };
 
