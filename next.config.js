@@ -32,6 +32,12 @@ const securityHeaders = [
 // Vitrine canônica da loja na plataforma; é ela que serve TUDO.
 export const STOREFRONT_CANONICO = 'https://cardapidex.com.br/ce-saladas';
 export const CAMINHOS_DA_PLATAFORMA = ['/orders', '/carteira', '/promos'];
+// 01/10: a compra também vai para a vitrine canônica — o cardápio daqui era
+// uma cópia antiga (barra de categorias sumia ao rolar; sacola, pagamento e
+// endereço novos nunca chegaram). Temporário (307): reversível sem o
+// navegador do cliente ficar preso. /sucesso, /pendente e /erro ficam aqui
+// porque pedidos já feitos neste domínio voltam do pagamento para eles.
+export const CAMINHOS_DA_COMPRA = ['/checkout', '/perfil', '/login', '/registro'];
 
 const nextConfig = {
   reactStrictMode: true,
@@ -59,11 +65,21 @@ const nextConfig = {
   // apontam para esses caminhos. Sem isto, 81 avaliações renderam 2 comentários:
   // o cliente batia num 404. Redirect permanente, com o caminho preservado.
   async redirects() {
-    return CAMINHOS_DA_PLATAFORMA.map((caminho) => ({
+    const permanentes = CAMINHOS_DA_PLATAFORMA.map((caminho) => ({
       source: `${caminho}/:path*`,
       destination: `${STOREFRONT_CANONICO}${caminho}/:path*`,
       permanent: true,
     }));
+    const compra = CAMINHOS_DA_COMPRA.map((caminho) => ({
+      source: `${caminho}/:path*`,
+      destination: `${STOREFRONT_CANONICO}${caminho}/:path*`,
+      permanent: false,
+    }));
+    return [
+      ...permanentes,
+      { source: '/cardapio', destination: STOREFRONT_CANONICO, permanent: false },
+      ...compra,
+    ];
   },
 };
 
