@@ -52,6 +52,8 @@ a{color:inherit}
 .top>*{pointer-events:auto}
 .top.dark{color:#DAF5DA}
 .mark{font-family:var(--display);font-weight:900;font-variation-settings:"wdth" 125;font-size:18px;letter-spacing:-.01em;text-decoration:none;line-height:.9}
+.mark img{display:block;height:60px;width:auto;border-radius:10px;box-shadow:0 8px 18px -10px rgba(0,0,0,.5)}
+.end-logo{display:block;height:clamp(88px,9vw,124px);width:auto;border-radius:14px;box-shadow:0 14px 28px -14px rgba(0,0,0,.45)}
 .top-r{display:flex;gap:8px;align-items:center}
 .pill{display:inline-flex;align-items:center;gap:8px;height:38px;padding:0 16px;border-radius:999px;border:1.5px solid currentColor;background:transparent;font-family:var(--display);font-weight:800;font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-variation-settings:"wdth" 100}
 .pill .dot{width:12px;height:12px;border-radius:50%;background:currentColor;position:relative;overflow:hidden}
@@ -135,7 +137,7 @@ html.stack .meta .ing{max-width:34ch}
 /* ---------- fechamento ---------- */
 .end{position:relative;height:100vh;height:100svh;overflow:hidden;background:var(--bg);transition:background-color .5s}
 .ghost{position:absolute;inset:0;display:grid;place-items:center;z-index:1}
-.ghost .w{font-family:var(--display);font-weight:900;font-variation-settings:"wdth" 125;font-size:clamp(90px,25vw,420px);line-height:.8;text-align:center;text-transform:uppercase;--m:0;color:color-mix(in srgb,var(--fg) calc(var(--m) * 100%),var(--ghost));letter-spacing:-.03em;will-change:transform}
+.ghost .w{position:absolute;left:50%;top:50%;translate:-50% -50%;white-space:nowrap;font-family:var(--display);font-weight:900;font-variation-settings:"wdth" 125;font-size:clamp(90px,25vw,420px);line-height:.8;text-align:center;text-transform:uppercase;--m:0;color:color-mix(in srgb,var(--fg) calc(var(--m) * 100%),var(--ghost));letter-spacing:-.03em;will-change:transform}
 .ingr{position:absolute;z-index:2;width:var(--s,140px);pointer-events:none}
 .ingr .f{will-change:transform}
 .ingr img{width:100%;filter:drop-shadow(0 12px 16px rgba(2,40,2,.25))}
@@ -195,7 +197,7 @@ html.is-m{scroll-snap-type:none;overscroll-behavior-y:none}
 html.is-m .stage,html.is-m .shop,html.is-m .end,html.is-m .cursor{display:none}
 html.is-m #m{display:block}
 html.is-m .top{padding-top:calc(env(safe-area-inset-top,0px) + 20px)}
-html.is-m .mark{font-size:15px}
+html.is-m .mark img{height:46px;border-radius:8px}
 html.is-m .pill{height:34px;padding:0 12px;font-size:11px}
 html.is-m .toast{bottom:calc(env(safe-area-inset-bottom,0px) + 92px)}
 
@@ -268,6 +270,8 @@ html.is-m .toast{bottom:calc(env(safe-area-inset-bottom,0px) + 92px)}
 .m-end{position:relative;height:100vh;height:100svh;scroll-snap-align:start;overflow:hidden;display:grid;align-content:center;justify-items:center;gap:22px;text-align:center;padding:80px 16px calc(env(safe-area-inset-bottom,0px) + 28px)}
 .m-end .w .mask>span{color:var(--ghost);transition:color 1.2s .3s}
 .m-end.in .w .mask>span{color:var(--fg)}
+.m-end .m-logo{height:min(30svh,190px);border-radius:18px;transform:scale(.6) rotate(-8deg);opacity:0;transition:transform .9s cubic-bezier(.2,1.4,.4,1),opacity .4s}
+.m-end.in .m-logo{transform:none;opacity:1}
 .m-end p{margin:0;color:var(--ink);opacity:.8;max-width:30ch}
 .m-end .cta{max-width:100%}
 .m-end .cta .tx{white-space:normal}
@@ -282,7 +286,7 @@ html.is-m .toast{bottom:calc(env(safe-area-inset-bottom,0px) + 92px)}
 <body>
 
 <header class="top" id="top">
-  <a class="mark" href="#palco" aria-label="Cê Saladas, início">CÊ<br>SALADAS</a>
+  <a class="mark" href="#palco" aria-label="Cê Saladas, início"><img src="/palco/assets/logo.webp" alt="Cê Saladas" width="317" height="360"></a>
   <div class="top-r">
     <button class="pill skin" id="skin" type="button" aria-label="Trocar entre menta e verde"><i class="dot"></i><span id="skinLbl">Menta</span></button>
     <button class="pill bag" id="bag" type="button"><span class="lbl">Sacola</span><span class="n"><b id="bagN">0</b></span></button>
@@ -325,6 +329,7 @@ html.is-m .toast{bottom:calc(env(safe-area-inset-bottom,0px) + 92px)}
     <div class="ingr" style="--s:clamp(64px,8.5vw,130px);left:18%;bottom:24%" data-d="0.8"><div class="f"><img src="/palco/assets/ing-manga.webp" alt=""></div></div>
     <div class="ingr" style="--s:clamp(84px,12vw,180px);right:9%;bottom:20%" data-d="1.4"><div class="f"><img src="/palco/assets/ing-alface.webp" alt=""></div></div>
     <div class="end-cta" id="endCta">
+      <img class="end-logo" src="/palco/assets/logo.webp" alt="Cê Saladas" width="317" height="360">
       <p>Escolhe a salada, paga no PIX ou no cartão e acompanha a entrega pelo WhatsApp.</p>
       <a class="cta" id="endBtn" href="https://cardapidex.com.br/ce-saladas" target="_blank" rel="noopener" data-pedido><span class="tx"><small>Ter – Sex · 8h – 17h</small>Peça pelo cardápio digital</span><span class="ic"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h12M11 5l5 5-5 5"/></svg></span></a>
     </div>
@@ -556,7 +561,7 @@ function bootMobile(){
     <span class="m-i" style="--s:64px;--t:5s;left:2%;top:36%"><img src="/palco/assets/ing-manga.webp" alt=""></span>
     <span class="m-i" style="--s:78px;--t:6s;right:1%;top:33%"><img src="/palco/assets/ing-alface.webp" alt=""></span>
     <span class="cap">Fim da jornada</span>
-    <div class="fit w" data-max=".3">${lines(['Cê','Saladas'])}</div>
+    <img class="end-logo m-logo" src="/palco/assets/logo.webp" alt="Cê Saladas" width="317" height="360">
     <p>Escolheu sua parada? O pedido fecha no cardápio digital e a entrega é acompanhada pelo WhatsApp.</p>
     <a class="cta" href="https://cardapidex.com.br/ce-saladas" target="_blank" rel="noopener" data-pedido><span class="tx"><small>Ter – Sex · 8h – 17h</small>Peça pelo cardápio digital</span><span class="ic"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h12M11 5l5 5-5 5"/></svg></span></a>
     <div class="ad cap"><span>Q. 112 Sul, Rua SR 01, 2</span><span>(63) 99138-6719 · Palmas – TO</span></div>
@@ -760,7 +765,7 @@ function boot(){
   const ings=$$('.ingr');
   gsap.set(ings,{scale:0,rotation:-40});gsap.set('#corner',{xPercent:-60,yPercent:-60,rotation:-30});gsap.set('#endCta',{y:60,autoAlpha:0});
   const end=gsap.timeline({scrollTrigger:{trigger:'#fim',start:'top top',end:()=>'+='+innerHeight*1.4,pin:true,scrub:.6}});
-  end.fromTo('#ghost',{scale:1.25},{scale:.42,duration:1,ease:'power2.inOut'},0)
+  end.fromTo('#ghost',{scale:1.25,xPercent:-50,yPercent:-50},{scale:.34,xPercent:-50,yPercent:-82,duration:1,ease:'power2.inOut'},0)
      .fromTo('#ghost',{'--m':0},{'--m':1,duration:.6},.35)
      .to(ings,{scale:1,rotation:0,duration:.5,ease:'back.out(2.4)',stagger:.12},.55)
      .to('#corner',{xPercent:0,yPercent:0,rotation:0,duration:.7,ease:'expo.out'},.6)
