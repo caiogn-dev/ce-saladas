@@ -57,6 +57,13 @@ const nextConfig = {
         source: '/(.*)',
         headers: securityHeaders,
       },
+      // Mídia do palco (fotos, vídeos, quadros, libs): o padrão da Vercel faz o
+      // navegador revalidar tudo a cada visita. Um dia no aparelho + renovação
+      // em segundo plano: quem volta abre na hora. Nome novo quando o arquivo muda.
+      {
+        source: '/palco/:dir(assets|vendor)/:path*',
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=86400, stale-while-revalidate=604800' }],
+      },
     ];
   },
   // O domínio próprio serve só a vitrine (cardápio, checkout, perfil). "Meus

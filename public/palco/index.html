@@ -345,7 +345,7 @@ html.is-m .toast{bottom:calc(env(safe-area-inset-bottom,0px) + 92px)}
   </section>
 
   <section class="end" id="fim" aria-label="Peça agora">
-    <div class="corner" id="corner"><img src="/palco/assets/salmao.webp" alt=""></div>
+    <div class="corner" id="corner"><img src="/palco/assets/salmao-560.webp" alt="" loading="lazy" decoding="async"></div>
     <div class="ghost"><div class="w" id="ghost">Cê<br>Saladas</div></div>
     <div class="ingr" style="--s:clamp(70px,10vw,150px);left:12%;top:26%" data-d="1.2"><div class="f"><img src="/palco/assets/ing-pepino.webp" alt=""></div></div>
     <div class="ingr" style="--s:clamp(64px,9vw,130px);right:12%;top:20%" data-d="1.6"><div class="f"><img src="/palco/assets/ing-tomate.webp" alt=""></div></div>
@@ -405,18 +405,18 @@ const arrow='<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-w
 $('#posters').innerHTML=SALADS.map((d,k)=>`
 <article class="poster${k?'':' on'}" data-k="${k}" aria-label="${d.n}">
   <div class="ttl"><span class="ln">${d.t[0]}</span><span class="ln">${d.t[1]}</span></div>
-  <div class="bwrap"><div class="tilt" data-k="${k}"><img src="/palco/assets/${d.s}.webp" alt="${d.n} vista de cima" ${k>1?'loading="lazy"':''}></div></div>
+  <div class="bwrap"><div class="tilt" data-k="${k}"><img src="/palco/assets/${d.s}.webp" srcset="/palco/assets/${d.s}-560.webp 560w, /palco/assets/${d.s}.webp 900w" sizes="min(60vh, 46vw)" alt="${d.n} vista de cima" decoding="async" ${k>1?'loading="lazy"':''}></div></div>
   <div class="meta">
     <div class="ing"><span class="cap">${d.pr}</span><p>${d.i}</p></div>
     <div class="buy"><span class="price"><small>R$</small>${brl(d.p)}</span><button class="cta" type="button" data-add="${k}" aria-label="Pedir ${d.n}, R$ ${brl(d.p)}"><span class="tx"><small>Na sacola em 1 toque</small>Pedir esta</span><span class="ic"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M10 4v12M4 10h12"/></svg></span><span class="q" aria-hidden="true"></span></button></div>
   </div>
 </article>`).join('');
-$('#railDots').innerHTML=SALADS.map((d,j)=>`<button type="button" class="rail-dot" data-j="${j}" aria-label="${d.n}, R$ ${brl(d.p)}"><img src="/palco/assets/${d.s}.webp" alt=""><span class="rail-tip" aria-hidden="true"><b>${d.n}</b>R$ ${brl(d.p)}</span></button>`).join('');
+$('#railDots').innerHTML=SALADS.map((d,j)=>`<button type="button" class="rail-dot" data-j="${j}" aria-label="${d.n}, R$ ${brl(d.p)}"><img src="/palco/assets/${d.s}-160.webp" alt="" width="32" height="32" decoding="async"><span class="rail-tip" aria-hidden="true"><b>${d.n}</b>R$ ${brl(d.p)}</span></button>`).join('');
 $('#grid').innerHTML=SALADS.map((d,k)=>`
 <article class="card${k?'':' hero'}">
   ${d.tag?`<span class="tag cap">${d.tag}</span>`:''}
   <h3>${d.t[0]}<br>${d.t[1]}</h3>
-  <div class="pic"><img src="/palco/assets/${d.s}.webp" alt="${d.n}" loading="lazy"></div>
+  <div class="pic"><img src="/palco/assets/${d.s}-560.webp" srcset="/palco/assets/${d.s}-560.webp 560w, /palco/assets/${d.s}.webp 900w" sizes="(max-width:520px) 88vw, (max-width:980px) 44vw, 24vw" alt="${d.n}" loading="lazy" decoding="async"></div>
   <div><p class="prot">${d.pr}</p>
   <div class="row"><span class="price"><small>R$</small>${brl(d.p)}</span><button class="add" type="button" data-add="${k}">+ Adicionar</button></div></div>
 </article>`).join('');
@@ -457,7 +457,7 @@ function add(k,from){
   gsap.fromTo('#bag',{scale:1.18},{scale:1,duration:.7,ease:'elastic.out(1,.4)'});
   if(from){ // um bowl pequeno voa até a sacola
     const r=from.getBoundingClientRect(),b=$('#bag').getBoundingClientRect();
-    const f=document.createElement('img');f.src=`/palco/assets/${SALADS[k].s}.webp`;f.alt='';
+    const f=document.createElement('img');f.src=`/palco/assets/${SALADS[k].s}-160.webp`;f.alt='';
     Object.assign(f.style,{position:'fixed',zIndex:80,left:r.left+r.width/2-40+'px',top:r.top+r.height/2-40+'px',width:'80px',height:'80px',pointerEvents:'none'});
     document.body.appendChild(f);
     gsap.to(f,{x:b.left+b.width/2-(r.left+r.width/2),y:b.top+b.height/2-(r.top+r.height/2),scale:.25,rotation:220,duration:.8,ease:'power3.in',onComplete:()=>f.remove()});
@@ -506,7 +506,7 @@ const STORY=[
 ];
 const mq=matchMedia('(max-width: 759px), (pointer: coarse) and (orientation: portrait) and (max-width: 1024px)');
 const IS_M=mq.matches;
-const FT=[3.0,4.57,6.14,7.71,9.28,10.85,12.42,14.9]; // pôster parado de cada salada no filme + assinatura
+const FT=[3.0,4.6,6.167,7.733,9.3,10.867,12.433,14.9]; // = keyframes forçados no encode: o salto de volta cai num quadro inteiro // pôster parado de cada salada no filme + assinatura
 const HOOK_T=7.6;                                     // molho cai, ingredientes saltam e assentam
 mq.addEventListener('change',()=>location.reload());
 const tot=()=>bag.reduce((a,i)=>a+SALADS[i].p,0);
@@ -544,7 +544,7 @@ function bootMobile(){
   <section class="m-vid" id="mHook" data-mode="hook" aria-label="Abertura">
     <i class="snap" style="top:0"></i><i class="snap" style="top:100svh"></i><i class="snap" style="top:200svh"></i>
     <div class="stick">
-      <canvas id="vHook" role="img" aria-label="Molho escorrendo da colher e os ingredientes saltando do bowl"></canvas>
+      <video id="vHook" muted playsinline preload="auto" poster="/palco/assets/seq/f001.webp" src="/palco/assets/abertura.mp4" aria-label="Molho escorrendo da colher e os ingredientes saltando do bowl"></video>
       <div class="c">
         <span class="cap">Cê Saladas · Palmas – TO</span>
         <div style="display:grid">
@@ -561,7 +561,7 @@ function bootMobile(){
   <section class="m-ch" data-mode="ch" data-k="${k}" aria-label="${d.n}">
     <div class="m-tag cap"><span class="k">Parada ${String(k+1).padStart(2,'0')} / 07</span><span class="t">${STORY[k][0]}</span></div>
     <h2 class="fit" data-max=".21" style="margin:0">${lines(d.t)}</h2>
-    <div class="m-bowl"><div class="b"><div class="s"><img src="/palco/assets/${d.s}.webp" alt="${d.n} vista de cima" ${k>1?'loading="lazy"':''}></div></div></div>
+    <div class="m-bowl"><div class="b"><div class="s"><img src="/palco/assets/${d.s}-560.webp" srcset="/palco/assets/${d.s}-560.webp 560w, /palco/assets/${d.s}.webp 900w" sizes="84vw" alt="${d.n} vista de cima" decoding="async" ${k>1?'loading="lazy"':''}></div></div></div>
     <div class="m-meta"><p class="m-story">${STORY[k][1]}</p><p class="m-ing">${d.pr}. ${d.i}</p></div>
   </section>`).join('')}
   <section class="m-vid" id="mFilm" data-mode="film" aria-label="A jornada em 15 segundos" style="height:calc(100svh + ${FT.length-1} * var(--step))">
@@ -576,7 +576,7 @@ function bootMobile(){
   <section class="m-sum" data-mode="sum" aria-labelledby="mSumH">
     <h2 class="fit" id="mSumH" data-max=".2" style="margin:0">${lines(['Sua','sacola'])}</h2>
     <p>Junte quantas quiser. O pedido fecha no cardápio digital, com PIX ou cartão.</p>
-    <ul class="m-list">${SALADS.map((d,k)=>`<li class="m-row" data-k="${k}"><img src="/palco/assets/${d.s}.webp" alt="" loading="lazy"><div><div class="n">${d.n}</div><div class="p">R$ ${brl(d.p)}</div></div><div class="step"><button type="button" data-sub="${k}" aria-label="Tirar uma ${d.n}">−</button><b>0</b><button type="button" data-plus="${k}" aria-label="Pôr mais uma ${d.n}">+</button></div></li>`).join('')}</ul>
+    <ul class="m-list">${SALADS.map((d,k)=>`<li class="m-row" data-k="${k}"><img src="/palco/assets/${d.s}-160.webp" alt="" width="60" height="60" loading="lazy" decoding="async"><div><div class="n">${d.n}</div><div class="p">R$ ${brl(d.p)}</div></div><div class="step"><button type="button" data-sub="${k}" aria-label="Tirar uma ${d.n}">−</button><b>0</b><button type="button" data-plus="${k}" aria-label="Pôr mais uma ${d.n}">+</button></div></li>`).join('')}</ul>
     <div class="m-total"><span class="cap">Total</span><span class="pv" id="mTotal"><small>R$</small>0,00</span></div>
   </section>
   <section class="m-end" data-mode="end" aria-label="Fim da jornada">
@@ -596,8 +596,28 @@ function bootMobile(){
   root.style.setProperty('--step','72svh');
   const vH=$('#vHook'),vF=$('#vFilm');
   const filmSrc=()=>`/palco/assets/filme-${isDark()?'verde':'menta'}.mp4`;
-  const mseq=FrameSeq(vH,'cover');vF.src=filmSrc();
-  [vF].forEach(v=>{v._t=0;
+  vF.src=filmSrc();
+  // No iPhone, mudar currentTime a cada quadro (scrub) trava e perde a sincronia.
+  // Aqui o vídeo TOCA até o ponto da parada, acelerado para terminar junto com o
+  // deslize da tela; voltar é um salto direto para o ponto anterior.
+  const Clip=v=>{let alvo=0,raf=0,vfc=0,limite=0,ger=0;
+    const rvfc='requestVideoFrameCallback' in v;
+    const saltar=t=>{if(typeof v.fastSeek==='function')v.fastSeek(t);else v.currentTime=t};   // fastSeek: só Safari; cai no keyframe da parada
+    const parar=()=>{cancelAnimationFrame(raf);raf=0;if(vfc&&v.cancelVideoFrameCallback)v.cancelVideoFrameCallback(vfc);vfc=0;v.pause()};
+    const chegou=agora=>agora>=alvo-1/60||performance.now()>limite;
+    const vigiar=g=>{if(g!==ger)return;
+      if(chegou(v.currentTime)){parar();if(Math.abs(v.currentTime-alvo)>.06)saltar(alvo);return}
+      if(rvfc)vfc=v.requestVideoFrameCallback((_,meta)=>{if(chegou(meta.mediaTime)){parar();if(Math.abs(v.currentTime-alvo)>.06)saltar(alvo)}else vigiar(g)});   // quadro a quadro
+      else raf=requestAnimationFrame(()=>vigiar(g))};
+    return{ir(t,ms){alvo=t;const g=++ger;const d=t-v.currentTime;
+      if(d>.05){
+        // ≤ 2×: acima disso o iPhone engasga; o vídeo pode terminar um pouco depois do deslize
+        const rate=Math.min(2,Math.max(.75,d/(ms/1000)));v.playbackRate=rate;limite=performance.now()+d/rate*1000+700;
+        const p=v.play();if(p&&p.catch)p.catch(()=>{if(g===ger){parar();saltar(t)}});   // Modo de Pouca Energia recusa play: salta
+        vigiar(g)}
+      else{parar();if(Math.abs(d)>.04)saltar(t)}}}};
+  const clipH=Clip(vH),clipF=Clip(vF);
+  [vH,vF].forEach(v=>{
     // iOS só pinta quadro novo em vídeo que já tocou uma vez
     const unlock=()=>{const p=v.play();if(p&&p.then)p.then(()=>v.pause()).catch(()=>{})};
     v.addEventListener('loadedmetadata',unlock,{once:true});
@@ -653,25 +673,28 @@ function bootMobile(){
       const e=a*a*(3-2*a);c.style.setProperty('--r',(d*-24).toFixed(2)+'deg');c.style.setProperty('--sc',(1+e*(d<0?1.7:1.35)).toFixed(3));
       c.style.setProperty('--tx',(d*-22).toFixed(2)+'%');c.style.setProperty('--fade',clamp(1-a*1.8,0,1).toFixed(3))});
     // abertura: o molho escorre conforme rola
-    const ph=clamp((y-hookTop)/(2*h),0,1);mseq.set(ph*HOOK_T);
+    const ph=clamp((y-hookTop)/(2*h),0,1);
     const win=(a,b)=>clamp(Math.min((ph-a)/.1,(b-ph)/.1),0,1);
     bA.style.opacity=clamp((.3-ph)/.1,0,1);bB.style.opacity=win(.28,.72);bC.style.opacity=clamp((ph-.7)/.1,0,1);cue.style.opacity=clamp(1-ph*8,0,1);
     // filme: cada parada de rolagem é um pôster
     const f=clamp((y-filmTop)/step,0,FT.length-1),i0=Math.floor(f),i1=Math.min(FT.length-1,i0+1);
-    vF._t=grid(FT[i0]+(FT[i1]-FT[i0])*(f-i0));rail.style.transform=`scaleX(${f/(FT.length-1)})`;
+    rail.style.transform=`scaleX(${f/(FT.length-1)})`;
     const k=Math.round(f);
     if(mode==='film'&&k!==filmStop){filmStop=k;
       const ft=$('#filmTx');if(G&&!reduce)G.fromTo(ft,{y:10,opacity:0},{y:0,opacity:1,duration:.45,ease:'power3.out'});
       if(k<SALADS.length){ft.textContent=STORY[k][1];fk.textContent=`${String(k+1).padStart(2,'0')} / 07`;barSalad(k);$('#mCta .ic').innerHTML=PLUS;$('#mBar').classList.add('on')}
       else{ft.textContent='Viu as sete. Agora monte a sua sacola.';fk.textContent='Fim';barSum()}}
   };
-  // o vídeo só recebe seek quando o anterior terminou: nada de fila de seeks
-  const seekLoop=()=>{[vF].forEach(v=>{if(v.readyState>=2&&!v.seeking&&Math.abs(v.currentTime-v._t)>.02)v.currentTime=v._t});requestAnimationFrame(seekLoop)};
-  requestAnimationFrame(seekLoop);
+  // qual ponto de cada vídeo corresponde a uma posição de rolagem (paradas)
+  const alvoDos=y=>{const h=innerHeight,r={};
+    const b=Math.round((y-hookTop)/h);if(b>=0&&b<=2)r.h=b*HOOK_T/2;
+    const k=Math.round((y-filmTop)/step);if(y>=filmTop-h*.5&&k>=0&&k<FT.length)r.f=FT[k];
+    return r};
+  const sincronizar=(y,ms)=>{const a=alvoDos(y);if(a.h!=null)clipH.ir(a.h,ms);if(a.f!=null)clipF.ir(a.f,ms)};
   const measure2=()=>{measure();hookTop=hookEl.offsetTop;filmTop=filmEl.offsetTop;step=innerHeight*.72};
   measure2();addEventListener('resize',measure2);
   addEventListener('scroll',()=>{if(!ticking){ticking=true;requestAnimationFrame(paint)}},{passive:true});paint();
-  document.fonts&&document.fonts.ready.then(()=>{fitAll();measure2();paint();points()});
+  document.fonts&&document.fonts.ready.then(()=>{fitAll();measure2();paint();points();sincronizar(scrollY,0)});
 
   let PTS=[],anim=null;
   const points=()=>{const sy=scrollY,h=innerHeight,set=new Set();
@@ -683,6 +706,7 @@ function bootMobile(){
   const ease=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
   const go=(to)=>{if(anim)cancelAnimationFrame(anim.r);const from=scrollY,dist=Math.abs(to-from),h=innerHeight;
     const dur=Math.min(1350,Math.max(650,1100*dist/h));const t0=performance.now();
+    sincronizar(to,dur);
     anim={r:0};const step=n=>{const x=Math.min(1,(n-t0)/dur);scrollTo(0,from+(to-from)*ease(x));if(x<1)anim.r=requestAnimationFrame(step);else anim=null};
     anim.r=requestAnimationFrame(step)};
   const page=dir=>{if(!PTS.length)points();const y=scrollY;
