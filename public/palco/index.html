@@ -654,7 +654,7 @@ const STORY=[
  ['Fresca e tropical','Frango grelhado em cubos com manga, palmito e mandioca.'],
  ['A mais completa','Salmão na manteiga com ervas, brócolis e castanha de caju.']
 ];
-const mq=matchMedia('(max-width: 759px), (pointer: coarse) and (orientation: portrait) and (max-width: 1024px)');
+const mq=matchMedia('(max-width: 759px), (pointer: coarse) and (max-width: 1024px)');
 const IS_M=mq.matches;
 const FT=[3.0,4.6,6.167,7.733,9.3,10.867,12.433,14.9]; // = keyframes forçados no encode: o salto de volta cai num quadro inteiro // pôster parado de cada salada no filme + assinatura
 const HOOK_T=7.6;                                     // molho cai, ingredientes saltam e assentam
@@ -775,6 +775,7 @@ function bootMobile(){
     addEventListener('touchstart',unlock,{once:true,passive:true})});
   $('#skin').addEventListener('click',()=>{const t=vF.currentTime;vF.src=filmSrc();vF.currentTime=t});
   fitAll();addEventListener('resize',fitAll);
+  window.__refit=()=>{fitAll();measure2&&measure2();points&&points()};
   barSalad(0);
   const PLUS=$('#mCta .ic').innerHTML;
 
@@ -890,6 +891,7 @@ function clipDe(v){let alvo=0,raf=0,vfc=0,limite=0,ger=0;const rvfc='requestVide
 function boot(){
   if(IS_M){bootMobile();return}
   layout();
+  window.__refit=()=>{layout();window.ScrollTrigger&&ScrollTrigger.refresh()};
   if(reduce||!window.gsap||!window.ScrollTrigger){document.body.classList.add('still');return}
   gsap.registerPlugin(ScrollTrigger);
   ScrollTrigger.config({ignoreMobileResize:true});
@@ -1040,7 +1042,10 @@ function boot(){
   addEventListener('resize',()=>{layout();ScrollTrigger.refresh()});
   matchMedia('(prefers-color-scheme: dark)').addEventListener('change',syncSkin);
 }
-(document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(()=>{boot();renderBag()});
+const fonteDaMarca=document.fonts&&document.fonts.load?Promise.all([document.fonts.load('900 100px "Archivo"'),document.fonts.load('400 16px "Bricolage Grotesque"')]).then(()=>document.fonts.ready):Promise.resolve();
+Promise.race([fonteDaMarca,new Promise(r=>setTimeout(r,3000))]).then(()=>{boot();renderBag()});
+// se a fonte chegar depois (rede lenta), mede tudo de novo
+document.fonts&&document.fonts.addEventListener&&document.fonts.addEventListener('loadingdone',()=>{window.__refit&&window.__refit()});
 /* Horário vem do cadastro da loja (o mesmo do painel): fechou num feriado e
    reabriu, a página acompanha. O texto no HTML é só a reserva. */
 (function horario(){
