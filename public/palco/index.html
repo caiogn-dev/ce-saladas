@@ -20,7 +20,6 @@
 <meta property="og:url" content="https://cesaladas.com.br/">
 <meta property="og:image" content="https://cesaladas.com.br/palco/assets/queridinha.webp">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="preload" as="image" href="/palco/assets/seq/f001.webp">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Bricolage+Grotesque:opsz,wght@12..96,400..700&display=swap">
@@ -68,18 +67,16 @@ a{color:inherit}
 
 /* ---------- palco ---------- */
 .stage{position:relative;height:100vh;height:100svh;overflow:hidden;background:var(--bg);transition:background-color .5s}
-.hook{position:absolute;inset:0;z-index:20;background:var(--night);color:#DAF5DA;overflow:hidden}
-.hook-vid{position:absolute;inset:0;transform-origin:66% 45%}
-.hook-vid video{position:absolute;top:0;left:66%;height:100%;width:auto;aspect-ratio:9/16;transform:translateX(-50%);object-fit:cover;background:var(--night);-webkit-mask-image:linear-gradient(90deg,transparent,#000 20%,#000 80%,transparent);mask-image:linear-gradient(90deg,transparent,#000 20%,#000 80%,transparent)}
-@media (max-aspect-ratio:1/1){.hook-vid video{left:0;width:100%;transform:none;-webkit-mask-image:none;mask-image:none}}
+.hook{position:absolute;inset:0;z-index:20;background:var(--bg);color:var(--fg);overflow:hidden;transition:background-color .5s,color .5s}
+.est-host{position:absolute;inset:0;transform-origin:50% 50%}
 .hbeats{display:grid}
-.hbeats .hb{grid-area:1/1;align-self:end}
-.hook::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,8,6,.55) 0%,rgba(6,8,6,0) 30%,rgba(6,8,6,0) 55%,rgba(6,8,6,.85) 100%)}
-.hook-copy{position:absolute;z-index:2;left:var(--gut);right:var(--gut);bottom:calc(var(--gut) + 28px);display:grid;gap:14px;max-width:1100px}
-.hook h1,.hook .hb{margin:0;font-family:var(--display);font-weight:900;font-variation-settings:"wdth" 125;font-size:clamp(44px,9.4vw,150px);line-height:.84;letter-spacing:-.02em;text-transform:uppercase;text-wrap:balance}
-.hook p{margin:0;max-width:34ch;font-size:clamp(15px,1.4vw,19px);color:#BEE3BE}
+.hbeats .hb{grid-area:1/1;align-self:start;white-space:nowrap}
+.hook-copy{position:absolute;z-index:4;left:var(--gut);right:var(--gut);top:clamp(88px,13vh,130px);pointer-events:none;display:grid;gap:14px;max-width:1100px}
+.hook h1,.hook .hb{margin:0;font-family:var(--display);font-weight:900;font-variation-settings:"wdth" 125;font-size:clamp(40px,6.2vw,104px);line-height:.86;letter-spacing:-.02em;text-transform:uppercase;text-wrap:balance}
+.hook p{margin:0;max-width:34ch;font-size:clamp(15px,1.4vw,19px);color:var(--ink);opacity:.85}
 .cue{position:absolute;z-index:2;right:var(--gut);bottom:calc(var(--gut) + 28px);display:grid;justify-items:center;gap:10px}
-.cue i{display:block;width:1.5px;height:56px;background:linear-gradient(#DAF5DA,transparent);animation:cue 1.6s ease-in-out infinite;transform-origin:top}
+.cue{z-index:4}
+.cue i{display:block;width:1.5px;height:56px;background:linear-gradient(var(--fg),transparent);animation:cue 1.6s ease-in-out infinite;transform-origin:top}
 @keyframes cue{0%{transform:scaleY(0)}50%{transform:scaleY(1)}100%{transform:scaleY(1);opacity:0}}
 
 .poster{position:absolute;inset:0;pointer-events:none}
@@ -196,6 +193,33 @@ html.stack .meta{flex-direction:row;align-items:flex-end}
 .still .hook{position:relative;height:90vh}
 .still .poster{position:relative;height:100vh;pointer-events:auto}
 .still .end .ingr,.still .end .corner{transform:none}
+/* =================== ESTRADA (abertura): gota líquida + vidro + blobs =================== */
+.est{position:absolute;inset:0;overflow:hidden}
+.est-svg{position:absolute;inset:0;width:100%;height:100%}
+.est-road{stroke:var(--ghost);transition:stroke .5s}
+.est-line{stroke:var(--bg);transition:stroke .5s}
+.est-goo circle{fill:var(--accent)}
+.est-blobs .b1{fill:var(--accent);opacity:.2}
+.est-blobs .b2{fill:#F26B3A;opacity:.16}
+.est-blobs .b3{fill:var(--ghost);opacity:.9}
+.glass{position:absolute;border-radius:50%;background:color-mix(in srgb,#fff 30%,transparent);-webkit-backdrop-filter:blur(10px) saturate(1.7);backdrop-filter:blur(10px) saturate(1.7);border:1px solid rgba(255,255,255,.6);box-shadow:inset 0 1px 1px rgba(255,255,255,.8),inset 0 -10px 18px -12px rgba(2,60,2,.3),0 12px 26px -14px rgba(2,40,2,.45)}
+.glass::after{content:"";position:absolute;inset:6% 18% 55% 14%;border-radius:50%;background:linear-gradient(180deg,rgba(255,255,255,.75),rgba(255,255,255,0));pointer-events:none}
+.glass img{position:relative;width:100%;height:100%;object-fit:contain}
+.est-stop{width:68px;height:68px;padding:7px;transform:translate(-50%,-50%) scale(.35);opacity:0;transition:transform .55s cubic-bezier(.2,1.6,.4,1),opacity .35s,box-shadow .35s;z-index:2}
+.est-stop.perto{transform:translate(-50%,-50%) scale(.72);opacity:.6}
+.est-stop.on{transform:translate(-50%,-50%) scale(1);opacity:1;box-shadow:inset 0 1px 1px rgba(255,255,255,.8),0 0 0 3px var(--accent),0 14px 30px -12px rgba(2,60,2,.5)}
+.est-trav{width:84px;height:84px;padding:6px;transform:translate(-50%,-50%);z-index:3}
+.est-bub{width:96px;height:96px;padding:12px;z-index:1;animation:flutua 6s ease-in-out infinite alternate}
+.est-bub.b1{animation-duration:7.4s}.est-bub.b2{animation-duration:5.2s}.est-bub.b3{animation-duration:8s}
+@keyframes flutua{from{transform:translateY(0) rotate(-6deg)}to{transform:translateY(-16px) rotate(6deg)}}
+.est-d .b0{right:7%;top:15%}.est-d .b1{right:30%;top:7%}.est-d .b2{left:36%;top:52%}.est-d .b3{right:4%;top:66%}
+.est-m .est-stop{width:46px;height:46px;padding:5px}
+.est-m .est-trav{width:62px;height:62px;padding:5px}
+.est-m .est-bub{width:62px;height:62px;padding:8px}
+.est-m .b0{right:5%;top:30%}.est-m .b1{left:4%;top:56%}.est-m .b2{right:8%;top:70%}.est-m .b3{left:30%;top:88%}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .glass{background:color-mix(in srgb,#fff 14%,transparent);border-color:rgba(255,255,255,.35)}}
+:root[data-theme="dark"] .glass{background:color-mix(in srgb,#fff 14%,transparent);border-color:rgba(255,255,255,.35)}
+
 /* =================== MONTA O BOWL =================== */
 .monta{position:relative;display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);align-items:center;gap:clamp(24px,4vw,64px);min-height:100vh;min-height:100svh;padding:clamp(72px,10vh,120px) var(--gut);background:var(--fg);color:var(--bg);clip-path:circle(150% at 68% 50%);transition:background-color .5s,color .5s}
 .mo-txt{display:grid;gap:14px;align-content:center;min-width:0}
@@ -261,15 +285,14 @@ html.is-m .monta{display:none}
 .m-vid .stick{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
 .m-vid video,.m-vid canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:var(--night)}
 .snap{position:absolute;left:0;width:1px;height:1px;scroll-snap-align:start;scroll-snap-stop:always;pointer-events:none}
-#mHook{height:calc(300vh);height:calc(300svh);background:var(--night);color:#DAF5DA}
-#mHook .stick::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,8,6,.5) 0%,rgba(6,8,6,0) 24%,rgba(6,8,6,.1) 45%,rgba(6,8,6,.9) 100%);pointer-events:none}
-#mHook .c{position:absolute;z-index:2;left:16px;right:16px;bottom:calc(env(safe-area-inset-bottom,0px) + 30px);display:grid;gap:14px}
+#mHook{height:calc(300vh);height:calc(300svh);background:var(--bg);color:var(--fg)}
+#mHook .c{position:absolute;z-index:4;left:16px;right:16px;top:calc(env(safe-area-inset-top,0px) + 74px);display:grid;gap:12px;pointer-events:none}
 #mHook .beat{grid-area:1/1;align-self:end}
-#mHook .fit span{color:#DAF5DA}
-#mHook p{margin:0;font-size:16px;line-height:1.4;color:#BEE3BE;max-width:32ch}
+#mHook .fit span{color:var(--fg)}
+#mHook p{margin:0;font-size:15px;line-height:1.4;color:var(--ink);opacity:.85;max-width:30ch}
 #mHook .go{display:flex;align-items:center;gap:10px}
-#mHook .go i{display:block;width:34px;height:34px;border-radius:50%;border:1.5px solid #DAF5DA;position:relative}
-#mHook .go i::after{content:"";position:absolute;left:50%;top:9px;width:8px;height:8px;margin-left:-4px;border-right:2px solid #DAF5DA;border-bottom:2px solid #DAF5DA;transform:rotate(45deg);animation:bob 1.4s ease-in-out infinite}
+#mHook .go i{display:block;width:34px;height:34px;border-radius:50%;border:1.5px solid var(--fg);position:relative}
+#mHook .go i::after{content:"";position:absolute;left:50%;top:9px;width:8px;height:8px;margin-left:-4px;border-right:2px solid var(--fg);border-bottom:2px solid var(--fg);transform:rotate(45deg);animation:bob 1.4s ease-in-out infinite}
 #mFilm{background:var(--bg)}
 #mFilm video{object-fit:contain;background:var(--bg);top:calc(env(safe-area-inset-top,0px) + 84px);bottom:auto;height:min(125vw,calc(100svh - 300px))}
 #mFilm .tx{position:absolute;z-index:2;left:16px;right:16px;bottom:calc(env(safe-area-inset-bottom,0px) + 104px);margin:0;font-size:17px;line-height:1.3;font-weight:650;color:var(--fg);text-wrap:balance;min-height:2.6em;display:flex;align-items:flex-end}
@@ -385,7 +408,7 @@ html.is-m .toast{bottom:calc(env(safe-area-inset-bottom,0px) + 92px)}
   <section class="stage" id="palco" aria-label="As sete saladas">
     <div class="prog" id="prog"></div>
     <div class="hook" id="hook">
-      <div class="hook-vid" id="hookImg"><video id="hookVid" muted playsinline preload="auto" poster="/palco/assets/seq/f001.webp" src="/palco/assets/abertura.mp4" aria-label="Molho escorrendo da colher e os ingredientes do Magnífico Camarão saltando do bowl"></video></div>
+      <div class="est-host" id="hookImg" role="img" aria-label="Uma gota verde percorre a estrada pelas sete saladas da Cê"></div>
       <div class="hook-copy" id="hookCopy">
         <span class="cap">Cê Saladas · Palmas – TO</span>
         <div class="hbeats"><h1 class="hb hb-a">Salada que<br>sustenta.</h1><p class="hb hb-b" aria-hidden="true">Cada pedaço<br>conta.</p><p class="hb hb-c" aria-hidden="true">Sete paradas.<br>Escolha a sua.</p></div>
@@ -694,13 +717,13 @@ function bootMobile(){
   <section class="m-vid" id="mHook" data-mode="hook" aria-label="Abertura">
     <i class="snap" style="top:0"></i><i class="snap" style="top:100svh"></i><i class="snap" style="top:200svh"></i>
     <div class="stick">
-      <video id="vHook" muted playsinline preload="auto" poster="/palco/assets/seq/f001.webp" src="/palco/assets/abertura.mp4" aria-label="Molho escorrendo da colher e os ingredientes saltando do bowl"></video>
+      ${estradaHTML('m')}
       <div class="c">
         <span class="cap">Cê Saladas · Palmas – TO</span>
         <div style="display:grid">
-          <div class="beat" id="beatA"><h1 class="fit" data-max=".24" style="margin:0">${lines(['Tudo','começa','no molho.'])}</h1></div>
-          <div class="beat" id="beatB" style="opacity:0"><div class="fit" data-max=".24">${lines(['Cada','pedaço','conta.'])}</div></div>
-          <div class="beat" id="beatC" style="opacity:0"><div class="fit" data-max=".24">${lines(['Sete','paradas.','Escolha','a sua.'])}</div></div>
+          <div class="beat" id="beatA"><h1 class="fit" data-max=".15" style="margin:0">${lines(['Salada que','sustenta.'])}</h1></div>
+          <div class="beat" id="beatB" style="opacity:0"><div class="fit" data-max=".15">${lines(['Cada pedaço','conta.'])}</div></div>
+          <div class="beat" id="beatC" style="opacity:0"><div class="fit" data-max=".15">${lines(['Sete paradas.','Escolha a sua.'])}</div></div>
         </div>
         <p>Cada parada é uma salada montada no bowl, com proteína grelhada na hora.</p>
         <span class="go cap" id="goCue"><i></i>Role para começar</span>
@@ -744,8 +767,9 @@ function bootMobile(){
   <div class="m-bar" id="mBar"><div class="info"><span class="nm cap" id="mNm"></span><span class="pv" id="mPv"></span></div>
     <button class="cta" id="mCta" type="button"><span class="tx">Pedir</span><span class="ic"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M10 4v12M4 10h12"/></svg></span><span class="q" aria-hidden="true"></span></button></div>`;
   $('main').after(m);
+  const estM=Estrada($('#mHook .est'),'m');
   root.style.setProperty('--step','72svh');
-  const vH=$('#vHook'),vF=$('#vFilm');
+  const vF=$('#vFilm');
   const filmSrc=()=>`/palco/assets/filme-${isDark()?'verde':'menta'}.mp4`;
   vF.src=filmSrc();
   // No iPhone, mudar currentTime a cada quadro (scrub) trava e perde a sincronia.
@@ -767,8 +791,8 @@ function bootMobile(){
         const p=v.play();if(p&&p.catch)p.catch(()=>{if(g===ger){parar();saltar(t)}});   // Modo de Pouca Energia recusa play: salta
         vigiar(g)}
       else{parar();if(Math.abs(d)>.04)saltar(t)}}}};
-  const clipH=Clip(vH),clipF=Clip(vF);
-  [vH,vF].forEach(v=>{
+  const clipF=Clip(vF);
+  [vF].forEach(v=>{
     // iOS só pinta quadro novo em vídeo que já tocou uma vez
     const unlock=()=>{const p=v.play();if(p&&p.then)p.then(()=>v.pause()).catch(()=>{})};
     v.addEventListener('loadedmetadata',unlock,{once:true});
@@ -799,7 +823,7 @@ function bootMobile(){
   const io=new IntersectionObserver(es=>es.forEach(e=>{
     if(!e.isIntersecting)return;
     const sec=e.target;mode=sec.dataset.mode;
-    $('#top').classList.toggle('dark',mode==='hook');
+    $('#top').classList.remove('dark');
     $('#mProg').classList.toggle('off',mode==='hook'||mode==='end');
     $('#mBar').classList.toggle('on',mode==='ch'||mode==='sum');
     if(mode==='ch'){curK=+sec.dataset.k;barSalad(curK);$('#mCta .ic').innerHTML=PLUS}
@@ -826,7 +850,7 @@ function bootMobile(){
       const e=a*a*(3-2*a);c.style.setProperty('--r',(d*-24).toFixed(2)+'deg');c.style.setProperty('--sc',(1+e*(d<0?1.7:1.35)).toFixed(3));
       c.style.setProperty('--tx',(d*-22).toFixed(2)+'%');c.style.setProperty('--fade',clamp(1-a*1.8,0,1).toFixed(3))});
     // abertura: o molho escorre conforme rola
-    const ph=clamp((y-hookTop)/(2*h),0,1);
+    const ph=clamp((y-hookTop)/(2*h),0,1);estM.set(ph);
     const win=(a,b)=>clamp(Math.min((ph-a)/.1,(b-ph)/.1),0,1);
     bA.style.opacity=clamp((.3-ph)/.1,0,1);bB.style.opacity=win(.28,.72);bC.style.opacity=clamp((ph-.7)/.1,0,1);cue.style.opacity=clamp(1-ph*8,0,1);
     // filme: cada parada de rolagem é um pôster
@@ -840,10 +864,9 @@ function bootMobile(){
   };
   // qual ponto de cada vídeo corresponde a uma posição de rolagem (paradas)
   const alvoDos=y=>{const h=innerHeight,r={};
-    const b=Math.round((y-hookTop)/h);if(b>=0&&b<=2)r.h=b*HOOK_T/2;
     const k=Math.round((y-filmTop)/step);if(y>=filmTop-h*.5&&k>=0&&k<FT.length)r.f=FT[k];
     return r};
-  const sincronizar=(y,ms)=>{const a=alvoDos(y);if(a.h!=null)clipH.ir(a.h,ms);if(a.f!=null)clipF.ir(a.f,ms)};
+  const sincronizar=(y,ms)=>{const a=alvoDos(y);if(a.f!=null)clipF.ir(a.f,ms)};
   const measure2=()=>{measure();hookTop=hookEl.offsetTop;filmTop=filmEl.offsetTop;step=innerHeight*.72};
   measure2();addEventListener('resize',measure2);
   addEventListener('scroll',()=>{if(!ticking){ticking=true;requestAnimationFrame(paint)}},{passive:true});paint();
@@ -877,6 +900,60 @@ function bootMobile(){
   renderBag();
 }
 
+/* =================== ESTRADA (abertura) =================== */
+// Uma gota líquida (metaball) percorre a estrada pelas 7 saladas em bolhas de vidro;
+// blobs vivos atrás. Tudo SVG/CSS dirigido pela rolagem: nada de vídeo para dessincronizar.
+const EST={d:{w:1440,h:900,road:84,mask:132,r:30,path:'M -60 790 C 170 790 230 610 430 610 S 700 790 905 725 S 1270 520 1150 330 S 820 215 720 450',
+  blobs:[[250,640,250],[1150,330,230],[640,170,170]]},
+  m:{w:390,h:844,road:60,mask:96,r:22,path:'M -50 360 C 110 330 330 330 318 450 S 70 520 84 610 S 318 660 300 740 S 195 800 195 920',
+  blobs:[[300,220,150],[80,560,140],[300,780,120]]}};
+const EST_T=[.14,.26,.38,.5,.62,.74,.86];
+function blobPath(cx,cy,rs){const n=rs.length,P=rs.map((r,i)=>{const a=i/n*Math.PI*2;return[cx+r*Math.cos(a),cy+r*Math.sin(a)]});
+  let d=`M${P[0][0].toFixed(1)},${P[0][1].toFixed(1)}`;
+  for(let i=0;i<n;i++){const p0=P[(i-1+n)%n],p1=P[i],p2=P[(i+1)%n],p3=P[(i+2)%n];
+    d+=`C${(p1[0]+(p2[0]-p0[0])/6).toFixed(1)},${(p1[1]+(p2[1]-p0[1])/6).toFixed(1)} ${(p2[0]-(p3[0]-p1[0])/6).toFixed(1)},${(p2[1]-(p3[1]-p1[1])/6).toFixed(1)} ${p2[0].toFixed(1)},${p2[1].toFixed(1)}`}
+  return d+'Z'}
+function estradaHTML(m){const E=EST[m];
+  return `<div class="est est-${m}">
+  <svg class="est-svg" viewBox="0 0 ${E.w} ${E.h}" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <defs>
+      <filter id="goo-${m}" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur in="SourceGraphic" stdDeviation="${m==='d'?12:9}" result="b"/><feColorMatrix in="b" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 22 -9"/></filter>
+      <mask id="rm-${m}" maskUnits="userSpaceOnUse" x="-300" y="-300" width="${E.w+600}" height="${E.h+600}"><path class="est-mask" d="${E.path}" fill="none" stroke="#fff" stroke-width="${E.mask}" stroke-linecap="round"/></mask>
+    </defs>
+    <g class="est-blobs"><path class="b1"/><path class="b2"/><path class="b3"/></g>
+    <g mask="url(#rm-${m})"><path class="est-road" d="${E.path}" fill="none" stroke-width="${E.road}" stroke-linecap="round"/><path class="est-line" d="${E.path}" fill="none" stroke-width="${m==='d'?5:4}" stroke-dasharray="${m==='d'?'26 22':'16 14'}" stroke-linecap="round"/></g>
+    <path class="est-guide" d="${E.path}" fill="none" stroke="none"/>
+    <g class="est-goo" filter="url(#goo-${m})"><circle class="gd" r="${E.r}"/>${[1,2,3,4,5,6].map(i=>`<circle class="gt" r="${(E.r*(1-i*.12)).toFixed(1)}"/>`).join('')}</g>
+  </svg>
+  ${SALADS.map((d,k)=>`<span class="glass est-stop" data-k="${k}" title="${d.n}"><img src="/palco/assets/${d.s}-160.webp" alt="" decoding="async"></span>`).join('')}
+  ${['pepino','tomate','manga','alface'].map((n,i)=>`<span class="glass est-bub b${i}"><img src="/palco/assets/ing-${n}.webp" alt="" decoding="async"></span>`).join('')}
+  <span class="glass est-trav"><img src="/palco/assets/logo-redonda.webp" alt=""></span>
+  </div>`}
+function Estrada(root,m){
+  const E=EST[m],svg=root.querySelector('svg'),guia=root.querySelector('.est-guide'),L=guia.getTotalLength();
+  const mask=root.querySelector('.est-mask');mask.style.strokeDasharray=L;mask.style.strokeDashoffset=L;
+  const gd=root.querySelector('.gd'),gts=[...root.querySelectorAll('.gt')],trav=root.querySelector('.est-trav');
+  const paradas=[...root.querySelectorAll('.est-stop')],bolhas=[...root.querySelectorAll('.est-bub')];
+  const pt=f=>guia.getPointAtLength(Math.max(0,Math.min(1,f))*L);
+  const tela=(x,y)=>{const c=svg.getScreenCTM(),r=root.getBoundingClientRect();if(!c)return{x:0,y:0};const q=new DOMPoint(x,y).matrixTransform(c);return{x:q.x-r.left,y:q.y-r.top}};
+  let ultimo=0,entrada=0;
+  const posicionar=()=>{paradas.forEach((el,i)=>{const a=pt(EST_T[i]),q=tela(a.x,a.y);el.style.left=q.x+'px';el.style.top=q.y+'px'});set(ultimo)};
+  function set(p){ultimo=p;const f=.03+(.12+p*.88)*.97*entrada;mask.style.strokeDashoffset=L*(1-f);
+    const a=pt(f);gd.setAttribute('cx',a.x);gd.setAttribute('cy',a.y);
+    gts.forEach((c,i)=>{const b=pt(f-(i+1)*.011);c.setAttribute('cx',b.x);c.setAttribute('cy',b.y)});   // rastro: a gota escorre
+    const q=tela(a.x,a.y);trav.style.left=q.x+'px';trav.style.top=q.y+'px';
+    paradas.forEach((el,i)=>{el.classList.toggle('perto',f>=EST_T[i]-.07);el.classList.toggle('on',f>=EST_T[i])});
+    bolhas.forEach((el,i)=>{el.style.translate=`0 ${(i%2?1:-1)*p*46}px`})}
+  // blobs vivos: 8 raios que mudam devagar, sempre
+  const blobs=[...root.querySelectorAll('.est-blobs path')].map((el,i)=>{const[cx,cy,r]=E.blobs[i];const o={rs:Array.from({length:8},()=>r*(.85+Math.random()*.3))};el.setAttribute('d',blobPath(cx,cy,o.rs));return{el,cx,cy,r,o}});
+  const G=window.gsap,calmo=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(G&&!calmo){blobs.forEach(b=>{const novo=()=>Array.from({length:8},()=>b.r*(.78+Math.random()*.44));
+      const ir=()=>G.to(b.o.rs,{...novo(),duration:3+Math.random()*2,ease:'sine.inOut',onUpdate:()=>b.el.setAttribute('d',blobPath(b.cx,b.cy,b.o.rs)),onComplete:ir});ir()});
+    G.to(gd,{attr:{r:E.r*1.12},duration:1.1,ease:'sine.inOut',yoyo:true,repeat:-1})}
+  addEventListener('resize',posicionar);requestAnimationFrame(posicionar);
+  const o={e:0};if(G&&!calmo)G.to(o,{e:1,duration:1.6,delay:.35,ease:'power2.out',onUpdate:()=>{entrada=o.e;set(ultimo)}});else{entrada=1;set(ultimo)}
+  return{set,posicionar}}
+
 function clipDe(v){let alvo=0,raf=0,vfc=0,limite=0,ger=0;const rvfc='requestVideoFrameCallback' in v;
   const saltar=t=>{if(typeof v.fastSeek==='function')v.fastSeek(t);else v.currentTime=t};
   const parar=()=>{cancelAnimationFrame(raf);raf=0;if(vfc&&v.cancelVideoFrameCallback)v.cancelVideoFrameCallback(vfc);vfc=0;v.pause()};
@@ -906,11 +983,13 @@ function boot(){
   // abertura: vídeo de verdade (toca por trechos), 3 frases, e a saída é um
   // círculo que se fecha no centro enquanto a 1ª salada cresce de dentro dele
   gsap.set('.hb-b,.hb-c',{autoAlpha:0,yPercent:30});
-  tl.fromTo('#hookImg',{scale:1.04},{scale:1,duration:1},0)
+  $('#hookImg').innerHTML=estradaHTML('d');const estD=Estrada($('#hookImg .est'),'d');
+  const ep={p:0};tl.to(ep,{p:1,duration:1,ease:'none',onUpdate:()=>estD.set(ep.p)},0);
+  tl.fromTo('#hookImg',{scale:1.03},{scale:1,duration:1},0)
     .to('#hookCopy',{yPercent:-12,duration:1},0)
     .to('.hb-a',{autoAlpha:0,yPercent:-30,duration:.1},.4).to('.hb-b',{autoAlpha:1,yPercent:0,duration:.1},.43)
     .to('.hb-b',{autoAlpha:0,yPercent:-30,duration:.1},.87).to('.hb-c',{autoAlpha:1,yPercent:0,duration:.1},.9)
-    .fromTo('#hook',{clipPath:'circle(150% at 50% 55%)'},{clipPath:'circle(0% at 50% 60%)',duration:.55,ease:'power2.in'},1)
+    .fromTo('#hook',{clipPath:'circle(150% at 50% 50%)'},{clipPath:'circle(0% at 50% 50%)',duration:.55,ease:'power2.in'},1)
     .set('#hook',{autoAlpha:0},1.56)
     .set('.count',{visibility:'visible'},1)
     .to(P[0].bw,{scale:1,duration:.75,ease:'expo.out'},1.22)
@@ -941,19 +1020,14 @@ function boot(){
     trigger:'#palco',start:'top top',end:()=>'+='+innerHeight*total*(light?.62:1.1),pin:true,scrub:.3,animation:tl,invalidateOnRefresh:true,
     snap:lenis?false:{snapTo:[0,...stops.map(s=>s/total)],duration:{min:.25,max:.8},delay:.08,ease:'power3.inOut',directional:true},
     onUpdate:self=>{const tt=self.progress*total;let k=0;stops.forEach((s,j)=>{if(tt>=s-.62)k=j});setIdx(k);
-      gsap.set('#prog',{scaleX:self.progress});$('#top').classList.toggle('dark',tt<1.3)}
+      gsap.set('#prog',{scaleX:self.progress});}
   });
-  $('#top').classList.add('dark');setIdx(0);
+  setIdx(0);
   // Navegação do carrossel: um gesto (roda, trackpad, teclado, arrastar, trilha)
   // = uma salada inteira, em tempo fixo. Antes a animação seguia a rolagem em
   // câmera lenta e o encaixe puxava depois — parecia travado.
   // abertura com 3 paradas (molho cai · explode · assenta) antes do corte para a 1ª salada
   const HOOK_PTS=[0,.5,.985];
-  const VID_T=[2.5,5.0,7.6];                 // onde o vídeo para em cada parada da abertura
-  const hv=$('#hookVid'),hclip=clipDe(hv);
-  // ao abrir a página o molho começa a cair sozinho (sem precisar rolar)
-  const autoInicio=()=>{if(yNow()<=stageST.start+4)hclip.ir(VID_T[0],2500)};
-  if(hv.readyState>=2)setTimeout(autoInicio,0);else hv.addEventListener('loadeddata',autoInicio,{once:true});
   const pts=[...HOOK_PTS,...stops];
   const posOf=i=>stageST.start+pts[i]/total*(stageST.end-stageST.start);
   const easeIO=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
@@ -963,8 +1037,7 @@ function boot(){
   const goTo=i=>{i=Math.max(0,Math.min(pts.length-1,i));busy=true;const done=()=>{busy=false};
     // dentro da abertura o vídeo anda perto da velocidade real: deslize mais longo e quase linear
     const naAbertura=pts[i]<=1&&pts[nearest()]<=1;
-    const dur=naAbertura?2.2:(light?.9:1.2),ease=naAbertura?(x=>x<.5?2*x*x:1-Math.pow(-2*x+2,2)/2):easeIO;
-    if(i<VID_T.length)hclip.ir(VID_T[i],dur*1000);
+    const dur=naAbertura?1.6:(light?.9:1.2),ease=naAbertura?(x=>x<.5?2*x*x:1-Math.pow(-2*x+2,2)/2):easeIO;
     if(lenis)lenis.scrollTo(posOf(i),{duration:dur,easing:ease,lock:true,force:true,onComplete:done});
     else scrollTo({top:posOf(i),behavior:'smooth'});
     setTimeout(done,dur*1000+300)};
