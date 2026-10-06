@@ -212,9 +212,14 @@ html.stack .meta{flex-direction:row;align-items:flex-end}
 .monta .cta{background:var(--accent);color:#03270a;box-shadow:none}
 .monta .cta::before{background:var(--bg)}
 .monta .cta .ic{background:#03270a;color:var(--accent)}
-.mo-btn{height:44px;padding:0 18px;border-radius:999px;border:1.5px solid currentColor;background:transparent;font-family:var(--display);font-weight:800;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
-.mo-btn:hover{background:var(--bg);color:var(--fg)}
-.mo-stage{display:grid;place-items:center;min-width:0}
+.mo-seg{display:inline-flex;align-items:stretch;height:60px;padding:5px;gap:4px;border-radius:999px;background:color-mix(in srgb,var(--bg) 12%,transparent);box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--bg) 35%,transparent)}
+.mo-seg button{display:inline-flex;align-items:center;gap:8px;padding:0 18px;border:0;border-radius:999px;background:transparent;color:inherit;font-family:var(--display);font-weight:800;font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-variation-settings:"wdth" 105;white-space:nowrap;transition:background-color .25s,color .25s}
+.mo-seg svg{width:18px;height:18px;flex:none}
+.mo-seg button:hover{background:color-mix(in srgb,var(--bg) 16%,transparent)}
+.mo-seg .mo-ver[aria-pressed="true"]{background:var(--bg);color:var(--fg)}
+.mo-seg .mo-denovo svg{transition:transform .6s cubic-bezier(.2,1.4,.4,1)}
+.mo-seg .mo-denovo:hover svg{transform:rotate(-200deg)}
+.mo-stage{display:flex;flex-direction:column;align-items:center;gap:20px;min-width:0}
 .mo-bowl{position:relative;width:min(74vh,46vw);aspect-ratio:1;max-width:100%}
 .mo-p,.mo-leaf{position:absolute;pointer-events:none;will-change:transform}
 .mo-p{inset:0;width:100%;height:100%}
@@ -233,14 +238,17 @@ html.is-m .monta{display:none}
 .m-monta .mo-txt{gap:6px}
 .m-monta .mo-sub,.m-monta .mo-list{display:none}
 .m-monta .mo-stage{flex:1 1 0;min-height:0;container-type:size;position:relative;display:block}
-.m-monta .mo-bowl{position:absolute;left:50%;top:50%;width:min(100cqw,100cqh);transform:translate(-50%,-50%)}
+.m-monta .mo-bowl{position:absolute;left:50%;top:calc(50% - 26px);width:min(100cqw,calc(100cqh - 60px));transform:translate(-50%,-50%)}
+.m-monta .mo-seg{position:absolute;left:50%;bottom:0;transform:translateX(-50%)}
 .m-monta .mo-cap{display:flex;justify-content:space-between;align-items:baseline;gap:10px;min-height:2.4em}
 .m-monta .mo-cap .n{font-weight:700;font-size:16px}
 .m-monta .mo-cap .g{font-variant-numeric:tabular-nums;font-size:13px;opacity:.8;white-space:nowrap}
 .m-monta .mo-total b{font-size:28px}
 .m-monta .mo-total small{flex-basis:auto}
 .m-monta .mo-acts .cta{display:none}
-.m-monta .mo-btn{height:38px;padding:0 14px;font-size:11px;color:inherit}
+.m-monta .mo-seg{height:46px;padding:4px}
+.m-monta .mo-seg button{padding:0 14px;font-size:11px;gap:6px}
+.m-monta .mo-seg svg{width:16px;height:16px}
 .m-monta .mo-lab{padding:5px 8px;font-size:9px}
 .m-monta .mo-lab small{font-size:8px}
 
@@ -392,7 +400,7 @@ html.is-m .toast{bottom:calc(env(safe-area-inset-bottom,0px) + 92px)}
       <h2 id="shopH">O cardápio</h2>
       <div>
         <p>Todas levam base de folhas, proteína pesada na hora e gergelim negro por cima. Molho à parte, R$ 5.</p>
-        <div class="hours cap"><span class="chip">Ter – Sex</span><span class="chip">8h – 17h</span><span class="chip">Q. 112 Sul</span></div>
+        <div class="hours cap"><span class="chip hz-dias">Seg – Sex</span><span class="chip hz-hora">8h – 17h</span><span class="chip">Q. 112 Sul</span></div>
       </div>
     </div>
     <div class="grid" id="grid"></div>
@@ -408,7 +416,7 @@ html.is-m .toast{bottom:calc(env(safe-area-inset-bottom,0px) + 92px)}
     <div class="end-cta" id="endCta">
       <img class="end-logo" src="/palco/assets/logo-redonda.webp" alt="Cê Saladas" width="360" height="360">
       <p>Escolhe a salada, paga no PIX ou no cartão e acompanha a entrega pelo WhatsApp.</p>
-      <a class="cta" id="endBtn" href="https://cardapidex.com.br/ce-saladas" target="_blank" rel="noopener" data-pedido><span class="tx"><small>Ter – Sex · 8h – 17h</small>Peça pelo cardápio digital</span><span class="ic"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h12M11 5l5 5-5 5"/></svg></span></a>
+      <a class="cta" id="endBtn" href="https://cardapidex.com.br/ce-saladas" target="_blank" rel="noopener" data-pedido><span class="tx"><small><span class="hz-dias">Seg – Sex</span> · <span class="hz-hora">8h – 17h</span></small>Peça pelo cardápio digital</span><span class="ic"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h12M11 5l5 5-5 5"/></svg></span></a>
     </div>
     <div class="addr cap"><span>Q. 112 Sul, Rua SR 01, 2</span><span>(63) 99138-6719</span><span>Palmas – TO</span></div>
   </section>
@@ -431,7 +439,7 @@ const MONTA={k:3,total:513,peso:491,passos:[
  {n:'Pepino',g:20,kc:2,p:['pepino']},
  {n:'Tomate-cereja',g:50,kc:8,p:['tomate']},
  {n:'Ovinhos de codorna',g:40,kc:62,p:['ovos']},
- {n:'Gergelim negro',g:1,kc:6,p:['@gergelim']}]};
+ {n:'Gergelim negro',g:1,kc:6,p:['@gergelim'],fin:true}]};
 const ANG={lombo:307.5,brocolis1:22.5,milho:72.5,cenoura:120,pepino:165,tomate:206.5,brocolis2:244};
 const MP='/palco/assets/monta/';
 function montaHTML(){
@@ -443,13 +451,11 @@ function montaHTML(){
       <span class="cap">Basic Lombo · pedaço por pedaço</span>
       <h2 class="mo-h">Monta<br>o bowl</h2>
       <p class="mo-sub">Cada ingrediente entra na porção que vai no seu pote.</p>
-      <ol class="mo-list">${MONTA.passos.map(s=>`<li><span class="n">${s.n}</span><span class="g">${s.g} g</span><span class="k">${s.kc} kcal</span></li>`).join('')}</ol>
+      <ol class="mo-list">${MONTA.passos.map(s=>`<li><span class="n">${s.n}</span><span class="g">${s.fin?'pitada':s.g+' g'}</span><span class="k">${s.kc} kcal</span></li>`).join('')}</ol>
       <div class="mo-cap" aria-live="polite"><span class="n">Bowl vazio</span><span class="g"></span></div>
       <div class="mo-total"><b class="mo-kcal">0</b><span>kcal no bowl</span><small>Estimativa pela tabela TACO/POF · bowl de ${MONTA.peso} g</small></div>
       <div class="mo-acts">
         <button class="cta" type="button" data-add="${MONTA.k}"><span class="tx"><small>R$ ${brl(SALADS[MONTA.k].p)}</small>Pedir esta</span><span class="ic"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M10 4v12M4 10h12"/></svg></span><span class="q" aria-hidden="true"></span></button>
-        <button class="mo-btn mo-ver" type="button" aria-pressed="false">Ver por dentro</button>
-        <button class="mo-btn mo-denovo" type="button">Montar de novo</button>
       </div>
     </div>
     <div class="mo-stage"><div class="mo-bowl" role="img" aria-label="Bowl Basic Lombo sendo montado">
@@ -458,7 +464,10 @@ function montaHTML(){
       <img class="mo-leaf" data-f="2" src="/palco/assets/ing-alface.webp" alt="" style="left:26%;top:52%;transform:rotate(240deg)">
       ${pecas.map(x=>`<img class="mo-p" data-p="${x}" src="${MP}${x}.webp" alt="" decoding="async">`).join('')}
       <span class="mo-dots"></span>${labs}
-    </div></div>`;
+    </div><div class="mo-seg" role="group" aria-label="Ações do bowl">
+          <button class="mo-ver" type="button" aria-pressed="false"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M1.8 10S5 4.5 10 4.5 18.2 10 18.2 10 15 15.5 10 15.5 1.8 10 1.8 10Z"/><circle cx="10" cy="10" r="2.6"/></svg><span>Ver por dentro</span></button>
+          <button class="mo-denovo" type="button"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 10a6.5 6.5 0 1 0 2-4.7"/><path d="M3.5 3.2v3.6h3.6"/></svg><span>Montar de novo</span></button>
+        </div></div>`;
 }
 function Monta(root){
   const G=window.gsap,bowl=root.querySelector('.mo-bowl'),P=x=>root.querySelector(`.mo-p[data-p="${x}"]`);
@@ -469,12 +478,12 @@ function Monta(root){
   dots.innerHTML=html;const pontos=[...dots.children];
   let tl=null,feito=false,soma=0;
   const contar=v=>{const o={v:soma};soma=v;if(G)G.to(o,{v,duration:.5,ease:'power2.out',onUpdate:()=>{kc.textContent=Math.round(o.v)}});else kc.textContent=v};
-  const legenda=s=>{cap.querySelector('.n').textContent=s?s.n:'Bowl vazio';cap.querySelector('.g').textContent=s?`${s.g} g · ${s.kc} kcal`:''};
+  const legenda=(s,txt,sub)=>{cap.querySelector('.n').textContent=txt||(s?(s.fin?'Finaliza com '+s.n.toLowerCase():s.n):'Bowl vazio');cap.querySelector('.g').textContent=sub!=null?sub:(s&&!s.fin?`${s.g} g · ${s.kc} kcal`:'')};
   const esconder=()=>{if(!G)return;G.killTweensOf(root.querySelectorAll('.mo-p,.mo-leaf,.mo-dots i'));
     G.set(root.querySelectorAll('.mo-p'),{autoAlpha:0,x:0,y:0,rotation:0,scale:1});G.set(folhas,{autoAlpha:0});G.set(pontos,{autoAlpha:0});
     lis.forEach(l=>l.classList.remove('on'));soma=0;kc.textContent='0';legenda(null);bowl.classList.remove('aberto');root.querySelector('.mo-ver').setAttribute('aria-pressed','false')};
   const montar=()=>{if(!G){feito=true;return}
-    if(tl)tl.kill();esconder();tl=G.timeline({onComplete:()=>{feito=true}});
+    if(tl)tl.kill();esconder();tl=G.timeline({onComplete:()=>{feito=true;legenda(null,`Pronto: ${SALADS[MONTA.k].n}`,`${MONTA.peso} g`)}});
     tl.fromTo(P('borda'),{autoAlpha:0,scale:.82},{autoAlpha:1,scale:1,duration:.55,ease:'back.out(1.6)'});
     let acc=0;
     MONTA.passos.forEach((s,i)=>{
@@ -725,7 +734,7 @@ function bootMobile(){
     <span class="cap">Fim da jornada</span>
     <img class="end-logo m-logo" src="/palco/assets/logo-redonda.webp" alt="Cê Saladas" width="360" height="360">
     <p>Escolheu sua parada? O pedido fecha no cardápio digital e a entrega é acompanhada pelo WhatsApp.</p>
-    <a class="cta" href="https://cardapidex.com.br/ce-saladas" target="_blank" rel="noopener" data-pedido><span class="tx"><small>Ter – Sex · 8h – 17h</small>Peça pelo cardápio digital</span><span class="ic"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h12M11 5l5 5-5 5"/></svg></span></a>
+    <a class="cta" href="https://cardapidex.com.br/ce-saladas" target="_blank" rel="noopener" data-pedido><span class="tx"><small><span class="hz-dias">Seg – Sex</span> · <span class="hz-hora">8h – 17h</span></small>Peça pelo cardápio digital</span><span class="ic"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h12M11 5l5 5-5 5"/></svg></span></a>
     <div class="ad cap"><span>Q. 112 Sul, Rua SR 01, 2</span><span>(63) 99138-6719 · Palmas – TO</span></div>
   </section>
   <div class="m-bar" id="mBar"><div class="info"><span class="nm cap" id="mNm"></span><span class="pv" id="mPv"></span></div>
@@ -922,22 +931,27 @@ function boot(){
   // Navegação do carrossel: um gesto (roda, trackpad, teclado, arrastar, trilha)
   // = uma salada inteira, em tempo fixo. Antes a animação seguia a rolagem em
   // câmera lenta e o encaixe puxava depois — parecia travado.
-  const pts=[0,...stops];
+  // abertura com 3 paradas (molho cai · explode · assenta) antes do corte para a 1ª salada
+  const HOOK_PTS=[0,.34,.67,.985];
+  const pts=[...HOOK_PTS,...stops];
   const posOf=i=>stageST.start+pts[i]/total*(stageST.end-stageST.start);
   const easeIO=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
   let busy=false,acc=0,accT=0;
   const yNow=()=>lenis?lenis.scroll:scrollY;
   const nearest=()=>{const y=yNow();let k=0;pts.forEach((_,i)=>{if(Math.abs(posOf(i)-y)<Math.abs(posOf(k)-y))k=i});return k};
   const goTo=i=>{i=Math.max(0,Math.min(pts.length-1,i));busy=true;const done=()=>{busy=false};
-    if(lenis)lenis.scrollTo(posOf(i),{duration:light?.9:1.2,easing:easeIO,lock:true,force:true,onComplete:done});
+    // dentro da abertura o vídeo anda perto da velocidade real: deslize mais longo e quase linear
+    const naAbertura=pts[i]<=1&&pts[nearest()]<=1;
+    const dur=naAbertura?2.4:(light?.9:1.2),ease=naAbertura?(x=>x<.5?2*x*x:1-Math.pow(-2*x+2,2)/2):easeIO;
+    if(lenis)lenis.scrollTo(posOf(i),{duration:dur,easing:ease,lock:true,force:true,onComplete:done});
     else scrollTo({top:posOf(i),behavior:'smooth'});
-    setTimeout(done,1500)};
+    setTimeout(done,dur*1000+300)};
   const inStage=()=>{const y=yNow();return y>=stageST.start-2&&y<=posOf(pts.length-1)+2};
   const step=dir=>{const k=nearest(),y=yNow(),p=posOf(k);
     const n=dir>0?(p>y+4?k:k+1):(p<y-4?k:k-1);
     if(n<0||n>pts.length-1)return false;goTo(n);return true};
   window.__goSalada=goTo;
-  $('#rail').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.j)goTo(+b.dataset.j+1);else step(+b.dataset.dir)});
+  $('#rail').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.j)goTo(+b.dataset.j+HOOK_PTS.length);else step(+b.dataset.dir)});
   addEventListener('wheel',e=>{
     if(!inStage())return;
     const d=Math.abs(e.deltaY)>=Math.abs(e.deltaX)?e.deltaY:e.deltaX,k=nearest(),y=yNow();
@@ -1005,6 +1019,22 @@ function boot(){
   matchMedia('(prefers-color-scheme: dark)').addEventListener('change',syncSkin);
 }
 (document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(()=>{boot();renderBag()});
+/* Horário vem do cadastro da loja (o mesmo do painel): fechou num feriado e
+   reabriu, a página acompanha. O texto no HTML é só a reserva. */
+(function horario(){
+  const DIAS=[['monday','Seg'],['tuesday','Ter'],['wednesday','Qua'],['thursday','Qui'],['friday','Sex'],['saturday','Sáb'],['sunday','Dom']];
+  const h=t=>{const[H,M]=String(t||'').split(':');return H?(+H)+'h'+(M&&M!=='00'?M:''):''};
+  fetch('https://backend.pastita.com.br/api/v1/public/ce-saladas/availability/',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(d=>{
+    const oh=d&&d.operating_hours;if(!oh)return;
+    const abertos=DIAS.map(([k,l],i)=>({i,l,o:oh[k]})).filter(x=>x.o&&x.o.is_open);if(!abertos.length)return;
+    // agrupa dias seguidos: Seg – Sex, ou Seg, Qua – Sex
+    const grupos=[];abertos.forEach(x=>{const g=grupos[grupos.length-1];if(g&&x.i===g[g.length-1].i+1)g.push(x);else grupos.push([x])});
+    const dias=grupos.map(g=>g.length>2?`${g[0].l} – ${g[g.length-1].l}`:g.map(x=>x.l).join(', ')).join(', ');
+    const horas=[...new Set(abertos.map(x=>`${h(x.o.open)} – ${h(x.o.close)}`))];
+    document.querySelectorAll('.hz-dias').forEach(e=>{e.textContent=dias});
+    if(horas.length===1)document.querySelectorAll('.hz-hora').forEach(e=>{e.textContent=horas[0]});
+  }).catch(()=>{});
+})();
 </script>
 
 </body>
