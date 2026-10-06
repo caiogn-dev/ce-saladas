@@ -107,7 +107,27 @@ html.stack .meta .ing{max-width:34ch}
 @media (hover:hover){.cta:hover{color:#03270a;box-shadow:0 16px 34px -12px color-mix(in srgb,var(--accent) 80%,transparent)}.cta:hover::before{transform:none}.cta:hover .ic{transform:rotate(90deg);background:#03270a;color:var(--accent)}}
 .cta.done::before{transform:none}.cta.done{color:#03270a}.cta.done .ic{background:#03270a;color:var(--accent)}
 .foot{position:absolute;z-index:6;left:var(--gut);right:var(--gut);bottom:calc(env(safe-area-inset-bottom,0px) + 22px);border-top:1.5px solid var(--fg);padding-top:12px;display:flex;justify-content:space-between;gap:12px}
-.count{font-variant-numeric:tabular-nums;visibility:hidden}
+.count{font-variant-numeric:tabular-nums;visibility:hidden;min-width:5.5em;text-align:left}
+.foot{align-items:center}
+.rail{display:flex;align-items:center;gap:10px;margin-block:-14px -2px;padding:4px 14px;background:var(--bg);border-radius:999px;transform:translateY(-13px);transition:background-color .5s}
+.count{display:inline-flex;align-items:center;gap:.35em}
+.count .roll{display:inline-block;vertical-align:baseline}
+.rail-dots{display:flex;align-items:center;gap:8px}
+.rail-dot{position:relative;width:32px;height:32px;padding:0;border:0;border-radius:50%;background:transparent;opacity:.5;transition:transform .55s cubic-bezier(.2,1.5,.4,1),opacity .3s}
+.rail-dot img{width:100%;height:100%;object-fit:contain}
+.rail-dot::after{content:"";position:absolute;inset:-5px;border-radius:50%;border:2px solid var(--fg);opacity:0;transform:scale(.7);transition:transform .45s cubic-bezier(.2,1.5,.4,1),opacity .3s}
+.rail-dot.on{opacity:1;transform:scale(1.32)}
+.rail-dot.on::after{opacity:1;transform:none}
+.rail-dot:hover{opacity:1;transform:scale(1.18)}
+.rail-dot.on:hover{transform:scale(1.36)}
+.rail-tip{position:absolute;left:50%;bottom:calc(100% + 16px);transform:translate(-50%,6px);white-space:nowrap;background:var(--fg);color:var(--bg);padding:7px 12px;border-radius:999px;font:700 11px/1 var(--display);letter-spacing:.08em;text-transform:uppercase;opacity:0;pointer-events:none;transition:opacity .2s,transform .25s}
+.rail-tip b{font-weight:900;margin-right:6px}
+.rail-dot:hover .rail-tip,.rail-dot:focus-visible .rail-tip{opacity:1;transform:translate(-50%,0)}
+.rail-arrow{width:34px;height:34px;padding:0;border-radius:50%;border:1.5px solid var(--fg);background:transparent;color:var(--fg);display:grid;place-items:center;transition:background-color .2s,color .2s,transform .2s}
+.rail-arrow svg{width:16px;height:16px}
+.rail-arrow:hover{background:var(--fg);color:var(--bg)}
+.rail-arrow:active{transform:scale(.92)}
+@media (max-width:1100px){.foot>span:first-child,.foot>span:last-child{max-width:14ch}}
 .count .roll{display:inline-block;overflow:hidden;height:1.1em;vertical-align:bottom}
 .count .roll span{display:block}
 .prog{position:absolute;z-index:6;left:0;top:0;height:3px;width:100%;transform-origin:0 50%;transform:scaleX(0);background:var(--accent)}
@@ -310,7 +330,7 @@ html.is-m .toast{bottom:calc(env(safe-area-inset-bottom,0px) + 92px)}
       <div class="cue cap" aria-hidden="true">Role<i></i></div>
     </div>
     <div id="posters"></div>
-    <div class="foot cap"><span>Peça pelo cardápio digital</span><span class="count" id="count" aria-live="polite"><span class="roll"><span id="countN">01</span></span> / 07</span><span>Palmas – TO</span></div>
+    <div class="foot cap"><span>Peça pelo cardápio digital</span><nav class="rail" id="rail" aria-label="Escolher salada"><button type="button" class="rail-arrow" data-dir="-1" aria-label="Salada anterior"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12.5 4.5 7 10l5.5 5.5"/></svg></button><span class="rail-dots" id="railDots"></span><button type="button" class="rail-arrow" data-dir="1" aria-label="Próxima salada"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 4.5 13 10l-5.5 5.5"/></svg></button><span class="count" id="count" aria-live="polite"><span class="roll"><span id="countN">01</span></span> / 07</span></nav><span>Palmas – TO</span></div>
   </section>
 
   <section class="shop" id="cardapio" aria-labelledby="shopH">
@@ -391,6 +411,7 @@ $('#posters').innerHTML=SALADS.map((d,k)=>`
     <div class="buy"><span class="price"><small>R$</small>${brl(d.p)}</span><button class="cta" type="button" data-add="${k}" aria-label="Pedir ${d.n}, R$ ${brl(d.p)}"><span class="tx"><small>Na sacola em 1 toque</small>Pedir esta</span><span class="ic"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M10 4v12M4 10h12"/></svg></span><span class="q" aria-hidden="true"></span></button></div>
   </div>
 </article>`).join('');
+$('#railDots').innerHTML=SALADS.map((d,j)=>`<button type="button" class="rail-dot" data-j="${j}" aria-label="${d.n}, R$ ${brl(d.p)}"><img src="/palco/assets/${d.s}.webp" alt=""><span class="rail-tip" aria-hidden="true"><b>${d.n}</b>R$ ${brl(d.p)}</span></button>`).join('');
 $('#grid').innerHTML=SALADS.map((d,k)=>`
 <article class="card${k?'':' hero'}">
   ${d.tag?`<span class="tag cap">${d.tag}</span>`:''}
@@ -725,23 +746,57 @@ function boot(){
   let cur=-1;
   const setIdx=k=>{if(k===cur)return;const dir=k>cur?1:-1;cur=k;
     P.forEach((p,j)=>p.el.classList.toggle('on',j===k));
+    $$('.rail-dot').forEach((b,j)=>b.classList.toggle('on',j===k));
     const c=$('#countN');gsap.timeline().to(c,{yPercent:-100*dir,duration:.15,ease:'power2.in',onComplete:()=>c.textContent=String(k+1).padStart(2,'0')}).fromTo(c,{yPercent:100*dir},{yPercent:0,duration:.25,ease:'power2.out'})};
   const stageST=ScrollTrigger.create({
-    trigger:'#palco',start:'top top',end:()=>'+='+innerHeight*total*(light?.62:1.1),pin:true,scrub:light?.35:1,animation:tl,invalidateOnRefresh:true,
+    trigger:'#palco',start:'top top',end:()=>'+='+innerHeight*total*(light?.62:1.1),pin:true,scrub:.3,animation:tl,invalidateOnRefresh:true,
     snap:lenis?false:{snapTo:[0,...stops.map(s=>s/total)],duration:{min:.25,max:.8},delay:.08,ease:'power3.inOut',directional:true},
     onUpdate:self=>{const tt=self.progress*total;let k=0;stops.forEach((s,j)=>{if(tt>=s-.62)k=j});setIdx(k);
       gsap.set('#prog',{scaleX:self.progress});$('#top').classList.toggle('dark',tt<.98)}
   });
   $('#top').classList.add('dark');setIdx(0);
-  if(lenis){ // snap feito pelo próprio Lenis: o snap do ScrollTrigger disputa a rolagem com ele
-    window.__lenis=lenis;let snapping=false;const pts=[0,...stops];
-    ScrollTrigger.addEventListener('scrollEnd',()=>{
-      const y=lenis.scroll,a=stageST.start,b=stageST.end;if(snapping||y<=a+2||y>=b-2)return;
-      const tt=(y-a)/(b-a)*total;let best=pts[0];pts.forEach(s=>{if(Math.abs(s-tt)<Math.abs(best-tt))best=s});
-      const to=a+best/total*(b-a);if(Math.abs(to-y)<4)return;
-      snapping=true;lenis.scrollTo(to,{duration:light?.75:1.4,easing:x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2,onComplete:()=>{snapping=false}});
-      setTimeout(()=>{snapping=false},light?1000:1800)});
-  }
+  // Navegação do carrossel: um gesto (roda, trackpad, teclado, arrastar, trilha)
+  // = uma salada inteira, em tempo fixo. Antes a animação seguia a rolagem em
+  // câmera lenta e o encaixe puxava depois — parecia travado.
+  const pts=[0,...stops];
+  const posOf=i=>stageST.start+pts[i]/total*(stageST.end-stageST.start);
+  const easeIO=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+  let busy=false,acc=0,accT=0;
+  const yNow=()=>lenis?lenis.scroll:scrollY;
+  const nearest=()=>{const y=yNow();let k=0;pts.forEach((_,i)=>{if(Math.abs(posOf(i)-y)<Math.abs(posOf(k)-y))k=i});return k};
+  const goTo=i=>{i=Math.max(0,Math.min(pts.length-1,i));busy=true;const done=()=>{busy=false};
+    if(lenis)lenis.scrollTo(posOf(i),{duration:light?.9:1.2,easing:easeIO,lock:true,force:true,onComplete:done});
+    else scrollTo({top:posOf(i),behavior:'smooth'});
+    setTimeout(done,1500)};
+  const inStage=()=>{const y=yNow();return y>=stageST.start-2&&y<=posOf(pts.length-1)+2};
+  const step=dir=>{const k=nearest(),y=yNow(),p=posOf(k);
+    const n=dir>0?(p>y+4?k:k+1):(p<y-4?k:k-1);
+    if(n<0||n>pts.length-1)return false;goTo(n);return true};
+  window.__goSalada=goTo;
+  $('#rail').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.j)goTo(+b.dataset.j+1);else step(+b.dataset.dir)});
+  addEventListener('wheel',e=>{
+    if(!inStage())return;
+    const d=Math.abs(e.deltaY)>=Math.abs(e.deltaX)?e.deltaY:e.deltaX,k=nearest(),y=yNow();
+    // nas pontas, deixa a página rolar: ninguém fica preso no carrossel
+    if(!busy&&((d>0&&k===pts.length-1&&y>=posOf(k)-2)||(d<0&&k===0&&y<=posOf(0)+2)))return;
+    e.preventDefault();e.stopImmediatePropagation();
+    if(busy)return;
+    const now=performance.now();if(now-accT>200)acc=0;accT=now;acc+=d;
+    if(Math.abs(acc)<24)return;
+    const dir=acc>0?1:-1;acc=0;step(dir);
+  },{passive:false,capture:true});
+  addEventListener('keydown',e=>{
+    const d={ArrowDown:1,ArrowRight:1,PageDown:1,' ':1,ArrowUp:-1,ArrowLeft:-1,PageUp:-1}[e.key];
+    if(!d||!inStage()||e.target.closest('input,textarea'))return;
+    if(busy){e.preventDefault();return}
+    if(step(d))e.preventDefault();
+  });
+  // arrastar para o lado, como num carrossel de verdade
+  let px0=null;
+  $('#palco').addEventListener('pointerdown',e=>{if(e.pointerType==='touch'||e.target.closest('button,a'))return;px0=e.clientX});
+  let arrastou=false;
+  addEventListener('pointerup',e=>{if(px0==null)return;const dx=e.clientX-px0;px0=null;if(Math.abs(dx)>70){arrastou=true;setTimeout(()=>{arrastou=false},0);if(inStage()&&!busy)step(dx<0?1:-1)}});
+  addEventListener('click',e=>{if(arrastou){e.preventDefault();e.stopImmediatePropagation();arrastou=false}},true);
 
   // hover: o bowl inclina na direção do cursor e o cursor vira um botão
   const fine=matchMedia('(pointer:fine)').matches;
