@@ -1,0 +1,780 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Cê Saladas · Saladas no bowl em Palmas</title>
+<meta name="description" content="Sete saladas com proteína grelhada, montadas no bowl e entregues em Palmas – TO. Escolha a sua e peça pelo cardápio digital.">
+<meta name="theme-color" content="#026602">
+<link rel="canonical" href="https://cesaladas.com.br/">
+<link rel="icon" href="/favicon.ico">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="manifest" href="/manifest.json">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:site_name" content="Cê Saladas">
+<meta property="og:title" content="Cê Saladas · Saladas no bowl em Palmas">
+<meta property="og:description" content="Sete paradas. Escolha a sua.">
+<meta property="og:url" content="https://cesaladas.com.br/">
+<meta property="og:image" content="https://cesaladas.com.br/palco/assets/queridinha.webp">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preload" as="image" href="/palco/assets/seq/f001.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Bricolage+Grotesque:opsz,wght@12..96,400..700&display=swap">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-7Z5V0N2EE4"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-7Z5V0N2EE4');</script>
+<script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','1301947998542003');fbq('track','PageView');</script>
+<style>
+/* Layout: palco fixo dirigido por rolagem — pôster de título largo que corta a borda, bowl visto de cima no centro, rodapé que nunca se move. Menta = tema claro, Verde = tema escuro. */
+:root{
+  --bg:#DAF5DA; --fg:#026602; --ghost:#BEE3BE; --accent:#00BF63; --ink:#0b1f0b; --paper:#F2FBF2; --night:#060806;
+  --line:color-mix(in srgb, var(--fg) 28%, transparent);
+  --display:"Archivo","Arial Black","Helvetica Neue",Arial,sans-serif;
+  --body:"Bricolage Grotesque","Helvetica Neue",Arial,sans-serif;
+  --gut:clamp(16px,3.2vw,40px);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#026602;--fg:#DAF5DA;--ghost:#0E7A0E;--accent:#00BF63;--ink:#DAF5DA;--paper:#035a03;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#026602;--fg:#DAF5DA;--ghost:#0E7A0E;--accent:#00BF63;--ink:#DAF5DA;--paper:#035a03;color-scheme:dark}
+
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto!important}
+html,body{overflow-x:hidden;overflow-x:clip}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.45;transition:background-color .5s,color .5s;-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block;user-select:none;-webkit-user-drag:none}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:4px}
+.cap{font-family:var(--display);font-variation-settings:"wdth" 100;font-weight:800;font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+
+/* ---------- topo ---------- */
+.top{position:fixed;inset:0 0 auto 0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:calc(env(safe-area-inset-top,0px) + 14px) var(--gut) 14px;color:var(--fg);transition:color .35s;pointer-events:none}
+.top>*{pointer-events:auto}
+.top.dark{color:#DAF5DA}
+.mark{font-family:var(--display);font-weight:900;font-variation-settings:"wdth" 125;font-size:18px;letter-spacing:-.01em;text-decoration:none;line-height:.9}
+.top-r{display:flex;gap:8px;align-items:center}
+.pill{display:inline-flex;align-items:center;gap:8px;height:38px;padding:0 16px;border-radius:999px;border:1.5px solid currentColor;background:transparent;font-family:var(--display);font-weight:800;font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-variation-settings:"wdth" 100}
+.pill .dot{width:12px;height:12px;border-radius:50%;background:currentColor;position:relative;overflow:hidden}
+.pill .dot::after{content:"";position:absolute;inset:0 0 0 50%;background:var(--bg)}
+.bag .n{display:inline-grid;place-items:center;min-width:22px;height:22px;border-radius:999px;background:currentColor;font-variant-numeric:tabular-nums}
+.bag .n b{color:var(--bg);font-size:11px}
+.top.dark .bag .n b{color:#060806}
+.top.dark .pill .dot::after{background:#060806}
+
+/* ---------- palco ---------- */
+.stage{position:relative;height:100vh;height:100svh;overflow:hidden;background:var(--bg);transition:background-color .5s}
+.hook{position:absolute;inset:0;z-index:20;background:var(--night);color:#DAF5DA;overflow:hidden}
+.hook canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 40%;transform-origin:50% 35%}
+.hook::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,8,6,.55) 0%,rgba(6,8,6,0) 30%,rgba(6,8,6,0) 55%,rgba(6,8,6,.85) 100%)}
+.hook-copy{position:absolute;z-index:2;left:var(--gut);right:var(--gut);bottom:calc(var(--gut) + 28px);display:grid;gap:14px;max-width:1100px}
+.hook h1{margin:0;font-family:var(--display);font-weight:900;font-variation-settings:"wdth" 125;font-size:clamp(44px,9.4vw,150px);line-height:.84;letter-spacing:-.02em;text-transform:uppercase;text-wrap:balance}
+.hook p{margin:0;max-width:34ch;font-size:clamp(15px,1.4vw,19px);color:#BEE3BE}
+.cue{position:absolute;z-index:2;right:var(--gut);bottom:calc(var(--gut) + 28px);display:grid;justify-items:center;gap:10px}
+.cue i{display:block;width:1.5px;height:56px;background:linear-gradient(#DAF5DA,transparent);animation:cue 1.6s ease-in-out infinite;transform-origin:top}
+@keyframes cue{0%{transform:scaleY(0)}50%{transform:scaleY(1)}100%{transform:scaleY(1);opacity:0}}
+
+.poster{position:absolute;inset:0;pointer-events:none}
+.poster.on{pointer-events:auto}
+.ttl{position:absolute;left:0;right:0;top:calc(env(safe-area-inset-top,0px) + var(--ttlTop,68px));display:grid;justify-items:center;z-index:1;--wd:125}
+.ln{display:inline-block;white-space:nowrap;font-family:var(--display);font-weight:900;font-variation-settings:"wdth" var(--wd),"wght" 900;font-size:var(--F,120px);line-height:.82;text-transform:uppercase;color:var(--fg);transform:scaleX(var(--sx,1));transform-origin:50% 50%;transition:color .5s}
+.bwrap{position:absolute;left:50%;top:var(--bowlTop,30%);width:var(--B,60vh);aspect-ratio:1;margin-left:calc(var(--B,60vh) / -2);z-index:3;perspective:900px}
+.tilt{width:100%;height:100%;transform-style:preserve-3d;cursor:none}
+.bwrap::before{content:"";position:absolute;left:8%;right:8%;top:14%;bottom:-4%;border-radius:50%;background:radial-gradient(closest-side,rgba(2,40,2,.32),rgba(2,40,2,0));transform:translateY(4%)}
+.tilt img{position:relative;width:100%;height:100%;object-fit:contain}
+.bwrap,.ttl,.meta,.tilt img{will-change:transform;backface-visibility:hidden}
+.meta{position:absolute;z-index:4;left:var(--gut);right:var(--gut);bottom:calc(env(safe-area-inset-bottom,0px) + 74px);display:flex;justify-content:space-between;align-items:flex-end;gap:16px;pointer-events:none}
+.meta>*{pointer-events:auto}
+.meta .ing{max-width:min(30ch,calc((100vw - var(--B)) / 2 - 2 * var(--gut)));min-width:0;display:grid;gap:6px}
+html.stack .meta .ing{max-width:34ch}
+.meta .ing p{margin:0;font-size:14px;line-height:1.4;color:var(--ink);opacity:.85}
+.meta .buy{display:grid;justify-items:end;gap:10px}
+.price{font-family:var(--display);font-weight:900;font-variation-settings:"wdth" 110;font-size:clamp(28px,3vw,40px);line-height:1;font-variant-numeric:tabular-nums}
+.price small{font-size:.5em;vertical-align:.55em;margin-right:3px}
+.cta{position:relative;isolation:isolate;overflow:hidden;display:inline-flex;align-items:center;gap:16px;height:60px;padding:0 7px 0 26px;border-radius:999px;border:0;background:var(--fg);color:var(--bg);font-family:var(--display);font-weight:800;font-size:14px;letter-spacing:.08em;text-transform:uppercase;font-variation-settings:"wdth" 112;text-decoration:none;white-space:nowrap;box-shadow:0 10px 24px -10px color-mix(in srgb,var(--fg) 70%,transparent);transition:color .45s cubic-bezier(.7,0,.2,1),box-shadow .45s,background-color .5s;-webkit-tap-highlight-color:transparent}
+.cta::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;background:var(--accent);transform:translateX(-101%);transition:transform .55s cubic-bezier(.7,0,.2,1)}
+.cta .tx{display:grid;line-height:1.05;text-align:left}
+.cta .tx small{font-size:10px;letter-spacing:.14em;opacity:.7;font-weight:700}
+.cta .ic{flex:none;display:grid;place-items:center;width:46px;height:46px;border-radius:50%;background:var(--bg);color:var(--fg);transition:transform .55s cubic-bezier(.7,0,.2,1),background-color .45s,color .45s}
+.cta .ic svg{width:20px;height:20px}
+.cta .q{position:absolute;top:6px;right:6px;min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:var(--accent);color:#03270a;font-size:10px;display:grid;place-items:center;transform:scale(0);transition:transform .4s cubic-bezier(.3,1.6,.5,1)}
+.cta .q.on{transform:scale(1)}
+.cta:active{transform:scale(.97)}
+@media (hover:hover){.cta:hover{color:#03270a;box-shadow:0 16px 34px -12px color-mix(in srgb,var(--accent) 80%,transparent)}.cta:hover::before{transform:none}.cta:hover .ic{transform:rotate(90deg);background:#03270a;color:var(--accent)}}
+.cta.done::before{transform:none}.cta.done{color:#03270a}.cta.done .ic{background:#03270a;color:var(--accent)}
+.foot{position:absolute;z-index:6;left:var(--gut);right:var(--gut);bottom:calc(env(safe-area-inset-bottom,0px) + 22px);border-top:1.5px solid var(--fg);padding-top:12px;display:flex;justify-content:space-between;gap:12px}
+.count{font-variant-numeric:tabular-nums;visibility:hidden}
+.count .roll{display:inline-block;overflow:hidden;height:1.1em;vertical-align:bottom}
+.count .roll span{display:block}
+.prog{position:absolute;z-index:6;left:0;top:0;height:3px;width:100%;transform-origin:0 50%;transform:scaleX(0);background:var(--accent)}
+.cursor{position:fixed;z-index:60;left:0;top:0;width:92px;height:92px;margin:-46px 0 0 -46px;border-radius:50%;background:var(--fg);color:var(--bg);display:grid;place-items:center;text-align:center;pointer-events:none;transform:scale(0);font-family:var(--display);font-weight:800;font-size:11px;letter-spacing:.1em;line-height:1.15;text-transform:uppercase}
+
+/* ---------- vitrine ---------- */
+.shop{padding-block:clamp(72px,10vw,140px) clamp(48px,8vw,110px);padding-inline:var(--gut)}
+.shop-h{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:clamp(28px,4vw,48px)}
+.shop-h h2{margin:0;font-family:var(--display);font-weight:900;font-variation-settings:"wdth" 125;font-size:clamp(48px,10vw,150px);line-height:.82;text-transform:uppercase;letter-spacing:-.02em}
+.shop-h p{margin:0;max-width:36ch;color:var(--ink);opacity:.85}
+.hours{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.chip{height:30px;display:inline-flex;align-items:center;padding:0 12px;border-radius:999px;border:1.5px solid var(--line)}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(10px,1.4vw,18px)}
+.card{--cbg:var(--fg);--cfg:var(--bg);position:relative;background:var(--cbg);color:var(--cfg);border-radius:22px;padding:18px 18px 16px;display:grid;grid-template-rows:auto 1fr auto;gap:8px;overflow:hidden;min-width:0;transition:background-color .5s,color .5s}
+.card:nth-child(4n+2),.card:nth-child(4n+3){--cbg:var(--paper);--cfg:var(--fg)}
+.card.hero{grid-column:span 2}
+.card h3{margin:0;font-family:var(--display);font-weight:900;font-size:clamp(26px,2.6vw,40px);line-height:.86;text-transform:uppercase;font-variation-settings:"wdth" 80,"wght" 900;transition:font-variation-settings .6s cubic-bezier(.2,.8,.2,1),letter-spacing .6s}
+.card:hover h3,.card:focus-within h3{font-variation-settings:"wdth" 125,"wght" 900}
+.card .pic{position:relative;aspect-ratio:1;width:88%;justify-self:center;margin-block:6px}
+.card.hero .pic{width:min(70%,440px)}
+.card .pic img{width:100%;height:100%;object-fit:contain;transition:transform .9s cubic-bezier(.2,.8,.2,1);filter:drop-shadow(0 14px 18px rgba(0,0,0,.22))}
+.card:hover .pic img{transform:rotate(14deg) scale(1.07)}
+.card .row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.card .row .price{font-size:24px}
+.card .prot{font-size:13px;opacity:.8;margin:0}
+.add{height:42px;padding:0 16px;border-radius:999px;border:1.5px solid currentColor;background:transparent;font-family:var(--display);font-weight:800;font-size:12px;letter-spacing:.1em;text-transform:uppercase;display:inline-flex;gap:8px;align-items:center;transition:background-color .25s,color .25s}
+.add:hover{background:var(--cfg);color:var(--cbg)}
+.tag{position:absolute;top:16px;right:16px;font-size:10px;padding:5px 9px;border-radius:999px;background:var(--accent);color:#03270a}
+
+/* ---------- fechamento ---------- */
+.end{position:relative;height:100vh;height:100svh;overflow:hidden;background:var(--bg);transition:background-color .5s}
+.ghost{position:absolute;inset:0;display:grid;place-items:center;z-index:1}
+.ghost .w{font-family:var(--display);font-weight:900;font-variation-settings:"wdth" 125;font-size:clamp(90px,25vw,420px);line-height:.8;text-align:center;text-transform:uppercase;--m:0;color:color-mix(in srgb,var(--fg) calc(var(--m) * 100%),var(--ghost));letter-spacing:-.03em;will-change:transform}
+.ingr{position:absolute;z-index:2;width:var(--s,140px);pointer-events:none}
+.ingr .f{will-change:transform}
+.ingr img{width:100%;filter:drop-shadow(0 12px 16px rgba(2,40,2,.25))}
+.corner{position:absolute;z-index:2;width:min(46vw,460px);left:calc(min(46vw,460px) * -.42);top:calc(min(46vw,460px) * -.42)}
+.corner img{filter:drop-shadow(0 18px 24px rgba(2,40,2,.25))}
+.end-cta{position:absolute;z-index:3;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 70px);display:grid;justify-items:center;gap:14px;text-align:center;padding-inline:var(--gut)}
+.end-cta p{margin:0;color:var(--ink);opacity:.85;max-width:40ch}
+.addr{position:absolute;z-index:3;left:var(--gut);right:var(--gut);bottom:calc(env(safe-area-inset-bottom,0px) + 22px);border-top:1.5px solid var(--fg);padding-top:12px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+
+.toast{position:fixed;z-index:70;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 20px);transform:translateX(-50%);opacity:0;visibility:hidden;background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:999px;font-weight:600;font-size:14px;white-space:nowrap;max-width:calc(100vw - 32px);overflow:hidden;text-overflow:ellipsis}
+
+@media (max-width:980px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+html.stack .meta{flex-direction:row;align-items:flex-end}
+@media (max-width:720px){
+  .meta{flex-direction:column;align-items:stretch;gap:12px;bottom:calc(env(safe-area-inset-bottom,0px) + 62px)}
+  .meta .buy{grid-auto-flow:column;grid-template-columns:auto 1fr;gap:14px;align-items:center}
+  .meta .buy .cta{justify-content:space-between}
+  .meta .ing p{font-size:13px}
+  .meta .ing{max-width:none}
+  .cue{display:none}
+  .pill.skin span{display:none}
+}
+@media (max-width:520px){.grid{grid-template-columns:minmax(0,1fr)}.card.hero{grid-column:auto}.bag .lbl{display:none}}
+@media (pointer:coarse){.card .pic img,.ingr img,.corner img{filter:none}
+.tilt{cursor:pointer}.cursor{display:none}}
+
+/* sem movimento: os pôsteres viram páginas empilhadas */
+.still .stage{height:auto;overflow:visible}
+.still .hook{position:relative;height:90vh}
+.still .poster{position:relative;height:100vh;pointer-events:auto}
+.still .end .ingr,.still .end .corner{transform:none}
+/* =================== CELULAR: jornada em paradas (desenho próprio) =================== */
+.m-vid{position:relative}
+.m-vid .stick{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
+.m-vid video,.m-vid canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:var(--night)}
+.snap{position:absolute;left:0;width:1px;height:1px;scroll-snap-align:start;scroll-snap-stop:always;pointer-events:none}
+#mHook{height:calc(300vh);height:calc(300svh);background:var(--night);color:#DAF5DA}
+#mHook .stick::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,8,6,.5) 0%,rgba(6,8,6,0) 24%,rgba(6,8,6,.1) 45%,rgba(6,8,6,.9) 100%);pointer-events:none}
+#mHook .c{position:absolute;z-index:2;left:16px;right:16px;bottom:calc(env(safe-area-inset-bottom,0px) + 30px);display:grid;gap:14px}
+#mHook .beat{grid-area:1/1;align-self:end}
+#mHook .fit span{color:#DAF5DA}
+#mHook p{margin:0;font-size:16px;line-height:1.4;color:#BEE3BE;max-width:32ch}
+#mHook .go{display:flex;align-items:center;gap:10px}
+#mHook .go i{display:block;width:34px;height:34px;border-radius:50%;border:1.5px solid #DAF5DA;position:relative}
+#mHook .go i::after{content:"";position:absolute;left:50%;top:9px;width:8px;height:8px;margin-left:-4px;border-right:2px solid #DAF5DA;border-bottom:2px solid #DAF5DA;transform:rotate(45deg);animation:bob 1.4s ease-in-out infinite}
+#mFilm{background:var(--bg)}
+#mFilm video{object-fit:contain;background:var(--bg);top:calc(env(safe-area-inset-top,0px) + 84px);bottom:auto;height:min(125vw,calc(100svh - 300px))}
+#mFilm .tx{position:absolute;z-index:2;left:16px;right:16px;bottom:calc(env(safe-area-inset-bottom,0px) + 104px);margin:0;font-size:17px;line-height:1.3;font-weight:650;color:var(--fg);text-wrap:balance;min-height:2.6em;display:flex;align-items:flex-end}
+#mFilm .hd{position:absolute;z-index:2;left:16px;right:16px;top:calc(env(safe-area-inset-top,0px) + 62px);display:flex;justify-content:space-between;gap:10px}
+#mFilm .hd .k{font-variant-numeric:tabular-nums}
+#mFilm .rail{position:absolute;z-index:2;left:16px;right:16px;bottom:calc(env(safe-area-inset-bottom,0px) + 90px);height:3px;border-radius:2px;background:color-mix(in srgb,var(--fg) 20%,transparent);overflow:hidden}
+#mFilm .rail b{display:block;height:100%;background:var(--fg);transform-origin:0 50%;transform:scaleX(0)}
+
+#m{display:none}
+#m,#m *,#m *::before,#m *::after{box-sizing:border-box}
+html.is-m{scroll-snap-type:none;overscroll-behavior-y:none}
+html.is-m .stage,html.is-m .shop,html.is-m .end,html.is-m .cursor{display:none}
+html.is-m #m{display:block}
+html.is-m .top{padding-top:calc(env(safe-area-inset-top,0px) + 20px)}
+html.is-m .mark{font-size:15px}
+html.is-m .pill{height:34px;padding:0 12px;font-size:11px}
+html.is-m .toast{bottom:calc(env(safe-area-inset-bottom,0px) + 92px)}
+
+.m-prog{position:fixed;z-index:55;top:calc(env(safe-area-inset-top,0px) + 7px);left:16px;right:16px;display:flex;gap:4px;transition:opacity .4s}
+.m-prog.off{opacity:0}
+.m-prog i{flex:1;height:3px;border-radius:2px;background:color-mix(in srgb,var(--fg) 22%,transparent);overflow:hidden}
+.m-prog i b{display:block;height:100%;background:var(--fg);transform-origin:0 50%;transform:scaleX(0)}
+.top.dark~.m-prog i{background:rgba(218,245,218,.25)}
+
+.fit{display:block;text-align:center;line-height:.86}
+.fit>span,.fit .mask>span{display:inline-block;white-space:nowrap;font-family:var(--display);font-weight:900;font-variation-settings:"wdth" 125;text-transform:uppercase;letter-spacing:-.01em}
+.mask{display:block;overflow:hidden;padding:.16em 0 .04em;margin-top:-.16em}
+
+.m-hook{position:relative;height:100vh;height:100svh;background:var(--night);color:#DAF5DA;overflow:hidden;scroll-snap-align:start}
+.m-hook img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:58% 32%}
+.m-hook::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,8,6,.5) 0%,rgba(6,8,6,0) 24%,rgba(6,8,6,.15) 45%,rgba(6,8,6,.92) 100%)}
+.m-hook .c{position:absolute;z-index:2;left:16px;right:16px;bottom:calc(env(safe-area-inset-bottom,0px) + 30px);display:grid;gap:14px}
+.m-hook .fit span{color:#DAF5DA}
+.m-hook p{margin:0;font-size:16px;line-height:1.4;color:#BEE3BE;max-width:32ch}
+.m-hook .go{display:flex;align-items:center;gap:10px}
+.m-hook .go i{display:block;width:34px;height:34px;border-radius:50%;border:1.5px solid #DAF5DA;position:relative}
+.m-hook .go i::after{content:"";position:absolute;left:50%;top:9px;width:8px;height:8px;margin-left:-4px;border-right:2px solid #DAF5DA;border-bottom:2px solid #DAF5DA;transform:rotate(45deg);animation:bob 1.4s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(5px) rotate(45deg)}}
+
+.m-ch{position:relative;height:100vh;height:100svh;scroll-snap-align:start;scroll-snap-stop:always;--r:0deg;--sc:1;--tx:0%;--fade:1;overflow:hidden;display:flex;flex-direction:column;gap:10px;padding:calc(env(safe-area-inset-top,0px) + 70px) 16px calc(env(safe-area-inset-bottom,0px) + 104px)}
+.m-tag{display:flex;justify-content:space-between;gap:10px;align-items:center}
+.m-tag .k{font-variant-numeric:tabular-nums}
+.m-tag .t{padding:4px 10px;border-radius:999px;background:var(--fg);color:var(--bg)}
+.m-ch .fit span{color:var(--fg)}
+.m-bowl{flex:1 1 0;min-height:0;position:relative;container-type:size}
+.m-bowl .b{position:absolute;left:50%;top:50%;width:min(100cqw,100cqh);aspect-ratio:1;transform:translate(-50%,-50%) rotate(var(--r)) scale(var(--sc));will-change:transform}
+.m-ch .fit{transform:translateX(var(--tx));will-change:transform}
+.m-ch .m-meta,.m-ch .m-tag{opacity:var(--fade)}
+.m-bowl .b::before{content:"";position:absolute;left:10%;right:10%;top:18%;bottom:-6%;border-radius:50%;background:radial-gradient(closest-side,rgba(2,40,2,.3),rgba(2,40,2,0))}
+.m-bowl .s{position:relative;width:100%;height:100%;will-change:transform}
+.m-bowl img{width:100%;height:100%;object-fit:contain;animation:spin 90s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.m-story{margin:0;font-size:18px;line-height:1.28;font-weight:650;text-wrap:balance;color:var(--fg)}
+.m-ing{margin:0;font-size:13px;line-height:1.4;color:var(--ink);opacity:.78}
+.m-meta{display:grid;gap:6px}
+
+.m-bar{position:fixed;z-index:56;left:10px;right:10px;bottom:calc(env(safe-area-inset-bottom,0px) + 10px);display:flex;align-items:center;gap:10px;padding:7px 7px 7px 18px;border-radius:999px;background:var(--ink);color:var(--bg);box-shadow:0 14px 30px -12px rgba(2,30,2,.55);transform:translateY(150%);transition:transform .55s cubic-bezier(.2,.9,.2,1),background-color .5s,color .5s}
+.m-bar.on{transform:none}
+.m-bar .info{flex:1;min-width:0;display:grid;gap:2px}
+.m-bar .nm{font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:.8}
+.m-bar .pv{font-family:var(--display);font-weight:900;font-variation-settings:"wdth" 110;font-size:22px;line-height:1;font-variant-numeric:tabular-nums}
+.m-bar .pv small{font-size:.5em;vertical-align:.55em;margin-right:2px}
+.m-bar .cta{height:52px;gap:12px;padding:0 5px 0 20px;background:var(--accent);color:#03270a;box-shadow:none;font-size:13px}
+.m-bar .cta::before{background:#03270a}
+.m-bar .cta .ic{width:42px;height:42px;background:#03270a;color:var(--accent)}
+.m-bar .cta .tx small{display:none}
+.m-bar .cta.done{color:var(--accent)}
+.m-bar .cta.done .ic{background:var(--accent);color:#03270a}
+
+.m-sum{min-height:100svh;scroll-snap-align:start;padding:calc(env(safe-area-inset-top,0px) + 78px) 16px calc(env(safe-area-inset-bottom,0px) + 110px);display:grid;align-content:start;gap:18px}
+.m-sum .fit span{color:var(--fg)}
+.m-sum>p{margin:0;color:var(--ink);opacity:.8;font-size:15px}
+.m-list{list-style:none;margin:0;padding:0;display:grid}
+.m-row{display:grid;grid-template-columns:60px minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 0;border-bottom:1.5px solid var(--line)}
+.m-row img{width:60px;height:60px;object-fit:contain}
+.m-row .n{font-weight:700;font-size:15px;line-height:1.2}
+.m-row .p{font-size:13px;opacity:.75;font-variant-numeric:tabular-nums}
+.step{display:inline-flex;align-items:center;height:42px;border-radius:999px;border:1.5px solid var(--fg)}
+.step button{width:42px;height:42px;border:0;background:transparent;display:grid;place-items:center;font-size:20px;font-weight:700;line-height:1}
+.step b{min-width:18px;text-align:center;font-variant-numeric:tabular-nums}
+.step.has{background:var(--fg);color:var(--bg)}
+.m-total{scroll-snap-align:end;display:flex;justify-content:space-between;align-items:baseline;padding-top:4px}
+.m-total .pv{font-family:var(--display);font-weight:900;font-variation-settings:"wdth" 110;font-size:30px;font-variant-numeric:tabular-nums}
+
+.m-end{position:relative;height:100vh;height:100svh;scroll-snap-align:start;overflow:hidden;display:grid;align-content:center;justify-items:center;gap:22px;text-align:center;padding:80px 16px calc(env(safe-area-inset-bottom,0px) + 28px)}
+.m-end .w .mask>span{color:var(--ghost);transition:color 1.2s .3s}
+.m-end.in .w .mask>span{color:var(--fg)}
+.m-end p{margin:0;color:var(--ink);opacity:.8;max-width:30ch}
+.m-end .cta{max-width:100%}
+.m-end .cta .tx{white-space:normal}
+.m-end .ad{display:grid;gap:4px;margin-top:6px}
+.m-i{position:absolute;width:var(--s);pointer-events:none;z-index:0}
+.m-i img{width:100%;animation:float var(--t,5s) ease-in-out infinite alternate}
+@keyframes float{from{transform:translateY(0) rotate(-6deg)}to{transform:translateY(-14px) rotate(6deg)}}
+.m-end>*:not(.m-i){position:relative;z-index:1}
+</style>
+<style>body{margin:0}[hidden]{display:none!important}</style>
+</head>
+<body>
+
+<header class="top" id="top">
+  <a class="mark" href="#palco" aria-label="Cê Saladas, início">CÊ<br>SALADAS</a>
+  <div class="top-r">
+    <button class="pill skin" id="skin" type="button" aria-label="Trocar entre menta e verde"><i class="dot"></i><span id="skinLbl">Menta</span></button>
+    <button class="pill bag" id="bag" type="button"><span class="lbl">Sacola</span><span class="n"><b id="bagN">0</b></span></button>
+  </div>
+</header>
+<div class="cursor" id="cursor" aria-hidden="true">+ Na<br>sacola</div>
+
+<main>
+  <section class="stage" id="palco" aria-label="As sete saladas">
+    <div class="prog" id="prog"></div>
+    <div class="hook" id="hook">
+      <canvas id="hookImg" role="img" aria-label="Molho escorrendo da colher e os ingredientes do Magnífico Camarão saltando do bowl"></canvas>
+      <div class="hook-copy" id="hookCopy">
+        <span class="cap">Cê Saladas · Palmas – TO</span>
+        <h1>Salada que<br>sustenta.</h1>
+        <p>Sete saladas com proteína grelhada, montadas no bowl e entregues em Palmas.</p>
+      </div>
+      <div class="cue cap" aria-hidden="true">Role<i></i></div>
+    </div>
+    <div id="posters"></div>
+    <div class="foot cap"><span>Peça pelo cardápio digital</span><span class="count" id="count" aria-live="polite"><span class="roll"><span id="countN">01</span></span> / 07</span><span>Palmas – TO</span></div>
+  </section>
+
+  <section class="shop" id="cardapio" aria-labelledby="shopH">
+    <div class="shop-h">
+      <h2 id="shopH">O cardápio</h2>
+      <div>
+        <p>Todas levam base de folhas, proteína pesada na hora e gergelim negro por cima. Molho à parte, R$ 5.</p>
+        <div class="hours cap"><span class="chip">Ter – Sex</span><span class="chip">8h – 17h</span><span class="chip">Q. 112 Sul</span></div>
+      </div>
+    </div>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <section class="end" id="fim" aria-label="Peça agora">
+    <div class="corner" id="corner"><img src="/palco/assets/salmao.webp" alt=""></div>
+    <div class="ghost"><div class="w" id="ghost">Cê<br>Saladas</div></div>
+    <div class="ingr" style="--s:clamp(70px,10vw,150px);left:12%;top:26%" data-d="1.2"><div class="f"><img src="/palco/assets/ing-pepino.webp" alt=""></div></div>
+    <div class="ingr" style="--s:clamp(64px,9vw,130px);right:12%;top:20%" data-d="1.6"><div class="f"><img src="/palco/assets/ing-tomate.webp" alt=""></div></div>
+    <div class="ingr" style="--s:clamp(64px,8.5vw,130px);left:18%;bottom:24%" data-d="0.8"><div class="f"><img src="/palco/assets/ing-manga.webp" alt=""></div></div>
+    <div class="ingr" style="--s:clamp(84px,12vw,180px);right:9%;bottom:20%" data-d="1.4"><div class="f"><img src="/palco/assets/ing-alface.webp" alt=""></div></div>
+    <div class="end-cta" id="endCta">
+      <p>Escolhe a salada, paga no PIX ou no cartão e acompanha a entrega pelo WhatsApp.</p>
+      <a class="cta" id="endBtn" href="https://cardapidex.com.br/ce-saladas" target="_blank" rel="noopener" data-pedido><span class="tx"><small>Ter – Sex · 8h – 17h</small>Peça pelo cardápio digital</span><span class="ic"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h12M11 5l5 5-5 5"/></svg></span></a>
+    </div>
+    <div class="addr cap"><span>Q. 112 Sul, Rua SR 01, 2</span><span>(63) 99138-6719</span><span>Palmas – TO</span></div>
+  </section>
+</main>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="/palco/vendor/gsap.min.js"></script>
+<script src="/palco/vendor/ScrollTrigger.min.js"></script>
+<script src="/palco/vendor/lenis.min.js"></script>
+<script>
+/* Abertura: quadros soltos desenhados num canvas conforme a rolagem — sem seek de vídeo, sem engasgo */
+const SEQ_N=183,SEQ_FPS=24;
+function FrameSeq(canvas,fit){
+  const imgs=new Array(SEQ_N),ctx=canvas.getContext('2d');let want=0,shown=-1,raf=0,w=0,h=0;
+  const order=[];[16,8,4,2,1].forEach(st=>{for(let i=0;i<SEQ_N;i+=st)if(!order.includes(i))order.push(i)}); // grosso primeiro, depois preenche
+  let li=0;const pump=()=>{if(li>=order.length)return;const i=order[li++];const im=new Image();im.decoding='async';
+    im.onload=()=>{imgs[i]=im;if(shown<0||Math.abs(i-want)<Math.abs(shown-want))sched();pump()};im.onerror=pump;
+    im.src=`/palco/assets/seq/f${String(i+1).padStart(3,'0')}.webp`};
+  for(let c=0;c<6;c++)pump();
+  const size=()=>{const r=Math.min(devicePixelRatio||1,2);w=canvas.clientWidth;h=canvas.clientHeight;canvas.width=Math.round(w*r);canvas.height=Math.round(h*r);ctx.setTransform(r,0,0,r,0,0);shown=-1;sched()};
+  const draw=()=>{raf=0;let k=-1;for(let d=0;d<SEQ_N;d++){if(imgs[want-d]){k=want-d;break}if(imgs[want+d]){k=want+d;break}}
+    if(k<0||k===shown)return;shown=k;const im=imgs[k],iw=im.naturalWidth,ih=im.naturalHeight;
+    let sc,dx,dy;
+    if(fit==='tall'&&w/h>iw/ih*1.25){sc=h/ih;dx=w*.66-iw*sc/2;dy=0}       // desktop: em pé, na altura da tela, sem esticar
+    else{sc=Math.max(w/iw,h/ih);dx=(w-iw*sc)/2;dy=(h-ih*sc)*.42}          // celular: cobre a tela
+    ctx.fillStyle='#060806';ctx.fillRect(0,0,w,h);ctx.drawImage(im,dx,dy,iw*sc,ih*sc);
+    if(fit==='tall'&&dx>0){const f=Math.min(140,iw*sc*.22),dw=iw*sc;
+      let g=ctx.createLinearGradient(dx,0,dx+f,0);g.addColorStop(0,'rgba(6,8,6,1)');g.addColorStop(1,'rgba(6,8,6,0)');ctx.fillStyle=g;ctx.fillRect(dx-1,0,f+1,h);
+      g=ctx.createLinearGradient(dx+dw-f,0,dx+dw,0);g.addColorStop(0,'rgba(6,8,6,0)');g.addColorStop(1,'rgba(6,8,6,1)');ctx.fillStyle=g;ctx.fillRect(dx+dw-f,0,f+1,h)}};
+  const sched=()=>{if(!raf)raf=requestAnimationFrame(draw)};
+  addEventListener('resize',size);requestAnimationFrame(size);
+  return{set(t){const k=Math.max(0,Math.min(SEQ_N-1,Math.round(t*SEQ_FPS)));if(k!==want){want=k;sched()}}};
+}
+const SALADS=[
+ {id:'371b3f96-35b4-4748-a56e-225fd791bbae',s:'queridinha',t:['QUERI','DINHA'],n:'Queridinha',p:36.99,pr:'Frango desfiado · 120 g',i:'Alface, frango desfiado, cebola roxa, batata palha, milho, abobrinha, cenoura e gergelim negro.',tag:'A mais pedida'},
+ {id:'6ada795c-d8eb-4a9d-8d0e-a5df2c9c9910',s:'tilapia',t:['TILÁPIA','SUPREMA'],n:'Tilápia Suprema',p:46.99,pr:'Filé de tilápia grelhado · 100 g',i:'Alface e repolho, batata rústica, chips de moranga, cebola roxa, alho-poró, cenoura e tomate-cereja.'},
+ {id:'a3ad1c0c-f43f-4bc0-9903-4c1b3804a865',s:'almondega',t:['ALMÔNDEGA','PREMIUM'],n:'Almôndega Premium',p:44.99,pr:'Almôndega bovina · 120 g',i:'Alface com couve, tomate-cereja, azeitona, penne, abobrinha, muçarela e cebola roxa.'},
+ {id:'30d4d80b-cddb-4318-a03e-e078dd3f7ee7',s:'lombo',t:['BASIC','LOMBO'],n:'Basic Lombo',p:30.75,pr:'Lombo suíno grelhado · 120 g',i:'Alface, brócolis, ovinhos de codorna, milho, cenoura, pepino e tomate-cereja.'},
+ {id:'6bc13801-1dc4-43a7-aa24-fe255b214994',s:'camarao',t:['MAGNÍFICO','CAMARÃO'],n:'Magnífico Camarão',p:48.99,pr:'Camarão à provençal · 120 g',i:'Alface, penne, cebola roxa, milho, abacaxi, pepino, cenoura e tomate-cereja.'},
+ {id:'a3ce3418-9bbb-44da-bef9-e62a173fa48e',s:'frango',t:['FILÉ DE','FRANGO'],n:'Especial Filé de Frango',p:39.99,pr:'Filé de frango grelhado · 120 g',i:'Alface, palmito, manga, cebola roxa, tomate-cereja e mandioca.'},
+ {id:'a5ee438d-4531-46ff-8dd2-f913bc7697ed',s:'salmao',t:['SALMÃO','SUBLIME'],n:'Salmão Sublime',p:52.90,pr:'Salmão na manteiga com ervas · 120 g',i:'Alface, brócolis, batata rústica, tomate-cereja, cebola roxa, cenoura e castanha de caju.'}
+];
+const N=SALADS.length, $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const brl=v=>v.toFixed(2).replace('.',',');
+const arrow='<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg>';
+
+/* ---- monta pôsteres e vitrine ---- */
+$('#posters').innerHTML=SALADS.map((d,k)=>`
+<article class="poster${k?'':' on'}" data-k="${k}" aria-label="${d.n}">
+  <div class="ttl"><span class="ln">${d.t[0]}</span><span class="ln">${d.t[1]}</span></div>
+  <div class="bwrap"><div class="tilt" data-k="${k}"><img src="/palco/assets/${d.s}.webp" alt="${d.n} vista de cima" ${k>1?'loading="lazy"':''}></div></div>
+  <div class="meta">
+    <div class="ing"><span class="cap">${d.pr}</span><p>${d.i}</p></div>
+    <div class="buy"><span class="price"><small>R$</small>${brl(d.p)}</span><button class="cta" type="button" data-add="${k}" aria-label="Pedir ${d.n}, R$ ${brl(d.p)}"><span class="tx"><small>Na sacola em 1 toque</small>Pedir esta</span><span class="ic"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M10 4v12M4 10h12"/></svg></span><span class="q" aria-hidden="true"></span></button></div>
+  </div>
+</article>`).join('');
+$('#grid').innerHTML=SALADS.map((d,k)=>`
+<article class="card${k?'':' hero'}">
+  ${d.tag?`<span class="tag cap">${d.tag}</span>`:''}
+  <h3>${d.t[0]}<br>${d.t[1]}</h3>
+  <div class="pic"><img src="/palco/assets/${d.s}.webp" alt="${d.n}" loading="lazy"></div>
+  <div><p class="prot">${d.pr}</p>
+  <div class="row"><span class="price"><small>R$</small>${brl(d.p)}</span><button class="add" type="button" data-add="${k}">+ Adicionar</button></div></div>
+</article>`).join('');
+
+/* ---- tema menta / verde ---- */
+const root=document.documentElement;
+const isDark=()=>root.dataset.theme? root.dataset.theme==='dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+const syncSkin=()=>{$('#skinLbl').textContent=isDark()?'Verde':'Menta'};
+syncSkin();
+$('#skin').addEventListener('click',()=>{root.dataset.theme=isDark()?'light':'dark';syncSkin();try{localStorage.setItem('ce-skin',root.dataset.theme)}catch(e){}});
+try{const v=localStorage.getItem('ce-skin');if(v){root.dataset.theme=v;syncSkin()}}catch(e){}
+
+/* ---- sacola ---- */
+const LOJA='https://cardapidex.com.br/ce-saladas';
+const bag=(()=>{try{const v=JSON.parse(localStorage.getItem('ce-palco-sacola')||'[]');return Array.isArray(v)?v.filter(k=>Number.isInteger(k)&&k>=0&&k<7):[]}catch(e){return[]}})();
+const salvarSacola=()=>{try{localStorage.setItem('ce-palco-sacola',JSON.stringify(bag))}catch(e){}};
+// a landing é outro domínio: a sacola viaja no link (?sacola=id*2,id*1) e o cardápio a repõe
+const linkDoPedido=()=>{if(!bag.length)return LOJA;const q={};bag.forEach(k=>{q[SALADS[k].id]=(q[SALADS[k].id]||0)+1});
+  return LOJA+'?sacola='+Object.entries(q).map(([id,n])=>id+'*'+n).join(',')};
+const irProPedido=()=>{salvarSacola();try{window.fbq&&fbq('track','InitiateCheckout',{value:+bag.reduce((a,k)=>a+SALADS[k].p,0).toFixed(2),currency:'BRL',num_items:bag.length})}catch(e){}window.open(linkDoPedido(),'_blank','noopener')};
+function toast(msg){const t=$('#toast');t.textContent=msg;if(window.gsap){gsap.killTweensOf(t);gsap.timeline().fromTo(t,{autoAlpha:0,y:24},{autoAlpha:1,y:0,duration:.45,ease:'expo.out'}).to(t,{autoAlpha:0,y:12,duration:.35,ease:'power2.in'},'+=1.8')}else{t.style.opacity=1;t.style.visibility='visible';setTimeout(()=>{t.style.opacity=0;t.style.visibility='hidden'},2200)}}
+const CHECK='<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 10.5l3.5 3.5 7.5-8"/></svg>';
+function markBtn(k){
+  const qty=bag.filter(i=>i===k).length;
+  document.querySelectorAll(`.cta[data-add="${k}"]`).forEach(b=>{
+    const tx=b.querySelector('.tx'),ic=b.querySelector('.ic'),q=b.querySelector('.q');
+    if(!b._orig)b._orig=[tx.innerHTML,ic.innerHTML];
+    clearTimeout(b._t);b.classList.add('done');tx.innerHTML='<small>Toque de novo para +1</small>Na sacola';ic.innerHTML=CHECK;
+    q.textContent=qty;q.classList.add('on');
+    b._t=setTimeout(()=>{b.classList.remove('done');tx.innerHTML=b._orig[0];ic.innerHTML=b._orig[1]},1800)});
+}
+function add(k,from){
+  try{window.fbq&&fbq('track','AddToCart',{content_name:SALADS[k].n,content_ids:[SALADS[k].id],content_type:'product',value:SALADS[k].p,currency:'BRL'})}catch(e){}
+  bag.push(k);salvarSacola();markBtn(k);renderBag();
+  const tot=bag.reduce((a,i)=>a+SALADS[i].p,0);
+  toast(`${SALADS[k].n} na sacola · R$ ${brl(tot)}`);
+  if(!window.gsap)return;
+  gsap.fromTo('#bag',{scale:1.18},{scale:1,duration:.7,ease:'elastic.out(1,.4)'});
+  if(from){ // um bowl pequeno voa até a sacola
+    const r=from.getBoundingClientRect(),b=$('#bag').getBoundingClientRect();
+    const f=document.createElement('img');f.src=`/palco/assets/${SALADS[k].s}.webp`;f.alt='';
+    Object.assign(f.style,{position:'fixed',zIndex:80,left:r.left+r.width/2-40+'px',top:r.top+r.height/2-40+'px',width:'80px',height:'80px',pointerEvents:'none'});
+    document.body.appendChild(f);
+    gsap.to(f,{x:b.left+b.width/2-(r.left+r.width/2),y:b.top+b.height/2-(r.top+r.height/2),scale:.25,rotation:220,duration:.8,ease:'power3.in',onComplete:()=>f.remove()});
+  }
+}
+document.addEventListener('click',e=>{const a=e.target.closest('a[data-pedido]');if(a&&bag.length){e.preventDefault();irProPedido();return}
+  const b=e.target.closest('[data-add]');if(b)add(+b.dataset.add,b.closest('.card')?.querySelector('.pic')||b)});
+$('#bag').addEventListener('click',()=>{if(!bag.length)toast('A sacola está vazia. Escolha uma salada.');else irProPedido()});
+
+/* ---- ajuste do título: cada linha preenche a largura, como no pôster ---- */
+function layout(){
+  const W=innerWidth,H=innerHeight,mobile=W<720;
+  const F=Math.min(H*(mobile?.15:.165),W*(mobile?.16:.13));
+  const ttlTop=mobile?Math.max(64,H*.09):Math.max(70,H*.075);
+  const bowlTop=ttlTop+F*.82*1.55;
+  const gut=Math.min(Math.max(16,W*.032),40);
+  let B;
+  if(mobile){B=Math.min(W*.84,H-bowlTop-200-62)}            // embaixo: ingredientes + preço + rodapé
+  else{B=Math.min(H*.6,W-2*(gut+300),H-bowlTop-70);           // laterais livres de 300px para o texto
+    if(B<H*.34){B=Math.min(H*.6,W*.46,H-bowlTop-210);root.classList.add('stack')}else root.classList.remove('stack')}
+  B=Math.max(B,140);
+  root.style.setProperty('--F',F+'px');root.style.setProperty('--B',B+'px');
+  root.style.setProperty('--ttlTop',ttlTop+'px');root.style.setProperty('--bowlTop',bowlTop+'px');
+  const target=W*1.035;
+  $$('.ttl').forEach(t=>{const wd=t.style.getPropertyValue('--wd');t.style.setProperty('--wd',125);
+    t.querySelectorAll('.ln').forEach(l=>{l.style.letterSpacing='0px';l.style.setProperty('--sx',1);
+      const w=l.getBoundingClientRect().width;let sx=target/w,ls=0;
+      if(sx>1.15)sx=1.15
+      if(sx<.5)sx=.5;
+      l.style.letterSpacing=ls+'px';l.style.setProperty('--sx',sx)});
+    if(wd)t.style.setProperty('--wd',wd)});
+}
+
+/* ---- movimento ---- */
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* =================== CELULAR: jornada em paradas =================== */
+const STORY=[
+ ['A carro-chefe','A carro-chefe da casa: frango desfiado com batata palha crocante e milho.'],
+ ['Peixe','Filé de tilápia grelhado sobre batata rústica e chips de moranga.'],
+ ['Massa','Três almôndegas bovinas com penne, azeitona e muçarela.'],
+ ['Mais em conta','Lombo grelhado, ovinhos de codorna e brócolis no ponto.'],
+ ['Frutos do mar','Camarão à provençal com abacaxi, milho e penne.'],
+ ['Tropical','Frango grelhado em cubos com manga, palmito e mandioca.'],
+ ['A mais completa','Salmão na manteiga com ervas, brócolis e castanha de caju.']
+];
+const mq=matchMedia('(max-width: 759px), (pointer: coarse) and (orientation: portrait) and (max-width: 1024px)');
+const IS_M=mq.matches;
+const FT=[3.0,4.57,6.14,7.71,9.28,10.85,12.42,14.9]; // pôster parado de cada salada no filme + assinatura
+const HOOK_T=7.6;                                     // molho cai, ingredientes saltam e assentam
+mq.addEventListener('change',()=>location.reload());
+const tot=()=>bag.reduce((a,i)=>a+SALADS[i].p,0);
+function renderBag(){
+  $('#bagN').textContent=bag.length;
+  if(!IS_M)return;
+  $$('.m-row').forEach(r=>{const k=+r.dataset.k,q=bag.filter(i=>i===k).length;r.querySelector('.step b').textContent=q;r.querySelector('.step').classList.toggle('has',q>0)});
+  $('#mTotal').innerHTML=`<small>R$</small>${brl(tot())}`;
+  if(mode==='sum')barSum();
+}
+function sub(k){const i=bag.lastIndexOf(k);if(i>-1){bag.splice(i,1);salvarSacola();renderBag()}}
+let mode='hook',curK=0,filmStop=-1;
+function barSalad(k){
+  const d=SALADS[k],b=$('#mCta');
+  $('#mNm').textContent=`Parada ${String(k+1).padStart(2,'0')} · ${d.n}`;$('#mPv').innerHTML=`<small>R$</small>${brl(d.p)}`;
+  b.removeAttribute('data-go');b.dataset.add=k;b.setAttribute('aria-label',`Pedir ${d.n}, R$ ${brl(d.p)}`);
+  if(!b.classList.contains('done'))b.querySelector('.tx').innerHTML='<small></small>Pedir';
+  b._orig=null;
+}
+function barSum(){
+  const b=$('#mCta');$('#mNm').textContent=`Sua sacola · ${bag.length} ${bag.length===1?'salada':'saladas'}`;$('#mPv').innerHTML=`<small>R$</small>${brl(tot())}`;
+  b.removeAttribute('data-add');b.dataset.go='1';b.setAttribute('aria-label','Fechar pedido no cardápio digital');
+  b.querySelector('.tx').innerHTML='<small></small>Fechar';b.querySelector('.ic').innerHTML='<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h12M11 5l5 5-5 5"/></svg>';
+}
+function fitAll(){
+  const target=innerWidth-40;
+  $$('#m .fit').forEach(f=>{const max=+f.dataset.max||.21;f.querySelectorAll(':scope>span, .mask>span').forEach(s=>{s.style.fontSize='100px';const w=s.getBoundingClientRect().width||1;s.style.fontSize=Math.min(100*target/w,innerWidth*max)+'px'})});
+}
+function bootMobile(){
+  root.classList.add('is-m');
+  const lines=a=>a.map(t=>`<span class="mask"><span>${t}</span></span>`).join('');
+  const m=document.createElement('div');m.id='m';
+  m.innerHTML=`
+  <div class="m-prog" id="mProg">${SALADS.map(()=>'<i><b></b></i>').join('')}</div>
+  <section class="m-vid" id="mHook" data-mode="hook" aria-label="Abertura">
+    <i class="snap" style="top:0"></i><i class="snap" style="top:100svh"></i><i class="snap" style="top:200svh"></i>
+    <div class="stick">
+      <canvas id="vHook" role="img" aria-label="Molho escorrendo da colher e os ingredientes saltando do bowl"></canvas>
+      <div class="c">
+        <span class="cap">Cê Saladas · Palmas – TO</span>
+        <div style="display:grid">
+          <div class="beat" id="beatA"><h1 class="fit" data-max=".24" style="margin:0">${lines(['Tudo','começa','no molho.'])}</h1></div>
+          <div class="beat" id="beatB" style="opacity:0"><div class="fit" data-max=".24">${lines(['Cada','pedaço','conta.'])}</div></div>
+          <div class="beat" id="beatC" style="opacity:0"><div class="fit" data-max=".24">${lines(['Sete','paradas.','Escolha','a sua.'])}</div></div>
+        </div>
+        <p>Cada parada é uma salada montada no bowl, com proteína grelhada na hora.</p>
+        <span class="go cap" id="goCue"><i></i>Role para começar</span>
+      </div>
+    </div>
+  </section>
+  ${SALADS.map((d,k)=>`
+  <section class="m-ch" data-mode="ch" data-k="${k}" aria-label="${d.n}">
+    <div class="m-tag cap"><span class="k">Parada ${String(k+1).padStart(2,'0')} / 07</span><span class="t">${STORY[k][0]}</span></div>
+    <h2 class="fit" data-max=".21" style="margin:0">${lines(d.t)}</h2>
+    <div class="m-bowl"><div class="b"><div class="s"><img src="/palco/assets/${d.s}.webp" alt="${d.n} vista de cima" ${k>1?'loading="lazy"':''}></div></div></div>
+    <div class="m-meta"><p class="m-story">${STORY[k][1]}</p><p class="m-ing">${d.pr}. ${d.i}</p></div>
+  </section>`).join('')}
+  <section class="m-vid" id="mFilm" data-mode="film" aria-label="A jornada em 15 segundos" style="height:calc(100svh + ${FT.length-1} * var(--step))">
+    ${FT.map((_,i)=>`<i class="snap" style="top:calc(${i} * var(--step))"></i>`).join('')}
+    <div class="stick">
+      <div class="hd cap"><span>A jornada em 15 segundos</span><span class="k" id="filmK">01 / 07</span></div>
+      <video id="vFilm" muted playsinline preload="metadata" aria-label="Filme Cê Saladas: as sete saladas em sequência"></video>
+      <p class="tx" id="filmTx" aria-live="polite"></p>
+      <div class="rail"><b id="filmRail"></b></div>
+    </div>
+  </section>
+  <section class="m-sum" data-mode="sum" aria-labelledby="mSumH">
+    <h2 class="fit" id="mSumH" data-max=".2" style="margin:0">${lines(['Sua','sacola'])}</h2>
+    <p>Junte quantas quiser. O pedido fecha no cardápio digital, com PIX ou cartão.</p>
+    <ul class="m-list">${SALADS.map((d,k)=>`<li class="m-row" data-k="${k}"><img src="/palco/assets/${d.s}.webp" alt="" loading="lazy"><div><div class="n">${d.n}</div><div class="p">R$ ${brl(d.p)}</div></div><div class="step"><button type="button" data-sub="${k}" aria-label="Tirar uma ${d.n}">−</button><b>0</b><button type="button" data-plus="${k}" aria-label="Pôr mais uma ${d.n}">+</button></div></li>`).join('')}</ul>
+    <div class="m-total"><span class="cap">Total</span><span class="pv" id="mTotal"><small>R$</small>0,00</span></div>
+  </section>
+  <section class="m-end" data-mode="end" aria-label="Fim da jornada">
+    <span class="m-i" style="--s:76px;--t:4.6s;left:6%;top:12%"><img src="/palco/assets/ing-pepino.webp" alt=""></span>
+    <span class="m-i" style="--s:66px;--t:5.4s;right:8%;top:16%"><img src="/palco/assets/ing-tomate.webp" alt=""></span>
+    <span class="m-i" style="--s:64px;--t:5s;left:2%;top:36%"><img src="/palco/assets/ing-manga.webp" alt=""></span>
+    <span class="m-i" style="--s:78px;--t:6s;right:1%;top:33%"><img src="/palco/assets/ing-alface.webp" alt=""></span>
+    <span class="cap">Fim da jornada</span>
+    <div class="fit w" data-max=".3">${lines(['Cê','Saladas'])}</div>
+    <p>Escolheu sua parada? O pedido fecha no cardápio digital e a entrega é acompanhada pelo WhatsApp.</p>
+    <a class="cta" href="https://cardapidex.com.br/ce-saladas" target="_blank" rel="noopener" data-pedido><span class="tx"><small>Ter – Sex · 8h – 17h</small>Peça pelo cardápio digital</span><span class="ic"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h12M11 5l5 5-5 5"/></svg></span></a>
+    <div class="ad cap"><span>Q. 112 Sul, Rua SR 01, 2</span><span>(63) 99138-6719 · Palmas – TO</span></div>
+  </section>
+  <div class="m-bar" id="mBar"><div class="info"><span class="nm cap" id="mNm"></span><span class="pv" id="mPv"></span></div>
+    <button class="cta" id="mCta" type="button"><span class="tx">Pedir</span><span class="ic"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M10 4v12M4 10h12"/></svg></span><span class="q" aria-hidden="true"></span></button></div>`;
+  $('main').after(m);
+  root.style.setProperty('--step','72svh');
+  const vH=$('#vHook'),vF=$('#vFilm');
+  const filmSrc=()=>`/palco/assets/filme-${isDark()?'verde':'menta'}.mp4`;
+  const mseq=FrameSeq(vH,'cover');vF.src=filmSrc();
+  [vF].forEach(v=>{v._t=0;
+    // iOS só pinta quadro novo em vídeo que já tocou uma vez
+    const unlock=()=>{const p=v.play();if(p&&p.then)p.then(()=>v.pause()).catch(()=>{})};
+    v.addEventListener('loadedmetadata',unlock,{once:true});
+    addEventListener('touchstart',unlock,{once:true,passive:true})});
+  $('#skin').addEventListener('click',()=>{const t=vF.currentTime;vF.src=filmSrc();vF.currentTime=t});
+  fitAll();addEventListener('resize',fitAll);
+  barSalad(0);
+  const PLUS=$('#mCta .ic').innerHTML;
+
+  document.addEventListener('click',e=>{
+    const s=e.target.closest('[data-sub]'),p=e.target.closest('[data-plus]'),g=e.target.closest('[data-go]');
+    if(s)sub(+s.dataset.sub);
+    if(p)add(+p.dataset.plus,p.closest('.m-row').querySelector('img'));
+    if(g){if(!bag.length)toast('A sacola está vazia. Toque em + numa salada.');else irProPedido()}
+  });
+
+  // qual tela está no centro: muda a barra, o topo e a animação de chegada
+  const G=window.gsap,reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const arrive=sec=>{
+    if(!G||reduce)return;
+    const spans=sec.querySelectorAll('.mask>span'),bowl=sec.querySelector('.m-bowl .s'),meta=sec.querySelectorAll('.m-meta>*,.m-tag');
+    G.killTweensOf([spans,bowl,meta]);
+    const t=G.timeline();
+    t.fromTo(spans,{yPercent:105},{yPercent:0,duration:.75,ease:'expo.out',stagger:.07},0);
+    if(meta.length)t.fromTo(meta,{y:18,opacity:0},{y:0,opacity:1,duration:.6,ease:'power3.out',stagger:.06},.3);
+  };
+  const io=new IntersectionObserver(es=>es.forEach(e=>{
+    if(!e.isIntersecting)return;
+    const sec=e.target;mode=sec.dataset.mode;
+    $('#top').classList.toggle('dark',mode==='hook');
+    $('#mProg').classList.toggle('off',mode==='hook'||mode==='end');
+    $('#mBar').classList.toggle('on',mode==='ch'||mode==='sum');
+    if(mode==='ch'){curK=+sec.dataset.k;barSalad(curK);$('#mCta .ic').innerHTML=PLUS}
+    if(mode==='sum')barSum();
+    if(mode==='film'){$('#mBar').classList.add('on');filmStop=-1}
+    if(mode==='end')sec.classList.add('in');
+    if(mode==='ch'||mode==='sum'||mode==='end')arrive(sec);
+  }),{rootMargin:'-50% 0px -50% 0px',threshold:0});
+  $$('#m section').forEach(s=>io.observe(s));
+
+  // barra de Stories: enche conforme a rolagem passa por cada parada
+  const chs=$$('.m-ch'),fills=$$('#mProg b');let tops=[],ticking=false;
+  const measure=()=>{tops=chs.map(c=>c.offsetTop)};
+  const hookEl=$('#mHook'),filmEl=$('#mFilm'),bA=$('#beatA'),bB=$('#beatB'),bC=$('#beatC'),cue=$('#goCue'),rail=$('#filmRail'),fk=$('#filmK');
+  let hookTop=0,filmTop=0,step=1;
+  const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+  const grid=t=>Math.round(t*30)/30;
+  const paint=()=>{ticking=false;const y=scrollY,h=innerHeight;
+    fills.forEach((f,i)=>{const p=clamp((y-tops[i]+h*.5)/h,0,1);f.style.transform=`scaleX(${p})`});
+    // paradas: enquanto a tela desliza, o bowl gira e encolhe, o título escorrega, o texto apaga
+    chs.forEach((c,i)=>{const d=(tops[i]-y)/h;if(d<-1.1||d>1.1)return;const a=Math.min(1,Math.abs(d));
+      // a que sai cresce (zoom no detalhe); a que chega entra grande e assenta
+      const e=a*a*(3-2*a);c.style.setProperty('--r',(d*-24).toFixed(2)+'deg');c.style.setProperty('--sc',(1+e*(d<0?1.7:1.35)).toFixed(3));
+      c.style.setProperty('--tx',(d*-22).toFixed(2)+'%');c.style.setProperty('--fade',clamp(1-a*1.8,0,1).toFixed(3))});
+    // abertura: o molho escorre conforme rola
+    const ph=clamp((y-hookTop)/(2*h),0,1);mseq.set(ph*HOOK_T);
+    const win=(a,b)=>clamp(Math.min((ph-a)/.1,(b-ph)/.1),0,1);
+    bA.style.opacity=clamp((.3-ph)/.1,0,1);bB.style.opacity=win(.28,.72);bC.style.opacity=clamp((ph-.7)/.1,0,1);cue.style.opacity=clamp(1-ph*8,0,1);
+    // filme: cada parada de rolagem é um pôster
+    const f=clamp((y-filmTop)/step,0,FT.length-1),i0=Math.floor(f),i1=Math.min(FT.length-1,i0+1);
+    vF._t=grid(FT[i0]+(FT[i1]-FT[i0])*(f-i0));rail.style.transform=`scaleX(${f/(FT.length-1)})`;
+    const k=Math.round(f);
+    if(mode==='film'&&k!==filmStop){filmStop=k;
+      const ft=$('#filmTx');if(G&&!reduce)G.fromTo(ft,{y:10,opacity:0},{y:0,opacity:1,duration:.45,ease:'power3.out'});
+      if(k<SALADS.length){ft.textContent=STORY[k][1];fk.textContent=`${String(k+1).padStart(2,'0')} / 07`;barSalad(k);$('#mCta .ic').innerHTML=PLUS;$('#mBar').classList.add('on')}
+      else{ft.textContent='Viu as sete. Agora monte a sua sacola.';fk.textContent='Fim';barSum()}}
+  };
+  // o vídeo só recebe seek quando o anterior terminou: nada de fila de seeks
+  const seekLoop=()=>{[vF].forEach(v=>{if(v.readyState>=2&&!v.seeking&&Math.abs(v.currentTime-v._t)>.02)v.currentTime=v._t});requestAnimationFrame(seekLoop)};
+  requestAnimationFrame(seekLoop);
+  const measure2=()=>{measure();hookTop=hookEl.offsetTop;filmTop=filmEl.offsetTop;step=innerHeight*.72};
+  measure2();addEventListener('resize',measure2);
+  addEventListener('scroll',()=>{if(!ticking){ticking=true;requestAnimationFrame(paint)}},{passive:true});paint();
+  document.fonts&&document.fonts.ready.then(()=>{fitAll();measure2();paint();points()});
+
+  let PTS=[],anim=null;
+  const points=()=>{const sy=scrollY,h=innerHeight,set=new Set();
+    $$('#m .snap,#m .m-ch,#m .m-sum,#m .m-end').forEach(e=>{const t=Math.round(e.getBoundingClientRect().top+sy);set.add(t);
+      if(e.classList.contains('m-sum')&&e.offsetHeight>h+10)set.add(t+e.offsetHeight-h)});
+    PTS=[...set].sort((a,b)=>a-b)};
+  addEventListener('resize',()=>{measure2();points()});
+  const nearest=y=>{let k=0;PTS.forEach((p,i)=>{if(Math.abs(p-y)<Math.abs(PTS[k]-y))k=i});return k};
+  const ease=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+  const go=(to)=>{if(anim)cancelAnimationFrame(anim.r);const from=scrollY,dist=Math.abs(to-from),h=innerHeight;
+    const dur=Math.min(1350,Math.max(650,1100*dist/h));const t0=performance.now();
+    anim={r:0};const step=n=>{const x=Math.min(1,(n-t0)/dur);scrollTo(0,from+(to-from)*ease(x));if(x<1)anim.r=requestAnimationFrame(step);else anim=null};
+    anim.r=requestAnimationFrame(step)};
+  const page=dir=>{if(!PTS.length)points();const y=scrollY;
+    const t=dir>0?PTS.find(p=>p>y+40):[...PTS].reverse().find(p=>p<y-40);
+    go(t===undefined?PTS[nearest(y)]:t)};
+  let ty=0,ts=0,tt=0,drag=false;
+  addEventListener('touchstart',e=>{if(e.touches.length>1)return;ty=e.touches[0].clientY;ts=scrollY;tt=performance.now();drag=false;if(anim){cancelAnimationFrame(anim.r);anim=null}},{passive:true});
+  addEventListener('touchmove',e=>{if(e.touches.length>1)return;const dy=ty-e.touches[0].clientY;if(!drag&&Math.abs(dy)<6)return;drag=true;e.preventDefault();scrollTo(0,ts+dy*.55)},{passive:false});
+  addEventListener('touchend',e=>{if(!drag){return}drag=false;const dy=ts-scrollY,v=Math.abs(scrollY-ts)/Math.max(1,performance.now()-tt);
+    if(Math.abs(scrollY-ts)>28||v>.25)page(scrollY>ts?1:-1);else go(PTS[nearest(scrollY)])},{passive:true});
+  let wheelLock=0;
+  addEventListener('wheel',e=>{e.preventDefault();const n=performance.now();if(anim||n<wheelLock||Math.abs(e.deltaY)<8)return;wheelLock=n+700;page(e.deltaY>0?1:-1)},{passive:false});
+  addEventListener('keydown',e=>{if(['ArrowDown','PageDown',' '].includes(e.key)){e.preventDefault();page(1)}if(['ArrowUp','PageUp'].includes(e.key)){e.preventDefault();page(-1)}});
+  window.__page=page;window.__pts=()=>PTS;
+  renderBag();
+}
+
+function boot(){
+  if(IS_M){bootMobile();return}
+  layout();
+  if(reduce||!window.gsap||!window.ScrollTrigger){document.body.classList.add('still');return}
+  gsap.registerPlugin(ScrollTrigger);
+  ScrollTrigger.config({ignoreMobileResize:true});
+  let lenis=null;
+  if(window.Lenis){lenis=new Lenis({lerp:.07,wheelMultiplier:.8});lenis.on('scroll',ScrollTrigger.update);gsap.ticker.add(t=>lenis.raf(t*1000));gsap.ticker.lagSmoothing(0);root.classList.add('lenis','lenis-smooth')}
+
+  const P=$$('.poster').map(el=>({el,ttl:el.querySelector('.ttl'),bw:el.querySelector('.bwrap'),img:el.querySelector('.tilt img'),meta:el.querySelector('.meta')}));
+  P.forEach((p,k)=>{if(k){gsap.set(p.ttl,{xPercent:110});gsap.set(p.bw,{x:innerWidth*.5+p.bw.offsetWidth*.9+40});gsap.set(p.meta,{xPercent:120})}});
+  const light=matchMedia('(pointer:coarse)').matches||innerWidth<900;
+  const narrow=light?{scaleX:.55}:{'--wd':62},wide=light?{scaleX:1}:{'--wd':125};
+  gsap.set(P[0].ttl,narrow);gsap.set(P[0].bw,{scale:2.1});gsap.set(P[0].meta,{yPercent:40,autoAlpha:0});
+
+  const tl=gsap.timeline({defaults:{ease:'none'}});
+  // abertura: zoom lento na foto, o texto sobe, corte seco no pingo
+  const hseq=FrameSeq($('#hookImg'),'tall');
+  const hp={t:0};
+  tl.to(hp,{t:7.6,duration:1,ease:'none',onUpdate:()=>hseq.set(hp.t)},0);
+  tl.fromTo('#hookImg',{scale:1.06},{scale:1,duration:1},0)
+    .to('#hookCopy',{yPercent:-30,duration:1},0)
+    .set('#hook',{autoAlpha:0},1)
+    .set('.count',{visibility:'visible'},1)
+    .to(P[0].bw,{scale:1,duration:.7,ease:'expo.out'},1)
+    .to(P[0].ttl,{...wide,duration:.9,ease:'power3.out'},1.05)
+    .to(P[0].meta,{yPercent:0,autoAlpha:1,duration:.5,ease:'power3.out'},1.3);
+  const stops=[1.75];
+  let t=1.75;
+  for(let k=1;k<N;k++){
+    const a=P[k-1],b=P[k];
+    tl.to(a.img,{rotation:'+=4',duration:.7},t);t+=.7;          // segura: o bowl gira 4°
+    tl.to(a.ttl,{xPercent:-110,duration:1,ease:'expo.inOut'},t)  // título puxa
+      .to(a.meta,{xPercent:-120,duration:1,ease:'expo.inOut'},t)
+      .to(a.bw,{x:()=>-(innerWidth*.5+a.bw.offsetWidth*.9+40),duration:1.15,ease:'expo.inOut'},t+.14) // bowl vem 4 quadros depois
+      .fromTo(b.ttl,{xPercent:110},{xPercent:0,duration:1,ease:'expo.inOut'},t)
+      .fromTo(b.ttl,{...narrow},{...wide,duration:.9,ease:'power2.out'},t+.45)
+      .fromTo(b.meta,{xPercent:120},{xPercent:0,duration:1,ease:'expo.inOut'},t+.06)
+      .fromTo(b.bw,{x:()=>innerWidth*.5+b.bw.offsetWidth*.9+40,scale:1.6,rotation:15},{x:0,scale:1,rotation:0,duration:1.25,ease:'expo.out'},t+.22);
+    t+=1.5;stops.push(t);
+  }
+  tl.to(P[N-1].img,{rotation:'+=4',duration:.5},t);t+=.5;
+  const total=tl.duration();
+  let cur=-1;
+  const setIdx=k=>{if(k===cur)return;const dir=k>cur?1:-1;cur=k;
+    P.forEach((p,j)=>p.el.classList.toggle('on',j===k));
+    const c=$('#countN');gsap.timeline().to(c,{yPercent:-100*dir,duration:.15,ease:'power2.in',onComplete:()=>c.textContent=String(k+1).padStart(2,'0')}).fromTo(c,{yPercent:100*dir},{yPercent:0,duration:.25,ease:'power2.out'})};
+  const stageST=ScrollTrigger.create({
+    trigger:'#palco',start:'top top',end:()=>'+='+innerHeight*total*(light?.62:1.1),pin:true,scrub:light?.35:1,animation:tl,invalidateOnRefresh:true,
+    snap:lenis?false:{snapTo:[0,...stops.map(s=>s/total)],duration:{min:.25,max:.8},delay:.08,ease:'power3.inOut',directional:true},
+    onUpdate:self=>{const tt=self.progress*total;let k=0;stops.forEach((s,j)=>{if(tt>=s-.62)k=j});setIdx(k);
+      gsap.set('#prog',{scaleX:self.progress});$('#top').classList.toggle('dark',tt<.98)}
+  });
+  $('#top').classList.add('dark');setIdx(0);
+  if(lenis){ // snap feito pelo próprio Lenis: o snap do ScrollTrigger disputa a rolagem com ele
+    window.__lenis=lenis;let snapping=false;const pts=[0,...stops];
+    ScrollTrigger.addEventListener('scrollEnd',()=>{
+      const y=lenis.scroll,a=stageST.start,b=stageST.end;if(snapping||y<=a+2||y>=b-2)return;
+      const tt=(y-a)/(b-a)*total;let best=pts[0];pts.forEach(s=>{if(Math.abs(s-tt)<Math.abs(best-tt))best=s});
+      const to=a+best/total*(b-a);if(Math.abs(to-y)<4)return;
+      snapping=true;lenis.scrollTo(to,{duration:light?.75:1.4,easing:x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2,onComplete:()=>{snapping=false}});
+      setTimeout(()=>{snapping=false},light?1000:1800)});
+  }
+
+  // hover: o bowl inclina na direção do cursor e o cursor vira um botão
+  const fine=matchMedia('(pointer:fine)').matches;
+  const cx=gsap.quickTo('#cursor','x',{duration:.35,ease:'power3'}),cy=gsap.quickTo('#cursor','y',{duration:.35,ease:'power3'});
+  addEventListener('pointermove',e=>{cx(e.clientX);cy(e.clientY)});
+  $$('.tilt').forEach(el=>{
+    const rx=gsap.quickTo(el,'rotationX',{duration:.6,ease:'power3'}),ry=gsap.quickTo(el,'rotationY',{duration:.6,ease:'power3'}),sc=gsap.quickTo(el,'scale',{duration:.6,ease:'power3'});
+    el.addEventListener('pointermove',e=>{if(!fine)return;const r=el.getBoundingClientRect();ry(((e.clientX-r.left)/r.width-.5)*22);rx(-((e.clientY-r.top)/r.height-.5)*22)});
+    el.addEventListener('pointerenter',()=>{if(!fine)return;sc(1.04);gsap.to('#cursor',{scale:1,duration:.4,ease:'back.out(2)'})});
+    el.addEventListener('pointerleave',()=>{rx(0);ry(0);sc(1);gsap.to('#cursor',{scale:0,duration:.3})});
+    el.addEventListener('click',()=>{add(+el.dataset.k,el);gsap.fromTo(el,{scale:.94},{scale:1.04,duration:.6,ease:'elastic.out(1,.45)'})});
+  });
+
+  // botões magnéticos
+  $$('.cta').forEach(b=>{if(!fine)return;const mx=gsap.quickTo(b,'x',{duration:.4,ease:'power3'}),my=gsap.quickTo(b,'y',{duration:.4,ease:'power3'});
+    b.addEventListener('pointermove',e=>{const r=b.getBoundingClientRect();mx((e.clientX-r.left-r.width/2)*.3);my((e.clientY-r.top-r.height/2)*.4)});
+    b.addEventListener('pointerleave',()=>{mx(0);my(0)})});
+
+  // vitrine: cartões entram empurrados, título alarga com a rolagem
+  ScrollTrigger.batch('.card',{start:'top 92%',onEnter:els=>gsap.fromTo(els,{y:80,rotation:(i)=>i%2?2:-2},{y:0,rotation:0,duration:1.1,ease:'expo.out',stagger:.07,overwrite:true})});
+  gsap.fromTo('#shopH',{fontVariationSettings:'"wdth" 62'},{fontVariationSettings:'"wdth" 125',ease:'none',scrollTrigger:{trigger:'#cardapio',start:'top 90%',end:'top 30%',scrub:.5}});
+
+  // fechamento: CÊ SALADAS fantasma encolhe até virar assinatura, ingredientes saltam
+  const ings=$$('.ingr');
+  gsap.set(ings,{scale:0,rotation:-40});gsap.set('#corner',{xPercent:-60,yPercent:-60,rotation:-30});gsap.set('#endCta',{y:60,autoAlpha:0});
+  const end=gsap.timeline({scrollTrigger:{trigger:'#fim',start:'top top',end:()=>'+='+innerHeight*1.4,pin:true,scrub:.6}});
+  end.fromTo('#ghost',{scale:1.25},{scale:.42,duration:1,ease:'power2.inOut'},0)
+     .fromTo('#ghost',{'--m':0},{'--m':1,duration:.6},.35)
+     .to(ings,{scale:1,rotation:0,duration:.5,ease:'back.out(2.4)',stagger:.12},.55)
+     .to('#corner',{xPercent:0,yPercent:0,rotation:0,duration:.7,ease:'expo.out'},.6)
+     .to('#endCta',{y:0,autoAlpha:1,duration:.4,ease:'power3.out'},.9);
+  ings.forEach((el,i)=>gsap.to(el.querySelector('.f'),{y:-14-i*3,rotation:i%2?7:-7,duration:2.2+i*.4,ease:'sine.inOut',yoyo:true,repeat:-1}));
+  const endEl=$('#fim');
+  const px=ings.map(el=>({x:gsap.quickTo(el,'x',{duration:1,ease:'power3'}),y:gsap.quickTo(el,'y',{duration:1,ease:'power3'}),d:+el.dataset.d}));
+  endEl.addEventListener('pointermove',e=>{const nx=e.clientX/innerWidth-.5,ny=e.clientY/innerHeight-.5;px.forEach(p=>{p.x(-nx*40*p.d);p.y(-ny*40*p.d)})});
+
+  addEventListener('resize',()=>{layout();ScrollTrigger.refresh()});
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change',syncSkin);
+}
+(document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(()=>{boot();renderBag()});
+</script>
+
+</body>
+</html>

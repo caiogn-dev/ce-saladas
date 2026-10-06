@@ -18,7 +18,7 @@ const securityHeaders = [
       // Fonts: own domain + Google Fonts CDN
       "font-src 'self' data: https://fonts.gstatic.com",
       // API + WebSocket + maps + analytics connections
-      "connect-src 'self' https://backend.pastita.com.br wss://backend.pastita.com.br https://connect.facebook.net https://www.facebook.com https://www.google-analytics.com https://api.mercadopago.com https://api-static.mercadopago.com https://secure-fields.mercadopago.com https://api.mercadolibre.com https://sdk.mercadopago.com https://http2.mlstatic.com https://www.mercadolibre.com https://www.mercadolivre.com https://*.googleapis.com *.google.com https://*.gstatic.com data: blob: https://viacep.com.br",
+      "connect-src 'self' https://backend.pastita.com.br wss://backend.pastita.com.br https://connect.facebook.net https://www.facebook.com https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://stats.g.doubleclick.net https://api.mercadopago.com https://api-static.mercadopago.com https://secure-fields.mercadopago.com https://api.mercadolibre.com https://sdk.mercadopago.com https://http2.mlstatic.com https://www.mercadolibre.com https://www.mercadolivre.com https://*.googleapis.com *.google.com https://*.gstatic.com data: blob: https://viacep.com.br",
       // Frames: Mercado Pago checkout fields and Google Maps embeds/auth flows.
       "frame-src https://secure-fields.mercadopago.com https://www.mercadopago.com.br https://www.mercadopago.com https://sandbox.mercadopago.com.br https://api.mercadopago.com https://www.mercadolibre.com https://www.mercadolivre.com https://*.google.com https://*.googleapis.com https://*.gstatic.com https://*.googleusercontent.com https://storage.googleapis.com https://www.facebook.com https://connect.facebook.net",
       // Workers: own domain + blob (Next.js)
@@ -64,6 +64,13 @@ const nextConfig = {
   // — e o convite de avaliação, o link da carteira e o "acompanhar pedido"
   // apontam para esses caminhos. Sem isto, 81 avaliações renderam 2 comentários:
   // o cliente batia num 404. Redirect permanente, com o caminho preservado.
+  // A home de cesaladas.com.br é o palco (página estática em public/palco):
+  // fica fora do _app de propósito — o CSS global e o WhatsApp flutuante da
+  // vitrine antiga brigavam com o layout. A landing anterior segue em
+  // /landing-antiga e na tag git landing-antiga-2026-10-06.
+  async rewrites() {
+    return { beforeFiles: [{ source: '/', destination: '/palco/index.html' }] };
+  },
   async redirects() {
     const permanentes = CAMINHOS_DA_PLATAFORMA.map((caminho) => ({
       source: `${caminho}/:path*`,
