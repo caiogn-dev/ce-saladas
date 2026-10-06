@@ -192,6 +192,58 @@ html.stack .meta{flex-direction:row;align-items:flex-end}
 .still .hook{position:relative;height:90vh}
 .still .poster{position:relative;height:100vh;pointer-events:auto}
 .still .end .ingr,.still .end .corner{transform:none}
+/* =================== MONTA O BOWL =================== */
+.monta{position:relative;display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);align-items:center;gap:clamp(24px,4vw,64px);min-height:100vh;min-height:100svh;padding:clamp(72px,10vh,120px) var(--gut);background:var(--fg);color:var(--bg);clip-path:circle(150% at 68% 50%);transition:background-color .5s,color .5s}
+.mo-txt{display:grid;gap:14px;align-content:center;min-width:0}
+.mo-h{margin:0;font-family:var(--display);font-weight:900;font-variation-settings:"wdth" 125;font-size:clamp(52px,7vw,118px);line-height:.84;text-transform:uppercase;letter-spacing:-.02em}
+.mo-sub{margin:0;max-width:40ch;opacity:.85}
+.mo-list{list-style:none;margin:0;padding:0;display:grid;max-width:440px}
+.mo-list li{display:grid;grid-template-columns:14px minmax(0,1fr) auto auto;gap:12px;align-items:center;padding:6px 0;font-size:15px;border-bottom:1px solid color-mix(in srgb,var(--bg) 22%,transparent);opacity:.38;transition:opacity .35s}
+.mo-list li::before{content:"";width:10px;height:10px;border-radius:50%;border:2px solid currentColor;transition:background-color .3s,transform .4s cubic-bezier(.2,1.6,.4,1)}
+.mo-list li.on{opacity:1}
+.mo-list li.on::before{background:var(--accent);border-color:var(--accent);transform:scale(1.25)}
+.mo-list .n{font-weight:650}
+.mo-list .g,.mo-list .k{font-variant-numeric:tabular-nums;font-size:14px}
+.mo-list .k{min-width:6.5ch;text-align:right;opacity:.75}
+.mo-total{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.mo-total b{font-family:var(--display);font-weight:900;font-variation-settings:"wdth" 110;font-size:clamp(34px,3.4vw,48px);font-variant-numeric:tabular-nums;line-height:1}
+.mo-total small{font-size:12px;opacity:.7;flex-basis:100%}
+.mo-acts{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.monta .cta{background:var(--accent);color:#03270a;box-shadow:none}
+.monta .cta::before{background:var(--bg)}
+.monta .cta .ic{background:#03270a;color:var(--accent)}
+.mo-btn{height:44px;padding:0 18px;border-radius:999px;border:1.5px solid currentColor;background:transparent;font-family:var(--display);font-weight:800;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+.mo-btn:hover{background:var(--bg);color:var(--fg)}
+.mo-stage{display:grid;place-items:center;min-width:0}
+.mo-bowl{position:relative;width:min(74vh,46vw);aspect-ratio:1;max-width:100%}
+.mo-p,.mo-leaf{position:absolute;pointer-events:none;will-change:transform}
+.mo-p{inset:0;width:100%;height:100%}
+.mo-leaf{width:34%}
+.mo-dots{position:absolute;inset:0;pointer-events:none}
+.mo-dots i{position:absolute;width:.9%;height:.5%;border-radius:50%;background:#141414}
+.mo-lab{position:absolute;transform:translate(-50%,-50%) scale(.6);background:var(--bg);color:var(--fg);padding:7px 11px;border-radius:999px;font:800 11px/1.1 var(--display);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .35s,transform .45s cubic-bezier(.2,1.5,.4,1);box-shadow:0 8px 18px -10px rgba(0,0,0,.5)}
+.mo-lab small{display:block;font-size:10px;font-weight:700;opacity:.7;margin-top:2px}
+.mo-bowl.aberto .mo-lab{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.mo-cap{display:none}
+html.is-m .monta{display:none}
+@media (max-width:980px){.monta{grid-template-columns:1fr}.mo-bowl{width:min(80vw,60vh)}}
+/* celular: a mesma montagem como uma parada da jornada */
+.m-monta{position:relative;height:100vh;height:100svh;scroll-snap-align:start;overflow:hidden;display:flex;flex-direction:column;gap:10px;padding:calc(env(safe-area-inset-top,0px) + 66px) 16px calc(env(safe-area-inset-bottom,0px) + 100px);background:var(--fg);color:var(--bg)}
+.m-monta .mo-h{font-size:clamp(40px,12vw,60px)}
+.m-monta .mo-txt{gap:6px}
+.m-monta .mo-sub,.m-monta .mo-list{display:none}
+.m-monta .mo-stage{flex:1 1 0;min-height:0;container-type:size;position:relative;display:block}
+.m-monta .mo-bowl{position:absolute;left:50%;top:50%;width:min(100cqw,100cqh);transform:translate(-50%,-50%)}
+.m-monta .mo-cap{display:flex;justify-content:space-between;align-items:baseline;gap:10px;min-height:2.4em}
+.m-monta .mo-cap .n{font-weight:700;font-size:16px}
+.m-monta .mo-cap .g{font-variant-numeric:tabular-nums;font-size:13px;opacity:.8;white-space:nowrap}
+.m-monta .mo-total b{font-size:28px}
+.m-monta .mo-total small{flex-basis:auto}
+.m-monta .mo-acts .cta{display:none}
+.m-monta .mo-btn{height:38px;padding:0 14px;font-size:11px;color:inherit}
+.m-monta .mo-lab{padding:5px 8px;font-size:9px}
+.m-monta .mo-lab small{font-size:8px}
+
 /* =================== CELULAR: jornada em paradas (desenho próprio) =================== */
 .m-vid{position:relative}
 .m-vid .stick{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
@@ -333,6 +385,8 @@ html.is-m .toast{bottom:calc(env(safe-area-inset-bottom,0px) + 92px)}
     <div class="foot cap"><span>Peça pelo cardápio digital</span><nav class="rail" id="rail" aria-label="Escolher salada"><button type="button" class="rail-arrow" data-dir="-1" aria-label="Salada anterior"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12.5 4.5 7 10l5.5 5.5"/></svg></button><span class="rail-dots" id="railDots"></span><button type="button" class="rail-arrow" data-dir="1" aria-label="Próxima salada"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 4.5 13 10l-5.5 5.5"/></svg></button><span class="count" id="count" aria-live="polite"><span class="roll"><span id="countN">01</span></span> / 07</span></nav><span>Palmas – TO</span></div>
   </section>
 
+  <section class="monta" id="monta" aria-label="Monta o bowl: Basic Lombo"></section>
+
   <section class="shop" id="cardapio" aria-labelledby="shopH">
     <div class="shop-h">
       <h2 id="shopH">O cardápio</h2>
@@ -365,6 +419,89 @@ html.is-m .toast{bottom:calc(env(safe-area-inset-bottom,0px) + 92px)}
 <script src="/palco/vendor/ScrollTrigger.min.js"></script>
 <script src="/palco/vendor/lenis.min.js"></script>
 <script>
+/* =================== MONTA O BOWL =================== */
+// Basic Lombo pedaço por pedaço: as peças são a FOTO REAL cortada em fatias
+// (uma por ingrediente). Porções e kcal da receita cadastrada (TACO/POF).
+const MONTA={k:3,total:513,peso:491,passos:[
+ {n:'Alface crespa',g:90,kc:10,p:['@folhas']},
+ {n:'Lombo suíno grelhado',g:120,kc:347,p:['lombo']},
+ {n:'Brócolis',g:80,kc:20,p:['brocolis1','brocolis2']},
+ {n:'Milho',g:45,kc:44,p:['milho']},
+ {n:'Cenoura ralada',g:45,kc:15,p:['cenoura']},
+ {n:'Pepino',g:20,kc:2,p:['pepino']},
+ {n:'Tomate-cereja',g:50,kc:8,p:['tomate']},
+ {n:'Ovinhos de codorna',g:40,kc:62,p:['ovos']},
+ {n:'Gergelim negro',g:1,kc:6,p:['@gergelim']}]};
+const ANG={lombo:307.5,brocolis1:22.5,milho:72.5,cenoura:120,pepino:165,tomate:206.5,brocolis2:244};
+const MP='/palco/assets/monta/';
+function montaHTML(){
+  const pecas=['borda','lombo','brocolis1','milho','cenoura','pepino','tomate','brocolis2','ovos'];
+  const labs=MONTA.passos.flatMap((s,i)=>s.p.filter(x=>ANG[x]!==undefined&&x!=='brocolis2').map(x=>{const a=ANG[x]*Math.PI/180;
+    return `<span class="mo-lab" style="left:${50+40*Math.sin(a)}%;top:${50-40*Math.cos(a)}%">${s.n}<small>${s.g} g · ${s.kc} kcal</small></span>`})).join('')
+    +`<span class="mo-lab" style="left:50%;top:50%">Ovinhos<small>40 g · 62 kcal</small></span>`;
+  return `<div class="mo-txt">
+      <span class="cap">Basic Lombo · pedaço por pedaço</span>
+      <h2 class="mo-h">Monta<br>o bowl</h2>
+      <p class="mo-sub">Cada ingrediente entra na porção que vai no seu pote.</p>
+      <ol class="mo-list">${MONTA.passos.map(s=>`<li><span class="n">${s.n}</span><span class="g">${s.g} g</span><span class="k">${s.kc} kcal</span></li>`).join('')}</ol>
+      <div class="mo-cap" aria-live="polite"><span class="n">Bowl vazio</span><span class="g"></span></div>
+      <div class="mo-total"><b class="mo-kcal">0</b><span>kcal no bowl</span><small>Estimativa pela tabela TACO/POF · bowl de ${MONTA.peso} g</small></div>
+      <div class="mo-acts">
+        <button class="cta" type="button" data-add="${MONTA.k}"><span class="tx"><small>R$ ${brl(SALADS[MONTA.k].p)}</small>Pedir esta</span><span class="ic"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M10 4v12M4 10h12"/></svg></span><span class="q" aria-hidden="true"></span></button>
+        <button class="mo-btn mo-ver" type="button" aria-pressed="false">Ver por dentro</button>
+        <button class="mo-btn mo-denovo" type="button">Montar de novo</button>
+      </div>
+    </div>
+    <div class="mo-stage"><div class="mo-bowl" role="img" aria-label="Bowl Basic Lombo sendo montado">
+      <img class="mo-leaf" data-f="0" src="/palco/assets/ing-alface.webp" alt="" style="left:14%;top:12%">
+      <img class="mo-leaf" data-f="1" src="/palco/assets/ing-alface.webp" alt="" style="left:50%;top:22%;transform:rotate(120deg)">
+      <img class="mo-leaf" data-f="2" src="/palco/assets/ing-alface.webp" alt="" style="left:26%;top:52%;transform:rotate(240deg)">
+      ${pecas.map(x=>`<img class="mo-p" data-p="${x}" src="${MP}${x}.webp" alt="" decoding="async">`).join('')}
+      <span class="mo-dots"></span>${labs}
+    </div></div>`;
+}
+function Monta(root){
+  const G=window.gsap,bowl=root.querySelector('.mo-bowl'),P=x=>root.querySelector(`.mo-p[data-p="${x}"]`);
+  const lis=[...root.querySelectorAll('.mo-list li')],kc=root.querySelector('.mo-kcal'),cap=root.querySelector('.mo-cap');
+  const folhas=[...root.querySelectorAll('.mo-leaf')],dots=root.querySelector('.mo-dots');
+  // gergelim: pontinhos pretos espalhados dentro do bowl
+  let html='';for(let i=0;i<46;i++){const r=Math.sqrt(Math.random())*.36,a=Math.random()*Math.PI*2;html+=`<i style="left:${50+r*100*Math.cos(a)}%;top:${50+r*100*Math.sin(a)}%;transform:rotate(${Math.random()*180}deg)"></i>`}
+  dots.innerHTML=html;const pontos=[...dots.children];
+  let tl=null,feito=false,soma=0;
+  const contar=v=>{const o={v:soma};soma=v;if(G)G.to(o,{v,duration:.5,ease:'power2.out',onUpdate:()=>{kc.textContent=Math.round(o.v)}});else kc.textContent=v};
+  const legenda=s=>{cap.querySelector('.n').textContent=s?s.n:'Bowl vazio';cap.querySelector('.g').textContent=s?`${s.g} g · ${s.kc} kcal`:''};
+  const esconder=()=>{if(!G)return;G.killTweensOf(root.querySelectorAll('.mo-p,.mo-leaf,.mo-dots i'));
+    G.set(root.querySelectorAll('.mo-p'),{autoAlpha:0,x:0,y:0,rotation:0,scale:1});G.set(folhas,{autoAlpha:0});G.set(pontos,{autoAlpha:0});
+    lis.forEach(l=>l.classList.remove('on'));soma=0;kc.textContent='0';legenda(null);bowl.classList.remove('aberto');root.querySelector('.mo-ver').setAttribute('aria-pressed','false')};
+  const montar=()=>{if(!G){feito=true;return}
+    if(tl)tl.kill();esconder();tl=G.timeline({onComplete:()=>{feito=true}});
+    tl.fromTo(P('borda'),{autoAlpha:0,scale:.82},{autoAlpha:1,scale:1,duration:.55,ease:'back.out(1.6)'});
+    let acc=0;
+    MONTA.passos.forEach((s,i)=>{
+      const t=.55+i*.72;acc+=s.kc;const ate=i===MONTA.passos.length-1?MONTA.total:acc;
+      tl.call(()=>{lis[i]&&lis[i].classList.add('on');legenda(s);contar(ate)},null,t+.42);
+      s.p.forEach((x,j)=>{
+        if(x==='@folhas'){folhas.forEach((f,k)=>tl.fromTo(f,{autoAlpha:0,yPercent:-120,rotation:'-=70'},{autoAlpha:1,yPercent:0,rotation:'+=70',duration:.6,ease:'power2.in'},t+k*.08));return}
+        if(x==='@gergelim'){tl.fromTo(pontos,{autoAlpha:0,yPercent:-900},{autoAlpha:1,yPercent:0,duration:.45,ease:'power2.in',stagger:{each:.008,from:'random'}},t);return}
+        const el=P(x),a=(ANG[x]??0)*Math.PI/180,ox=50+28*Math.sin(a),oy=50-28*Math.cos(a);
+        G.set(el,{transformOrigin:`${ox}% ${oy}%`});
+        // cai de cima girando, achata ao tocar o fundo e assenta
+        tl.fromTo(el,{autoAlpha:0,yPercent:-55,rotation:(j%2?-1:1)*(18+i*3),scale:1.12},{autoAlpha:1,yPercent:0,rotation:0,scale:1,duration:.5,ease:'power3.in'},t+j*.1)
+          .to(el,{scaleY:.93,scaleX:1.04,duration:.07,ease:'power1.out'},t+j*.1+.5)
+          .to(el,{scaleX:1,scaleY:1,duration:.45,ease:'elastic.out(1,.45)'},t+j*.1+.57);
+      });
+    });
+    tl.to(bowl,{rotation:4,duration:.35,ease:'power2.out'},'+=.1').to(bowl,{rotation:0,duration:.8,ease:'elastic.out(1,.4)'});
+  };
+  const abrir=on=>{if(!G)return;bowl.classList.toggle('aberto',on);root.querySelector('.mo-ver').setAttribute('aria-pressed',String(on));
+    Object.entries(ANG).forEach(([x,deg])=>{const a=deg*Math.PI/180;G.to(P(x),{x:on?`${Math.sin(a)*9}%`:0,y:on?`${-Math.cos(a)*9}%`:0,duration:.7,ease:on?'expo.out':'expo.inOut'})});
+    G.to(P('ovos'),{scale:on?1.06:1,duration:.6,ease:'expo.out'});G.to(folhas,{autoAlpha:on?0:1,duration:.3});G.to(P('borda'),{scale:on?1.12:1,autoAlpha:on?.35:1,duration:.6})};
+  root.querySelector('.mo-ver').addEventListener('click',()=>{if(!feito)return;abrir(!bowl.classList.contains('aberto'))});
+  root.querySelector('.mo-denovo').addEventListener('click',()=>{feito=false;montar()});
+  if(G)esconder();
+  return{montar,feito:()=>feito,esconder};
+}
+
 /* Abertura: quadros soltos desenhados num canvas conforme a rolagem — sem seek de vídeo, sem engasgo */
 const SEQ_N=183,SEQ_FPS=24;
 function FrameSeq(canvas,fit){
@@ -564,6 +701,7 @@ function bootMobile(){
     <div class="m-bowl"><div class="b"><div class="s"><img src="/palco/assets/${d.s}-560.webp" srcset="/palco/assets/${d.s}-560.webp 560w, /palco/assets/${d.s}.webp 900w" sizes="84vw" alt="${d.n} vista de cima" decoding="async" ${k>1?'loading="lazy"':''}></div></div></div>
     <div class="m-meta"><p class="m-story">${STORY[k][1]}</p><p class="m-ing">${d.pr}. ${d.i}</p></div>
   </section>`).join('')}
+  <section class="m-monta" data-mode="build" aria-label="Monta o bowl: Basic Lombo">${montaHTML()}</section>
   <section class="m-vid" id="mFilm" data-mode="film" aria-label="A jornada em 15 segundos" style="height:calc(100svh + ${FT.length-1} * var(--step))">
     ${FT.map((_,i)=>`<i class="snap" style="top:calc(${i} * var(--step))"></i>`).join('')}
     <div class="stick">
@@ -636,6 +774,7 @@ function bootMobile(){
 
   // qual tela está no centro: muda a barra, o topo e a animação de chegada
   const G=window.gsap,reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const mMonta=Monta($('.m-monta'));
   const arrive=sec=>{
     if(!G||reduce)return;
     const spans=sec.querySelectorAll('.mask>span'),bowl=sec.querySelector('.m-bowl .s'),meta=sec.querySelectorAll('.m-meta>*,.m-tag');
@@ -653,6 +792,7 @@ function bootMobile(){
     if(mode==='ch'){curK=+sec.dataset.k;barSalad(curK);$('#mCta .ic').innerHTML=PLUS}
     if(mode==='sum')barSum();
     if(mode==='film'){$('#mBar').classList.add('on');filmStop=-1}
+    if(mode==='build'){$('#mBar').classList.add('on');barSalad(MONTA.k);$('#mCta .ic').innerHTML=PLUS;if(!mMonta.feito())mMonta.montar()}
     if(mode==='end')sec.classList.add('in');
     if(mode==='ch'||mode==='sum'||mode==='end')arrive(sec);
   }),{rootMargin:'-50% 0px -50% 0px',threshold:0});
@@ -698,7 +838,7 @@ function bootMobile(){
 
   let PTS=[],anim=null;
   const points=()=>{const sy=scrollY,h=innerHeight,set=new Set();
-    $$('#m .snap,#m .m-ch,#m .m-sum,#m .m-end').forEach(e=>{const t=Math.round(e.getBoundingClientRect().top+sy);set.add(t);
+    $$('#m .snap,#m .m-ch,#m .m-monta,#m .m-sum,#m .m-end').forEach(e=>{const t=Math.round(e.getBoundingClientRect().top+sy);set.add(t);
       if(e.classList.contains('m-sum')&&e.offsetHeight>h+10)set.add(t+e.offsetHeight-h)});
     PTS=[...set].sort((a,b)=>a-b)};
   addEventListener('resize',()=>{measure2();points()});
@@ -821,6 +961,10 @@ function boot(){
   let arrastou=false;
   addEventListener('pointerup',e=>{if(px0==null)return;const dx=e.clientX-px0;px0=null;if(Math.abs(dx)>70){arrastou=true;setTimeout(()=>{arrastou=false},0);if(inStage()&&!busy)step(dx<0?1:-1)}});
   addEventListener('click',e=>{if(arrastou){e.preventDefault();e.stopImmediatePropagation();arrastou=false}},true);
+
+  const mo=$('#monta');mo.innerHTML=montaHTML();const monta=Monta(mo);
+  gsap.fromTo(mo,{clipPath:'circle(0% at 68% 50%)'},{clipPath:'circle(150% at 68% 50%)',ease:'none',scrollTrigger:{trigger:mo,start:'top 95%',end:'top 25%',scrub:.4}});
+  ScrollTrigger.create({trigger:mo,start:'top 45%',onEnter:()=>{if(!monta.feito())monta.montar()}});
 
   // hover: o bowl inclina na direção do cursor e o cursor vira um botão
   const fine=matchMedia('(pointer:fine)').matches;
