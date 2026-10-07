@@ -542,7 +542,7 @@ const SALADS=[
  {id:'371b3f96-35b4-4748-a56e-225fd791bbae',s:'queridinha',t:['QUERI','DINHA'],n:'Queridinha',p:36.99,pr:'Frango desfiado · 120 g',i:'Alface, frango desfiado, cebola roxa, batata palha, milho, abobrinha, cenoura e gergelim negro.',tag:'A mais pedida'},
  {id:'6ada795c-d8eb-4a9d-8d0e-a5df2c9c9910',s:'tilapia',t:['TILÁPIA','SUPREMA'],n:'Tilápia Suprema',p:46.99,pr:'Filé de tilápia grelhado · 100 g',i:'Alface e repolho, batata rústica, chips de moranga, cebola roxa, alho-poró, cenoura e tomate-cereja.'},
  {id:'a3ad1c0c-f43f-4bc0-9903-4c1b3804a865',s:'almondega',t:['ALMÔNDEGA','PREMIUM'],n:'Almôndega Premium',p:44.99,pr:'Almôndega bovina · 120 g',i:'Alface com couve, tomate-cereja, azeitona, penne, abobrinha, muçarela e cebola roxa.'},
- {id:'30d4d80b-cddb-4318-a03e-e078dd3f7ee7',s:'lombo',t:['BASIC','LOMBO'],n:'Basic Lombo',p:30.75,pr:'Lombo suíno grelhado · 120 g',i:'Alface, brócolis, ovinhos de codorna, milho, cenoura, pepino e tomate-cereja.'},
+ {id:'30d4d80b-cddb-4318-a03e-e078dd3f7ee7',s:'lombo',t:['BASIC','LOMBO'],n:'Basic Lombo',p:40.99,pr:'Lombo suíno grelhado · 120 g',i:'Alface, brócolis, ovinhos de codorna, milho, cenoura, pepino e tomate-cereja.'},
  {id:'6bc13801-1dc4-43a7-aa24-fe255b214994',s:'camarao',t:['MAGNÍFICO','CAMARÃO'],n:'Magnífico Camarão',p:48.99,pr:'Camarão à provençal · 120 g',i:'Alface, penne, cebola roxa, milho, abacaxi, pepino, cenoura e tomate-cereja.'},
  {id:'a3ce3418-9bbb-44da-bef9-e62a173fa48e',s:'frango',t:['FILÉ DE','FRANGO'],n:'Especial Filé de Frango',p:39.99,pr:'Filé de frango grelhado · 120 g',i:'Alface, palmito, manga, cebola roxa, tomate-cereja e mandioca.'},
  {id:'a5ee438d-4531-46ff-8dd2-f913bc7697ed',s:'salmao',t:['SALMÃO','SUBLIME'],n:'Salmão Sublime',p:52.90,pr:'Salmão na manteiga com ervas · 120 g',i:'Alface, brócolis, batata rústica, tomate-cereja, cebola roxa, cenoura e castanha de caju.'}
@@ -581,12 +581,23 @@ try{const v=localStorage.getItem('ce-skin');if(v){root.dataset.theme=v;syncSkin(
 
 /* ---- sacola ---- */
 const LOJA='https://cardapidex.com.br/ce-saladas';
-const bag=(()=>{try{const v=JSON.parse(localStorage.getItem('ce-palco-sacola')||'[]');return Array.isArray(v)?v.filter(k=>Number.isInteger(k)&&k>=0&&k<7):[]}catch(e){return[]}})();
-const salvarSacola=()=>{try{localStorage.setItem('ce-palco-sacola',JSON.stringify(bag))}catch(e){}};
+// A sacola da landing é só o caminho até o cardápio. Guardada para sempre,
+// ela voltava inteira a cada "Pedir" e o cardápio somava de novo — o cliente
+// esvaziava lá e ela reaparecia cheia (07/10). Agora: entregou, esvazia; e
+// sacola esquecida expira em 3 h.
+const SACOLA_VALE_MS=3*60*60*1000;
+const bag=(()=>{try{const v=JSON.parse(localStorage.getItem('ce-palco-sacola')||'null');
+  const itens=Array.isArray(v)?[]:(v&&Array.isArray(v.itens)&&Date.now()-(+v.em||0)<SACOLA_VALE_MS?v.itens:[]);
+  return itens.filter(k=>Number.isInteger(k)&&k>=0&&k<7)}catch(e){return[]}})();
+const salvarSacola=()=>{try{bag.length?localStorage.setItem('ce-palco-sacola',JSON.stringify({itens:bag,em:Date.now()})):localStorage.removeItem('ce-palco-sacola')}catch(e){}};
 // a landing é outro domínio: a sacola viaja no link (?sacola=id*2,id*1) e o cardápio a repõe
 const linkDoPedido=()=>{if(!bag.length)return LOJA;const q={};bag.forEach(k=>{q[SALADS[k].id]=(q[SALADS[k].id]||0)+1});
   return LOJA+'?sacola='+Object.entries(q).map(([id,n])=>id+'*'+n).join(',')};
-const irProPedido=()=>{salvarSacola();try{window.fbq&&fbq('track','InitiateCheckout',{value:+bag.reduce((a,k)=>a+SALADS[k].p,0).toFixed(2),currency:'BRL',num_items:bag.length})}catch(e){}window.open(linkDoPedido(),'_blank','noopener')};
+const irProPedido=()=>{try{window.fbq&&fbq('track','InitiateCheckout',{value:+bag.reduce((a,k)=>a+SALADS[k].p,0).toFixed(2),currency:'BRL',num_items:bag.length})}catch(e){}
+  window.open(linkDoPedido(),'_blank','noopener');
+  // Entregue ao cardápio: a partir daqui a sacola de verdade é a de lá.
+  bag.length=0;salvarSacola();renderBag();
+  document.querySelectorAll('.cta .q').forEach(q=>{q.textContent='0';q.classList.remove('on')})};
 function toast(msg){const t=$('#toast');t.textContent=msg;if(window.gsap){gsap.killTweensOf(t);gsap.timeline().fromTo(t,{autoAlpha:0,y:24},{autoAlpha:1,y:0,duration:.45,ease:'expo.out'}).to(t,{autoAlpha:0,y:12,duration:.35,ease:'power2.in'},'+=1.8')}else{t.style.opacity=1;t.style.visibility='visible';setTimeout(()=>{t.style.opacity=0;t.style.visibility='hidden'},2200)}}
 const CHECK='<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 10.5l3.5 3.5 7.5-8"/></svg>';
 function markBtn(k){
