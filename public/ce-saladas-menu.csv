@@ -1,0 +1,11 @@
+categoria,produto,preco,preco_de,descricao,sku,status,estoque,controla_estoque,variantes
+Saladas Especiais,Tilápia Suprema,46.99,,"Filé de tilápia (120g) base de alface e repolho, batata rústica, tomate cereja, cenoura, chips de moranga, gergelim, alho poro e cebola roxa.  acompanha: molho lemon pepper aprox. (500g)",CS-TIL,active,7,True,
+Saladas Especiais,Especial Filé de Frango,39.99,,"Filé de frango grelhado (120g) base de alface, tomate cereja, manga, gergelim, palmito, mandioca, cebola roxa.  acompanha: molho especial mostarda e mel aprox. (550 g)",CS-FRA,active,5,True,
+Saladas Especiais,Basic Lombo,40.90,,"LOMBO SUÍNO (120g) Base de alface, ovos de codorna, tomate cereja, pepino, milho, cenoura, brócolis, gergelim.  Aproximadamente 550g acompanha: molho mostarda e mel",CS-LOM,active,10,True,
+Saladas Especiais,Salmão Sublime,52.90,,"Cubos de Salmão finalizado na manteiga com ervas (120g) base de alface, tomate cereja, cenoura ,brócolis, batata rústica, castanha de caju, gergelim e cebola roxa.  Aproximadamente 550g Acompanha: Molho de maracujá.",CS-SAL,active,9,True,
+Saladas Especiais,Almôndega Premium,40.90,,"Almôndega bovina (120g)  base de alface e couve, queijo muçarela, tomate cereja, penne, azeitona, abobrinha, gergelim, cebola roxa.  Aproximadamente 550g acompanha: molho mostarda e mel",CS-ALM,active,10,True,
+Saladas Especiais,Queridinha,36.90,,"Frango desfiado (120g)  Ingredientes: Base de alface, cenoura ralada, cebola roxa, milho, abobrinha, batata palha.  Acompanha: Molho mostarda e mel Deliciosa salada com apenas 270 kcal.",CS-QUE,active,7,True,
+Saladas Especiais,Magnifico Camarão,48.90,,"Camarão a Provençal (120g) base de alface, tomate cereja, penne, milho, abacaxi, pepino, cenoura, gergelim, e cebola roxa.  Aproximadamente 550g acompanha - molho red hot, levemente apimentado.",CS-CAM,active,10,True,
+Bebidas,Suco de Acerola 400ml,12.00,,,,active,9,True,
+Bebidas,Suco de Caju 400ml,12.00,,,,active,8,True,
+Bebidas,Suco de laranja 400ml,12.00,,,000001,active,10,False,
